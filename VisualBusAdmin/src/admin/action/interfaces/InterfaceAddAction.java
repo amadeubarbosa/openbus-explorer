@@ -1,0 +1,44 @@
+package admin.action.interfaces;
+
+import java.awt.event.ActionEvent;
+
+import planref.client.util.crud.CRUDPanel;
+import planref.client.util.crud.CRUDbleActionInterface;
+import tecgraf.javautils.LNG;
+import admin.BusAdmin;
+import admin.action.BusAdminAbstractAction;
+import admin.desktop.SimpleWindow;
+import admin.wrapper.InterfaceWrapper;
+
+/**
+ * Classe de ação para criar uma interface. Esta dispara um diálogo.
+ * 
+ * 
+ * @author Tecgraf
+ */
+public class InterfaceAddAction extends BusAdminAbstractAction {
+
+  private CRUDPanel<InterfaceWrapper> panel;
+
+  public InterfaceAddAction(SimpleWindow parentWindow,
+    CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
+    super(parentWindow, panel.getTable(), admin, LNG
+      .get("CategoryAddAction.name"));
+    this.panel = panel;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int crudActionType() {
+    return CRUDbleActionInterface.TYPE_ACTION_ADD;
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent arg0) {
+    new InterfaceInputDialog(parentWindow, LNG
+      .get("InterfaceAddAction.inputDialog.title"), panel, admin).showDialog();
+  }
+
+}

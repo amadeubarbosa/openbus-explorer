@@ -1,0 +1,44 @@
+package admin.action.categories;
+
+import java.awt.event.ActionEvent;
+
+import planref.client.util.crud.CRUDPanel;
+import planref.client.util.crud.CRUDbleActionInterface;
+import tecgraf.javautils.LNG;
+import admin.BusAdmin;
+import admin.action.BusAdminAbstractAction;
+import admin.desktop.SimpleWindow;
+import admin.wrapper.EntityCategoryDescWrapper;
+
+/**
+ * Classe de ação para criar uma categoria. Esta dispara um diálogo.
+ * 
+ * 
+ * @author Tecgraf
+ */
+public class CategoryAddAction extends BusAdminAbstractAction {
+
+  private CRUDPanel<EntityCategoryDescWrapper> panel;
+
+  public CategoryAddAction(SimpleWindow parentWindow,
+    CRUDPanel<EntityCategoryDescWrapper> panel, BusAdmin admin) {
+    super(parentWindow, panel.getTable(), admin, LNG
+      .get("CategoryAddAction.name"));
+    this.panel = panel;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int crudActionType() {
+    return CRUDbleActionInterface.TYPE_ACTION_ADD;
+  }
+
+  @Override
+  public void actionPerformed(ActionEvent arg0) {
+    new CategoryInputDialog(parentWindow, LNG
+      .get("CategoryAddAction.inputDialog.title"), panel, admin).showDialog();
+  }
+
+}

@@ -35,6 +35,8 @@ public class Util {
     "Categoria em uso por uma ou mais entidades";
   public static final String INTERFACE_IN_USE_EXCEPTION_MESSAGE =
     "Interface em uso por uma ou mais entidades";
+  public static final String AUTHORIZATION_IN_USE_EXCEPTION_MESSAGE =
+    "Autorização em uso por uma ou mais ofertas";
 
   /**
    * Constrói a URL corbaloc

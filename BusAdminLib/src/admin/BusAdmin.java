@@ -10,6 +10,7 @@ import org.omg.CORBA.TRANSIENT;
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
+import tecgraf.openbus.core.v2_0.services.offer_registry.AuthorizationInUse;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityAlreadyRegistered;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryAlreadyExists;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryDesc;
@@ -184,4 +185,21 @@ public interface BusAdmin {
   public void setAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
     UnauthorizedOperation, InvalidInterface;
+
+  /**
+   * Remove autorização para uma interface de uma entidade
+   *
+   * @param entityID ID da entidade que vai ter a autorização removida
+   * @param interfaceName interface que vai ser autorizada
+   * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
+   * @throws UnauthorizedOperation
+   * @throws InvalidInterface
+   * @throws AuthorizationInUse
+   */
+  public void revokeAuthorization(String entityID, String interfaceName)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+    UnauthorizedOperation, InvalidInterface, AuthorizationInUse;
 }

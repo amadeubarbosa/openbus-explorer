@@ -17,6 +17,7 @@ import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginRegistry;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginRegistryHelper;
 import tecgraf.openbus.core.v2_0.services.access_control.NoLoginCode;
+import tecgraf.openbus.core.v2_0.services.offer_registry.AuthorizationInUse;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityAlreadyRegistered;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategory;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryAlreadyExists;
@@ -499,6 +500,44 @@ public class BusAdminImpl implements BusAdmin {
       throw new InvalidInterface(Util.INVALID_INTERFACE_EXCEPTION_MESSAGE,
         e.ifaceId);
     }
+  }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void revokeAuthorization(String entityID, String interfaceName)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+    UnauthorizedOperation, InvalidInterface, AuthorizationInUse {
+    try {
+      RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+      entity.revokeInterface(interfaceName);
+    }
+    catch (TRANSIENT e) {
+      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
+        port), e.minor, e.completed);
+    }
+    catch (COMM_FAILURE e) {
+      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
+        e.completed);
+    }
+    catch (NO_PERMISSION e) {
+      if (e.minor == NoLoginCode.value) {
+        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
+      }
+      throw e;
+    }
+    catch (UnauthorizedOperation e) {
+      throw new UnauthorizedOperation(
+        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
+    }
+    catch (InvalidInterface e) {
+      throw new InvalidInterface(Util.INVALID_INTERFACE_EXCEPTION_MESSAGE,
+        e.ifaceId);
+    }
+    catch (AuthorizationInUse e) {
+      throw new AuthorizationInUse(Util.AUTHORIZATION_IN_USE_EXCEPTION_MESSAGE,
+        e.offers);
+    }
   }
 }

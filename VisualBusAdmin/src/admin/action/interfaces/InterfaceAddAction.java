@@ -23,7 +23,7 @@ public class InterfaceAddAction extends BusAdminAbstractAction {
   public InterfaceAddAction(SimpleWindow parentWindow,
     CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
     super(parentWindow, panel.getTable(), admin, LNG
-      .get("CategoryAddAction.name"));
+      .get("InterfaceAddAction.name"));
     this.panel = panel;
   }
 

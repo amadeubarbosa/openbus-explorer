@@ -244,7 +244,10 @@ public class MainDialog {
     initPanelInterface();
     initPanelAuthorization();
     initPanelOffer();
-    initPanelLogin();
+
+    if (isCurrentUserAdmin) {
+      initPanelLogin();
+    }
   }
 
   /**
@@ -266,7 +269,10 @@ public class MainDialog {
     featuresPanel.add(panelInterface, INTERFACE_PANEL_ID);
     featuresPanel.add(panelAuthorization, AUTHORIZATION_PANEL_ID);
     featuresPanel.add(panelOffer, OFFER_PANEL_ID);
-    featuresPanel.add(panelLogin, LOGIN_PANEL_ID);
+
+    if (isCurrentUserAdmin) {
+      featuresPanel.add(panelLogin, LOGIN_PANEL_ID);
+    }
 
     return featuresPanel;
   }

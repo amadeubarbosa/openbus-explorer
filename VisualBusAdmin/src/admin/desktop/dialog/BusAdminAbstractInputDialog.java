@@ -8,7 +8,6 @@ import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
 import admin.desktop.SimpleWindow;
 import admin.desktop.SimpleWindowBlockType;
-import admin.desktop.SimpleWindowBlockType.Type;
 import admin.remote.SimpleWindowRemoteTask;
 
 public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
@@ -46,7 +45,7 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
     Thread task =
       new Thread(new SimpleWindowRemoteTask(this, LNG
         .get("AddAction.waiting.title"), LNG.get("AddAction.waiting.msg"),
-        new SimpleWindowBlockType(Type.BLOCK_THIS)) {
+        new SimpleWindowBlockType(SimpleWindowBlockType.Type.BLOCK_THIS)) {
 
         @Override
         protected void performTask() throws Exception {

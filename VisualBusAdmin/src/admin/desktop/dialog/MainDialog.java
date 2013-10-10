@@ -42,6 +42,7 @@ import admin.action.interfaces.InterfaceDeleteAction;
 import admin.action.interfaces.InterfaceRefreshAction;
 import admin.action.interfaces.InterfaceTableProvider;
 import admin.action.logins.LoginRefreshAction;
+import admin.action.logins.LoginDeleteAction;
 import admin.action.logins.LoginTableProvider;
 import admin.action.offers.OfferRefreshAction;
 import admin.action.offers.OffersTableProvider;
@@ -397,6 +398,7 @@ public class MainDialog {
       new Vector<CRUDbleActionInterface>();
     actionsVector.add(new LoginRefreshAction(mainDialog, panelLogin.getTable(),
       admin));
+    actionsVector.add(new LoginDeleteAction(mainDialog, panelLogin, admin));
 
     panelLogin.setButtonsPane(actionsVector);
 

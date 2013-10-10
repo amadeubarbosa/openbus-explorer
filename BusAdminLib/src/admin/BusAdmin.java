@@ -69,6 +69,19 @@ public interface BusAdmin {
     TRANSIENT, COMM_FAILURE, NO_PERMISSION;
 
   /**
+   * Retorna uma lista que contém IDs de todas as etidades com certificado
+   * registrado no barramento.
+   * @return lista de IDs das entidades com certificado
+   * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
+   * @throws UnauthorizedOperation
+   */
+  public List<String> getEntitiesWithCertificate() throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation;
+
+  /**
    * Retorna um map que contém as descrições de todas as entidades registradas
    * no barramento, associadas às suas respectivas autorizações.
    * 

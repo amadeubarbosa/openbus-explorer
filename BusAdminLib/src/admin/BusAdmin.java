@@ -14,6 +14,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.EntityAlreadyRegistered
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryAlreadyExists;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryInUse;
+import tecgraf.openbus.core.v2_0.services.offer_registry.InterfaceInUse;
 import tecgraf.openbus.core.v2_0.services.offer_registry.InvalidInterface;
 import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
@@ -145,6 +146,20 @@ public interface BusAdmin {
   public void removeCategory(String categoryID)
     throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
     UnauthorizedOperation, EntityCategoryInUse;
+
+  /**
+   * Remove uma interface do barramento
+   * @param interfaceName Nome da interface a ser removida
+   * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
+   * @throws UnauthorizedOperation
+   * @throws InterfaceInUse
+   */
+  public void removeInterface(String interfaceName)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+    UnauthorizedOperation, InterfaceInUse;
 
   /**
    * Remove o registro de uma entidade do barramento

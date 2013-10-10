@@ -29,6 +29,7 @@ import admin.action.authorizations.AuthorizationAddAction;
 import admin.action.authorizations.AuthorizationRefreshAction;
 import admin.action.authorizations.AuthorizationTableProvider;
 import admin.action.categories.CategoryAddAction;
+import admin.action.categories.CategoryDeleteAction;
 import admin.action.categories.CategoryRefreshAction;
 import admin.action.categories.CategoryTableProvider;
 import admin.action.entities.EntityAddAction;
@@ -282,6 +283,7 @@ public class MainDialog {
     actionsVector.add(new CategoryRefreshAction(mainDialog, panelCategory
       .getTable(), admin));
     actionsVector.add(new CategoryAddAction(mainDialog, panelCategory, admin));
+    actionsVector.add(new CategoryDeleteAction(mainDialog, panelCategory, admin));
 
     panelCategory.setButtonsPane(actionsVector);
   }

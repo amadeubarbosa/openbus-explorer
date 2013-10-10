@@ -19,6 +19,7 @@ import tecgraf.openbus.core.v2_0.services.access_control.LoginRegistryHelper;
 import tecgraf.openbus.core.v2_0.services.access_control.NoLoginCode;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateRegistry;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateRegistryHelper;
+import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.InvalidCertificate;
 import tecgraf.openbus.core.v2_0.services.offer_registry.OfferRegistry;
 import tecgraf.openbus.core.v2_0.services.offer_registry.OfferRegistryHelper;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOffer;
@@ -460,6 +461,40 @@ public class BusAdminImpl implements BusAdmin {
     catch (EntityAlreadyRegistered e) {
       throw new EntityAlreadyRegistered(
         Util.ENTITY_ALREADY_REGISTERED_EXCEPTION_MESSAGE, e.existing);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void registerCertificate(String entityID, byte[] certificate)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+    UnauthorizedOperation, InvalidCertificate {
+    try {
+      this.certificateRegistry.registerCertificate(entityID, certificate);
+    }
+    catch (TRANSIENT e) {
+      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
+        port), e.minor, e.completed);
+    }
+    catch (COMM_FAILURE e) {
+      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
+        e.completed);
+    }
+    catch (NO_PERMISSION e) {
+      if (e.minor == NoLoginCode.value) {
+        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
+      }
+      throw e;
+    }
+    catch (UnauthorizedOperation e) {
+      throw new UnauthorizedOperation(
+        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
+    }
+    catch (InvalidCertificate e) {
+      throw new InvalidCertificate(
+        Util.INVALID_CERTIFICATE_EXCEPTION_MESSAGE, e.message);
     }
   }
 

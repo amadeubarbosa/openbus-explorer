@@ -37,6 +37,8 @@ public class Util {
     "Interface em uso por uma ou mais entidades";
   public static final String AUTHORIZATION_IN_USE_EXCEPTION_MESSAGE =
     "Autorização em uso por uma ou mais ofertas";
+  public static final String INVALID_CERTIFICATE_EXCEPTION_MESSAGE =
+    "Certificado inválido";
 
   /**
    * Constrói a URL corbaloc

@@ -74,6 +74,19 @@ public class AuthorizationInputDialog extends
     return (String) this.interfaceNameCombo.getSelectedItem();
   }
 
+  /*
+   * Lança exceção em caso de existência prévia da autorização a ser adicionada;
+   * o barramento, por padrão, não o faz.
+   */
+  private void failOnExistingAuthorization (
+    AuthorizationWrapper newAuthorizationWrapper) throws Exception {
+    for (AuthorizationWrapper authorization : getRows()) {
+      if (newAuthorizationWrapper.equals(authorization)) {
+        throw new Exception("Autorização já existente");
+      }
+    }
+  }
+
   @Override
   protected JPanel buildFields() {
     JPanel panel = new JPanel(new GridBagLayout());
@@ -104,6 +117,7 @@ public class AuthorizationInputDialog extends
 
     admin.setAuthorization(entityID, interfaceName);
 
+    failOnExistingAuthorization(newAuthorizationWrapper);
   }
 
 }

@@ -9,14 +9,12 @@ import javax.swing.JTable;
 
 import planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
 import admin.desktop.SimpleWindow;
-import admin.desktop.SimpleWindowBlockType;
-import admin.desktop.SimpleWindowBlockType.Type;
-import admin.remote.SimpleWindowRemoteTask;
 import admin.wrapper.LoginInfoWrapper;
 
 /**
@@ -39,21 +37,19 @@ public class LoginRefreshAction extends BusAdminAbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    new SimpleWindowRemoteTask(parentWindow, LNG
-      .get("ListAction.waiting.title"), LNG.get("ListAction.waiting.msg"),
-      new SimpleWindowBlockType(Type.BLOCK_THIS)) {
-      List<LoginInfo> logins;
+    Task task = new Task() {
+      List<LoginInfo> logins = null;
 
       @Override
-      public void performTask() throws Exception {
+      protected void performTask() throws Exception {
         logins = admin.getLogins();
       }
 
       @Override
-      public void updateUI() {
-        if (hasNoException()) {
+      protected void afterTaskUI() {
+        if (getError() == null) {
           List<LoginInfoWrapper> wrappersList =
-            new LinkedList<LoginInfoWrapper>();
+          new LinkedList<LoginInfoWrapper>();
 
           for (LoginInfo loginInfo : logins) {
             wrappersList.add(new LoginInfoWrapper(loginInfo));
@@ -65,13 +61,10 @@ public class LoginRefreshAction extends BusAdminAbstractAction {
 
           table.setModel(m);
         }
-        else {
-          JOptionPane.showMessageDialog(parentWindow, getTaskException()
-            .getMessage(), LNG.get("ProgressDialog.error.title"),
-            JOptionPane.ERROR_MESSAGE);
-        }
       }
+    };
 
-    }.start();
+    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
+      LNG.get("ListAction.waiting.msg"));
   }
 }

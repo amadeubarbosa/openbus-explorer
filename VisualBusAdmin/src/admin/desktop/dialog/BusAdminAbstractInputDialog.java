@@ -6,11 +6,10 @@ import logistic.logic.common.Identifiable;
 import planref.client.util.crud.CRUDPanel;
 import reuse.modified.logistic.client.util.InputDialog;
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
 import admin.desktop.SimpleWindow;
-import admin.desktop.SimpleWindowBlockType;
-import admin.remote.SimpleWindowRemoteTask;
 
 public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
   extends InputDialog {
@@ -43,35 +42,31 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
    *         sucesso.
    */
   protected boolean apply() {
+    Task task = new Task() {
+      @Override
+      protected void performTask() throws Exception {
+        openBusCall();
+      }
 
-    Thread task =
-      new Thread(new SimpleWindowRemoteTask(this, LNG
-        .get("AddAction.waiting.title"), LNG.get("AddAction.waiting.msg"),
-        new SimpleWindowBlockType(SimpleWindowBlockType.Type.BLOCK_THIS)) {
-
-        @Override
-        protected void performTask() throws Exception {
-          try {
-            openBusCall();
-          }
-          catch (Exception e) {
-            taskException = e;
-            throw e;
-          }
+      @Override
+      protected void afterTaskUI() {
+        if (getError() == null) {
+          updateTable();
         }
+      }
 
-        @Override
-        protected void updateUI() {
-          if (hasNoException()) {
-            updateTable();
-          }
+      @Override
+      protected void handleError(Exception exception) {
+        taskException = exception;
+      }
+    };
 
-        }
-      });
+    Thread taskThread = new Thread(task);
+    task.execute(this,LNG.get("AddAction.waiting.title"),
+      LNG.get("AddAction.waiting.msg"));
 
-    task.start();
 
-    while (task.isAlive()) {
+    while (taskThread.isAlive()) {
       try {
         Thread.sleep(200);
       }

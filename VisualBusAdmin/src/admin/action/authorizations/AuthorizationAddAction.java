@@ -9,13 +9,11 @@ import javax.swing.JOptionPane;
 import planref.client.util.crud.CRUDPanel;
 import planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
 import admin.desktop.SimpleWindow;
-import admin.desktop.SimpleWindowBlockType;
-import admin.desktop.SimpleWindowBlockType.Type;
-import admin.remote.SimpleWindowRemoteTask;
 import admin.wrapper.AuthorizationWrapper;
 
 /**
@@ -27,9 +25,6 @@ import admin.wrapper.AuthorizationWrapper;
 public class AuthorizationAddAction extends BusAdminAbstractAction {
 
   private CRUDPanel<AuthorizationWrapper> panel;
-
-  private List<String> interfacesList;
-  private List<String> entitiesIDList;
 
   public AuthorizationAddAction(SimpleWindow parentWindow,
     CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin) {
@@ -48,42 +43,29 @@ public class AuthorizationAddAction extends BusAdminAbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    entitiesIDList = new LinkedList<String>();
-
-    new SimpleWindowRemoteTask(parentWindow,
-      LNG.get("AddAction.waiting.title"), LNG.get("AddAction.waiting.msg"),
-      new SimpleWindowBlockType(Type.BLOCK_THIS)) {
+    Task task = new Task() {
+      List<String> interfacesList = null;
+      List<String> entitiesIDList = null;
 
       @Override
       protected void performTask() throws Exception {
+        entitiesIDList = new LinkedList<String>();
         List<RegisteredEntityDesc> entitiesDescList = admin.getEntities();
-
         interfacesList = admin.getInterfaces();
-
         for (RegisteredEntityDesc entityDesc : entitiesDescList) {
           entitiesIDList.add(entityDesc.id);
         }
-
       }
 
       @Override
-      protected void updateUI() {
-
-        if (hasNoException()) {
-
-          new AuthorizationInputDialog(parentWindow, LNG
-            .get("AuthorizationAddAction.inputDialog.title"),
-            new SimpleWindowBlockType(Type.BLOCK_THIS), panel, admin,
-            entitiesIDList, interfacesList).showDialog();
-        }
-        else {
-          JOptionPane.showMessageDialog(parentWindow, getTaskException()
-            .getMessage(), LNG.get("ProgressDialog.error.title"),
-            JOptionPane.ERROR_MESSAGE);
-        }
+      protected void afterTaskUI() {
+        new AuthorizationInputDialog(AuthorizationAddAction.this.parentWindow,
+          LNG.get("AuthorizationAddAction.inputDialog.title"),
+          panel, admin, entitiesIDList, interfacesList).showDialog();
       }
-    }.start();
+    };
 
+    task.execute(parentWindow, LNG.get("AddAction.waiting.title"),
+      LNG.get("AddAction.waiting.msg"));
   }
-
 }

@@ -5,12 +5,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.assistant.Assistant;
 import admin.desktop.SimpleWindow;
-import admin.desktop.SimpleWindowBlockType;
-import admin.desktop.SimpleWindowBlockType.Type;
 import admin.desktop.dialog.LoginDialog;
-import admin.remote.SimpleWindowRemoteTask;
 
 public class LogoutAction extends AbstractAction {
   Assistant assistant;
@@ -23,22 +21,22 @@ public class LogoutAction extends AbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-
-    new SimpleWindowRemoteTask(parentWindow, LNG
-      .get("LogoutAction.waiting.title"), LNG.get("LogoutAction.waiting.msg"),
-      new SimpleWindowBlockType(Type.BLOCK_THIS)) {
+    Task task = new Task() {
       @Override
-      public void performTask() throws Exception {
+      protected void performTask() throws Exception {
         assistant.shutdown();
       }
 
       @Override
-      public void updateUI() {
-        parentWindow.dispose();
-        new LoginDialog().show();
+      protected void afterTaskUI() {
+        if (getError() == null) {
+          parentWindow.dispose();
+          new LoginDialog().show();
+        }
       }
+    };
 
-    }.start();
-
+    task.execute(parentWindow, LNG.get("LogoutAction.waiting.title"),
+      LNG.get("LogoutAction.waiting.msg"));
   }
 }

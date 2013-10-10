@@ -9,13 +9,11 @@ import javax.swing.JOptionPane;
 import planref.client.util.crud.CRUDPanel;
 import planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryDesc;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
 import admin.desktop.SimpleWindow;
-import admin.desktop.SimpleWindowBlockType;
-import admin.desktop.SimpleWindowBlockType.Type;
-import admin.remote.SimpleWindowRemoteTask;
 import admin.wrapper.RegisteredEntityDescWrapper;
 
 /**
@@ -60,10 +58,7 @@ public class EntityAddAction extends BusAdminAbstractAction {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    new SimpleWindowRemoteTask(parentWindow,
-      LNG.get("AddAction.waiting.title"), LNG.get("AddAction.waiting.msg"),
-      new SimpleWindowBlockType(Type.BLOCK_THIS)) {
-
+    Task task = new Task() {
       @Override
       protected void performTask() throws Exception {
         List<EntityCategoryDesc> categoryDescList = admin.getCategories();
@@ -72,23 +67,18 @@ public class EntityAddAction extends BusAdminAbstractAction {
         for (EntityCategoryDesc categoryDesc : categoryDescList) {
           categoryIDList.add(categoryDesc.id);
         }
-
       }
 
       @Override
-      protected void updateUI() {
-        if (hasNoException()) {
-          new EntityInputDialog(parentWindow, LNG
-            .get("EntityAddAction.inputDialog.title"), panel, admin,
-            categoryIDList).showDialog();
-        }
-        else {
-          JOptionPane.showMessageDialog(parentWindow, getTaskException()
-            .getMessage(), LNG.get("ProgressDialog.error.title"),
-            JOptionPane.ERROR_MESSAGE);
-        }
+      protected void afterTaskUI() {
+        new EntityInputDialog(EntityAddAction.this.parentWindow, LNG
+          .get("EntityAddAction.inputDialog.title"), panel, admin,
+          categoryIDList).showDialog();
       }
-    }.start();
+    };
+
+    task.execute(parentWindow, LNG.get("AddAction.waiting.title"),
+      LNG.get("AddAction.waiting.msg"));
 
   }
 

@@ -20,6 +20,7 @@ import tecgraf.diagnostic.commom.StatusCode;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
+import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.assistant.Assistant;
 import tecgraf.openbus.assistant.AssistantParams;
@@ -29,9 +30,6 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
 import admin.BusAdmin;
 import admin.BusAdminImpl;
 import admin.desktop.SimpleWindow;
-import admin.desktop.SimpleWindowBlockType;
-import admin.desktop.SimpleWindowBlockType.Type;
-import admin.remote.SimpleWindowRemoteTask;
 
 /**
  * Diálogo que obtém os dados do usuário e do barramento para efetuar login
@@ -205,17 +203,14 @@ public class LoginDialog {
     @Override
     public void actionPerformed(ActionEvent event) {
 
-      new SimpleWindowRemoteTask(loginDialog, LNG
-        .get("LoginDialog.waiting.title"), LNG.get("LoginDialog.waiting.msg"),
-        new SimpleWindowBlockType(Type.BLOCK_THIS)) {
-
+      Task task = new Task() {
         BusAdmin admin;
         volatile int failedAttempts = 0;
         volatile boolean accessDenied = false;
         boolean isCurrentUserAdmin;
 
         @Override
-        public void performTask() throws Exception {
+        protected void performTask() throws Exception {
           String host = addressField.getText();
           short port = Short.valueOf(portField.getText());
           String entity = userField.getText();
@@ -254,7 +249,7 @@ public class LoginDialog {
             new OpenBusMonitor("openbus", (OpenBusContext) assistant.orb()
               .resolve_initial_references("OpenBusContext"));
 
-          while (!remoteTaskCanceled && !accessDenied
+          while (!wasCancelled() && !accessDenied
             && failedAttempts <= MAX_LOGIN_FAILS
             && monitor.checkResource().code != StatusCode.OK) {
             try {
@@ -265,7 +260,7 @@ public class LoginDialog {
             }
           }
 
-          if (remoteTaskCanceled) {
+          if (wasCancelled()) {
             assistant.shutdown();
             return;
           }
@@ -279,18 +274,21 @@ public class LoginDialog {
             assistant.shutdown();
             throw lastException;
           }
-
         }
 
         @Override
-        public void updateUI() {
-          if (hasNoException()) {
+        protected void afterTaskUI() {
+          if (getError() == null) {
             MainDialog mainDialog =
               new MainDialog(admin, assistant, isCurrentUserAdmin);
             mainDialog.show();
             loginDialog.dispose();
           }
-          else {
+        }
+
+        @Override
+        protected void handleError(Exception exception) {
+          if (exception != null) {
             if (accessDenied) {
               JOptionPane.showMessageDialog(loginDialog, LNG
                 .get("LoginDialog.login.accessDenied.message"), LNG
@@ -302,7 +300,6 @@ public class LoginDialog {
                 .get("ProgressDialog.error.title"), JOptionPane.ERROR_MESSAGE);
             }
           }
-
         }
 
         //caso não lance uma exceção, o usuário logado está cadastrado como administrador no barramento
@@ -316,8 +313,10 @@ public class LoginDialog {
           }
 
         }
-      }.start();
+      };
 
+      task.execute(loginDialog, LNG.get("LoginDialog.waiting.title"),
+        LNG.get("LoginDialog.waiting.msg"));
     }
   }
 

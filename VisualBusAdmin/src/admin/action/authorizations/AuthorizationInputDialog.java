@@ -14,7 +14,6 @@ import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
 import admin.BusAdmin;
 import admin.desktop.SimpleWindow;
-import admin.desktop.SimpleWindowBlockType;
 import admin.desktop.dialog.BusAdminAbstractInputDialog;
 import admin.wrapper.AuthorizationWrapper;
 
@@ -39,11 +38,10 @@ public class AuthorizationInputDialog extends
    * 
    * @param parentWindow Janela mãe do Diálogo
    * @param title Título do Diálogo.
-   * @param blockType Modo de Bloqueio da janela mãe.
    */
   public AuthorizationInputDialog(SimpleWindow parentWindow, String title,
-    SimpleWindowBlockType blockType, CRUDPanel<AuthorizationWrapper> panel,
-    BusAdmin admin, List<String> entitiesIDList, List<String> interfacesList) {
+    CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin,
+    List<String> entitiesIDList, List<String> interfacesList) {
     super(parentWindow, title, panel, admin);
 
     this.entitiesIDList = entitiesIDList;

@@ -1,5 +1,7 @@
 package admin.desktop.dialog;
 
+import java.util.List;
+
 import logistic.logic.common.Identifiable;
 import planref.client.util.crud.CRUDPanel;
 import reuse.modified.logistic.client.util.InputDialog;
@@ -94,6 +96,10 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
     ObjectTableModel<T> model = panel.getTableModel();
     model.add(newRow);
     model.fireTableDataChanged();
+  }
+
+  public List<T> getRows() {
+      return panel.getTableModel().getRows();
   }
 
   public T getNewRow() {

@@ -147,6 +147,20 @@ public interface BusAdmin {
     UnauthorizedOperation, EntityCategoryInUse;
 
   /**
+   * Remove o registro de uma entidade do barramento
+   *
+   * @param entityID ID da entidade a ser removida
+   * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
+   * @throws UnauthorizedOperation
+   */
+  public void removeEntity(String entityID)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+    UnauthorizedOperation;
+
+  /**
    * Concede autorização para uma interface a uma entidade
    * 
    * @param entityID ID da entidade que vai receber a autorização

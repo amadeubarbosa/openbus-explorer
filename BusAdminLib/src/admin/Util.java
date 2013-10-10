@@ -31,6 +31,8 @@ public class Util {
     "Entidade já registrada no barramento";
   public static final String ENTITY_CATEGORY_ALREADY_EXISTS_EXCEPTION_MESSAGE =
     "Categoria já existente no barramento";
+  public static final String ENTITY_CATEGORY_IN_USE_EXCEPTION_MESSAGE =
+    "Categoria em uso por uma ou mais entidades";
 
   /**
    * Constrói a URL corbaloc

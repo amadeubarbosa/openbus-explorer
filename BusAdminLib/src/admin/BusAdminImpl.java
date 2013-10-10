@@ -21,6 +21,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.EntityAlreadyRegistered
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategory;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryAlreadyExists;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryInUse;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityRegistry;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityRegistryHelper;
 import tecgraf.openbus.core.v2_0.services.offer_registry.InterfaceRegistry;
@@ -359,6 +360,43 @@ public class BusAdminImpl implements BusAdmin {
     catch (EntityAlreadyRegistered e) {
       throw new EntityAlreadyRegistered(
         Util.ENTITY_ALREADY_REGISTERED_EXCEPTION_MESSAGE, e.existing);
+    }
+  }
+
+  
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeCategory(String categoryID)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+    UnauthorizedOperation, EntityCategoryInUse {
+    try {
+      EntityCategory category =
+        this.entityRegistry.getEntityCategory(categoryID);
+      category.remove();
+    }
+    catch (TRANSIENT e) {
+      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
+        port), e.minor, e.completed);
+    }
+    catch (COMM_FAILURE e) {
+      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
+        e.completed);
+    }
+    catch (NO_PERMISSION e) {
+      if (e.minor == NoLoginCode.value) {
+        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
+      }
+      throw e;
+    }
+    catch (UnauthorizedOperation e) {
+      throw new UnauthorizedOperation(
+        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
+    }
+    catch (EntityCategoryInUse e) {
+      throw new EntityCategoryInUse(
+        Util.ENTITY_CATEGORY_IN_USE_EXCEPTION_MESSAGE, e.entities);
     }
   }
 

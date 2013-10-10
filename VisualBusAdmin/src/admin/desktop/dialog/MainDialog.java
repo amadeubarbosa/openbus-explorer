@@ -37,6 +37,7 @@ import admin.action.entities.EntityDeleteAction;
 import admin.action.entities.EntityRefreshAction;
 import admin.action.entities.EntityTableProvider;
 import admin.action.interfaces.InterfaceAddAction;
+import admin.action.interfaces.InterfaceDeleteAction;
 import admin.action.interfaces.InterfaceRefreshAction;
 import admin.action.interfaces.InterfaceTableProvider;
 import admin.action.logins.LoginRefreshAction;
@@ -329,6 +330,8 @@ public class MainDialog {
       .getTable(), admin));
     actionsVector
       .add(new InterfaceAddAction(mainDialog, panelInterface, admin));
+    actionsVector
+      .add(new InterfaceDeleteAction(mainDialog, panelInterface, admin));
 
     panelInterface.setButtonsPane(actionsVector);
 

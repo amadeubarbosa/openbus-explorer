@@ -20,9 +20,9 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import logistic.client.util.UI;
-import logistic.client.util.text.EditFloatFormat;
-import logistic.client.util.text.Formatter;
+import reuse.modified.logistic.client.util.UI;
+import reuse.modified.logistic.client.util.text.EditFloatFormat;
+import reuse.modified.logistic.client.util.text.Formatter;
 import reuse.modified.logistic.client.action.FrameCancelAction;
 import tecgraf.javautils.LNG;
 import admin.BusAdmin;

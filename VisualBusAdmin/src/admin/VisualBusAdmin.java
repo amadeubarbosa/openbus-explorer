@@ -20,8 +20,8 @@ public class VisualBusAdmin {
   public static void main(String[] args) {
     LNG.load("admin.resources.language.idiom", new Locale("pt", "BR"));
     LNG
-      .load("logistic.client.resources.language.idiom", new Locale("pt", "BR"));
-    LNG.load("planref.client.resources.language.idiom", new Locale("pt", "BR"));
+      .load("reuse.modified.logistic.client.resources.language.idiom", new Locale("pt", "BR"));
+    LNG.load("reuse.modified.planref.client.resources.language.idiom", new Locale("pt", "BR"));
 
     LoginDialog loginDialog = new LoginDialog();
     loginDialog.show();

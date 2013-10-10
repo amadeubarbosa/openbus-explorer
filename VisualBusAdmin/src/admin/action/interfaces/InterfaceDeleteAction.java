@@ -6,8 +6,8 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import planref.client.util.crud.CRUDPanel;
-import planref.client.util.crud.CRUDbleActionInterface;
+import reuse.modified.planref.client.util.crud.CRUDPanel;
+import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;

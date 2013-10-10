@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import planref.client.util.crud.ModifiableObjectTableModel;
+import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;

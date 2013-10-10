@@ -4,8 +4,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JFrame;
 
-import planref.client.util.crud.CRUDPanel;
-import planref.client.util.crud.CRUDbleActionInterface;
+import reuse.modified.planref.client.util.crud.CRUDPanel;
+import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;

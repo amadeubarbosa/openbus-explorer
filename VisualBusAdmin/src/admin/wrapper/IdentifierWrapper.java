@@ -1,7 +1,7 @@
 package admin.wrapper;
 
-import logistic.logic.common.Code;
-import logistic.logic.common.Identifiable;
+import reuse.modified.logistic.logic.common.Code;
+import reuse.modified.logistic.logic.common.Identifiable;
 
 public class IdentifierWrapper implements Identifiable<IdentifierWrapper> {
   private String identifier;

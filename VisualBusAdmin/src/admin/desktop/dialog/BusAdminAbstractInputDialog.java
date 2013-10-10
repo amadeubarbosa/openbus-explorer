@@ -4,8 +4,8 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import logistic.logic.common.Identifiable;
-import planref.client.util.crud.CRUDPanel;
+import reuse.modified.logistic.logic.common.Identifiable;
+import reuse.modified.planref.client.util.crud.CRUDPanel;
 import reuse.modified.logistic.client.util.InputDialog;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;

@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import planref.client.util.crud.CRUDPanel;
+import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;

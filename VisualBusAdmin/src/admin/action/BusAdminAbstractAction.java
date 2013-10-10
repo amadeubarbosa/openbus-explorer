@@ -4,7 +4,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 
-import planref.client.util.crud.CRUDbleActionInterface;
+import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import admin.BusAdmin;
 
 /**

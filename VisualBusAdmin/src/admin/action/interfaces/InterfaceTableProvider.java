@@ -1,6 +1,6 @@
 package admin.action.interfaces;
 
-import planref.client.util.crud.VerifiableModifiableObjectTableProvider;
+import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
 import admin.wrapper.InterfaceWrapper;
 
 /**

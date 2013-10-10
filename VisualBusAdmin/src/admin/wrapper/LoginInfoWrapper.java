@@ -1,7 +1,7 @@
 package admin.wrapper;
 
-import logistic.logic.common.Code;
-import logistic.logic.common.Identifiable;
+import reuse.modified.logistic.logic.common.Code;
+import reuse.modified.logistic.logic.common.Identifiable;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 
 public class LoginInfoWrapper implements Identifiable<LoginInfoWrapper> {

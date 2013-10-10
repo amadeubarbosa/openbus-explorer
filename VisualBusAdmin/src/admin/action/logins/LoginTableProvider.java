@@ -1,6 +1,6 @@
 package admin.action.logins;
 
-import planref.client.util.crud.VerifiableModifiableObjectTableProvider;
+import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import admin.wrapper.LoginInfoWrapper;
 

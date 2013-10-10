@@ -1,6 +1,6 @@
 package admin.action.certificates;
 
-import planref.client.util.crud.VerifiableModifiableObjectTableProvider;
+import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateRegistry;
 import admin.wrapper.IdentifierWrapper;
 

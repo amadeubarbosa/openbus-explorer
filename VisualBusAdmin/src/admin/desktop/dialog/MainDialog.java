@@ -16,9 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 
-import planref.client.util.crud.CRUDPanel;
-import planref.client.util.crud.CRUDbleActionInterface;
-import planref.client.util.crud.ModifiableObjectTableModel;
+import reuse.modified.planref.client.util.crud.CRUDPanel;
+import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
+import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;

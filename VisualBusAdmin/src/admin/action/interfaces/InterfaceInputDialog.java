@@ -7,7 +7,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import planref.client.util.crud.CRUDPanel;
+import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import admin.BusAdmin;

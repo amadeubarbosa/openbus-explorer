@@ -33,6 +33,7 @@ import admin.action.categories.CategoryDeleteAction;
 import admin.action.categories.CategoryRefreshAction;
 import admin.action.categories.CategoryTableProvider;
 import admin.action.entities.EntityAddAction;
+import admin.action.entities.EntityDeleteAction;
 import admin.action.entities.EntityRefreshAction;
 import admin.action.entities.EntityTableProvider;
 import admin.action.interfaces.InterfaceAddAction;
@@ -305,6 +306,7 @@ public class MainDialog {
     actionsVector.add(new EntityRefreshAction(mainDialog, panelEntity
       .getTable(), admin));
     actionsVector.add(new EntityAddAction(mainDialog, panelEntity, admin));
+    actionsVector.add(new EntityDeleteAction(mainDialog, panelEntity, admin));
 
     panelEntity.setButtonsPane(actionsVector);
   }

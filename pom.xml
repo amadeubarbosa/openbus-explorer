@@ -1,0 +1,189 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>tecgraf.openbus</groupId>
+  <artifactId>busexplorer-all</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>OpenBus - BusExplorer</name>
+  <url>http://www.tecgraf.puc-rio.br/openbus</url>
+  
+  <properties>
+    <java.version>1.7</java.version>
+    <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+  </properties>
+
+  <modules>
+    <module>BusAdminLib</module>
+    <module>VisualBusAdmin</module>
+  </modules>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <compilerArgument>-Xbootclasspath/p:${settings.localRepository}/org/jacorb/jacorb/${jacorb.version}/jacorb-${jacorb.version}.jar</compilerArgument>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5</version>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>install-vljtable</id>
+            <phase>package</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/vljtable_1.0.jar</file>
+              <groupId>com.vlsolutions</groupId>
+              <artifactId>vljtable</artifactId>
+              <version>1.0</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>install-javautils</id>
+            <phase>package</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/javautils-core.jar</file>
+              <groupId>tecgraf.javautils</groupId>
+              <artifactId>javautils-core</artifactId>
+              <version>SNAPSHOT</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>install-openbus-core-idl</id>
+            <phase>package</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/openbus-core-idl-2.0.0-SNAPSHOT.jar</file>
+              <groupId>tecgraf.openbus</groupId>
+              <artifactId>openbus-core-idl</artifactId>
+              <version>2.0.0-SNAPSHOT</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>install-diaglib-core</id>
+            <phase>package</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/diaglib-core-1.0.0.jar</file>
+              <groupId>tecgraf.diaglib</groupId>
+              <artifactId>diaglib-core</artifactId>
+              <version>1.0.0</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>install-diaglib-addons</id>
+            <phase>package</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/diaglib-addons-1.0.0.jar</file>
+              <groupId>tecgraf.diaglib</groupId>
+              <artifactId>diaglib-addons</artifactId>
+              <version>1.0.0</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>tecgraf.javautils</groupId>
+      <artifactId>javautils-core</artifactId>
+      <version>${javautils.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.openbus</groupId>
+      <artifactId>busexplorer-busadminlib</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.openbus</groupId>
+      <artifactId>openbus-sdk-core</artifactId>
+      <version>${openbus.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.openbus</groupId>
+      <artifactId>openbus-core-idl</artifactId>
+      <version>${openbus.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.diaglib</groupId>
+      <artifactId>diaglib-core</artifactId>
+      <version>${diaglib.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.diaglib</groupId>
+      <artifactId>diaglib-addons</artifactId>
+      <version>${diaglib.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.scs</groupId>
+      <artifactId>scs-core</artifactId>
+      <version>${scs.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.vlsolutions</groupId>
+      <artifactId>vljtable</artifactId>
+      <version>${vljtable.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jfree</groupId>
+      <artifactId>jcommon</artifactId>
+      <version>${jfree.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+    </dependency>
+  </dependencies>
+  </dependencyManagement>
+</project>

@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>tecgraf.openbus</groupId>
+    <artifactId>busexplorer-all</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>busexplorer</artifactId>
+  <packaging>jar</packaging>
+
+  <name>OpenBus - BusExplorer - GUI</name>
+  <url>http://www.tecgraf.puc-rio.br/openbus</url>
+  
+  <properties>
+    <javautils.version>SNAPSHOT</javautils.version>
+    <openbus.version>2.0.0-SNAPSHOT</openbus.version>
+    <scs.version>1.2.1.1</scs.version>
+    <diaglib.version>1.0.0</diaglib.version>
+    <jacorb.version>3.1</jacorb.version>
+    <jfree.version>1.0.17</jfree.version>
+    <junit.version>4.6</junit.version>
+    <vljtable.version>1.0</vljtable.version>
+  </properties>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>tecgraf.javautils</groupId>
+      <artifactId>javautils-core</artifactId>
+      <version>${javautils.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.openbus</groupId>
+      <artifactId>busexplorer-busadminlib</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.openbus</groupId>
+      <artifactId>openbus-sdk-core</artifactId>
+      <version>${openbus.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.openbus</groupId>
+      <artifactId>openbus-core-idl</artifactId>
+      <version>${openbus.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.diaglib</groupId>
+      <artifactId>diaglib-core</artifactId>
+      <version>${diaglib.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.diaglib</groupId>
+      <artifactId>diaglib-addons</artifactId>
+      <version>${diaglib.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.scs</groupId>
+      <artifactId>scs-core</artifactId>
+      <version>${scs.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.vlsolutions</groupId>
+      <artifactId>vljtable</artifactId>
+      <version>${vljtable.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jfree</groupId>
+      <artifactId>jcommon</artifactId>
+      <version>${jfree.version}</version>
+    </dependency>
+  </dependencies>
+</project>

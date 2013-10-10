@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import admin.BusAdmin;
 import admin.desktop.dialog.BusAdminAbstractInputDialog;
 import admin.wrapper.AuthorizationWrapper;

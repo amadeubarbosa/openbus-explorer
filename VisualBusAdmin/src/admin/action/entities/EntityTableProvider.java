@@ -1,7 +1,7 @@
 package admin.action.entities;
 
 import planref.client.util.crud.VerifiableModifiableObjectTableProvider;
-import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import admin.wrapper.RegisteredEntityDescWrapper;
 
 /**

@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 import planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import admin.BusAdmin;
 import admin.desktop.dialog.BusAdminAbstractInputDialog;
 import admin.wrapper.EntityCategoryDescWrapper;

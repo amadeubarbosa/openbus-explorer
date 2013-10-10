@@ -12,7 +12,7 @@ import planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
 import admin.wrapper.EntityCategoryDescWrapper;

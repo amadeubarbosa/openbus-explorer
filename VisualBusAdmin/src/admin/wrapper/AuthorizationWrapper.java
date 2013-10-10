@@ -2,7 +2,7 @@ package admin.wrapper;
 
 import logistic.logic.common.Code;
 import logistic.logic.common.Identifiable;
-import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 public class AuthorizationWrapper implements Identifiable<AuthorizationWrapper> {
   private RegisteredEntityDesc entity;

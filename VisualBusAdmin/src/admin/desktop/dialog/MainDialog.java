@@ -26,6 +26,7 @@ import tecgraf.openbus.assistant.Assistant;
 import admin.BusAdmin;
 import admin.action.LogoutAction;
 import admin.action.authorizations.AuthorizationAddAction;
+import admin.action.authorizations.AuthorizationDeleteAction;
 import admin.action.authorizations.AuthorizationRefreshAction;
 import admin.action.authorizations.AuthorizationTableProvider;
 import admin.action.categories.CategoryAddAction;
@@ -354,6 +355,8 @@ public class MainDialog {
     actionsVector.add(new AuthorizationRefreshAction(mainDialog,
       panelAuthorization.getTable(), admin));
     actionsVector.add(new AuthorizationAddAction(mainDialog,
+      panelAuthorization, admin));
+    actionsVector.add(new AuthorizationDeleteAction(mainDialog,
       panelAuthorization, admin));
 
     panelAuthorization.setButtonsPane(actionsVector);

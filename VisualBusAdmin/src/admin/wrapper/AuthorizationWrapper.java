@@ -15,6 +15,14 @@ public class AuthorizationWrapper implements Identifiable<AuthorizationWrapper> 
     this.interfaceName = interfaceName;
   }
 
+  public boolean equals(AuthorizationWrapper w) {
+    if (entity.id.equals(w.entity.id)
+      && interfaceName.equals(w.interfaceName)) {
+      return true;
+    }
+    return false;
+  }
+
   @Override
   public Code<AuthorizationWrapper> getId() {
     return new Code<AuthorizationWrapper>(entity.id + interfaceName);

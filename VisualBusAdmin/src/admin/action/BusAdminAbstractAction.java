@@ -1,11 +1,11 @@
 package admin.action;
 
 import javax.swing.AbstractAction;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 
 import planref.client.util.crud.CRUDbleActionInterface;
 import admin.BusAdmin;
-import admin.desktop.SimpleWindow;
 
 /**
  * Ação que contém os principais componentes a serem utilizados na janela
@@ -18,7 +18,7 @@ public abstract class BusAdminAbstractAction extends AbstractAction implements
 
   protected JTable table;
   protected BusAdmin admin;
-  protected SimpleWindow parentWindow;
+  protected JFrame parentWindow;
 
   /**
    * Construtor.
@@ -28,7 +28,7 @@ public abstract class BusAdminAbstractAction extends AbstractAction implements
    * @param admin
    * @param actionName nome da ação
    */
-  public BusAdminAbstractAction(SimpleWindow parentWindow, JTable table,
+  public BusAdminAbstractAction(JFrame parentWindow, JTable table,
     BusAdmin admin, String actionName) {
     super(actionName);
     this.table = table;

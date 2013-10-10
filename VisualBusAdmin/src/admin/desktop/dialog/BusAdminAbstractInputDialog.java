@@ -2,6 +2,8 @@ package admin.desktop.dialog;
 
 import java.util.List;
 
+import javax.swing.JFrame;
+
 import logistic.logic.common.Identifiable;
 import planref.client.util.crud.CRUDPanel;
 import reuse.modified.logistic.client.util.InputDialog;
@@ -9,7 +11,6 @@ import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
-import admin.desktop.SimpleWindow;
 
 public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
   extends InputDialog {
@@ -28,7 +29,7 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
    * @param title Título do Diálogo.
    * @param blockType Modo de Bloqueio da janela mãe.
    */
-  public BusAdminAbstractInputDialog(SimpleWindow parentWindow, String title,
+  public BusAdminAbstractInputDialog(JFrame parentWindow, String title,
     CRUDPanel<T> panel, BusAdmin admin) {
     super(parentWindow, title, admin);
     this.panel = panel;

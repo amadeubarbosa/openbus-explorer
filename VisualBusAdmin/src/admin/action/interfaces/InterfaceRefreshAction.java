@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
@@ -13,7 +14,6 @@ import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.InterfaceWrapper;
 
 /**
@@ -24,7 +24,7 @@ import admin.wrapper.InterfaceWrapper;
  */
 public class InterfaceRefreshAction extends BusAdminAbstractAction {
 
-  public InterfaceRefreshAction(SimpleWindow parentWindow, JTable table,
+  public InterfaceRefreshAction(JFrame parentWindow, JTable table,
     BusAdmin admin) {
     super(parentWindow, table, admin, LNG.get("InterfaceRefreshAction.name"));
   }

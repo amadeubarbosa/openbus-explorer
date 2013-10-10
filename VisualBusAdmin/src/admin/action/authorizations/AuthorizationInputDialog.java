@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -13,7 +14,6 @@ import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
 import admin.BusAdmin;
-import admin.desktop.SimpleWindow;
 import admin.desktop.dialog.BusAdminAbstractInputDialog;
 import admin.wrapper.AuthorizationWrapper;
 
@@ -39,7 +39,7 @@ public class AuthorizationInputDialog extends
    * @param parentWindow Janela mãe do Diálogo
    * @param title Título do Diálogo.
    */
-  public AuthorizationInputDialog(SimpleWindow parentWindow, String title,
+  public AuthorizationInputDialog(JFrame parentWindow, String title,
     CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin,
     List<String> entitiesIDList, List<String> interfacesList) {
     super(parentWindow, title, panel, admin);

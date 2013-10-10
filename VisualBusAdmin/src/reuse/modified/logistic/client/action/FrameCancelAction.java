@@ -9,15 +9,15 @@ import java.awt.event.KeyEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
 import tecgraf.javautils.LNG;
-import admin.desktop.BlockableWindow;
 
 /**
  * Ação de cancelar uma janela
  * 
- * Modificada para usar BlockableWindow, ao invés de GenericFrame.
+ * Modificada para usar JFrame, ao invés de GenericFrame.
  * 
  * @author allan
  * 
@@ -29,14 +29,14 @@ public class FrameCancelAction extends AbstractAction {
   /** Mnemonico dessa ação */
   public static final String MNEMONIC_KEY = "FrameCancelAction.mnemonic";
   /** Janela pai dessa ação. */
-  private BlockableWindow owner;
+  private JFrame owner;
 
   /**
    * Construtor.
    * 
    * @param owner a janela que originou essa ação
    */
-  public FrameCancelAction(BlockableWindow owner) {
+  public FrameCancelAction(JFrame owner) {
     super(NAME);
     putValue(Action.NAME, LNG.get(NAME));
     putValue(Action.MNEMONIC_KEY, new Integer(LNG.get(MNEMONIC_KEY).charAt(0)));
@@ -64,7 +64,7 @@ public class FrameCancelAction extends AbstractAction {
    * 
    * @param owner a janela a ser fechada
    */
-  public void setFrame(BlockableWindow owner) {
+  public void setFrame(JFrame owner) {
     this.owner = owner;
   }
 

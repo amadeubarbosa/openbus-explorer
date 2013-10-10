@@ -3,6 +3,7 @@ package admin.action.logins;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import planref.client.util.crud.CRUDPanel;
@@ -12,7 +13,6 @@ import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.LoginInfoWrapper;
 
 /**
@@ -26,7 +26,7 @@ public class LoginDeleteAction extends BusAdminAbstractAction {
   /** Painel com o CRUD de logins */
   private CRUDPanel<LoginInfoWrapper> panel;
 
-  public LoginDeleteAction(SimpleWindow parentWindow,
+  public LoginDeleteAction(JFrame parentWindow,
     CRUDPanel<LoginInfoWrapper> panel, BusAdmin admin) {
     super(parentWindow, panel.getTable(), admin,
       LNG.get("LoginDeleteAction.name"));

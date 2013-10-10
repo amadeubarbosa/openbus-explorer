@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
@@ -14,7 +15,6 @@ import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.LoginInfoWrapper;
 
 /**
@@ -25,7 +25,7 @@ import admin.wrapper.LoginInfoWrapper;
  */
 public class LoginRefreshAction extends BusAdminAbstractAction {
 
-  public LoginRefreshAction(SimpleWindow parentWindow, JTable table,
+  public LoginRefreshAction(JFrame parentWindow, JTable table,
     BusAdmin admin) {
     super(parentWindow, table, admin, LNG.get("LoginRefreshAction.name"));
   }

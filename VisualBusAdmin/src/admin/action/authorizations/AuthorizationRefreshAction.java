@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
@@ -15,7 +16,6 @@ import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.AuthorizationWrapper;
 
 /**
@@ -26,7 +26,7 @@ import admin.wrapper.AuthorizationWrapper;
  */
 public class AuthorizationRefreshAction extends BusAdminAbstractAction {
 
-  public AuthorizationRefreshAction(SimpleWindow parentWindow, JTable table,
+  public AuthorizationRefreshAction(JFrame parentWindow, JTable table,
     BusAdmin admin) {
     super(parentWindow, table, admin, LNG
       .get("AuthorizationRefreshAction.name"));

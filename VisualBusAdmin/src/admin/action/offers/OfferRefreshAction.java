@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
@@ -14,7 +15,6 @@ import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.OfferWrapper;
 
 /**
@@ -25,7 +25,7 @@ import admin.wrapper.OfferWrapper;
  */
 public class OfferRefreshAction extends BusAdminAbstractAction {
 
-  public OfferRefreshAction(SimpleWindow parentWindow, JTable table,
+  public OfferRefreshAction(JFrame parentWindow, JTable table,
     BusAdmin admin) {
     super(parentWindow, table, admin, LNG.get("OfferRefreshAction.name"));
   }

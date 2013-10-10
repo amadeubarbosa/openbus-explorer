@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.JFrame;
 
 import planref.client.util.crud.CRUDPanel;
 import planref.client.util.crud.CRUDbleActionInterface;
@@ -13,7 +14,6 @@ import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryDesc;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.RegisteredEntityDescWrapper;
 
 /**
@@ -38,7 +38,7 @@ public class EntityAddAction extends BusAdminAbstractAction {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param panel painel de CRUD
    */
-  public EntityAddAction(SimpleWindow parentWindow,
+  public EntityAddAction(JFrame parentWindow,
     CRUDPanel<RegisteredEntityDescWrapper> panel, BusAdmin admin) {
     super(parentWindow, panel.getTable(), admin, LNG
       .get("EntityAddAction.name"));

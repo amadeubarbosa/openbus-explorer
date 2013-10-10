@@ -2,6 +2,7 @@ package admin.action.categories;
 
 import java.awt.GridBagLayout;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -11,7 +12,6 @@ import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.core.v2_0.services.offer_registry.EntityCategoryDesc;
 import admin.BusAdmin;
-import admin.desktop.SimpleWindow;
 import admin.desktop.dialog.BusAdminAbstractInputDialog;
 import admin.wrapper.EntityCategoryDescWrapper;
 
@@ -35,7 +35,7 @@ public class CategoryInputDialog extends
    * @param title Título do Diálogo.
    * @param blockType Modo de Bloqueio da janela mãe.
    */
-  public CategoryInputDialog(SimpleWindow parentWindow, String title,
+  public CategoryInputDialog(JFrame parentWindow, String title,
     CRUDPanel<EntityCategoryDescWrapper> panel, BusAdmin admin) {
     super(parentWindow, title, panel, admin);
   }

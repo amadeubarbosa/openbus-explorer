@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
@@ -25,16 +26,15 @@ import logistic.client.util.text.Formatter;
 import reuse.modified.logistic.client.action.FrameCancelAction;
 import tecgraf.javautils.LNG;
 import admin.BusAdmin;
-import admin.desktop.SimpleWindow;
 
 /**
  * Interface para entrada de dados.
  * 
- * Modificada para usar SimpleWindow, ao invés de GenericFrame, e um objeto de
+ * Modificada para usar JFrame, ao invés de GenericFrame, e um objeto de
  * acesso ao barramento.
  * 
  */
-public abstract class InputDialog extends SimpleWindow {
+public abstract class InputDialog extends JFrame {
 
   /**
    * Formatador de números.
@@ -83,7 +83,7 @@ public abstract class InputDialog extends SimpleWindow {
    */
   protected JTextPane messageText;
 
-  private SimpleWindow parentWindow;
+  private JFrame parentWindow;
 
   protected BusAdmin admin;
 
@@ -96,7 +96,7 @@ public abstract class InputDialog extends SimpleWindow {
    * @param tooltip dica no botão aceitar.
    * @param blockType modo de bloqueio da janela.
    */
-  public InputDialog(SimpleWindow parentWindow, String title, BusAdmin admin) {
+  public InputDialog(JFrame parentWindow, String title, BusAdmin admin) {
     super(title);
     this.parentWindow = parentWindow;
     this.admin = admin;
@@ -137,7 +137,7 @@ public abstract class InputDialog extends SimpleWindow {
    * 
    * @return janela deste diálogo.
    */
-  public SimpleWindow getWindow() {
+  public JFrame getWindow() {
     return this;
   }
 
@@ -147,7 +147,7 @@ public abstract class InputDialog extends SimpleWindow {
    * @return janela pai deste diálogo
    */
   @Override
-  public SimpleWindow getOwner() {
+  public JFrame getOwner() {
     return parentWindow;
   }
 

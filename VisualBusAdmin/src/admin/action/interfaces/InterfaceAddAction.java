@@ -2,12 +2,13 @@ package admin.action.interfaces;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JFrame;
+
 import planref.client.util.crud.CRUDPanel;
 import planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.InterfaceWrapper;
 
 /**
@@ -20,7 +21,7 @@ public class InterfaceAddAction extends BusAdminAbstractAction {
 
   private CRUDPanel<InterfaceWrapper> panel;
 
-  public InterfaceAddAction(SimpleWindow parentWindow,
+  public InterfaceAddAction(JFrame parentWindow,
     CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
     super(parentWindow, panel.getTable(), admin, LNG
       .get("InterfaceAddAction.name"));

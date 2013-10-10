@@ -3,6 +3,7 @@ package admin.action.interfaces;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import planref.client.util.crud.CRUDPanel;
@@ -11,7 +12,6 @@ import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.InterfaceWrapper;
 
 /**
@@ -31,7 +31,7 @@ public class InterfaceDeleteAction extends BusAdminAbstractAction {
    * @param panel painel de CRUD
    * @param admin 
    */
-  public InterfaceDeleteAction(SimpleWindow parentWindow,
+  public InterfaceDeleteAction(JFrame parentWindow,
     CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
     super(parentWindow, panel.getTable(), admin,
       LNG.get("InterfaceDeleteAction.name"));

@@ -2,6 +2,7 @@ package admin.action.interfaces;
 
 import java.awt.GridBagLayout;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -10,7 +11,6 @@ import planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import admin.BusAdmin;
-import admin.desktop.SimpleWindow;
 import admin.desktop.dialog.BusAdminAbstractInputDialog;
 import admin.wrapper.InterfaceWrapper;
 
@@ -32,7 +32,7 @@ public class InterfaceInputDialog extends
    * @param title Título do Diálogo.
    * @param blockType Modo de Bloqueio da janela mãe.
    */
-  public InterfaceInputDialog(SimpleWindow parentWindow, String title,
+  public InterfaceInputDialog(JFrame parentWindow, String title,
     CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
     super(parentWindow, title, panel, admin);
   }

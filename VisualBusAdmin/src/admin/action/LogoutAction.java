@@ -3,18 +3,18 @@ package admin.action;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.assistant.Assistant;
-import admin.desktop.SimpleWindow;
 import admin.desktop.dialog.LoginDialog;
 
 public class LogoutAction extends AbstractAction {
   Assistant assistant;
-  SimpleWindow parentWindow;
+  JFrame parentWindow;
 
-  public LogoutAction(Assistant assistant, SimpleWindow parentWindow) {
+  public LogoutAction(Assistant assistant, JFrame parentWindow) {
     this.assistant = assistant;
     this.parentWindow = parentWindow;
   }

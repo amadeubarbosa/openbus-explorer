@@ -3,6 +3,7 @@ package admin.action.authorizations;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import planref.client.util.crud.CRUDPanel;
@@ -12,7 +13,6 @@ import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.AuthorizationWrapper;
 
 /**
@@ -32,7 +32,7 @@ public class AuthorizationDeleteAction extends BusAdminAbstractAction {
    * @param panel painel de CRUD
    * @param admin
    */
-   public AuthorizationDeleteAction(SimpleWindow parentWindow,
+   public AuthorizationDeleteAction(JFrame parentWindow,
      CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin) {
      super(parentWindow, panel.getTable(), admin,
        LNG.get("AuthorizationDeleteAction.name"));

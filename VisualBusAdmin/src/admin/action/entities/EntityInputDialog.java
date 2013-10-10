@@ -4,6 +4,7 @@ import java.awt.GridBagLayout;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -13,7 +14,6 @@ import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
 import admin.BusAdmin;
-import admin.desktop.SimpleWindow;
 import admin.desktop.dialog.BusAdminAbstractInputDialog;
 import admin.wrapper.RegisteredEntityDescWrapper;
 
@@ -42,7 +42,7 @@ public class EntityInputDialog extends
    * @param parentWindow Janela mãe do Diálogo
    * @param title Título do Diálogo.
    */
-  public EntityInputDialog(SimpleWindow parentWindow, String title,
+  public EntityInputDialog(JFrame parentWindow, String title,
     CRUDPanel<RegisteredEntityDescWrapper> panel, BusAdmin admin,
     List<String> categoryIDList) {
     super(parentWindow, title, panel, admin);

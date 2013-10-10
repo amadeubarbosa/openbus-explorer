@@ -2,12 +2,13 @@ package admin.action.categories;
 
 import java.awt.event.ActionEvent;
 
+import javax.swing.JFrame;
+
 import planref.client.util.crud.CRUDPanel;
 import planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.EntityCategoryDescWrapper;
 
 /**
@@ -20,7 +21,7 @@ public class CategoryAddAction extends BusAdminAbstractAction {
 
   private CRUDPanel<EntityCategoryDescWrapper> panel;
 
-  public CategoryAddAction(SimpleWindow parentWindow,
+  public CategoryAddAction(JFrame parentWindow,
     CRUDPanel<EntityCategoryDescWrapper> panel, BusAdmin admin) {
     super(parentWindow, panel.getTable(), admin, LNG
       .get("CategoryAddAction.name"));

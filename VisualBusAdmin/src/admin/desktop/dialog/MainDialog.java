@@ -11,6 +11,7 @@ import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
@@ -47,7 +48,6 @@ import admin.action.logins.LoginTableProvider;
 import admin.action.offers.OfferRefreshAction;
 import admin.action.offers.OfferDeleteAction;
 import admin.action.offers.OffersTableProvider;
-import admin.desktop.SimpleWindow;
 import admin.wrapper.AuthorizationWrapper;
 import admin.wrapper.EntityCategoryDescWrapper;
 import admin.wrapper.InterfaceWrapper;
@@ -72,7 +72,7 @@ public class MainDialog {
   /**
    * O diálogo principal
    */
-  private SimpleWindow mainDialog;
+  private JFrame mainDialog;
   /**
    * Informa se o usuário que efetuou login no barramento possui permissão de
    * administração
@@ -131,7 +131,7 @@ public class MainDialog {
    * Constrói os componentes da janela
    */
   private void buildDialog() {
-    mainDialog = new SimpleWindow(getDialogTitle());
+    mainDialog = new JFrame(getDialogTitle());
 
     mainDialog.addWindowListener(new WindowAdapter() {
       @Override
@@ -437,7 +437,7 @@ public class MainDialog {
    */
   private class CategoryFeatureAction extends CategoryRefreshAction {
 
-    public CategoryFeatureAction(SimpleWindow parentWindow, JTable table,
+    public CategoryFeatureAction(JFrame parentWindow, JTable table,
       BusAdmin admin) {
       super(parentWindow, table, admin);
     }
@@ -455,7 +455,7 @@ public class MainDialog {
    */
   private class EntityFeatureAction extends EntityRefreshAction {
 
-    public EntityFeatureAction(SimpleWindow parentWindow, JTable table,
+    public EntityFeatureAction(JFrame parentWindow, JTable table,
       BusAdmin admin) {
       super(parentWindow, table, admin);
     }
@@ -473,7 +473,7 @@ public class MainDialog {
    */
   private class AuthorizationFeatureAction extends AuthorizationRefreshAction {
 
-    public AuthorizationFeatureAction(SimpleWindow parentWindow, JTable table,
+    public AuthorizationFeatureAction(JFrame parentWindow, JTable table,
       BusAdmin admin) {
       super(parentWindow, table, admin);
     }
@@ -491,7 +491,7 @@ public class MainDialog {
    */
   private class InterfaceFeatureAction extends InterfaceRefreshAction {
 
-    public InterfaceFeatureAction(SimpleWindow parentWindow, JTable table,
+    public InterfaceFeatureAction(JFrame parentWindow, JTable table,
       BusAdmin admin) {
       super(parentWindow, table, admin);
     }
@@ -509,7 +509,7 @@ public class MainDialog {
    */
   private class OfferFeatureAction extends OfferRefreshAction {
 
-    public OfferFeatureAction(SimpleWindow parentWindow, JTable table,
+    public OfferFeatureAction(JFrame parentWindow, JTable table,
       BusAdmin admin) {
       super(parentWindow, table, admin);
     }
@@ -527,7 +527,7 @@ public class MainDialog {
    */
   private class LoginFeatureAction extends LoginRefreshAction {
 
-    public LoginFeatureAction(SimpleWindow parentWindow, JTable table,
+    public LoginFeatureAction(JFrame parentWindow, JTable table,
       BusAdmin admin) {
       super(parentWindow, table, admin);
     }

@@ -8,6 +8,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,7 +30,6 @@ import tecgraf.openbus.core.v2_0.services.access_control.AccessDenied;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
 import admin.BusAdmin;
 import admin.BusAdminImpl;
-import admin.desktop.SimpleWindow;
 
 /**
  * Diálogo que obtém os dados do usuário e do barramento para efetuar login
@@ -47,7 +47,7 @@ public class LoginDialog {
   /** Label de senha */
   JLabel passwordLabel = null;
   /** Diálogo */
-  private SimpleWindow loginDialog;
+  private JFrame loginDialog;
   /** Campo de texto para o endereço do barramento */
   private JTextField addressField;
   /** Campo de texto para a porta do barramento */
@@ -66,7 +66,7 @@ public class LoginDialog {
 
   /** Cria e inicializa o diálogo de login. */
   private void createDialog() {
-    loginDialog = new SimpleWindow(getDialogTitle());
+    loginDialog = new JFrame(getDialogTitle());
     JPanel mainPane = new JPanel(new GridBagLayout());
 
     mainPane.add(createLoginPanel(), new GBC(0, 1).north().horizontal().insets(

@@ -34,6 +34,7 @@ import admin.action.categories.CategoryAddAction;
 import admin.action.categories.CategoryDeleteAction;
 import admin.action.categories.CategoryRefreshAction;
 import admin.action.categories.CategoryTableProvider;
+import admin.action.certificates.CertificateAddAction;
 import admin.action.certificates.CertificateDeleteAction;
 import admin.action.certificates.CertificateRefreshAction;
 import admin.action.certificates.CertificateTableProvider;
@@ -360,6 +361,7 @@ public class MainDialog {
       new Vector<CRUDbleActionInterface>();
     actionsVector.add(new CertificateRefreshAction(mainDialog, panelCertificate
       .getTable(), admin));
+    actionsVector.add(new CertificateAddAction(mainDialog, panelCertificate, admin));
     actionsVector.add(new CertificateDeleteAction(mainDialog, panelCertificate, admin));
 
     panelCertificate.setButtonsPane(actionsVector);

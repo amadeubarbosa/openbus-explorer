@@ -536,6 +536,36 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
+  public void removeCertificate(String entityID)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+    UnauthorizedOperation {
+    try {
+      this.certificateRegistry.removeCertificate(entityID);
+    }
+    catch (TRANSIENT e) {
+      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
+        port), e.minor, e.completed);
+    }
+    catch (COMM_FAILURE e) {
+      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
+        e.completed);
+    }
+    catch (NO_PERMISSION e) {
+      if (e.minor == NoLoginCode.value) {
+        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
+      }
+      throw e;
+    }
+    catch (UnauthorizedOperation e) {
+      throw new UnauthorizedOperation(
+        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void removeInterface(String interfaceName)
     throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
     UnauthorizedOperation, InterfaceInUse {

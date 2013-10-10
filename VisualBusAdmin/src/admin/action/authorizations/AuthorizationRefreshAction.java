@@ -57,9 +57,12 @@ public class AuthorizationRefreshAction extends BusAdminAbstractAction {
           List<AuthorizationWrapper> wrappersList =
             new LinkedList<AuthorizationWrapper>();
 
-          for (Map.Entry<RegisteredEntityDesc, List<String>> authorization : authorizationsMap
+          for (Map.Entry<RegisteredEntityDesc, List<String>> authorizations : authorizationsMap
             .entrySet()) {
-            wrappersList.add(new AuthorizationWrapper(authorization));
+            RegisteredEntityDesc entity = authorizations.getKey();
+            for (String interfaceName: authorizations.getValue()) {
+              wrappersList.add(new AuthorizationWrapper(entity, interfaceName));
+            }
           }
 
           ObjectTableModel<AuthorizationWrapper> m =

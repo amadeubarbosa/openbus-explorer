@@ -22,7 +22,7 @@ public class AuthorizationTableProvider extends
 
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "ID Entidade", "Interfaces" };
+    String[] colNames = { "ID Entidade", "Interface" };
     return colNames;
   }
 
@@ -58,14 +58,9 @@ public class AuthorizationTableProvider extends
     final AuthorizationWrapper authorizationWrapper =
       (AuthorizationWrapper) row;
 
-    final Map.Entry<RegisteredEntityDesc, List<String>> authorization =
-      authorizationWrapper.getAuthorization();
+    RegisteredEntityDesc entity = authorizationWrapper.getEntity();
+    String interfaceName = authorizationWrapper.getInterface();
 
-    StringBuffer buffer = new StringBuffer();
-    for (String value : authorization.getValue()) {
-      buffer.append(value + " ");
-    }
-
-    return new Object[] { authorization.getKey().id, buffer.toString() };
+    return new Object[] { entity.id, interfaceName };
   }
 }

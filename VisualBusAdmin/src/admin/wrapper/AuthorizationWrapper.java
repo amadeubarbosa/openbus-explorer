@@ -1,28 +1,30 @@
 package admin.wrapper;
 
-import java.util.List;
-import java.util.Map;
-
 import logistic.logic.common.Code;
 import logistic.logic.common.Identifiable;
 import tecgraf.openbus.core.v2_0.services.offer_registry.RegisteredEntityDesc;
 
 public class AuthorizationWrapper implements Identifiable<AuthorizationWrapper> {
-  private Map.Entry<RegisteredEntityDesc, List<String>> authorization;
+  private RegisteredEntityDesc entity;
+
+  private String interfaceName;
 
   public AuthorizationWrapper(
-    Map.Entry<RegisteredEntityDesc, List<String>> authorization) {
-    this.authorization = authorization;
+    RegisteredEntityDesc entity, String interfaceName) {
+    this.entity = entity;
+    this.interfaceName = interfaceName;
   }
 
   @Override
   public Code<AuthorizationWrapper> getId() {
-    return new Code<AuthorizationWrapper>(authorization.getKey().id
-      + authorization.getValue());
+    return new Code<AuthorizationWrapper>(entity.id + interfaceName);
   }
 
-  public Map.Entry<RegisteredEntityDesc, List<String>> getAuthorization() {
-    return authorization;
+  public RegisteredEntityDesc getEntity() {
+    return entity;
   }
 
+  public String getInterface() {
+    return interfaceName;
+  }
 }

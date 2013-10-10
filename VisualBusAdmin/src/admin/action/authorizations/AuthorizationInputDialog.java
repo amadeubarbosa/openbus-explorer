@@ -1,10 +1,8 @@
 package admin.action.authorizations;
 
 import java.awt.GridBagLayout;
-import java.util.AbstractMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -55,17 +53,12 @@ public class AuthorizationInputDialog extends
   @Override
   protected boolean accept() {
     if (hasValidFields()) {
-      Map.Entry<RegisteredEntityDesc, List<String>> authorization;
-
       RegisteredEntityDesc entity = new RegisteredEntityDesc();
       entity.id = getEntityID();
 
-      LinkedList<String> interfaceList = new LinkedList<String>();
-      interfaceList.add(getInterfaceName());
+      String interfaceName = getInterfaceName();
 
-      authorization = new AbstractMap.SimpleEntry(entity, interfaceList);
-
-      setNewRow(new AuthorizationWrapper(authorization));
+      setNewRow(new AuthorizationWrapper(entity, interfaceName));
       if (apply()) {
         return true;
       }
@@ -105,13 +98,9 @@ public class AuthorizationInputDialog extends
   @Override
   protected void openBusCall() throws Exception {
     AuthorizationWrapper newAuthorizationWrapper = getNewRow();
-    Map.Entry<RegisteredEntityDesc, List<String>> authorization =
-      newAuthorizationWrapper.getAuthorization();
 
-    String entityID = authorization.getKey().id;
-    //Somente 1 autorização para uma interface é concedida por vez. 
-    //Por isso, pega-se o 1º elemento da lista de interfaces da nova autorização
-    String interfaceName = authorization.getValue().get(0);
+    String entityID = newAuthorizationWrapper.getEntity().id;
+    String interfaceName = newAuthorizationWrapper.getInterface();
 
     admin.setAuthorization(entityID, interfaceName);
 

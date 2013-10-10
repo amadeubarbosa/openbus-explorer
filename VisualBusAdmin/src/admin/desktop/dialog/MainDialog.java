@@ -34,6 +34,8 @@ import admin.action.categories.CategoryAddAction;
 import admin.action.categories.CategoryDeleteAction;
 import admin.action.categories.CategoryRefreshAction;
 import admin.action.categories.CategoryTableProvider;
+import admin.action.certificates.CertificateRefreshAction;
+import admin.action.certificates.CertificateTableProvider;
 import admin.action.entities.EntityAddAction;
 import admin.action.entities.EntityDeleteAction;
 import admin.action.entities.EntityRefreshAction;
@@ -50,6 +52,7 @@ import admin.action.offers.OfferDeleteAction;
 import admin.action.offers.OffersTableProvider;
 import admin.wrapper.AuthorizationWrapper;
 import admin.wrapper.EntityCategoryDescWrapper;
+import admin.wrapper.IdentifierWrapper;
 import admin.wrapper.InterfaceWrapper;
 import admin.wrapper.LoginInfoWrapper;
 import admin.wrapper.OfferWrapper;
@@ -88,6 +91,8 @@ public class MainDialog {
   private final String CATEGORY_PANEL_ID = "Category";
   /** ID do painel de entidades */
   private final String ENTITY_PANEL_ID = "Entity";
+  /** ID do painel de certificados */
+  private final String CERTIFICATE_PANEL_ID = "Certificate";
   /** ID do painel de interfaces */
   private final String INTERFACE_PANEL_ID = "Interface";
   /** ID do painel de autorizações */
@@ -101,6 +106,8 @@ public class MainDialog {
   private CRUDPanel<EntityCategoryDescWrapper> panelCategory;
   /** Painel de gerência das entidades registradas no barramento */
   private CRUDPanel<RegisteredEntityDescWrapper> panelEntity;
+  /** Painel de gerência dos certificados registrados no barramento */
+  private CRUDPanel<IdentifierWrapper> panelCertificate;
   /** Painel de gerência das interfaces registradas no barramento */
   private CRUDPanel<InterfaceWrapper> panelInterface;
   /** Painel de gerência das autorizações concedidas no barramento */
@@ -185,8 +192,8 @@ public class MainDialog {
     btnCategory.setPreferredSize(new Dimension(130, 80));
     btnEntity.setPreferredSize(new Dimension(130, 80));
     btnInterface.setPreferredSize(new Dimension(130, 80));
-    btnOffer.setPreferredSize(new Dimension(130, 80));
     btnAutorization.setPreferredSize(new Dimension(130, 80));
+    btnOffer.setPreferredSize(new Dimension(130, 80));
     btnLogout.setPreferredSize(new Dimension(130, 80));
 
     btnCategory.setToolTipText(LNG.get("MainDialog.category.help"));
@@ -218,20 +225,33 @@ public class MainDialog {
 
     panel.add(btnCategory, new GBC(0, 0));
     panel.add(btnEntity, new GBC(0, 1));
-    panel.add(btnInterface, new GBC(0, 2));
-    panel.add(btnAutorization, new GBC(0, 3));
-    panel.add(btnOffer, new GBC(0, 4));
-    panel.add(btnLogout, new GBC(0, 6));
+    panel.add(btnInterface, new GBC(0, 3));
+    panel.add(btnAutorization, new GBC(0, 4));
+    panel.add(btnOffer, new GBC(0, 5));
+    panel.add(btnLogout, new GBC(0, 7));
 
     if (isCurrentUserAdmin) {
+      JToggleButton btnCertificate =
+        new JToggleButton(LNG.get("MainDialog.certificate.button"));
       JToggleButton btnLogin =
         new JToggleButton(LNG.get("MainDialog.login.button"));
+
+      btnCertificate.setPreferredSize(new Dimension(130, 80));
       btnLogin.setPreferredSize(new Dimension(130, 80));
+
+      btnCertificate.addActionListener(new CertificateFeatureAction(mainDialog,
+        panelCertificate.getTable(), admin));
       btnLogin.addActionListener(new LoginFeatureAction(mainDialog, panelLogin
         .getTable(), admin));
+
+      btnCertificate.setToolTipText(LNG.get("MainDialog.certificate.help"));
       btnLogin.setToolTipText(LNG.get("MainDialog.login.help"));
+
+      buttons.add(btnCertificate);
       buttons.add(btnLogin);
-      panel.add(btnLogin, new GBC(0, 5));
+
+      panel.add(btnCertificate, new GBC(0, 2));
+      panel.add(btnLogin, new GBC(0, 6));
     }
 
     return panel;
@@ -246,6 +266,7 @@ public class MainDialog {
     initPanelOffer();
 
     if (isCurrentUserAdmin) {
+      initPanelCertificate();
       initPanelLogin();
     }
   }
@@ -271,6 +292,7 @@ public class MainDialog {
     featuresPanel.add(panelOffer, OFFER_PANEL_ID);
 
     if (isCurrentUserAdmin) {
+      featuresPanel.add(panelCertificate, CERTIFICATE_PANEL_ID);
       featuresPanel.add(panelLogin, LOGIN_PANEL_ID);
     }
 
@@ -319,6 +341,26 @@ public class MainDialog {
     actionsVector.add(new EntityDeleteAction(mainDialog, panelEntity, admin));
 
     panelEntity.setButtonsPane(actionsVector);
+  }
+
+  /** Inicializa o painel de CRUD de certificados */
+  private void initPanelCertificate() {
+    ObjectTableModel<IdentifierWrapper> m =
+      new ModifiableObjectTableModel<IdentifierWrapper>(
+        new LinkedList<IdentifierWrapper>(),
+        new CertificateTableProvider());
+
+    panelCertificate = new CRUDPanel<IdentifierWrapper>(m, 0);
+
+    new CertificateRefreshAction(mainDialog, panelCertificate.getTable(), admin)
+      .actionPerformed(null);
+
+    Vector<CRUDbleActionInterface> actionsVector =
+      new Vector<CRUDbleActionInterface>();
+    actionsVector.add(new CertificateRefreshAction(mainDialog, panelCertificate
+      .getTable(), admin));
+
+    panelCertificate.setButtonsPane(actionsVector);
   }
 
   /** Inicializa o painel de CRUD de interfaces */
@@ -469,6 +511,24 @@ public class MainDialog {
     @Override
     public void actionPerformed(ActionEvent event) {
       changeCardPanel(ENTITY_PANEL_ID);
+      super.actionPerformed(event);
+    }
+  }
+
+  /**
+   * Ação que exibe o painel de CRUD de certificados e atualiza o conteúdo da
+   * tabela de certificados
+   */
+  private class CertificateFeatureAction extends CertificateRefreshAction {
+
+    public CertificateFeatureAction(JFrame parentWindow, JTable table,
+      BusAdmin admin) {
+      super(parentWindow, table, admin);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent event) {
+      changeCardPanel(CERTIFICATE_PANEL_ID);
       super.actionPerformed(event);
     }
   }

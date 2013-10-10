@@ -98,6 +98,20 @@ public interface BusAdmin {
     COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation;
 
   /**
+   * Remove uma oferta de serviço
+   *
+   * @param desc Descrição da oferta
+   * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
+   * @throws UnauthorizedOperation
+   */
+  public void removeOffer(ServiceOfferDesc desc)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+    UnauthorizedOperation;
+
+  /**
    * Invalida um login ativo no barramento
    *
    * @param LoginInfo Informação de login

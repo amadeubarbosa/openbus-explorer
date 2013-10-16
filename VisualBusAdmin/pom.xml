@@ -34,13 +34,13 @@
     <dependency>
       <groupId>tecgraf.openbus</groupId>
       <artifactId>openbus-sdk-core</artifactId>
-      <version>${openbus.version}</version>
+      <version>${openbus-sdk.version}</version>
     </dependency>
 
     <dependency>
       <groupId>tecgraf.openbus</groupId>
       <artifactId>openbus-core-idl</artifactId>
-      <version>${openbus.version}</version>
+      <version>${openbus-core.version}</version>
     </dependency>
 
     <dependency>

@@ -56,7 +56,7 @@
               <goal>install-file</goal>
             </goals>
             <configuration>
-              <file>lib/vljtable_${vljtable.version}.jar</file>
+              <file>lib/vljtable-${vljtable.version}.jar</file>
               <groupId>com.vlsolutions</groupId>
               <artifactId>vljtable</artifactId>
               <version>${vljtable.version}</version>

@@ -13,7 +13,17 @@
   <properties>
     <java.version>1.7</java.version>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
+    <diaglib.version>1.0.0</diaglib.version>
+    <jacorb.version>3.1</jacorb.version>
+    <javautils.version>SNAPSHOT</javautils.version>
+    <jcommon.version>1.0.17</jcommon.version>
+    <junit.version>4.6</junit.version>
+    <openbus.version>2.0.0-SNAPSHOT</openbus.version>
+    <scs.version>1.2.1.1</scs.version>
+    <vljtable.version>1.0</vljtable.version>
   </properties>
+
+
 
   <modules>
     <module>BusAdminLib</module>
@@ -29,7 +39,6 @@
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
-          <compilerArgument>-Xbootclasspath/p:${settings.localRepository}/org/jacorb/jacorb/${jacorb.version}/jacorb-${jacorb.version}.jar</compilerArgument>
         </configuration>
       </plugin>
 
@@ -46,10 +55,10 @@
               <goal>install-file</goal>
             </goals>
             <configuration>
-              <file>lib/vljtable_1.0.jar</file>
+              <file>lib/vljtable_${vljtable.version}.jar</file>
               <groupId>com.vlsolutions</groupId>
               <artifactId>vljtable</artifactId>
-              <version>1.0</version>
+              <version>${vljtable.version}</version>
               <packaging>jar</packaging>
               <generatePom>true</generatePom>
             </configuration>
@@ -65,7 +74,7 @@
               <file>lib/javautils-core.jar</file>
               <groupId>tecgraf.javautils</groupId>
               <artifactId>javautils-core</artifactId>
-              <version>SNAPSHOT</version>
+              <version>${javautils.version}</version>
               <packaging>jar</packaging>
               <generatePom>true</generatePom>
             </configuration>
@@ -78,10 +87,10 @@
               <goal>install-file</goal>
             </goals>
             <configuration>
-              <file>lib/openbus-core-idl-2.0.0-SNAPSHOT.jar</file>
+              <file>lib/openbus-core-idl-${openbus.version}.jar</file>
               <groupId>tecgraf.openbus</groupId>
               <artifactId>openbus-core-idl</artifactId>
-              <version>2.0.0-SNAPSHOT</version>
+              <version>${openbus.version}</version>
               <packaging>jar</packaging>
               <generatePom>true</generatePom>
             </configuration>
@@ -94,10 +103,10 @@
               <goal>install-file</goal>
             </goals>
             <configuration>
-              <file>lib/diaglib-core-1.0.0.jar</file>
+              <file>lib/diaglib-core-${diaglib.version}.jar</file>
               <groupId>tecgraf.diaglib</groupId>
               <artifactId>diaglib-core</artifactId>
-              <version>1.0.0</version>
+              <version>${diaglib.version}</version>
               <packaging>jar</packaging>
               <generatePom>true</generatePom>
             </configuration>
@@ -110,10 +119,10 @@
               <goal>install-file</goal>
             </goals>
             <configuration>
-              <file>lib/diaglib-addons-1.0.0.jar</file>
+              <file>lib/diaglib-addons-${diaglib.version}.jar</file>
               <groupId>tecgraf.diaglib</groupId>
               <artifactId>diaglib-addons</artifactId>
-              <version>1.0.0</version>
+              <version>${diaglib.version}</version>
               <packaging>jar</packaging>
               <generatePom>true</generatePom>
             </configuration>
@@ -176,7 +185,7 @@
     <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jcommon</artifactId>
-      <version>${jfree.version}</version>
+      <version>${jcommon.version}</version>
     </dependency>
 
     <dependency>

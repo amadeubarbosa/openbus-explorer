@@ -14,17 +14,6 @@
   <name>OpenBus - BusExplorer - GUI</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
   
-  <properties>
-    <javautils.version>SNAPSHOT</javautils.version>
-    <openbus.version>2.0.0-SNAPSHOT</openbus.version>
-    <scs.version>1.2.1.1</scs.version>
-    <diaglib.version>1.0.0</diaglib.version>
-    <jacorb.version>3.1</jacorb.version>
-    <jfree.version>1.0.17</jfree.version>
-    <junit.version>4.6</junit.version>
-    <vljtable.version>1.0</vljtable.version>
-  </properties>
-
   <build>
     <sourceDirectory>src</sourceDirectory>
   </build>
@@ -81,7 +70,7 @@
     <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jcommon</artifactId>
-      <version>${jfree.version}</version>
+      <version>${jcommon.version}</version>
     </dependency>
   </dependencies>
 </project>

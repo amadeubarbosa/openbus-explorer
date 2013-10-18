@@ -13,9 +13,34 @@
 
   <name>OpenBus - BusExplorer - GUI</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
+
+  <properties>
+    <admin.resources>admin/resources</admin.resources>
+    <logistic.resources>reuse/modified/logistic/client/resources</logistic.resources>
+    <planref.resources>reuse/modified/planref/client/resources</planref.resources>
+  </properties>
   
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>${build.sourceDirectory}/${admin.resources}</directory>
+        <targetPath>${admin.resources}</targetPath>
+        <filtering>false</filtering>
+      </resource>
+
+      <resource>
+        <directory>${build.sourceDirectory}/${logistic.resources}</directory>
+        <targetPath>${logistic.resources}</targetPath>
+        <filtering>false</filtering>
+      </resource>
+
+      <resource>
+        <directory>${build.sourceDirectory}/${planref.resources}</directory>
+        <targetPath>${planref.resources}</targetPath>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
   </build>
 
   <dependencies>

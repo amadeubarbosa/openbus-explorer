@@ -4,8 +4,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -13,6 +12,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import org.apache.commons.io.FileUtils;
 
 import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
@@ -114,7 +115,8 @@ public class CertificateInputDialog extends
     IdentifierWrapper newIdentifierWrapper = getNewRow();
     String identifier = newIdentifierWrapper.getIdentifier();
 
-    byte[] certificate = Files.readAllBytes(Paths.get(getCertificatePath()));
+    File certificateFile = new File(getCertificatePath());
+    byte[] certificate = FileUtils.readFileToByteArray(certificateFile);
 
     admin.registerCertificate(identifier, certificate);
   }

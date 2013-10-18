@@ -24,19 +24,19 @@
     <sourceDirectory>src</sourceDirectory>
     <resources>
       <resource>
-        <directory>${build.sourceDirectory}/${admin.resources}</directory>
+        <directory>${project.build.sourceDirectory}/${admin.resources}</directory>
         <targetPath>${admin.resources}</targetPath>
         <filtering>false</filtering>
       </resource>
 
       <resource>
-        <directory>${build.sourceDirectory}/${logistic.resources}</directory>
+        <directory>${project.build.sourceDirectory}/${logistic.resources}</directory>
         <targetPath>${logistic.resources}</targetPath>
         <filtering>false</filtering>
       </resource>
 
       <resource>
-        <directory>${build.sourceDirectory}/${planref.resources}</directory>
+        <directory>${project.build.sourceDirectory}/${planref.resources}</directory>
         <targetPath>${planref.resources}</targetPath>
         <filtering>false</filtering>
       </resource>

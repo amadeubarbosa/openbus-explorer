@@ -16,6 +16,14 @@
   
   <build>
     <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>${project.build.sourceDirectory}/test</testSourceDirectory>
+    <testResources>
+      <testResource>
+        <directory>${project.build.testSourceDirectory}/resources</directory>
+        <targetPath>${project.build.testOutputDirectory}/test/resources</targetPath>
+        <filtering>false</filtering>
+      </testResource>
+    </testResources>
   </build>
 
   <dependencies>

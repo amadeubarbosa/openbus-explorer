@@ -50,7 +50,7 @@ public class CategoryTableProvider extends
 
   @Override
   public boolean isCellEditable(Object row, int rowIndex, int columnIndex) {
-    return true;
+    return false;
   }
 
   @Override

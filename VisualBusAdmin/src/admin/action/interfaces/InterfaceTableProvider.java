@@ -42,7 +42,7 @@ public class InterfaceTableProvider extends
 
   @Override
   public boolean isCellEditable(Object row, int rowIndex, int columnIndex) {
-    return true;
+    return false;
   }
 
   @Override

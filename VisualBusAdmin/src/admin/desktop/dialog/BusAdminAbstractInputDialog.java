@@ -85,6 +85,18 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
     }
   }
 
+  public void showDialog() {
+    // Emulando tratamento de modalidade
+    getOwner().setEnabled(false);
+    super.showDialog();
+  }
+
+  public void dispose() {
+    // Emulando tratamento de modalidade
+    getOwner().setEnabled(true);
+    super.dispose();
+  }
+
   /**
    * Adiciona uma nova linha na tabela com os dados do novo objeto criado
    */
@@ -113,5 +125,4 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
    * @throws Exception
    */
   protected abstract void openBusCall() throws Exception;
-
 }

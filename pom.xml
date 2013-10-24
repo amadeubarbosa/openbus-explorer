@@ -52,7 +52,7 @@
         <executions>
           <execution>
             <id>install-vljtable</id>
-            <phase>package</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>install-file</goal>
             </goals>
@@ -68,7 +68,7 @@
 
           <execution>
             <id>install-javautils</id>
-            <phase>package</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>install-file</goal>
             </goals>
@@ -84,7 +84,7 @@
 
           <execution>
             <id>install-openbus-core-idl</id>
-            <phase>package</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>install-file</goal>
             </goals>
@@ -100,7 +100,7 @@
 
           <execution>
             <id>install-diaglib-core</id>
-            <phase>package</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>install-file</goal>
             </goals>
@@ -116,7 +116,7 @@
 
           <execution>
             <id>install-diaglib-addons</id>
-            <phase>package</phase>
+            <phase>initialize</phase>
             <goals>
               <goal>install-file</goal>
             </goals>

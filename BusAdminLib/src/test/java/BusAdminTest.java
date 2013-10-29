@@ -25,7 +25,7 @@ public class BusAdminTest {
 
   @BeforeClass
   public static void oneTimeSetUp() throws Exception {
-    Properties properties = Utils.readPropertyFile("resources/test.properties");
+    Properties properties = Utils.readPropertyFile("/test.properties");
     host = properties.getProperty("openbus.host.name");
     port = Short.valueOf(properties.getProperty("openbus.host.port"));
     entity = properties.getProperty("entity.name");

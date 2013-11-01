@@ -234,6 +234,7 @@ public class MainDialog {
       new RunnableList.Item[featuresVector.size()];
     RunnableList list = new RunnableList(
       featuresVector.toArray(featuresArray));
+    list.setSelectedValue(featuresArray[0], true);
     list.setFixedCellHeight(70);
     list.setCellRenderer(new DefaultListCellRenderer(){
      public int getHorizontalAlignment() {   

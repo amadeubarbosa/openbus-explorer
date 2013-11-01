@@ -243,7 +243,8 @@ public class MainDialog {
     });
 
     JScrollPane scrollPane = new JScrollPane(list);   
-    scrollPane.setPreferredSize(new Dimension(120, -1));
+    scrollPane.setPreferredSize(new Dimension(120,
+      list.getFixedCellHeight() * featuresArray.length + 6));
 
     return scrollPane;
   }

@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
@@ -50,6 +51,16 @@ public class CertificateDeleteAction extends BusAdminAbstractAction {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
+    int option = JOptionPane.showConfirmDialog(parentWindow,
+      LNG.get("DeleteAction.confirm.msg"),
+      LNG.get("DeleteAction.confirm.title"),
+      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
+      );
+
+    if (option != JOptionPane.YES_OPTION) {
+      return;
+    }
+
     Task task = new Task() {
       @Override
       protected void performTask() throws Exception {
@@ -69,7 +80,7 @@ public class CertificateDeleteAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
-      LNG.get("ListAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"),
+      LNG.get("DeleteAction.waiting.msg"));
   }
 }

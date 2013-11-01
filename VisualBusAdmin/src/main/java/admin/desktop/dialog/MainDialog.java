@@ -200,12 +200,25 @@ public class MainDialog {
         assistant, mainDialog));
 
     Vector<RunnableList.Item> featuresVector = new Vector<RunnableList.Item>();
+    Vector<String> toolTipTextVector = new Vector<String>();
+
     featuresVector.add(itemCategory);
+    toolTipTextVector.add(LNG.get("MainDialog.category.help"));
+
     featuresVector.add(itemEntity);
+    toolTipTextVector.add(LNG.get("MainDialog.entity.help"));
+
     featuresVector.add(itemInterface);
+    toolTipTextVector.add(LNG.get("MainDialog.interface.help"));
+
     featuresVector.add(itemAuthorization);
+    toolTipTextVector.add(LNG.get("MainDialog.authorization.help"));
+
     featuresVector.add(itemOffer);
+    toolTipTextVector.add(LNG.get("MainDialog.offer.help"));
+
     featuresVector.add(itemLogout);
+    toolTipTextVector.add(LNG.get("MainDialog.logout.help"));
 
     if (isCurrentUserAdmin) {
       RunnableList.Item itemCertificate = new RunnableList.Item(
@@ -216,31 +229,27 @@ public class MainDialog {
         mainDialog, panelLogin .getTable(), admin));
 
       featuresVector.add(2, itemCertificate);
-      featuresVector.add(6, itemLogin);
-    }
+      toolTipTextVector.add(2, LNG.get("MainDialog.certificate.help"));
 
-/* TODO [tmartins] set tooltips
-    btnCategory.setToolTipText(LNG.get("MainDialog.category.help"));
-    btnEntity.setToolTipText(LNG.get("MainDialog.entity.help"));
-    btnInterface.setToolTipText(LNG.get("MainDialog.interface.help"));
-    btnAutorization.setToolTipText(LNG.get("MainDialog.authorization.help"));
-    btnOffer.setToolTipText(LNG.get("MainDialog.offer.help"));
-    btnLogout.setToolTipText(LNG.get("MainDialog.logout.help"));
-    btnCertificate.setToolTipText(LNG.get("MainDialog.certificate.help"));
-    btnLogin.setToolTipText(LNG.get("MainDialog.login.help"));
-*/
+      featuresVector.add(6, itemLogin);
+      toolTipTextVector.add(6, LNG.get("MainDialog.login.help"));
+    }
 
     RunnableList.Item[] featuresArray =
       new RunnableList.Item[featuresVector.size()];
     RunnableList list = new RunnableList(
       featuresVector.toArray(featuresArray));
-    list.setSelectedValue(featuresArray[0], true);
+
+    String[] toolTipTextArray = new String[toolTipTextVector.size()];
+    list.setToolTipTextArray(toolTipTextVector.toArray(toolTipTextArray));
+
     list.setFixedCellHeight(70);
     list.setCellRenderer(new DefaultListCellRenderer(){
      public int getHorizontalAlignment() {   
        return DefaultListCellRenderer.CENTER;
      } 
     });
+    list.setSelectedValue(featuresArray[0], true);
 
     JScrollPane scrollPane = new JScrollPane(list);   
     scrollPane.setPreferredSize(new Dimension(120,

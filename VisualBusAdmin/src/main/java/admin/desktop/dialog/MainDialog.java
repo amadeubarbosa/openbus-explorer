@@ -11,8 +11,11 @@ import java.util.Vector;
 
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 
@@ -52,6 +55,7 @@ import admin.action.logins.LoginTableProvider;
 import admin.action.offers.OfferRefreshAction;
 import admin.action.offers.OfferDeleteAction;
 import admin.action.offers.OffersTableProvider;
+import admin.gui.RunnableList;
 import admin.wrapper.AuthorizationWrapper;
 import admin.wrapper.EntityCategoryDescWrapper;
 import admin.wrapper.IdentifierWrapper;
@@ -152,9 +156,11 @@ public class MainDialog {
 
     mainDialog.setLayout(new GridBagLayout());
 
-    featuresPanel = buildFeaturesPanel();
-    mainDialog.add(buildMenuPanel(), new GBC(0, 0).northwest());
-    mainDialog.add(featuresPanel, new GBC(1, 0).both());
+    featuresPanel = (JPanel)buildFeaturesComponent();
+    mainDialog.add(buildMenuComponent(),
+      new GBC(0, 0).west().both());
+    mainDialog.add(featuresPanel,
+      new GBC(1, 0).both());
     mainDialog.pack();
 
     GUIUtils.centerOnScreen(mainDialog);
@@ -173,90 +179,72 @@ public class MainDialog {
    * 
    * @return o painel contendo o menu
    */
-  private JPanel buildMenuPanel() {
-    JPanel panel = new JPanel(new GridBagLayout());
+  private JComponent buildMenuComponent() {
+    RunnableList.Item itemCategory = new RunnableList.Item(
+        LNG.get("MainDialog.category.button"), new CategoryFeatureRunnable(
+        mainDialog, panelCategory.getTable(), admin));
+    RunnableList.Item itemEntity = new RunnableList.Item(
+        LNG.get("MainDialog.entity.button"), new EntityFeatureRunnable(
+        mainDialog, panelEntity .getTable(), admin));
+    RunnableList.Item itemInterface = new RunnableList.Item(
+        LNG.get("MainDialog.interface.button"), new InterfaceFeatureRunnable(
+        mainDialog, panelInterface.getTable(), admin));
+    RunnableList.Item itemAuthorization = new RunnableList.Item(
+        LNG.get("MainDialog.authorization.button"), new AuthorizationFeatureRunnable(
+        mainDialog, panelAuthorization.getTable(), admin));
+    RunnableList.Item itemOffer = new RunnableList.Item(
+        LNG.get("MainDialog.offer.button"), new OfferFeatureRunnable(
+        mainDialog, panelOffer .getTable(), admin));
+    RunnableList.Item itemLogout = new RunnableList.Item(
+        LNG.get("MainDialog.logout.button"), new LogoutFeatureRunnable(
+        assistant, mainDialog));
 
-    ButtonGroup buttons = new ButtonGroup();
+    Vector<RunnableList.Item> featuresVector = new Vector<RunnableList.Item>();
+    featuresVector.add(itemCategory);
+    featuresVector.add(itemEntity);
+    featuresVector.add(itemInterface);
+    featuresVector.add(itemAuthorization);
+    featuresVector.add(itemOffer);
+    featuresVector.add(itemLogout);
 
-    JToggleButton btnCategory =
-      new JToggleButton(LNG.get("MainDialog.category.button"));
-    JToggleButton btnEntity =
-      new JToggleButton(LNG.get("MainDialog.entity.button"));
-    JToggleButton btnInterface =
-      new JToggleButton(LNG.get("MainDialog.interface.button"));
-    JToggleButton btnAutorization =
-      new JToggleButton(LNG.get("MainDialog.authorization.button"));
-    JToggleButton btnOffer =
-      new JToggleButton(LNG.get("MainDialog.offer.button"));
-    JToggleButton btnLogout =
-      new JToggleButton(LNG.get("MainDialog.logout.button"));
+    if (isCurrentUserAdmin) {
+      RunnableList.Item itemCertificate = new RunnableList.Item(
+        LNG.get("MainDialog.certificate.button"), new CertificateFeatureRunnable(
+        mainDialog, panelCertificate.getTable(), admin));
+      RunnableList.Item itemLogin = new RunnableList.Item(
+        LNG.get("MainDialog.login.button"), new LoginFeatureRunnable(
+        mainDialog, panelLogin .getTable(), admin));
 
-    btnCategory.setPreferredSize(new Dimension(130, 80));
-    btnEntity.setPreferredSize(new Dimension(130, 80));
-    btnInterface.setPreferredSize(new Dimension(130, 80));
-    btnAutorization.setPreferredSize(new Dimension(130, 80));
-    btnOffer.setPreferredSize(new Dimension(130, 80));
-    btnLogout.setPreferredSize(new Dimension(130, 80));
+      featuresVector.add(2, itemCertificate);
+      featuresVector.add(6, itemLogin);
+    }
 
+/* TODO [tmartins] set tooltips
     btnCategory.setToolTipText(LNG.get("MainDialog.category.help"));
     btnEntity.setToolTipText(LNG.get("MainDialog.entity.help"));
     btnInterface.setToolTipText(LNG.get("MainDialog.interface.help"));
     btnAutorization.setToolTipText(LNG.get("MainDialog.authorization.help"));
     btnOffer.setToolTipText(LNG.get("MainDialog.offer.help"));
     btnLogout.setToolTipText(LNG.get("MainDialog.logout.help"));
+    btnCertificate.setToolTipText(LNG.get("MainDialog.certificate.help"));
+    btnLogin.setToolTipText(LNG.get("MainDialog.login.help"));
+*/
 
-    btnCategory.addActionListener(new CategoryFeatureAction(mainDialog,
-      panelCategory.getTable(), admin));
-    btnEntity.addActionListener(new EntityFeatureAction(mainDialog, panelEntity
-      .getTable(), admin));
-    btnInterface.addActionListener(new InterfaceFeatureAction(mainDialog,
-      panelInterface.getTable(), admin));
-    btnOffer.addActionListener(new OfferFeatureAction(mainDialog, panelOffer
-      .getTable(), admin));
-    btnAutorization.addActionListener(new AuthorizationFeatureAction(
-      mainDialog, panelAuthorization.getTable(), admin));
-    btnLogout.addActionListener(new LogoutAction(assistant, mainDialog));
+    RunnableList.Item[] featuresArray =
+      new RunnableList.Item[featuresVector.size()];
+    RunnableList list = new RunnableList(
+      featuresVector.toArray(featuresArray));
+    list.setFixedCellHeight(70);
+    list.setCellRenderer(new DefaultListCellRenderer(){
+     public int getHorizontalAlignment() {   
+       return DefaultListCellRenderer.CENTER;
+     } 
+    });
 
-    buttons.add(btnCategory);
-    btnCategory.setSelected(true);
-    buttons.add(btnEntity);
-    buttons.add(btnInterface);
-    buttons.add(btnAutorization);
-    buttons.add(btnOffer);
-    buttons.add(btnLogout);
+    JScrollPane scrollPane = new JScrollPane(list);   
+    scrollPane.setPreferredSize(new Dimension(120, -1));
 
-    panel.add(btnCategory, new GBC(0, 0));
-    panel.add(btnEntity, new GBC(0, 1));
-    panel.add(btnInterface, new GBC(0, 3));
-    panel.add(btnAutorization, new GBC(0, 4));
-    panel.add(btnOffer, new GBC(0, 5));
-    panel.add(btnLogout, new GBC(0, 7));
-
-    if (isCurrentUserAdmin) {
-      JToggleButton btnCertificate =
-        new JToggleButton(LNG.get("MainDialog.certificate.button"));
-      JToggleButton btnLogin =
-        new JToggleButton(LNG.get("MainDialog.login.button"));
-
-      btnCertificate.setPreferredSize(new Dimension(130, 80));
-      btnLogin.setPreferredSize(new Dimension(130, 80));
-
-      btnCertificate.addActionListener(new CertificateFeatureAction(mainDialog,
-        panelCertificate.getTable(), admin));
-      btnLogin.addActionListener(new LoginFeatureAction(mainDialog, panelLogin
-        .getTable(), admin));
-
-      btnCertificate.setToolTipText(LNG.get("MainDialog.certificate.help"));
-      btnLogin.setToolTipText(LNG.get("MainDialog.login.help"));
-
-      buttons.add(btnCertificate);
-      buttons.add(btnLogin);
-
-      panel.add(btnCertificate, new GBC(0, 2));
-      panel.add(btnLogin, new GBC(0, 6));
-    }
-
-    return panel;
+    return scrollPane;
   }
 
   /** Inicializa os painéis das funcionalidades */
@@ -278,7 +266,7 @@ public class MainDialog {
    * 
    * @return painel contendo as tabelas e botões
    */
-  private JPanel buildFeaturesPanel() {
+  private JComponent buildFeaturesComponent() {
     JPanel panel = new JPanel();
 
     panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
@@ -484,129 +472,153 @@ public class MainDialog {
   }
 
   /**
-   * Ação que exibe o painel de CRUD de categorias e atualiza o conteúdo da
+   * Runnable que exibe o painel de CRUD de categorias e atualiza o conteúdo da
    * tabela de categorias
    */
-  private class CategoryFeatureAction extends CategoryRefreshAction {
+  private class CategoryFeatureRunnable implements Runnable {
 
-    public CategoryFeatureAction(JFrame parentWindow, JTable table,
+    private CategoryRefreshAction action;
+
+    public CategoryFeatureRunnable(JFrame parentWindow, JTable table,
       BusAdmin admin) {
-      super(parentWindow, table, admin);
+      action = new CategoryRefreshAction(parentWindow, table, admin);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
+    public void run() {
       changeCardPanel(CATEGORY_PANEL_ID);
-      super.actionPerformed(event);
+      action.actionPerformed(null);
     }
   }
 
   /**
-   * Ação que exibe o painel de CRUD de entidades e atualiza o conteúdo da
+   * Runnable que exibe o painel de CRUD de entidades e atualiza o conteúdo da
    * tabela de entidades
    */
-  private class EntityFeatureAction extends EntityRefreshAction {
+  private class EntityFeatureRunnable implements Runnable {
 
-    public EntityFeatureAction(JFrame parentWindow, JTable table,
+    private EntityRefreshAction action;
+
+    public EntityFeatureRunnable(JFrame parentWindow, JTable table,
       BusAdmin admin) {
-      super(parentWindow, table, admin);
+      action = new EntityRefreshAction(parentWindow, table, admin);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
+    public void run() {
       changeCardPanel(ENTITY_PANEL_ID);
-      super.actionPerformed(event);
+      action.actionPerformed(null);
     }
   }
 
   /**
-   * Ação que exibe o painel de CRUD de certificados e atualiza o conteúdo da
-   * tabela de certificados
+   * Runnable que exibe o painel de CRUD de certificados e atualiza o conteúdo
+   * da tabela de certificados
    */
-  private class CertificateFeatureAction extends CertificateRefreshAction {
+  private class CertificateFeatureRunnable implements Runnable {
 
-    public CertificateFeatureAction(JFrame parentWindow, JTable table,
+    private CertificateRefreshAction action;
+
+    public CertificateFeatureRunnable(JFrame parentWindow, JTable table,
       BusAdmin admin) {
-      super(parentWindow, table, admin);
+      action = new CertificateRefreshAction(parentWindow, table, admin);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
+    public void run() {
       changeCardPanel(CERTIFICATE_PANEL_ID);
-      super.actionPerformed(event);
+      action.actionPerformed(null);
     }
   }
 
   /**
-   * Ação que exibe o painel de CRUD de autorizações e atualiza o conteúdo da
-   * tabela de autorizações
+   * Runnable que exibe o painel de CRUD de autorizações e atualiza o conteúdo
+   * da tabela de autorizações
    */
-  private class AuthorizationFeatureAction extends AuthorizationRefreshAction {
+  private class AuthorizationFeatureRunnable implements Runnable {
 
-    public AuthorizationFeatureAction(JFrame parentWindow, JTable table,
+    private AuthorizationRefreshAction action;
+
+    public AuthorizationFeatureRunnable(JFrame parentWindow, JTable table,
       BusAdmin admin) {
-      super(parentWindow, table, admin);
+      action = new AuthorizationRefreshAction(parentWindow, table, admin);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
+    public void run() {
       changeCardPanel(AUTHORIZATION_PANEL_ID);
-      super.actionPerformed(event);
+      action.actionPerformed(null);
     }
   }
 
   /**
-   * Ação que exibe o painel de CRUD de interfaces e atualiza o conteúdo da
+   * Runnable que exibe o painel de CRUD de interfaces e atualiza o conteúdo da
    * tabela de interfaces
    */
-  private class InterfaceFeatureAction extends InterfaceRefreshAction {
+  private class InterfaceFeatureRunnable implements Runnable {
 
-    public InterfaceFeatureAction(JFrame parentWindow, JTable table,
+    private InterfaceRefreshAction action;
+
+    public InterfaceFeatureRunnable(JFrame parentWindow, JTable table,
       BusAdmin admin) {
-      super(parentWindow, table, admin);
+      action = new InterfaceRefreshAction(parentWindow, table, admin);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
+    public void run() {
       changeCardPanel(INTERFACE_PANEL_ID);
-      super.actionPerformed(event);
+      action.actionPerformed(null);
     }
   }
 
   /**
-   * Ação que exibe o painel de CRUD de ofertas e atualiza o conteúdo da tabela
-   * de ofertas
+   * Runnable que exibe o painel de CRUD de ofertas e atualiza o conteúdo da
+   * tabela de ofertas
    */
-  private class OfferFeatureAction extends OfferRefreshAction {
+  private class OfferFeatureRunnable implements Runnable {
 
-    public OfferFeatureAction(JFrame parentWindow, JTable table,
+    private OfferRefreshAction action;
+
+    public OfferFeatureRunnable(JFrame parentWindow, JTable table,
       BusAdmin admin) {
-      super(parentWindow, table, admin);
+      action = new OfferRefreshAction(parentWindow, table, admin);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
+    public void run() {
       changeCardPanel(OFFER_PANEL_ID);
-      super.actionPerformed(event);
+      action.actionPerformed(null);
     }
   }
 
   /**
-   * Ação que exibe o painel de CRUD de logins e atualiza o conteúdo da tabela
-   * de logins
+   * Runnable que exibe o painel de CRUD de logins e atualiza o conteúdo da
+   * tabela de logins
    */
-  private class LoginFeatureAction extends LoginRefreshAction {
+  private class LoginFeatureRunnable implements Runnable {
 
-    public LoginFeatureAction(JFrame parentWindow, JTable table,
+    private LoginRefreshAction action;
+
+    public LoginFeatureRunnable(JFrame parentWindow, JTable table,
       BusAdmin admin) {
-      super(parentWindow, table, admin);
+      action = new LoginRefreshAction(parentWindow, table, admin);
     }
 
-    @Override
-    public void actionPerformed(ActionEvent event) {
+    public void run() {
       changeCardPanel(LOGIN_PANEL_ID);
-      super.actionPerformed(event);
+      action.actionPerformed(null);
     }
+  }
+
+  /**
+   * Runnable que realiza o logout do barramento
+   */
+  private class LogoutFeatureRunnable implements Runnable {
+
+    private LogoutAction action;
+
+    private LogoutFeatureRunnable(Assistant assistant, JFrame parentWindow) {
+      action = new LogoutAction(assistant, parentWindow);
+    }
+
+    public void run() {
+      action.actionPerformed(null);
+    }
+
   }
 
 }

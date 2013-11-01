@@ -21,6 +21,9 @@ import javax.swing.ListSelectionModel;
  * @author Tecgraf
  */
 public class RunnableList extends JList {
+  /// Array de tooltips para os items da lista
+  private String[] toolTipTextArray;
+
   /**
    * Um item da lista executável contém uma string que o representa e um
    * <code>Runnable</code> vinculado. Tipicamente, este último será executado
@@ -145,6 +148,26 @@ public class RunnableList extends JList {
   public void runSelectedItem() {
     RunnableList.Item item = (RunnableList.Item)getSelectedValue();
     item.run();
-    
   }
+
+  public void setToolTipTextArray(String[] toolTipTextArray) {
+    this.toolTipTextArray = toolTipTextArray;
+  }
+
+  public String[] getToolTipTextArray() {
+    return this.toolTipTextArray;
+  }
+
+  @Override
+  public String getToolTipText(MouseEvent event)  {  
+    Point point = event.getPoint();  
+    int index = this.locationToIndex(point);  
+    if (toolTipTextArray == null ||
+      index < 0 ||
+      index >= toolTipTextArray.length ||
+      toolTipTextArray[index] == null) {
+      return null;
+    }
+    return toolTipTextArray[index];
+  }  
 }

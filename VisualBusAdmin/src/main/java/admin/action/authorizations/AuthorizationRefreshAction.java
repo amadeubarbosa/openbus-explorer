@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;

@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
 import javax.swing.JFrame;
 
 import reuse.modified.planref.client.util.crud.CRUDPanel;

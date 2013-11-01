@@ -308,7 +308,8 @@ public class MainDialog {
     actionsVector.add(new CategoryRefreshAction(mainDialog, panelCategory
       .getTable(), admin));
     actionsVector.add(new CategoryAddAction(mainDialog, panelCategory, admin));
-    actionsVector.add(new CategoryDeleteAction(mainDialog, panelCategory, admin));
+    actionsVector.add(new CategoryDeleteAction(mainDialog, panelCategory,
+      admin));
 
     panelCategory.setButtonsPane(actionsVector);
   }
@@ -344,15 +345,17 @@ public class MainDialog {
 
     panelCertificate = new CRUDPanel<IdentifierWrapper>(m, 0);
 
-    new CertificateRefreshAction(mainDialog, panelCertificate.getTable(), admin)
-      .actionPerformed(null);
+    new CertificateRefreshAction(mainDialog, panelCertificate.getTable(),
+      admin).actionPerformed(null);
 
     Vector<CRUDbleActionInterface> actionsVector =
       new Vector<CRUDbleActionInterface>();
     actionsVector.add(new CertificateRefreshAction(mainDialog, panelCertificate
       .getTable(), admin));
-    actionsVector.add(new CertificateAddAction(mainDialog, panelCertificate, admin));
-    actionsVector.add(new CertificateDeleteAction(mainDialog, panelCertificate, admin));
+    actionsVector.add(new CertificateAddAction(mainDialog, panelCertificate,
+      admin));
+    actionsVector.add(new CertificateDeleteAction(mainDialog, panelCertificate,
+      admin));
 
     panelCertificate.setButtonsPane(actionsVector);
   }

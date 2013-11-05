@@ -14,14 +14,14 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
 /**
- * Este componente exibe uma lista de items executáveis. Cada um deles possui
+ * Este componente exibe uma lista de itens executáveis. Cada um deles possui
  * um objeto <code>Runnable</code> vinculado a si. Ao selecionar um destes
- * items, ele é executado.
+ * itens, ele é executado.
  *
  * @author Tecgraf
  */
 public class RunnableList extends JList {
-  /// Array de tooltips para os items da lista
+  /// Array de tooltips para os itens da lista
   private String[] toolTipTextArray;
 
   /**
@@ -112,7 +112,7 @@ public class RunnableList extends JList {
 
   /**
    * Construtor da classe RunnableList
-   * @param elements Vetor de items executáveis
+   * @param elements Vetor de itens executáveis
    */
   public RunnableList(RunnableList.Item[] elements) {
     DefaultListModel defaultListModel = new DefaultListModel();

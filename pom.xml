@@ -83,6 +83,22 @@
           </execution>
 
           <execution>
+            <id>install-scs-core</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/scs-core-${scs.version}.jar</file>
+              <groupId>tecgraf.scs</groupId>
+              <artifactId>scs-core</artifactId>
+              <version>${scs.version}</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+
+          <execution>
             <id>install-openbus-core-idl</id>
             <phase>initialize</phase>
             <goals>
@@ -93,6 +109,38 @@
               <groupId>tecgraf.openbus</groupId>
               <artifactId>openbus-core-idl</artifactId>
               <version>${openbus-core.version}</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>install-openbus-sdk-core</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/openbus-sdk-core-${openbus-sdk.version}.jar</file>
+              <groupId>tecgraf.openbus</groupId>
+              <artifactId>openbus-sdk-core</artifactId>
+              <version>${openbus-sdk.version}</version>
+              <packaging>jar</packaging>
+              <generatePom>true</generatePom>
+            </configuration>
+          </execution>
+
+          <execution>
+            <id>install-openbus-sdk-legacy</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>install-file</goal>
+            </goals>
+            <configuration>
+              <file>lib/openbus-sdk-legacy-${openbus-sdk.version}.jar</file>
+              <groupId>tecgraf.openbus</groupId>
+              <artifactId>openbus-sdk-legacy</artifactId>
+              <version>${openbus-sdk.version}</version>
               <packaging>jar</packaging>
               <generatePom>true</generatePom>
             </configuration>
@@ -133,74 +181,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <dependencyManagement>
-  <dependencies>
-    <dependency>
-      <groupId>tecgraf.javautils</groupId>
-      <artifactId>javautils-core</artifactId>
-      <version>${javautils.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.openbus</groupId>
-      <artifactId>busexplorer-busadminlib</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.openbus</groupId>
-      <artifactId>openbus-sdk-core</artifactId>
-      <version>${openbus-sdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.openbus</groupId>
-      <artifactId>openbus-core-idl</artifactId>
-      <version>${openbus-core.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.diaglib</groupId>
-      <artifactId>diaglib-core</artifactId>
-      <version>${diaglib.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.diaglib</groupId>
-      <artifactId>diaglib-addons</artifactId>
-      <version>${diaglib.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.scs</groupId>
-      <artifactId>scs-core</artifactId>
-      <version>${scs.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.vlsolutions</groupId>
-      <artifactId>vljtable</artifactId>
-      <version>${vljtable.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jcommon</artifactId>
-      <version>${jcommon.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-io</artifactId>
-      <version>${commons-io.version}</version>
-    </dependency>
-  </dependencies>
-  </dependencyManagement>
 </project>

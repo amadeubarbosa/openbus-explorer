@@ -26,6 +26,12 @@
 
     <dependency>
       <groupId>tecgraf.openbus</groupId>
+      <artifactId>openbus-sdk-legacy</artifactId>
+      <version>${openbus-sdk.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.openbus</groupId>
       <artifactId>openbus-core-idl</artifactId>
       <version>${openbus-core.version}</version>
     </dependency>
@@ -34,6 +40,12 @@
       <groupId>tecgraf.scs</groupId>
       <artifactId>scs-core</artifactId>
       <version>${scs.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jacorb</groupId>
+      <artifactId>jacorb</artifactId>
+      <version>${jacorb.version}</version>
     </dependency>
 
     <dependency>

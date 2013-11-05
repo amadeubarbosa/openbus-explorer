@@ -158,7 +158,7 @@ public class MainDialog {
 
     featuresPanel = (JPanel)buildFeaturesComponent();
     mainDialog.add(buildMenuComponent(),
-      new GBC(0, 0).west().both());
+      new GBC(0, 0).west().filly());
     mainDialog.add(featuresPanel,
       new GBC(1, 0).both());
     mainDialog.pack();
@@ -252,6 +252,8 @@ public class MainDialog {
     list.setSelectedValue(featuresArray[0], true);
 
     JScrollPane scrollPane = new JScrollPane(list);   
+    scrollPane.setMinimumSize(new Dimension(120,
+      list.getFixedCellHeight() * featuresArray.length + 6));
     scrollPane.setPreferredSize(new Dimension(120,
       list.getFixedCellHeight() * featuresArray.length + 6));
 

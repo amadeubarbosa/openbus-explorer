@@ -41,8 +41,7 @@ public class RunnableList extends JList {
       * @param string String a representar o item
       * @param runnable <code>Runnable</code> a ser vinculado ao item
       */
-     public Item(String string, Runnable runnable)
-     {
+     public Item(String string, Runnable runnable) {
        this.string = string;
        this.runnable = runnable;
      }
@@ -51,16 +50,14 @@ public class RunnableList extends JList {
       * Representa o item através de uma string
       * @return String que representa o item
       */
-     public String toString()
-     {
+     public String toString() {
        return string;
      }
 
      /**
       * Executa o item
       */
-     public void run()
-     {
+     public void run() {
        runnable.run();
      }
   }

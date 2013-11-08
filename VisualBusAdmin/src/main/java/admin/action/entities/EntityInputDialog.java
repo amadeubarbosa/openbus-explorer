@@ -123,4 +123,20 @@ public class EntityInputDialog extends
       .getCategoryID());
 
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasValidFields() {
+    String entityID = entityIDField.getText();
+
+    if (entityID.equals("")) {
+      setErrorMessage(LNG.get("EntityInputDialog.error.validation.emptyID"));
+      return false;
+    }
+
+    setErrorMessage(null);
+    return true;
+  }
 }

@@ -120,4 +120,19 @@ public class CertificateInputDialog extends
 
     admin.registerCertificate(identifier, certificate);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasValidFields() {
+    if (getIdentifier().equals("")) {
+      setErrorMessage(LNG.get(
+        "CertificateInputDialog.error.validation.emptyID"));
+      return false;
+    }
+
+    setErrorMessage(null);
+    return true;
+  }
 }

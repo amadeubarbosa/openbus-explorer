@@ -80,7 +80,6 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
     }
     else {
       setErrorMessage(taskException.getMessage());
-      getAcceptButton().setEnabled(false);
       return false;
     }
   }

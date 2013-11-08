@@ -93,4 +93,20 @@ public class CategoryInputDialog extends
     admin.createCategory(newCategoryDesc.id, newCategoryDesc.name);
 
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasValidFields() {
+    String categoryID = categoryIDField.getText();
+
+    if (categoryID.equals("")) {
+      setErrorMessage(LNG.get("CategoryInputDialog.error.validation.emptyID"));
+      return false;
+    }
+
+    setErrorMessage(null);
+    return true;
+  }
 }

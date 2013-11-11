@@ -3,21 +3,18 @@ package admin.desktop.dialog;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JToggleButton;
 
 import reuse.modified.planref.client.util.crud.CRUDPanel;
 import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;

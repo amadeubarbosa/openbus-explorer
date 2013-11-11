@@ -22,7 +22,6 @@ import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateR
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.InvalidCertificate;
 import tecgraf.openbus.core.v2_0.services.offer_registry.OfferRegistry;
 import tecgraf.openbus.core.v2_0.services.offer_registry.OfferRegistryHelper;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOffer;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.AuthorizationInUse;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityAlreadyRegistered;

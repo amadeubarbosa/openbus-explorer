@@ -9,7 +9,6 @@ import javax.swing.JOptionPane;
 import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
-import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateRegistry;
 import admin.BusAdmin;
 import admin.action.BusAdminAbstractAction;
 import admin.wrapper.IdentifierWrapper;

@@ -15,17 +15,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -41,7 +38,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import reuse.modified.logistic.client.util.ListComboBoxModel;
 import reuse.modified.planref.client.util.PlanrefUI;
 import reuse.modified.planref.client.util.TransparentPanel;
 import reuse.modified.planref.client.util.crud.CRUDDateRenderer;

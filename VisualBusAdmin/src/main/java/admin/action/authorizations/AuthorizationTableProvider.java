@@ -1,8 +1,5 @@
 package admin.action.authorizations;
 
-import java.util.List;
-import java.util.Map;
-
 import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import admin.wrapper.AuthorizationWrapper;

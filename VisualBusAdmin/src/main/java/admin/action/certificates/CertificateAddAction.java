@@ -39,7 +39,8 @@ public class CertificateAddAction extends BusAdminAbstractAction {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     new CertificateInputDialog(parentWindow, LNG
-      .get("CertificateAddAction.inputDialog.title"), panel, admin).showDialog();
+      .get("CertificateAddAction.inputDialog.title"), panel, admin)
+      .showDialog();
   }
 
 }

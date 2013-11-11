@@ -26,10 +26,10 @@ public class OfferDeleteAction extends BusAdminAbstractAction {
   /** Painel com o CRUD de ofertas */
   private CRUDPanel<OfferWrapper> panel;
 
-  public OfferDeleteAction(JFrame parentWindow,
-    CRUDPanel<OfferWrapper> panel, BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin,
-      LNG.get("OfferDeleteAction.name"));
+  public OfferDeleteAction(JFrame parentWindow, CRUDPanel<OfferWrapper> panel,
+    BusAdmin admin) {
+    super(parentWindow, panel.getTable(), admin, LNG
+      .get("OfferDeleteAction.name"));
     this.panel = panel;
   }
 
@@ -40,11 +40,11 @@ public class OfferDeleteAction extends BusAdminAbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    int option = JOptionPane.showConfirmDialog(parentWindow,
-      LNG.get("DeleteAction.confirm.msg"),
-      LNG.get("DeleteAction.confirm.title"),
-      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
-      );
+    int option =
+      JOptionPane.showConfirmDialog(parentWindow, LNG
+        .get("DeleteAction.confirm.msg"),
+        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
@@ -69,7 +69,7 @@ public class OfferDeleteAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"),
-      LNG.get("DeleteAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
+      .get("DeleteAction.waiting.msg"));
   }
 }

@@ -38,7 +38,7 @@ public class AuthorizationRefreshAction extends BusAdminAbstractAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task task = new Task () {
+    Task task = new Task() {
       Map<RegisteredEntityDesc, List<String>> authorizationsMap = null;
 
       @Override
@@ -55,7 +55,7 @@ public class AuthorizationRefreshAction extends BusAdminAbstractAction {
           for (Map.Entry<RegisteredEntityDesc, List<String>> authorizations : authorizationsMap
             .entrySet()) {
             RegisteredEntityDesc entity = authorizations.getKey();
-            for (String interfaceName: authorizations.getValue()) {
+            for (String interfaceName : authorizations.getValue()) {
               wrappersList.add(new AuthorizationWrapper(entity, interfaceName));
             }
           }
@@ -69,8 +69,8 @@ public class AuthorizationRefreshAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
-      LNG.get("ListAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
+      .get("ListAction.waiting.msg"));
   }
 
 }

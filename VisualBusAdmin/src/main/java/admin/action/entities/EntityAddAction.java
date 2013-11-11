@@ -76,8 +76,8 @@ public class EntityAddAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("AddAction.waiting.title"),
-      LNG.get("AddAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("AddAction.waiting.title"), LNG
+      .get("AddAction.waiting.msg"));
 
   }
 

@@ -24,8 +24,7 @@ import admin.wrapper.OfferWrapper;
  */
 public class OfferRefreshAction extends BusAdminAbstractAction {
 
-  public OfferRefreshAction(JFrame parentWindow, JTable table,
-    BusAdmin admin) {
+  public OfferRefreshAction(JFrame parentWindow, JTable table, BusAdmin admin) {
     super(parentWindow, table, admin, LNG.get("OfferRefreshAction.name"));
   }
 
@@ -62,8 +61,8 @@ public class OfferRefreshAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
-      LNG.get("ListAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
+      .get("ListAction.waiting.msg"));
   }
 
 }

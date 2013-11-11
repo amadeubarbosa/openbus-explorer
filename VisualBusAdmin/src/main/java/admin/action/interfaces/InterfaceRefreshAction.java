@@ -68,8 +68,8 @@ public class InterfaceRefreshAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
-      LNG.get("ListAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
+      .get("ListAction.waiting.msg"));
   }
 
 }

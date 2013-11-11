@@ -49,8 +49,7 @@ public class CertificateTableProvider extends
 
   @Override
   public boolean isValid(Object row, int columnIndex) {
-    String identifier =
-      ((IdentifierWrapper) row).getIdentifier();
+    String identifier = ((IdentifierWrapper) row).getIdentifier();
 
     if (!identifier.isEmpty()) {
       return true;

@@ -36,7 +36,7 @@ public class LogoutAction extends AbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("LogoutAction.waiting.title"),
-      LNG.get("LogoutAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("LogoutAction.waiting.title"), LNG
+      .get("LogoutAction.waiting.msg"));
   }
 }

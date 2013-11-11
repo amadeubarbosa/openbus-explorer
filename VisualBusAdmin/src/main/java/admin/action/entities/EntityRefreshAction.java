@@ -24,8 +24,7 @@ import admin.wrapper.RegisteredEntityDescWrapper;
  */
 public class EntityRefreshAction extends BusAdminAbstractAction {
 
-  public EntityRefreshAction(JFrame parentWindow, JTable table,
-    BusAdmin admin) {
+  public EntityRefreshAction(JFrame parentWindow, JTable table, BusAdmin admin) {
     super(parentWindow, table, admin, LNG.get("EntityRefreshAction.name"));
   }
 
@@ -64,8 +63,8 @@ public class EntityRefreshAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
-      LNG.get("ListAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
+      .get("ListAction.waiting.msg"));
   }
 
 }

@@ -21,8 +21,7 @@ import admin.wrapper.AuthorizationWrapper;
  * 
  * @author Tecgraf
  */
-public class AuthorizationAddAction extends
-  BusAdminAbstractAction {
+public class AuthorizationAddAction extends BusAdminAbstractAction {
 
   private CRUDPanel<AuthorizationWrapper> panel;
 
@@ -60,12 +59,12 @@ public class AuthorizationAddAction extends
       @Override
       protected void afterTaskUI() {
         new AuthorizationInputDialog(AuthorizationAddAction.this.parentWindow,
-          LNG.get("AuthorizationAddAction.inputDialog.title"),
-          panel, admin, entitiesIDList, interfacesList).showDialog();
+          LNG.get("AuthorizationAddAction.inputDialog.title"), panel, admin,
+          entitiesIDList, interfacesList).showDialog();
       }
     };
 
-    task.execute(parentWindow, LNG.get("AddAction.waiting.title"),
-      LNG.get("AddAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("AddAction.waiting.title"), LNG
+      .get("AddAction.waiting.msg"));
   }
 }

@@ -153,11 +153,9 @@ public class MainDialog {
 
     mainDialog.setLayout(new GridBagLayout());
 
-    featuresPanel = (JPanel)buildFeaturesComponent();
-    mainDialog.add(buildMenuComponent(),
-      new GBC(0, 0).west().filly());
-    mainDialog.add(featuresPanel,
-      new GBC(1, 0).both());
+    featuresPanel = (JPanel) buildFeaturesComponent();
+    mainDialog.add(buildMenuComponent(), new GBC(0, 0).west().filly());
+    mainDialog.add(featuresPanel, new GBC(1, 0).both());
     mainDialog.pack();
 
     GUIUtils.centerOnScreen(mainDialog);
@@ -177,24 +175,27 @@ public class MainDialog {
    * @return o painel contendo o menu
    */
   private JComponent buildMenuComponent() {
-    RunnableList.Item itemCategory = new RunnableList.Item(
-        LNG.get("MainDialog.category.button"), new CategoryFeatureRunnable(
-        mainDialog, panelCategory.getTable(), admin));
-    RunnableList.Item itemEntity = new RunnableList.Item(
-        LNG.get("MainDialog.entity.button"), new EntityFeatureRunnable(
-        mainDialog, panelEntity .getTable(), admin));
-    RunnableList.Item itemInterface = new RunnableList.Item(
-        LNG.get("MainDialog.interface.button"), new InterfaceFeatureRunnable(
-        mainDialog, panelInterface.getTable(), admin));
-    RunnableList.Item itemAuthorization = new RunnableList.Item(
-        LNG.get("MainDialog.authorization.button"), new AuthorizationFeatureRunnable(
-        mainDialog, panelAuthorization.getTable(), admin));
-    RunnableList.Item itemOffer = new RunnableList.Item(
-        LNG.get("MainDialog.offer.button"), new OfferFeatureRunnable(
-        mainDialog, panelOffer .getTable(), admin));
-    RunnableList.Item itemLogout = new RunnableList.Item(
-        LNG.get("MainDialog.logout.button"), new LogoutFeatureRunnable(
-        assistant, mainDialog));
+    RunnableList.Item itemCategory =
+      new RunnableList.Item(
+        LNG.get("MainDialog.category.button"),
+        new CategoryFeatureRunnable(mainDialog, panelCategory.getTable(), admin));
+    RunnableList.Item itemEntity =
+      new RunnableList.Item(LNG.get("MainDialog.entity.button"),
+        new EntityFeatureRunnable(mainDialog, panelEntity.getTable(), admin));
+    RunnableList.Item itemInterface =
+      new RunnableList.Item(LNG.get("MainDialog.interface.button"),
+        new InterfaceFeatureRunnable(mainDialog, panelInterface.getTable(),
+          admin));
+    RunnableList.Item itemAuthorization =
+      new RunnableList.Item(LNG.get("MainDialog.authorization.button"),
+        new AuthorizationFeatureRunnable(mainDialog, panelAuthorization
+          .getTable(), admin));
+    RunnableList.Item itemOffer =
+      new RunnableList.Item(LNG.get("MainDialog.offer.button"),
+        new OfferFeatureRunnable(mainDialog, panelOffer.getTable(), admin));
+    RunnableList.Item itemLogout =
+      new RunnableList.Item(LNG.get("MainDialog.logout.button"),
+        new LogoutFeatureRunnable(assistant, mainDialog));
 
     Vector<RunnableList.Item> featuresVector = new Vector<RunnableList.Item>();
     Vector<String> toolTipTextVector = new Vector<String>();
@@ -218,12 +219,13 @@ public class MainDialog {
     toolTipTextVector.add(LNG.get("MainDialog.logout.help"));
 
     if (isCurrentUserAdmin) {
-      RunnableList.Item itemCertificate = new RunnableList.Item(
-        LNG.get("MainDialog.certificate.button"), new CertificateFeatureRunnable(
-        mainDialog, panelCertificate.getTable(), admin));
-      RunnableList.Item itemLogin = new RunnableList.Item(
-        LNG.get("MainDialog.login.button"), new LoginFeatureRunnable(
-        mainDialog, panelLogin .getTable(), admin));
+      RunnableList.Item itemCertificate =
+        new RunnableList.Item(LNG.get("MainDialog.certificate.button"),
+          new CertificateFeatureRunnable(mainDialog, panelCertificate
+            .getTable(), admin));
+      RunnableList.Item itemLogin =
+        new RunnableList.Item(LNG.get("MainDialog.login.button"),
+          new LoginFeatureRunnable(mainDialog, panelLogin.getTable(), admin));
 
       featuresVector.add(2, itemCertificate);
       toolTipTextVector.add(2, LNG.get("MainDialog.certificate.help"));
@@ -234,25 +236,24 @@ public class MainDialog {
 
     RunnableList.Item[] featuresArray =
       new RunnableList.Item[featuresVector.size()];
-    RunnableList list = new RunnableList(
-      featuresVector.toArray(featuresArray));
+    RunnableList list = new RunnableList(featuresVector.toArray(featuresArray));
 
     String[] toolTipTextArray = new String[toolTipTextVector.size()];
     list.setToolTipTextArray(toolTipTextVector.toArray(toolTipTextArray));
 
     list.setFixedCellHeight(70);
-    list.setCellRenderer(new DefaultListCellRenderer(){
-     public int getHorizontalAlignment() {   
-       return DefaultListCellRenderer.CENTER;
-     } 
+    list.setCellRenderer(new DefaultListCellRenderer() {
+      public int getHorizontalAlignment() {
+        return DefaultListCellRenderer.CENTER;
+      }
     });
     list.setSelectedValue(featuresArray[0], true);
 
-    JScrollPane scrollPane = new JScrollPane(list);   
-    scrollPane.setMinimumSize(new Dimension(120,
-      list.getFixedCellHeight() * featuresArray.length + 6));
-    scrollPane.setPreferredSize(new Dimension(120,
-      list.getFixedCellHeight() * featuresArray.length + 6));
+    JScrollPane scrollPane = new JScrollPane(list);
+    scrollPane.setMinimumSize(new Dimension(120, list.getFixedCellHeight()
+      * featuresArray.length + 6));
+    scrollPane.setPreferredSize(new Dimension(120, list.getFixedCellHeight()
+      * featuresArray.length + 6));
 
     return scrollPane;
   }
@@ -316,8 +317,8 @@ public class MainDialog {
     actionsVector.add(new CategoryRefreshAction(mainDialog, panelCategory
       .getTable(), admin));
     actionsVector.add(new CategoryAddAction(mainDialog, panelCategory, admin));
-    actionsVector.add(new CategoryDeleteAction(mainDialog, panelCategory,
-      admin));
+    actionsVector
+      .add(new CategoryDeleteAction(mainDialog, panelCategory, admin));
 
     panelCategory.setButtonsPane(actionsVector);
   }
@@ -348,13 +349,12 @@ public class MainDialog {
   private void initPanelCertificate() {
     ObjectTableModel<IdentifierWrapper> m =
       new ModifiableObjectTableModel<IdentifierWrapper>(
-        new LinkedList<IdentifierWrapper>(),
-        new CertificateTableProvider());
+        new LinkedList<IdentifierWrapper>(), new CertificateTableProvider());
 
     panelCertificate = new CRUDPanel<IdentifierWrapper>(m, 0);
 
-    new CertificateRefreshAction(mainDialog, panelCertificate.getTable(),
-      admin).actionPerformed(null);
+    new CertificateRefreshAction(mainDialog, panelCertificate.getTable(), admin)
+      .actionPerformed(null);
 
     Vector<CRUDbleActionInterface> actionsVector =
       new Vector<CRUDbleActionInterface>();
@@ -386,8 +386,8 @@ public class MainDialog {
       .getTable(), admin));
     actionsVector
       .add(new InterfaceAddAction(mainDialog, panelInterface, admin));
-    actionsVector
-      .add(new InterfaceDeleteAction(mainDialog, panelInterface, admin));
+    actionsVector.add(new InterfaceDeleteAction(mainDialog, panelInterface,
+      admin));
 
     panelInterface.setButtonsPane(actionsVector);
 

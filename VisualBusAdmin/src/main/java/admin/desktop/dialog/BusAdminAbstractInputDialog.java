@@ -63,9 +63,8 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
     };
 
     Thread taskThread = new Thread(task);
-    task.execute(this,LNG.get("AddAction.waiting.title"),
-      LNG.get("AddAction.waiting.msg"));
-
+    task.execute(this, LNG.get("AddAction.waiting.title"), LNG
+      .get("AddAction.waiting.msg"));
 
     while (taskThread.isAlive()) {
       try {
@@ -106,7 +105,7 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
   }
 
   public List<T> getRows() {
-      return panel.getTableModel().getRows();
+    return panel.getTableModel().getRows();
   }
 
   public T getNewRow() {

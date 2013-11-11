@@ -16,7 +16,7 @@ import admin.wrapper.InterfaceWrapper;
 
 /**
  * Classe de ação para a remoção de uma interface.
- *
+ * 
  * @author Tecgraf
  */
 public class InterfaceDeleteAction extends BusAdminAbstractAction {
@@ -29,12 +29,12 @@ public class InterfaceDeleteAction extends BusAdminAbstractAction {
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param panel painel de CRUD
-   * @param admin 
+   * @param admin
    */
   public InterfaceDeleteAction(JFrame parentWindow,
     CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin,
-      LNG.get("InterfaceDeleteAction.name"));
+    super(parentWindow, panel.getTable(), admin, LNG
+      .get("InterfaceDeleteAction.name"));
     this.panel = panel;
   }
 
@@ -51,11 +51,11 @@ public class InterfaceDeleteAction extends BusAdminAbstractAction {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    int option = JOptionPane.showConfirmDialog(parentWindow,
-      LNG.get("DeleteAction.confirm.msg"),
-      LNG.get("DeleteAction.confirm.title"),
-      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
-      );
+    int option =
+      JOptionPane.showConfirmDialog(parentWindow, LNG
+        .get("DeleteAction.confirm.msg"),
+        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
@@ -80,7 +80,7 @@ public class InterfaceDeleteAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"),
-      LNG.get("DeleteAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
+      .get("DeleteAction.waiting.msg"));
   }
 }

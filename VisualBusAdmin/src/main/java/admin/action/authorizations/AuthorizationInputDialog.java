@@ -75,7 +75,7 @@ public class AuthorizationInputDialog extends
    * Lança exceção em caso de existência prévia da autorização a ser adicionada;
    * o barramento, por padrão, não o faz.
    */
-  private void failOnExistingAuthorization (
+  private void failOnExistingAuthorization(
     AuthorizationWrapper newAuthorizationWrapper) throws Exception {
     for (AuthorizationWrapper authorization : getRows()) {
       if (newAuthorizationWrapper.equals(authorization)) {

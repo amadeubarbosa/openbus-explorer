@@ -53,16 +53,16 @@ public class CertificateRefreshAction extends BusAdminAbstractAction {
           }
 
           ObjectTableModel<IdentifierWrapper> m =
-            new ModifiableObjectTableModel<IdentifierWrapper>(
-              wrappersList, new CertificateTableProvider());
+            new ModifiableObjectTableModel<IdentifierWrapper>(wrappersList,
+              new CertificateTableProvider());
 
           table.setModel(m);
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
-      LNG.get("ListAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
+      .get("ListAction.waiting.msg"));
   }
 
 }

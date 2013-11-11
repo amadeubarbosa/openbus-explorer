@@ -9,15 +9,13 @@ public class AuthorizationWrapper implements Identifiable<AuthorizationWrapper> 
 
   private String interfaceName;
 
-  public AuthorizationWrapper(
-    RegisteredEntityDesc entity, String interfaceName) {
+  public AuthorizationWrapper(RegisteredEntityDesc entity, String interfaceName) {
     this.entity = entity;
     this.interfaceName = interfaceName;
   }
 
   public boolean equals(AuthorizationWrapper w) {
-    if (entity.id.equals(w.entity.id)
-      && interfaceName.equals(w.interfaceName)) {
+    if (entity.id.equals(w.entity.id) && interfaceName.equals(w.interfaceName)) {
       return true;
     }
     return false;

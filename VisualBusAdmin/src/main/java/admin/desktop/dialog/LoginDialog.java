@@ -315,8 +315,8 @@ public class LoginDialog {
         }
       };
 
-      task.execute(loginDialog, LNG.get("LoginDialog.waiting.title"),
-        LNG.get("LoginDialog.waiting.msg"));
+      task.execute(loginDialog, LNG.get("LoginDialog.waiting.title"), LNG
+        .get("LoginDialog.waiting.msg"));
     }
   }
 

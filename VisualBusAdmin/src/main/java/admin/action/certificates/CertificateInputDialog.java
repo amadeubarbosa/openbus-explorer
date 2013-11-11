@@ -53,8 +53,8 @@ public class CertificateInputDialog extends
     chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     int status = chooser.showOpenDialog(this);
     if (status == JFileChooser.APPROVE_OPTION) {
-	String certificatePath = chooser.getSelectedFile().getAbsolutePath();
-	certificateField.setText(certificatePath);
+      String certificatePath = chooser.getSelectedFile().getAbsolutePath();
+      certificateField.setText(certificatePath);
     }
   }
 
@@ -104,7 +104,7 @@ public class CertificateInputDialog extends
       public void actionPerformed(ActionEvent e) {
         chooseCertificateFile();
       }
-      });
+    });
     panel.add(certificateButton, new GBC(1, 3).west());
 
     return panel;
@@ -127,8 +127,8 @@ public class CertificateInputDialog extends
   @Override
   public boolean hasValidFields() {
     if (getIdentifier().equals("")) {
-      setErrorMessage(LNG.get(
-        "CertificateInputDialog.error.validation.emptyID"));
+      setErrorMessage(LNG
+        .get("CertificateInputDialog.error.validation.emptyID"));
       return false;
     }
 

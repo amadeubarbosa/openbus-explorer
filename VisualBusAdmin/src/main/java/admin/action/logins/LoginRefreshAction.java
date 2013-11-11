@@ -24,8 +24,7 @@ import admin.wrapper.LoginInfoWrapper;
  */
 public class LoginRefreshAction extends BusAdminAbstractAction {
 
-  public LoginRefreshAction(JFrame parentWindow, JTable table,
-    BusAdmin admin) {
+  public LoginRefreshAction(JFrame parentWindow, JTable table, BusAdmin admin) {
     super(parentWindow, table, admin, LNG.get("LoginRefreshAction.name"));
   }
 
@@ -48,7 +47,7 @@ public class LoginRefreshAction extends BusAdminAbstractAction {
       protected void afterTaskUI() {
         if (getError() == null) {
           List<LoginInfoWrapper> wrappersList =
-          new LinkedList<LoginInfoWrapper>();
+            new LinkedList<LoginInfoWrapper>();
 
           for (LoginInfo loginInfo : logins) {
             wrappersList.add(new LoginInfoWrapper(loginInfo));
@@ -63,7 +62,7 @@ public class LoginRefreshAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
-      LNG.get("ListAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
+      .get("ListAction.waiting.msg"));
   }
 }

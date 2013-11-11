@@ -16,7 +16,7 @@ import admin.wrapper.EntityCategoryDescWrapper;
 
 /**
  * Classe de ação para a remoção de uma categoria.
- *
+ * 
  * @author Tecgraf
  */
 public class CategoryDeleteAction extends BusAdminAbstractAction {
@@ -29,7 +29,7 @@ public class CategoryDeleteAction extends BusAdminAbstractAction {
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param panel painel de CRUD
-   * @param admin 
+   * @param admin
    */
   public CategoryDeleteAction(JFrame parentWindow,
     CRUDPanel<EntityCategoryDescWrapper> panel, BusAdmin admin) {
@@ -51,11 +51,11 @@ public class CategoryDeleteAction extends BusAdminAbstractAction {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    int option = JOptionPane.showConfirmDialog(parentWindow,
-      LNG.get("DeleteAction.confirm.msg"),
-      LNG.get("DeleteAction.confirm.title"),
-      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
-      );
+    int option =
+      JOptionPane.showConfirmDialog(parentWindow, LNG
+        .get("DeleteAction.confirm.msg"),
+        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
@@ -64,7 +64,8 @@ public class CategoryDeleteAction extends BusAdminAbstractAction {
     Task task = new Task() {
       @Override
       protected void performTask() throws Exception {
-        List<EntityCategoryDescWrapper> selectedWrappers = panel.getSelectedInfos();
+        List<EntityCategoryDescWrapper> selectedWrappers =
+          panel.getSelectedInfos();
         for (EntityCategoryDescWrapper wrapper : selectedWrappers) {
           EntityCategoryDesc category = wrapper.getEntityCategoryDesc();
           admin.removeCategory(category.id);
@@ -80,7 +81,7 @@ public class CategoryDeleteAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"),
-      LNG.get("DeleteAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
+      .get("DeleteAction.waiting.msg"));
   }
 }

@@ -23,8 +23,7 @@ import admin.wrapper.EntityCategoryDescWrapper;
  * 
  */
 public class CategoryRefreshAction extends BusAdminAbstractAction {
-  public CategoryRefreshAction(JFrame parentWindow, JTable table,
-    BusAdmin admin) {
+  public CategoryRefreshAction(JFrame parentWindow, JTable table, BusAdmin admin) {
     super(parentWindow, table, admin, LNG.get("CategoryRefreshAction.name"));
   }
 
@@ -62,8 +61,8 @@ public class CategoryRefreshAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"),
-      LNG.get("ListAction.waiting.msg"));
+    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
+      .get("ListAction.waiting.msg"));
   }
 
 }

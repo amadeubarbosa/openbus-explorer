@@ -210,8 +210,8 @@ public class BusAdminImpl implements BusAdmin {
   public List<String> getEntitiesWithCertificate() throws ServiceFailure,
     UnauthorizedOperation {
     try {
-      return Arrays.asList(
-        this.certificateRegistry.getEntitiesWithCertificate());
+      return Arrays.asList(this.certificateRegistry
+        .getEntitiesWithCertificate());
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -306,9 +306,8 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void removeOffer(ServiceOfferDesc desc)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation {
+  public void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
     try {
       desc.ref.remove();
     }
@@ -336,9 +335,8 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void invalidateLogin(LoginInfo loginInfo)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation {
+  public void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
     try {
       this.loginRegistry.invalidateLogin(loginInfo.id);
     }
@@ -492,19 +490,18 @@ public class BusAdminImpl implements BusAdmin {
         Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
     }
     catch (InvalidCertificate e) {
-      throw new InvalidCertificate(
-        Util.INVALID_CERTIFICATE_EXCEPTION_MESSAGE, e.message);
+      throw new InvalidCertificate(Util.INVALID_CERTIFICATE_EXCEPTION_MESSAGE,
+        e.message);
     }
   }
 
-  
   /**
    * {@inheritDoc}
    */
   @Override
-  public void removeCategory(String categoryID)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, EntityCategoryInUse {
+  public void removeCategory(String categoryID) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
+    EntityCategoryInUse {
     try {
       EntityCategory category =
         this.entityRegistry.getEntityCategory(categoryID);
@@ -538,12 +535,10 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void removeEntity(String entityID)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation {
+  public void removeEntity(String entityID) throws ServiceFailure, TRANSIENT,
+    COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
     try {
-      RegisteredEntity entity = 
-        this.entityRegistry.getEntity(entityID);
+      RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
       entity.remove();
     }
     catch (TRANSIENT e) {
@@ -570,9 +565,8 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void removeCertificate(String entityID)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation {
+  public void removeCertificate(String entityID) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
     try {
       this.certificateRegistry.removeCertificate(entityID);
     }
@@ -600,9 +594,9 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void removeInterface(String interfaceName)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, InterfaceInUse {
+  public void removeInterface(String interfaceName) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
+    InterfaceInUse {
     try {
       this.interfaceRegistry.removeInterface(interfaceName);
     }
@@ -625,11 +619,10 @@ public class BusAdminImpl implements BusAdmin {
         Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
     }
     catch (InterfaceInUse e) {
-      throw new InterfaceInUse(
-        Util.INTERFACE_IN_USE_EXCEPTION_MESSAGE, e.entities);
+      throw new InterfaceInUse(Util.INTERFACE_IN_USE_EXCEPTION_MESSAGE,
+        e.entities);
     }
   }
-
 
   @Override
   public void setAuthorization(String entityID, String interfaceName)

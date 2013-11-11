@@ -16,7 +16,7 @@ import admin.wrapper.AuthorizationWrapper;
 
 /**
  * Classe de ação para a remoção de uma autorização.
- *
+ * 
  * @author Tecgraf
  */
 public class AuthorizationDeleteAction extends BusAdminAbstractAction {
@@ -26,22 +26,22 @@ public class AuthorizationDeleteAction extends BusAdminAbstractAction {
 
   /**
    * Construtor da ação
-   *
+   * 
    * @param parentWindow janela mãe do diálogo a ser criado pela ação
    * @param panel painel de CRUD
    * @param admin
    */
-   public AuthorizationDeleteAction(JFrame parentWindow,
-     CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin) {
-     super(parentWindow, panel.getTable(), admin,
-       LNG.get("AuthorizationDeleteAction.name"));
-     this.panel = panel;
-   }
+  public AuthorizationDeleteAction(JFrame parentWindow,
+    CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin) {
+    super(parentWindow, panel.getTable(), admin, LNG
+      .get("AuthorizationDeleteAction.name"));
+    this.panel = panel;
+  }
 
   /**
    * {@inheritDoc}
    */
-  @Override  
+  @Override
   public int crudActionType() {
     return CRUDbleActionInterface.TYPE_ACTION_REMOVE;
   }
@@ -51,11 +51,11 @@ public class AuthorizationDeleteAction extends BusAdminAbstractAction {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    int option = JOptionPane.showConfirmDialog(parentWindow,
-      LNG.get("DeleteAction.confirm.msg"),
-      LNG.get("DeleteAction.confirm.title"),
-      JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
-      );
+    int option =
+      JOptionPane.showConfirmDialog(parentWindow, LNG
+        .get("DeleteAction.confirm.msg"),
+        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+        JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
@@ -81,7 +81,7 @@ public class AuthorizationDeleteAction extends BusAdminAbstractAction {
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"),
-      LNG.get("DeleteAction.waiting.msg"));
-  }   
+    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
+      .get("DeleteAction.waiting.msg"));
+  }
 }

@@ -72,6 +72,7 @@ public interface BusAdmin {
   /**
    * Retorna uma lista que contém IDs de todas as etidades com certificado
    * registrado no barramento.
+   * 
    * @return lista de IDs das entidades com certificado
    * @throws ServiceFailure
    * @throws TRANSIENT
@@ -113,7 +114,7 @@ public interface BusAdmin {
 
   /**
    * Remove uma oferta de serviço
-   *
+   * 
    * @param desc Descrição da oferta
    * @throws ServiceFailure
    * @throws TRANSIENT
@@ -121,13 +122,12 @@ public interface BusAdmin {
    * @throws NO_PERMISSION
    * @throws UnauthorizedOperation
    */
-  public void removeOffer(ServiceOfferDesc desc)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation;
+  public void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation;
 
   /**
    * Invalida um login ativo no barramento
-   *
+   * 
    * @param LoginInfo Informação de login
    * @throws ServiceFailure
    * @throws TRANSIENT
@@ -135,9 +135,8 @@ public interface BusAdmin {
    * @throws NO_PERMISSION
    * @throws UnauthorizedOperation
    */
-  public void invalidateLogin(LoginInfo loginInfo) 
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation;
+  public void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation;
 
   /**
    * Cadastra uma nova categoria no barramento
@@ -177,7 +176,7 @@ public interface BusAdmin {
 
   /**
    * Registra um certificado no barramento
-   *
+   * 
    * @param entityID ID da entidade
    * @param certificate Certificado
    * @throws ServiceFailure
@@ -187,13 +186,13 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws InvalidCertificate
    */
-  public void registerCertificate(String entityID, byte[] certificate) throws
-    ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
+  public void registerCertificate(String entityID, byte[] certificate)
+    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
     UnauthorizedOperation, InvalidCertificate;
 
   /**
    * Remove uma categoria do barramento
-   *
+   * 
    * @param categoryID ID da categoria a ser removida
    * @throws ServiceFailure
    * @throws TRANSIENT
@@ -202,12 +201,13 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws EntityCategoryInUse
    */
-  public void removeCategory(String categoryID)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, EntityCategoryInUse;
+  public void removeCategory(String categoryID) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
+    EntityCategoryInUse;
 
   /**
    * Remove uma interface do barramento
+   * 
    * @param interfaceName Nome da interface a ser removida
    * @throws ServiceFailure
    * @throws TRANSIENT
@@ -216,13 +216,13 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws InterfaceInUse
    */
-  public void removeInterface(String interfaceName)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, InterfaceInUse;
+  public void removeInterface(String interfaceName) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
+    InterfaceInUse;
 
   /**
    * Remove o registro de uma entidade do barramento
-   *
+   * 
    * @param entityID ID da entidade a ser removida
    * @throws ServiceFailure
    * @throws TRANSIENT
@@ -230,13 +230,12 @@ public interface BusAdmin {
    * @throws NO_PERMISSION
    * @throws UnauthorizedOperation
    */
-  public void removeEntity(String entityID)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation;
+  public void removeEntity(String entityID) throws ServiceFailure, TRANSIENT,
+    COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation;
 
   /**
    * Remove o certificado vinculado a uma entidade do barramento
-   *
+   * 
    * @param entityID ID da entidade a ser removida
    * @throws ServiceFailure
    * @throws TRANSIENT
@@ -244,9 +243,8 @@ public interface BusAdmin {
    * @throws NO_PERMISSION
    * @throws UnauthorizedOperation
    */
-  public void removeCertificate(String entityID)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation;
+  public void removeCertificate(String entityID) throws ServiceFailure,
+    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation;
 
   /**
    * Concede autorização para uma interface a uma entidade
@@ -260,7 +258,7 @@ public interface BusAdmin {
 
   /**
    * Remove autorização para uma interface de uma entidade
-   *
+   * 
    * @param entityID ID da entidade que vai ter a autorização removida
    * @param interfaceName interface que vai ser autorizada
    * @throws ServiceFailure

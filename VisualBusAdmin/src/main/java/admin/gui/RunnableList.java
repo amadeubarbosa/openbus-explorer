@@ -14,10 +14,10 @@ import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
 /**
- * Este componente exibe uma lista de itens executáveis. Cada um deles possui
- * um objeto <code>Runnable</code> vinculado a si. Ao selecionar um destes
- * itens, ele é executado.
- *
+ * Este componente exibe uma lista de itens executáveis. Cada um deles possui um
+ * objeto <code>Runnable</code> vinculado a si. Ao selecionar um destes itens,
+ * ele é executado.
+ * 
  * @author Tecgraf
  */
 public class RunnableList extends JList {
@@ -30,36 +30,38 @@ public class RunnableList extends JList {
    * quando o item for selecionado na lista.
    */
   public static class Item {
-     /// String que representa o item
-     private String string;
+    /// String que representa o item
+    private String string;
 
-     /// <code>Runnable</code> vinculado ao item
-     private Runnable runnable;
+    /// <code>Runnable</code> vinculado ao item
+    private Runnable runnable;
 
-     /**
-      * Construtor da classe RunnableList.Item
-      * @param string String a representar o item
-      * @param runnable <code>Runnable</code> a ser vinculado ao item
-      */
-     public Item(String string, Runnable runnable) {
-       this.string = string;
-       this.runnable = runnable;
-     }
+    /**
+     * Construtor da classe RunnableList.Item
+     * 
+     * @param string String a representar o item
+     * @param runnable <code>Runnable</code> a ser vinculado ao item
+     */
+    public Item(String string, Runnable runnable) {
+      this.string = string;
+      this.runnable = runnable;
+    }
 
-     /**
-      * Representa o item através de uma string
-      * @return String que representa o item
-      */
-     public String toString() {
-       return string;
-     }
+    /**
+     * Representa o item através de uma string
+     * 
+     * @return String que representa o item
+     */
+    public String toString() {
+      return string;
+    }
 
-     /**
-      * Executa o item
-      */
-     public void run() {
-       runnable.run();
-     }
+    /**
+     * Executa o item
+     */
+    public void run() {
+      runnable.run();
+    }
   }
 
   /**
@@ -91,14 +93,14 @@ public class RunnableList extends JList {
       @Override
       public void mouseReleased(MouseEvent e) {
         if (isInsideItemBounds(e)) {
-          RunnableList list = (RunnableList)e.getSource();
+          RunnableList list = (RunnableList) e.getSource();
           super.mouseReleased(e);
           list.runSelectedItem();
         }
       }
 
       private boolean isInsideItemBounds(MouseEvent e) {
-        RunnableList list = (RunnableList)e.getSource();
+        RunnableList list = (RunnableList) e.getSource();
         Point location = e.getPoint();
         int index = list.locationToIndex(location);
         Rectangle bounds = list.getCellBounds(index, index);
@@ -109,6 +111,7 @@ public class RunnableList extends JList {
 
   /**
    * Construtor da classe RunnableList
+   * 
    * @param elements Vetor de itens executáveis
    */
   public RunnableList(RunnableList.Item[] elements) {
@@ -129,9 +132,9 @@ public class RunnableList extends JList {
     KeyListener keyListener = new KeyAdapter() {
       @Override
       public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER || 
-          e.getKeyCode() == KeyEvent.VK_SPACE) { 
-          RunnableList list = (RunnableList)e.getSource();
+        if (e.getKeyCode() == KeyEvent.VK_ENTER
+          || e.getKeyCode() == KeyEvent.VK_SPACE) {
+          RunnableList list = (RunnableList) e.getSource();
           list.runSelectedItem();
         }
       }
@@ -143,7 +146,7 @@ public class RunnableList extends JList {
    * Executa o item atualmente selecionado
    */
   public void runSelectedItem() {
-    RunnableList.Item item = (RunnableList.Item)getSelectedValue();
+    RunnableList.Item item = (RunnableList.Item) getSelectedValue();
     item.run();
   }
 
@@ -156,15 +159,13 @@ public class RunnableList extends JList {
   }
 
   @Override
-  public String getToolTipText(MouseEvent event)  {  
-    Point point = event.getPoint();  
-    int index = this.locationToIndex(point);  
-    if (toolTipTextArray == null ||
-      index < 0 ||
-      index >= toolTipTextArray.length ||
-      toolTipTextArray[index] == null) {
+  public String getToolTipText(MouseEvent event) {
+    Point point = event.getPoint();
+    int index = this.locationToIndex(point);
+    if (toolTipTextArray == null || index < 0
+      || index >= toolTipTextArray.length || toolTipTextArray[index] == null) {
       return null;
     }
     return toolTipTextArray[index];
-  }  
+  }
 }

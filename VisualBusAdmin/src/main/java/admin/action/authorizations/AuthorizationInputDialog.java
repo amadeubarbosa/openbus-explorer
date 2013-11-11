@@ -1,6 +1,7 @@
 package admin.action.authorizations;
 
 import java.awt.GridBagLayout;
+import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JFrame;

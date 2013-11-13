@@ -38,21 +38,49 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.InvalidInter
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
+/**
+ * A classe implementa os comandos especificados na interface
+ * {@link admin.BusAdmin}.
+ * 
+ * @author Tecgraf
+ */
 public class BusAdminImpl implements BusAdmin {
+  /** Host do barramento. */
   private String host;
+  /** Porta do barramento. */
   private short port;
+  /** {@link ORB} do barramento. */
   private ORB orb;
 
+  /** Registro de entidades do barramento. */
   private EntityRegistry entityRegistry;
+  /** Registro de certificados do barramento. */
   private CertificateRegistry certificateRegistry;
+  /** Registro de interfaces do barramento. */
   private InterfaceRegistry interfaceRegistry;
+  /** Registro de ofertas do barramento. */
   private OfferRegistry offerRegistry;
+  /** Registro de logins do barramento. */
   private LoginRegistry loginRegistry;
 
+  /**
+   * Construtor da classe.
+   * 
+   * @param host Host do barramento
+   * @param port Porta do barramento
+   * @param orb ORB do barramento
+   */
   public BusAdminImpl(String host, short port, ORB orb) {
     setHostPort(host, port, orb);
   }
 
+  /**
+   * Ajusta configurações de host e porta do barramento.
+   * 
+   * @param host Host do barramento
+   * @param port Porta do barramento
+   * @param orb ORB do barramento
+   */
   public void setHostPort(String host, short port, ORB orb) {
     this.host = host;
     this.port = port;
@@ -61,6 +89,9 @@ public class BusAdminImpl implements BusAdmin {
     obtainRegistries();
   }
 
+  /**
+   * Obtém as facetas dos registros do barramento.
+   */
   private void obtainRegistries() {
 
     try {
@@ -207,6 +238,7 @@ public class BusAdminImpl implements BusAdmin {
   /**
    * {@inheritDoc}
    */
+  @Override
   public List<String> getEntitiesWithCertificate() throws ServiceFailure,
     UnauthorizedOperation {
     try {
@@ -395,6 +427,9 @@ public class BusAdminImpl implements BusAdmin {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void createInterface(String interfaceName) throws ServiceFailure,
     TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
@@ -427,6 +462,9 @@ public class BusAdminImpl implements BusAdmin {
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void createEntity(String entityID, String entityName, String categoryID)
     throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
@@ -624,6 +662,9 @@ public class BusAdminImpl implements BusAdmin {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,

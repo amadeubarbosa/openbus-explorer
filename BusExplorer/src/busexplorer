@@ -3,4 +3,4 @@
 java \
   -Djava.endorsed.dirs=./lib/ \
   -cp ./lib/\* \
-  admin.VisualBusAdmin
+  busexplorer.Application

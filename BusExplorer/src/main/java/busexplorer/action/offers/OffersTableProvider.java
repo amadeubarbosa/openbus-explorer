@@ -25,7 +25,7 @@ public class OffersTableProvider extends
    * {@inheritDoc}
    */
   @Override
-  public Class[] getColumnClasses() {
+  public Class<?>[] getColumnClasses() {
     Class<?>[] colClasses =
       { String.class, String.class, String.class, String.class };
     return colClasses;

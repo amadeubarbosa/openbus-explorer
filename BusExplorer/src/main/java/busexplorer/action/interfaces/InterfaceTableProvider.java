@@ -27,7 +27,7 @@ public class InterfaceTableProvider extends
    * {@inheritDoc}
    */
   @Override
-  public Class[] getColumnClasses() {
+  public Class<?>[] getColumnClasses() {
     Class<?>[] colClasses = { String.class };
     return colClasses;
   }

@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>tecgraf.openbus</groupId>
-  <artifactId>busexplorer-all</artifactId>
+  <artifactId>all-busexplorer</artifactId>
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
 
-  <name>OpenBus - BusExplorer</name>
+  <name>&nbsp;OpenBus - BusAdminLib e BusExplorer</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
   
   <properties>
@@ -29,7 +29,7 @@
 
   <modules>
     <module>BusAdminLib</module>
-    <module>VisualBusAdmin</module>
+    <module>BusExplorer</module>
   </modules>
 
   <build>

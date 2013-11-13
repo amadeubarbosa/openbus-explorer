@@ -4,14 +4,14 @@
 
   <parent>
     <groupId>tecgraf.openbus</groupId>
-    <artifactId>busexplorer-all</artifactId>
+    <artifactId>all-busexplorer</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>busexplorer-busadminlib</artifactId>
+  <artifactId>busadminlib</artifactId>
   <packaging>jar</packaging>
 
-  <name>OpenBus - BusExplorer - BusAdminLib</name>
+  <name>OpenBus - BusAdminLib</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
   
   <build>

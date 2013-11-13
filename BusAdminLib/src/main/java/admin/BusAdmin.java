@@ -35,6 +35,9 @@ public interface BusAdmin {
    * 
    * @return lista de descrições de categoria
    * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
    */
   public List<EntityCategoryDesc> getCategories() throws ServiceFailure,
     TRANSIENT, COMM_FAILURE, NO_PERMISSION;
@@ -45,6 +48,9 @@ public interface BusAdmin {
    * 
    * @return lista de descrições de ofertas de serviços
    * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
    */
   public List<ServiceOfferDesc> getOffers() throws ServiceFailure, TRANSIENT,
     COMM_FAILURE, NO_PERMISSION;
@@ -55,6 +61,9 @@ public interface BusAdmin {
    * 
    * @return lista de IDs das interfaces
    * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
    */
   public List<String> getInterfaces() throws ServiceFailure, TRANSIENT,
     COMM_FAILURE, NO_PERMISSION;
@@ -65,6 +74,9 @@ public interface BusAdmin {
    * 
    * @return descrição da entidade
    * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
    */
   public List<RegisteredEntityDesc> getEntities() throws ServiceFailure,
     TRANSIENT, COMM_FAILURE, NO_PERMISSION;
@@ -128,7 +140,7 @@ public interface BusAdmin {
   /**
    * Invalida um login ativo no barramento
    * 
-   * @param LoginInfo Informação de login
+   * @param loginInfo Informação de login
    * @throws ServiceFailure
    * @throws TRANSIENT
    * @throws COMM_FAILURE
@@ -158,6 +170,12 @@ public interface BusAdmin {
    * Cadastra uma nova interface no barramento
    * 
    * @param interfaceName nome da nova interface
+   * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
+   * @throws UnauthorizedOperation
+   * @throws InvalidInterface
    */
   public void createInterface(String interfaceName) throws ServiceFailure,
     TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
@@ -169,6 +187,12 @@ public interface BusAdmin {
    * @param entityID ID da nova entidade
    * @param entityName Nome da nova entidade
    * @param categoryID ID de alguma categoria já cadastrada
+   * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
+   * @throws UnauthorizedOperation
+   * @throws EntityAlreadyRegistered
    */
   public void createEntity(String entityID, String entityName, String categoryID)
     throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
@@ -251,6 +275,12 @@ public interface BusAdmin {
    * 
    * @param entityID ID da entidade que vai receber a autorização
    * @param interfaceName interface que vai ser autorizada
+   * @throws ServiceFailure
+   * @throws TRANSIENT
+   * @throws COMM_FAILURE
+   * @throws NO_PERMISSION
+   * @throws UnauthorizedOperation
+   * @throws InvalidInterface
    */
   public void setAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,

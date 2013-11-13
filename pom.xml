@@ -7,7 +7,7 @@
   <packaging>pom</packaging>
   <version>1.0-SNAPSHOT</version>
 
-  <name>&nbsp;OpenBus - BusAdminLib e BusExplorer</name>
+  <name>OpenBus - BusAdminLib e BusExplorer</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
   
   <properties>

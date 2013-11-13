@@ -1,7 +1,7 @@
 package busexplorer.action.interfaces;
 
-import busexplorer.wrapper.InterfaceWrapper;
 import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
+import busexplorer.wrapper.InterfaceWrapper;
 
 /**
  * Provedor de dados para a tabela de Interfaces
@@ -11,20 +11,30 @@ import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTablePr
 public class InterfaceTableProvider extends
   VerifiableModifiableObjectTableProvider {
 
-  private static final int ENTITY_NAME = 0;
+  /** Índice da coluna Nome da entidade. */
+  private static final int INTERFACE_NAME = 0;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String[] getColumnNames() {
     String[] colNames = { "Interface" };
     return colNames;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Class[] getColumnClasses() {
     Class<?>[] colClasses = { String.class };
     return colClasses;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void setValueAt(Object row, Object newValue, int colIndex) {
     InterfaceWrapper interfaceWrapper = (InterfaceWrapper) row;
@@ -32,7 +42,7 @@ public class InterfaceTableProvider extends
     String interfaceName = interfaceWrapper.getInterface();
 
     switch (colIndex) {
-      case ENTITY_NAME:
+      case INTERFACE_NAME:
         interfaceName = (String) newValue;
       default:
         break;
@@ -40,11 +50,17 @@ public class InterfaceTableProvider extends
 
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCellEditable(Object row, int rowIndex, int columnIndex) {
     return false;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isValid(Object row, int columnIndex) {
     InterfaceWrapper interfaceWrapper = (InterfaceWrapper) row;
@@ -58,12 +74,18 @@ public class InterfaceTableProvider extends
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getTooltip(int columnIndex) {
     // TODO Auto-generated method stub
     return null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Object[] getCellValues(Object row) {
     final InterfaceWrapper interfaceWrapper = (InterfaceWrapper) row;

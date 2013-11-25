@@ -1,16 +1,15 @@
 package busexplorer.action.entities;
 
-import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
-import busexplorer.wrapper.RegisteredEntityDescWrapper;
 
 /**
  * Provedor de dados para a tabela de Entidades
  * 
  * @author Tecgraf
  */
-public class EntityTableProvider extends
-  VerifiableModifiableObjectTableProvider {
+public class EntityTableProvider implements
+  ObjectTableProvider<RegisteredEntityDesc> {
 
   /** Índice da coluna ID da Entidade */
   private static final int ENTITY_ID = 0;
@@ -24,7 +23,7 @@ public class EntityTableProvider extends
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "ID Entidade", "ID Categoria", "Nome" };
+    String[] colNames = { "Entidade", "Categoria", "Nome" };
     return colNames;
   }
 
@@ -41,74 +40,22 @@ public class EntityTableProvider extends
    * {@inheritDoc}
    */
   @Override
-  public void setValueAt(Object row, Object newValue, int colIndex) {
-    RegisteredEntityDescWrapper entityWrapper =
-      (RegisteredEntityDescWrapper) row;
-
-    RegisteredEntityDesc entityDesc = entityWrapper.getRegisteredEntityDesc();
-    String categoryID = entityWrapper.getCategoryID();
-
-    switch (colIndex) {
+  public Object getCellValue(RegisteredEntityDesc row, int col) {
+    final RegisteredEntityDesc entityDesc = row;
+    switch (col) {
       case ENTITY_ID:
-        entityDesc.id = (String) newValue;
-        break;
+        return entityDesc.id;
+
       case CATEGORY_ID:
-        categoryID = (String) newValue;
-        break;
+        // FIXME: chamada remota na EDT. Precisa mudar o tipo de elemento
+        return entityDesc.category.id();
+
       case ENTITY_NAME:
-        entityDesc.name = (String) newValue;
+        return entityDesc.name;
+
       default:
         break;
     }
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isCellEditable(Object row, int rowIndex, int columnIndex) {
-    return false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isValid(Object row, int columnIndex) {
-    RegisteredEntityDescWrapper rowWrapper = (RegisteredEntityDescWrapper) row;
-    RegisteredEntityDesc entity =
-      ((RegisteredEntityDescWrapper) row).getRegisteredEntityDesc();
-
-    if (!entity.id.isEmpty() && !rowWrapper.getCategoryID().isEmpty()
-      && !entity.name.isEmpty()) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getTooltip(int columnIndex) {
-    // TODO Auto-generated method stub
     return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object[] getCellValues(Object row) {
-    final RegisteredEntityDescWrapper entityWrapper =
-      (RegisteredEntityDescWrapper) row;
-
-    final RegisteredEntityDesc entityDesc =
-      entityWrapper.getRegisteredEntityDesc();
-    return new Object[] { entityDesc.id, entityWrapper.getCategoryID(),
-        entityDesc.name };
   }
 }

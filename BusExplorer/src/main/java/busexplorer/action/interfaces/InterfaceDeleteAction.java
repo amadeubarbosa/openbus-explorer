@@ -6,13 +6,12 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.InterfaceWrapper;
 import reuse.modified.planref.client.util.crud.CRUDPanel;
-import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
+import busexplorer.action.BusAdminAbstractAction;
+import busexplorer.wrapper.InterfaceWrapper;
 
 /**
  * Classe de ação para a remoção de uma interface.
@@ -42,8 +41,8 @@ public class InterfaceDeleteAction extends BusAdminAbstractAction {
    * {@inheritDoc}
    */
   @Override
-  public int crudActionType() {
-    return CRUDbleActionInterface.TYPE_ACTION_REMOVE;
+  public CRUDActionType crudActionType() {
+    return CRUDActionType.REMOVE;
   }
 
   /**

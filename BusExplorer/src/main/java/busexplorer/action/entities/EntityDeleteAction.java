@@ -1,18 +1,15 @@
 package busexplorer.action.entities;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.RegisteredEntityDescWrapper;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
-import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import test.ActionType;
+import test.OpenBusAction;
 import admin.BusAdmin;
 
 /**
@@ -20,31 +17,24 @@ import admin.BusAdmin;
  * 
  * @author Tecgraf
  */
-public class EntityDeleteAction extends BusAdminAbstractAction {
-
-  /** Painel com o CRUD de entidades */
-  private CRUDPanel<RegisteredEntityDescWrapper> panel;
+public class EntityDeleteAction extends OpenBusAction<RegisteredEntityDesc> {
 
   /**
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param panel painel de CRUD
    * @param admin
    */
-  public EntityDeleteAction(JFrame parentWindow,
-    CRUDPanel<RegisteredEntityDescWrapper> panel, BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin, LNG
-      .get("EntityDeleteAction.name"));
-    this.panel = panel;
+  public EntityDeleteAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin, LNG.get("EntityDeleteAction.name"));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public int crudActionType() {
-    return CRUDbleActionInterface.TYPE_ACTION_REMOVE;
+  public ActionType getActionType() {
+    return ActionType.REMOVE;
   }
 
   /**
@@ -62,22 +52,22 @@ public class EntityDeleteAction extends BusAdminAbstractAction {
       return;
     }
 
-    Task task = new Task() {
+    Task<Boolean> task = new Task<Boolean>() {
       @Override
       protected void performTask() throws Exception {
-        List<RegisteredEntityDescWrapper> selectedWrappers =
-          panel.getSelectedInfos();
-        for (RegisteredEntityDescWrapper wrapper : selectedWrappers) {
-          RegisteredEntityDesc entity = wrapper.getRegisteredEntityDesc();
-          admin.removeEntity(entity.id);
+        // TODO: verificar consistencia.
+        // é mais prático permitir a remoção de apenas uma entidade por vez 
+        RegisteredEntityDesc entity = getPanelComponent().getSelectedElement();
+        setResult(true);
+        if (!admin.removeEntity(entity.id)) {
+          setResult(false);
         }
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getError() == null) {
-          panel.removeSelectedInfos();
-          panel.getTableModel().fireTableDataChanged();
+        if (getStatus() && getResult()) {
+          getPanelComponent().removeSelectedElements();
         }
       }
     };

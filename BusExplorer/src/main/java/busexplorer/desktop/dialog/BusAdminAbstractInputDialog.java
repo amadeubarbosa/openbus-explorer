@@ -4,17 +4,14 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import reuse.modified.logistic.logic.common.Identifiable;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import reuse.modified.logistic.client.util.InputDialog;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
 
-public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
-  extends InputDialog {
-  private CRUDPanel<T> panel;
+public abstract class BusAdminAbstractInputDialog<T> extends InputDialog {
+  private ObjectTableModel<T> model;
   Exception taskException = null;
 
   /**
@@ -30,9 +27,9 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
    * @param blockType Modo de Bloqueio da janela mãe.
    */
   public BusAdminAbstractInputDialog(JFrame parentWindow, String title,
-    CRUDPanel<T> panel, BusAdmin admin) {
+    ObjectTableModel<T> model, BusAdmin admin) {
     super(parentWindow, title, admin);
-    this.panel = panel;
+    this.model = model;
   }
 
   /**
@@ -43,7 +40,7 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
    *         sucesso.
    */
   protected boolean apply() {
-    Task task = new Task() {
+    Task<?> task = new Task() {
       @Override
       protected void performTask() throws Exception {
         openBusCall();
@@ -83,12 +80,14 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
     }
   }
 
+  @Override
   public void showDialog() {
     // Emulando tratamento de modalidade
     getOwner().setEnabled(false);
     super.showDialog();
   }
 
+  @Override
   public void dispose() {
     // Emulando tratamento de modalidade
     getOwner().setEnabled(true);
@@ -99,13 +98,12 @@ public abstract class BusAdminAbstractInputDialog<T extends Identifiable<T>>
    * Adiciona uma nova linha na tabela com os dados do novo objeto criado
    */
   protected void updateTable() {
-    ObjectTableModel<T> model = panel.getTableModel();
     model.add(newRow);
     model.fireTableDataChanged();
   }
 
   public List<T> getRows() {
-    return panel.getTableModel().getRows();
+    return model.getRows();
   }
 
   public T getNewRow() {

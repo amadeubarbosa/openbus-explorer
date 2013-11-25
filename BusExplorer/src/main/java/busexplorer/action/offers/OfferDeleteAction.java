@@ -6,14 +6,13 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.OfferWrapper;
 import reuse.modified.planref.client.util.crud.CRUDPanel;
-import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
 import admin.BusAdmin;
+import busexplorer.action.BusAdminAbstractAction;
+import busexplorer.wrapper.OfferWrapper;
 
 /**
  * Ação que atualiza a tabela de ofertas
@@ -34,8 +33,8 @@ public class OfferDeleteAction extends BusAdminAbstractAction {
   }
 
   @Override
-  public int crudActionType() {
-    return CRUDbleActionInterface.TYPE_ACTION_REMOVE;
+  public CRUDActionType crudActionType() {
+    return CRUDActionType.REMOVE;
   }
 
   @Override

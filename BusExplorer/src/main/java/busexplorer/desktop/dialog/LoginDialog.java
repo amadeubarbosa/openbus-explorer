@@ -153,7 +153,7 @@ public class LoginDialog {
     loginPane.add(userLabel, new GBC(0, 3).west());
 
     //Campo de usuário
-    userField = new JTextField("cliente", 1);
+    userField = new JTextField(1);
     userField.setName("username");
     userField.setToolTipText(LNG.get("LoginDialog.user.help"));
     loginPane.add(userField, new GBC(0, 4).west().horizontal());
@@ -164,7 +164,7 @@ public class LoginDialog {
       new Insets(0, 6, 0, 0)).right(70));
 
     //Campo de senha
-    passwordField = new JPasswordField("cliente", 1);
+    passwordField = new JPasswordField(1);
     passwordField.setName("password");
     passwordField.setToolTipText(LNG.get("LoginDialog.password.help"));
     loginPane.add(passwordField, new GBC(1, 4).west().horizontal().insets(

@@ -1,6 +1,7 @@
 package busexplorer.action.entities;
 
 import java.awt.GridBagLayout;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -9,12 +10,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
-import busexplorer.wrapper.RegisteredEntityDescWrapper;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.Task;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import test.BusExplorerAbstractInputDialog;
+import test.PanelComponent;
 import admin.BusAdmin;
 
 /**
@@ -22,19 +25,16 @@ import admin.BusAdmin;
  * 
  * @author Tecgraf
  */
-public class EntityInputDialog extends
-  BusAdminAbstractInputDialog<RegisteredEntityDescWrapper> {
+public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel entityIDLabel;
   private JTextField entityIDField;
   private JLabel categoryIDLabel;
   private JComboBox categoryIDCombo;
   private JLabel entityNameLabel;
   private JTextField entityNameField;
-  private List<String> categoryIDList;
-
-  private String entityID;
-  private String entityName;
-  private String categoryID;
+  private HashMap<String, EntityCategoryDesc> categories =
+    new HashMap<String, EntityCategoryDesc>();
+  private PanelComponent<RegisteredEntityDesc> panel;
 
   /**
    * Construtor.
@@ -43,10 +43,13 @@ public class EntityInputDialog extends
    * @param title Título do Diálogo.
    */
   public EntityInputDialog(JFrame parentWindow, String title,
-    CRUDPanel<RegisteredEntityDescWrapper> panel, BusAdmin admin,
-    List<String> categoryIDList) {
-    super(parentWindow, title, panel, admin);
-    this.categoryIDList = categoryIDList;
+    PanelComponent<RegisteredEntityDesc> panel, BusAdmin admin,
+    List<EntityCategoryDesc> categoryDescList) {
+    super(parentWindow, title, admin);
+    this.panel = panel;
+    for (EntityCategoryDesc desc : categoryDescList) {
+      categories.put(desc.id, desc);
+    }
   }
 
   /**
@@ -54,19 +57,32 @@ public class EntityInputDialog extends
    */
   @Override
   protected boolean accept() {
-    if (hasValidFields()) {
-
-      RegisteredEntityDesc entityDesc = new RegisteredEntityDesc();
-      entityDesc.id = getEntityID();
-      entityDesc.name = getEntityName();
-
-      setNewRow(new RegisteredEntityDescWrapper(entityDesc, getCategoryID()));
-
-      if (apply()) {
-        return true;
-      }
+    if (!hasValidFields()) {
+      return false;
     }
-    return false;
+
+    final String id = getEntityID();
+    final String name = getEntityName();
+    final String category = getCategory().id;
+
+    Task<RegisteredEntityDesc> task = new Task<RegisteredEntityDesc>() {
+
+      @Override
+      protected void performTask() throws Exception {
+        RegisteredEntity entity = admin.createEntity(id, name, category);
+        setResult(entity.describe());
+      }
+
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus()) {
+          panel.refresh(null);
+        }
+      }
+    };
+    task.execute(this, LNG.get("AddAction.waiting.title"), LNG
+      .get("AddAction.waiting.msg"));
+    return task.getStatus();
   }
 
   private String getEntityID() {
@@ -77,8 +93,8 @@ public class EntityInputDialog extends
     return this.entityNameField.getText();
   }
 
-  private String getCategoryID() {
-    return (String) this.categoryIDCombo.getSelectedItem();
+  private EntityCategoryDesc getCategory() {
+    return categories.get(this.categoryIDCombo.getSelectedItem());
   }
 
   /**
@@ -97,7 +113,8 @@ public class EntityInputDialog extends
     categoryIDLabel = new JLabel(LNG.get("EntityInputDialog.categoryID.label"));
     panel.add(categoryIDLabel, new GBC(0, 2).west());
 
-    categoryIDCombo = new JComboBox(categoryIDList.toArray());
+    categoryIDCombo =
+      new JComboBox(categories.keySet().toArray(new String[categories.size()]));
     panel.add(categoryIDCombo, new GBC(0, 3).west());
 
     entityNameLabel =
@@ -108,20 +125,6 @@ public class EntityInputDialog extends
     panel.add(entityNameField, new GBC(0, 5).west());
 
     return panel;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected void openBusCall() throws Exception {
-    RegisteredEntityDescWrapper newEntityDescWrapper = getNewRow();
-    RegisteredEntityDesc entityDesc =
-      newEntityDescWrapper.getRegisteredEntityDesc();
-
-    admin.createEntity(entityDesc.id, entityDesc.name, newEntityDescWrapper
-      .getCategoryID());
-
   }
 
   /**

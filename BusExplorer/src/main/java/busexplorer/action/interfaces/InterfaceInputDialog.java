@@ -7,12 +7,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
-import busexplorer.wrapper.InterfaceWrapper;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
+import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
+import busexplorer.wrapper.InterfaceWrapper;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de
@@ -33,8 +33,8 @@ public class InterfaceInputDialog extends
    * @param blockType Modo de Bloqueio da janela mãe.
    */
   public InterfaceInputDialog(JFrame parentWindow, String title,
-    CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
-    super(parentWindow, title, panel, admin);
+    ObjectTableModel<InterfaceWrapper> model, BusAdmin admin) {
+    super(parentWindow, title, model, admin);
   }
 
   @Override

@@ -6,13 +6,13 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.EntityCategoryDescWrapper;
 import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import admin.BusAdmin;
+import busexplorer.action.BusAdminAbstractAction;
+import busexplorer.wrapper.EntityCategoryDescWrapper;
 
 /**
  * Classe de ação para a remoção de uma categoria.
@@ -42,8 +42,8 @@ public class CategoryDeleteAction extends BusAdminAbstractAction {
    * {@inheritDoc}
    */
   @Override
-  public int crudActionType() {
-    return TYPE_ACTION_REMOVE;
+  public CRUDActionType crudActionType() {
+    return CRUDActionType.REMOVE;
   }
 
   /**

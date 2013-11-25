@@ -14,12 +14,12 @@ import javax.swing.JTextField;
 
 import org.apache.commons.io.FileUtils;
 
-import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
-import busexplorer.wrapper.IdentifierWrapper;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
+import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
+import busexplorer.wrapper.IdentifierWrapper;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de
@@ -43,8 +43,8 @@ public class CertificateInputDialog extends
    * @param blockType Modo de Bloqueio da janela mãe.
    */
   public CertificateInputDialog(JFrame parentWindow, String title,
-    CRUDPanel<IdentifierWrapper> panel, BusAdmin admin) {
-    super(parentWindow, title, panel, admin);
+    ObjectTableModel<IdentifierWrapper> model, BusAdmin admin) {
+    super(parentWindow, title, model, admin);
   }
 
   public void chooseCertificateFile() {
@@ -100,6 +100,7 @@ public class CertificateInputDialog extends
     certificateButton =
       new JButton(LNG.get("CertificateInputDialog.certificate.search"));
     certificateButton.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(ActionEvent e) {
         chooseCertificateFile();
       }

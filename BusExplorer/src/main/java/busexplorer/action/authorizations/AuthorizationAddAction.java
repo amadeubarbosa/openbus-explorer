@@ -6,14 +6,14 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.AuthorizationWrapper;
 import reuse.modified.planref.client.util.crud.CRUDPanel;
-import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import admin.BusAdmin;
+import busexplorer.action.BusAdminAbstractAction;
+import busexplorer.wrapper.AuthorizationWrapper;
 
 /**
  * Classe de ação para criar uma autorização. Esta dispara um diálogo.
@@ -23,21 +23,18 @@ import admin.BusAdmin;
  */
 public class AuthorizationAddAction extends BusAdminAbstractAction {
 
-  private CRUDPanel<AuthorizationWrapper> panel;
-
   public AuthorizationAddAction(JFrame parentWindow,
     CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin) {
     super(parentWindow, panel.getTable(), admin, LNG
       .get("AuthorizationAddAction.name"));
-    this.panel = panel;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public int crudActionType() {
-    return CRUDbleActionInterface.TYPE_ACTION_ADD;
+  public CRUDActionType crudActionType() {
+    return CRUDActionType.ADD;
   }
 
   @Override
@@ -58,8 +55,11 @@ public class AuthorizationAddAction extends BusAdminAbstractAction {
 
       @Override
       protected void afterTaskUI() {
+        ObjectTableModel<AuthorizationWrapper> model =
+          (ObjectTableModel<AuthorizationWrapper>) AuthorizationAddAction.this.table
+            .getModel();
         new AuthorizationInputDialog(AuthorizationAddAction.this.parentWindow,
-          LNG.get("AuthorizationAddAction.inputDialog.title"), panel, admin,
+          LNG.get("AuthorizationAddAction.inputDialog.title"), model, admin,
           entitiesIDList, interfacesList).showDialog();
       }
     };

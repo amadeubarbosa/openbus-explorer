@@ -40,12 +40,6 @@ import javax.swing.table.TableColumnModel;
 
 import reuse.modified.planref.client.util.PlanrefUI;
 import reuse.modified.planref.client.util.TransparentPanel;
-import reuse.modified.planref.client.util.crud.CRUDDateRenderer;
-import reuse.modified.planref.client.util.crud.CRUDBooleanRenderer;
-import reuse.modified.planref.client.util.crud.CRUDCellRenderer;
-import reuse.modified.planref.client.util.crud.CRUDDoubleRenderer;
-import reuse.modified.planref.client.util.crud.CRUDNumberRenderer;
-import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import reuse.modified.planref.client.util.crud.celleditors.CRUDNumberEditor;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GUIUtils;
@@ -748,35 +742,35 @@ public class CRUDPanel<T> extends TransparentPanel implements ActionListener {
           getButtonsPane().add(bt);
         }
         switch (action.crudActionType()) {
-          case CRUDbleActionInterface.TYPE_ACTION_ADD:
+          case ADD:
             hasAddButton = true;
             crudActionAdd = action;
             break;
-          case CRUDbleActionInterface.TYPE_ACTION_EDIT:
+          case EDIT:
             hasEditButton = true;
             action.setEnabled(false);
             crudActionEdit = action;
             editButton = (JButton) bt;
             break;
-          case CRUDbleActionInterface.TYPE_ACTION_REMOVE:
+          case REMOVE:
             hasRemoveButton = true;
             action.setEnabled(false);
             crudActionRemove = action;
             removeButton = (JButton) bt;
             break;
-          case CRUDbleActionInterface.TYPE_ACTION_OTHER_SINGLE_SELECTION:
+          case OTHER_SINGLE_SELECTION:
             addSingleSelectAction(action);
             action.setEnabled(false);
             break;
-          case CRUDbleActionInterface.TYPE_ACTION_OTHER_MULTI_SELECTION:
+          case OTHER_MULTI_SELECTION:
             addMultiSelectAction(action);
             action.setEnabled(false);
             break;
-          case CRUDbleActionInterface.TYPE_ACTION_OTHER_ONLY_MULTI_SELECTION:
+          case OTHER_ONLY_MULTI_SELECTION:
             addOnlyMultiSelectAction(action);
             action.setEnabled(false);
             break;
-          case CRUDbleActionInterface.TYPE_ACTION_OTHER:
+          case OTHER:
           default:
             break;
         }
@@ -1007,35 +1001,27 @@ public class CRUDPanel<T> extends TransparentPanel implements ActionListener {
   /**
    * Retorna a combo para seleção da penalidade.
    * 
-   * @return combo para seleção da penalidade.
-  private JComboBox getPenaltyCombo() {
-    List<Penalty> penaltieslist = new ArrayList<Penalty>();
-    Penalty[] penalties = Penalty.values();
-    for (int i = 0; i < penalties.length; i++) {
-      penaltieslist.add(penalties[i]);
-    }
-    Collections.sort(penaltieslist);
-    JComboBox penaltyCombo = new JComboBox();
-    penaltyCombo.setModel(ListComboBoxModel.get(penaltieslist));
-    return penaltyCombo;
-  }
+   * @return combo para seleção da penalidade. private JComboBox
+   *         getPenaltyCombo() { List<Penalty> penaltieslist = new
+   *         ArrayList<Penalty>(); Penalty[] penalties = Penalty.values(); for
+   *         (int i = 0; i < penalties.length; i++) {
+   *         penaltieslist.add(penalties[i]); } Collections.sort(penaltieslist);
+   *         JComboBox penaltyCombo = new JComboBox();
+   *         penaltyCombo.setModel(ListComboBoxModel.get(penaltieslist)); return
+   *         penaltyCombo; }
    */
 
   /**
    * Retorna a combo para seleção dos tipos de ponto de entrega.
    * 
-   * @return combo para seleção dos tipos de ponto de entrega.
-  private JComboBox getDeliberyPointTypeCombo() {
-    List<DeliveryPointType> typeslist = new ArrayList<DeliveryPointType>();
-    DeliveryPointType[] types = DeliveryPointType.values();
-    for (int i = 0; i < types.length; i++) {
-      typeslist.add(types[i]);
-    }
-    Collections.sort(typeslist);
-    JComboBox penaltyCombo = new JComboBox();
-    penaltyCombo.setModel(ListComboBoxModel.get(typeslist));
-    return penaltyCombo;
-  }
+   * @return combo para seleção dos tipos de ponto de entrega. private JComboBox
+   *         getDeliberyPointTypeCombo() { List<DeliveryPointType> typeslist =
+   *         new ArrayList<DeliveryPointType>(); DeliveryPointType[] types =
+   *         DeliveryPointType.values(); for (int i = 0; i < types.length; i++)
+   *         { typeslist.add(types[i]); } Collections.sort(typeslist); JComboBox
+   *         penaltyCombo = new JComboBox();
+   *         penaltyCombo.setModel(ListComboBoxModel.get(typeslist)); return
+   *         penaltyCombo; }
    */
 
   /**

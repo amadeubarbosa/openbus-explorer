@@ -4,12 +4,12 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JFrame;
 
+import reuse.modified.planref.client.util.crud.CRUDPanel;
+import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import admin.BusAdmin;
 import busexplorer.action.BusAdminAbstractAction;
 import busexplorer.wrapper.IdentifierWrapper;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
-import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
-import tecgraf.javautils.LNG;
-import admin.BusAdmin;
 
 /**
  * Classe de ação para criar uma interface. Esta dispara um diálogo.
@@ -19,27 +19,26 @@ import admin.BusAdmin;
  */
 public class CertificateAddAction extends BusAdminAbstractAction {
 
-  private CRUDPanel<IdentifierWrapper> panel;
-
   public CertificateAddAction(JFrame parentWindow,
     CRUDPanel<IdentifierWrapper> panel, BusAdmin admin) {
     super(parentWindow, panel.getTable(), admin, LNG
       .get("CertificateAddAction.name"));
-    this.panel = panel;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public int crudActionType() {
-    return CRUDbleActionInterface.TYPE_ACTION_ADD;
+  public CRUDActionType crudActionType() {
+    return CRUDActionType.ADD;
   }
 
   @Override
   public void actionPerformed(ActionEvent arg0) {
+    ObjectTableModel<IdentifierWrapper> model =
+      (ObjectTableModel<IdentifierWrapper>) this.table.getModel();
     new CertificateInputDialog(parentWindow, LNG
-      .get("CertificateAddAction.inputDialog.title"), panel, admin)
+      .get("CertificateAddAction.inputDialog.title"), model, admin)
       .showDialog();
   }
 

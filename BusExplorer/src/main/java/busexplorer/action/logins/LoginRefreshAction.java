@@ -7,14 +7,14 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.LoginInfoWrapper;
 import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import admin.BusAdmin;
+import busexplorer.action.BusAdminAbstractAction;
+import busexplorer.wrapper.LoginInfoWrapper;
 
 /**
  * Ação que atualiza a tabela de categorias
@@ -29,8 +29,8 @@ public class LoginRefreshAction extends BusAdminAbstractAction {
   }
 
   @Override
-  public int crudActionType() {
-    return TYPE_ACTION_OTHER;
+  public CRUDActionType crudActionType() {
+    return CRUDActionType.OTHER;
   }
 
   @Override

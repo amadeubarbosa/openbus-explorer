@@ -5,7 +5,9 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BoxLayout;
@@ -24,6 +26,9 @@ import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.assistant.Assistant;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import test.PanelActionInterface;
+import test.PanelComponent;
 import admin.BusAdmin;
 import busexplorer.action.LogoutAction;
 import busexplorer.action.authorizations.AuthorizationAddAction;
@@ -59,7 +64,6 @@ import busexplorer.wrapper.IdentifierWrapper;
 import busexplorer.wrapper.InterfaceWrapper;
 import busexplorer.wrapper.LoginInfoWrapper;
 import busexplorer.wrapper.OfferWrapper;
-import busexplorer.wrapper.RegisteredEntityDescWrapper;
 
 /**
  * Diálogo principal da aplicação
@@ -76,9 +80,9 @@ public class MainDialog {
    */
   private Assistant assistant;
   /**
-   * O diálogo principal
+   * A janela principal da aplicação
    */
-  private JFrame mainDialog;
+  private JFrame desktop;
   /**
    * Informa se o usuário que efetuou login no barramento possui permissão de
    * administração
@@ -108,7 +112,7 @@ public class MainDialog {
   /** Painel de gerência das categorias no barramento */
   private CRUDPanel<EntityCategoryDescWrapper> panelCategory;
   /** Painel de gerência das entidades registradas no barramento */
-  private CRUDPanel<RegisteredEntityDescWrapper> panelEntity;
+  private PanelComponent<RegisteredEntityDesc> panelEntity;
   /** Painel de gerência dos certificados registrados no barramento */
   private CRUDPanel<IdentifierWrapper> panelCertificate;
   /** Painel de gerência das interfaces registradas no barramento */
@@ -141,9 +145,9 @@ public class MainDialog {
    * Constrói os componentes da janela
    */
   private void buildDialog() {
-    mainDialog = new JFrame(getDialogTitle());
+    desktop = new JFrame(getDialogTitle());
 
-    mainDialog.addWindowListener(new WindowAdapter() {
+    desktop.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
         shutdownMainDialog();
@@ -151,14 +155,14 @@ public class MainDialog {
 
     });
 
-    mainDialog.setLayout(new GridBagLayout());
+    desktop.setLayout(new GridBagLayout());
 
     featuresPanel = (JPanel) buildFeaturesComponent();
-    mainDialog.add(buildMenuComponent(), new GBC(0, 0).west().filly());
-    mainDialog.add(featuresPanel, new GBC(1, 0).both());
-    mainDialog.pack();
+    desktop.add(buildMenuComponent(), new GBC(0, 0).west().filly());
+    desktop.add(featuresPanel, new GBC(1, 0).both());
+    desktop.pack();
 
-    GUIUtils.centerOnScreen(mainDialog);
+    GUIUtils.centerOnScreen(desktop);
 
   }
 
@@ -166,7 +170,7 @@ public class MainDialog {
    * Exibe a janela
    */
   public void show() {
-    mainDialog.setVisible(true);
+    desktop.setVisible(true);
   }
 
   /**
@@ -176,26 +180,24 @@ public class MainDialog {
    */
   private JComponent buildMenuComponent() {
     RunnableList.Item itemCategory =
-      new RunnableList.Item(
-        LNG.get("MainDialog.category.button"),
-        new CategoryFeatureRunnable(mainDialog, panelCategory.getTable(), admin));
+      new RunnableList.Item(LNG.get("MainDialog.category.button"),
+        new CategoryFeatureRunnable(desktop, panelCategory.getTable(), admin));
     RunnableList.Item itemEntity =
       new RunnableList.Item(LNG.get("MainDialog.entity.button"),
-        new EntityFeatureRunnable(mainDialog, panelEntity.getTable(), admin));
+        new EntityFeatureRunnable(desktop, panelEntity, admin));
     RunnableList.Item itemInterface =
       new RunnableList.Item(LNG.get("MainDialog.interface.button"),
-        new InterfaceFeatureRunnable(mainDialog, panelInterface.getTable(),
-          admin));
+        new InterfaceFeatureRunnable(desktop, panelInterface.getTable(), admin));
     RunnableList.Item itemAuthorization =
       new RunnableList.Item(LNG.get("MainDialog.authorization.button"),
-        new AuthorizationFeatureRunnable(mainDialog, panelAuthorization
-          .getTable(), admin));
+        new AuthorizationFeatureRunnable(desktop,
+          panelAuthorization.getTable(), admin));
     RunnableList.Item itemOffer =
       new RunnableList.Item(LNG.get("MainDialog.offer.button"),
-        new OfferFeatureRunnable(mainDialog, panelOffer.getTable(), admin));
+        new OfferFeatureRunnable(desktop, panelOffer.getTable(), admin));
     RunnableList.Item itemLogout =
       new RunnableList.Item(LNG.get("MainDialog.logout.button"),
-        new LogoutFeatureRunnable(assistant, mainDialog));
+        new LogoutFeatureRunnable(assistant, desktop));
 
     Vector<RunnableList.Item> featuresVector = new Vector<RunnableList.Item>();
     Vector<String> toolTipTextVector = new Vector<String>();
@@ -221,11 +223,11 @@ public class MainDialog {
     if (isCurrentUserAdmin) {
       RunnableList.Item itemCertificate =
         new RunnableList.Item(LNG.get("MainDialog.certificate.button"),
-          new CertificateFeatureRunnable(mainDialog, panelCertificate
-            .getTable(), admin));
+          new CertificateFeatureRunnable(desktop, panelCertificate.getTable(),
+            admin));
       RunnableList.Item itemLogin =
         new RunnableList.Item(LNG.get("MainDialog.login.button"),
-          new LoginFeatureRunnable(mainDialog, panelLogin.getTable(), admin));
+          new LoginFeatureRunnable(desktop, panelLogin.getTable(), admin));
 
       featuresVector.add(2, itemCertificate);
       toolTipTextVector.add(2, LNG.get("MainDialog.certificate.help"));
@@ -310,40 +312,32 @@ public class MainDialog {
 
     panelCategory = new CRUDPanel<EntityCategoryDescWrapper>(m, 0);
 
-    new CategoryRefreshAction(mainDialog, panelCategory.getTable(), admin)
+    new CategoryRefreshAction(desktop, panelCategory.getTable(), admin)
       .actionPerformed(null);
 
     Vector<CRUDbleActionInterface> actionsVector =
       new Vector<CRUDbleActionInterface>();
-    actionsVector.add(new CategoryRefreshAction(mainDialog, panelCategory
+    actionsVector.add(new CategoryRefreshAction(desktop, panelCategory
       .getTable(), admin));
-    actionsVector.add(new CategoryAddAction(mainDialog, panelCategory, admin));
-    actionsVector
-      .add(new CategoryDeleteAction(mainDialog, panelCategory, admin));
+    actionsVector.add(new CategoryAddAction(desktop, panelCategory, admin));
+    actionsVector.add(new CategoryDeleteAction(desktop, panelCategory, admin));
 
     panelCategory.setButtonsPane(actionsVector);
   }
 
   /** Inicializa o painel de CRUD de entidades */
   private void initPanelEntity() {
-    ObjectTableModel<RegisteredEntityDescWrapper> m =
-      new ModifiableObjectTableModel<RegisteredEntityDescWrapper>(
-        new LinkedList<RegisteredEntityDescWrapper>(),
-        new EntityTableProvider());
+    ObjectTableModel<RegisteredEntityDesc> model =
+      new ObjectTableModel<RegisteredEntityDesc>(
+        new ArrayList<RegisteredEntityDesc>(), new EntityTableProvider());
+    List<PanelActionInterface<RegisteredEntityDesc>> actionsVector =
+      new Vector<PanelActionInterface<RegisteredEntityDesc>>();
+    actionsVector.add(new EntityRefreshAction(desktop, admin));
+    actionsVector.add(new EntityAddAction(desktop, admin));
+    actionsVector.add(new EntityDeleteAction(desktop, admin));
 
-    panelEntity = new CRUDPanel<RegisteredEntityDescWrapper>(m, 0);
-
-    new EntityRefreshAction(mainDialog, panelEntity.getTable(), admin)
-      .actionPerformed(null);
-
-    Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>();
-    actionsVector.add(new EntityRefreshAction(mainDialog, panelEntity
-      .getTable(), admin));
-    actionsVector.add(new EntityAddAction(mainDialog, panelEntity, admin));
-    actionsVector.add(new EntityDeleteAction(mainDialog, panelEntity, admin));
-
-    panelEntity.setButtonsPane(actionsVector);
+    panelEntity =
+      new PanelComponent<RegisteredEntityDesc>(model, actionsVector);
   }
 
   /** Inicializa o painel de CRUD de certificados */
@@ -354,16 +348,16 @@ public class MainDialog {
 
     panelCertificate = new CRUDPanel<IdentifierWrapper>(m, 0);
 
-    new CertificateRefreshAction(mainDialog, panelCertificate.getTable(), admin)
+    new CertificateRefreshAction(desktop, panelCertificate.getTable(), admin)
       .actionPerformed(null);
 
     Vector<CRUDbleActionInterface> actionsVector =
       new Vector<CRUDbleActionInterface>();
-    actionsVector.add(new CertificateRefreshAction(mainDialog, panelCertificate
+    actionsVector.add(new CertificateRefreshAction(desktop, panelCertificate
       .getTable(), admin));
-    actionsVector.add(new CertificateAddAction(mainDialog, panelCertificate,
-      admin));
-    actionsVector.add(new CertificateDeleteAction(mainDialog, panelCertificate,
+    actionsVector
+      .add(new CertificateAddAction(desktop, panelCertificate, admin));
+    actionsVector.add(new CertificateDeleteAction(desktop, panelCertificate,
       admin));
 
     panelCertificate.setButtonsPane(actionsVector);
@@ -378,17 +372,16 @@ public class MainDialog {
 
     panelInterface = new CRUDPanel<InterfaceWrapper>(m, 0);
 
-    new InterfaceRefreshAction(mainDialog, panelInterface.getTable(), admin)
+    new InterfaceRefreshAction(desktop, panelInterface.getTable(), admin)
       .actionPerformed(null);
 
     Vector<CRUDbleActionInterface> actionsVector =
       new Vector<CRUDbleActionInterface>();
-    actionsVector.add(new InterfaceRefreshAction(mainDialog, panelInterface
+    actionsVector.add(new InterfaceRefreshAction(desktop, panelInterface
       .getTable(), admin));
+    actionsVector.add(new InterfaceAddAction(desktop, panelInterface, admin));
     actionsVector
-      .add(new InterfaceAddAction(mainDialog, panelInterface, admin));
-    actionsVector.add(new InterfaceDeleteAction(mainDialog, panelInterface,
-      admin));
+      .add(new InterfaceDeleteAction(desktop, panelInterface, admin));
 
     panelInterface.setButtonsPane(actionsVector);
 
@@ -403,16 +396,16 @@ public class MainDialog {
 
     panelAuthorization = new CRUDPanel<AuthorizationWrapper>(m, 0);
 
-    new AuthorizationRefreshAction(mainDialog, panelAuthorization.getTable(),
+    new AuthorizationRefreshAction(desktop, panelAuthorization.getTable(),
       admin).actionPerformed(null);
 
     Vector<CRUDbleActionInterface> actionsVector =
       new Vector<CRUDbleActionInterface>();
-    actionsVector.add(new AuthorizationRefreshAction(mainDialog,
+    actionsVector.add(new AuthorizationRefreshAction(desktop,
       panelAuthorization.getTable(), admin));
-    actionsVector.add(new AuthorizationAddAction(mainDialog,
-      panelAuthorization, admin));
-    actionsVector.add(new AuthorizationDeleteAction(mainDialog,
+    actionsVector.add(new AuthorizationAddAction(desktop, panelAuthorization,
+      admin));
+    actionsVector.add(new AuthorizationDeleteAction(desktop,
       panelAuthorization, admin));
 
     panelAuthorization.setButtonsPane(actionsVector);
@@ -426,14 +419,14 @@ public class MainDialog {
 
     panelOffer = new CRUDPanel<OfferWrapper>(m, 0);
 
-    new OfferRefreshAction(mainDialog, panelOffer.getTable(), admin)
+    new OfferRefreshAction(desktop, panelOffer.getTable(), admin)
       .actionPerformed(null);
 
     Vector<CRUDbleActionInterface> actionsVector =
       new Vector<CRUDbleActionInterface>();
-    actionsVector.add(new OfferRefreshAction(mainDialog, panelOffer.getTable(),
+    actionsVector.add(new OfferRefreshAction(desktop, panelOffer.getTable(),
       admin));
-    actionsVector.add(new OfferDeleteAction(mainDialog, panelOffer, admin));
+    actionsVector.add(new OfferDeleteAction(desktop, panelOffer, admin));
 
     panelOffer.setButtonsPane(actionsVector);
 
@@ -447,14 +440,14 @@ public class MainDialog {
 
     panelLogin = new CRUDPanel<LoginInfoWrapper>(m, 0);
 
-    new LoginRefreshAction(mainDialog, panelLogin.getTable(), admin)
+    new LoginRefreshAction(desktop, panelLogin.getTable(), admin)
       .actionPerformed(null);
 
     Vector<CRUDbleActionInterface> actionsVector =
       new Vector<CRUDbleActionInterface>();
-    actionsVector.add(new LoginRefreshAction(mainDialog, panelLogin.getTable(),
+    actionsVector.add(new LoginRefreshAction(desktop, panelLogin.getTable(),
       admin));
-    actionsVector.add(new LoginDeleteAction(mainDialog, panelLogin, admin));
+    actionsVector.add(new LoginDeleteAction(desktop, panelLogin, admin));
 
     panelLogin.setButtonsPane(actionsVector);
 
@@ -470,7 +463,7 @@ public class MainDialog {
    * Faz shutdown do diálogo principal.
    */
   private void shutdownMainDialog() {
-    mainDialog.dispose();
+    desktop.dispose();
     try {
       assistant.shutdown();
     }
@@ -511,17 +504,17 @@ public class MainDialog {
    */
   private class EntityFeatureRunnable implements Runnable {
 
-    private EntityRefreshAction action;
+    PanelComponent<RegisteredEntityDesc> panel;
 
-    public EntityFeatureRunnable(JFrame parentWindow, JTable table,
-      BusAdmin admin) {
-      action = new EntityRefreshAction(parentWindow, table, admin);
+    public EntityFeatureRunnable(JFrame parentWindow,
+      PanelComponent<RegisteredEntityDesc> panelEntity, BusAdmin admin) {
+      this.panel = panelEntity;
     }
 
     @Override
     public void run() {
       changeCardPanel(ENTITY_PANEL_ID);
-      action.actionPerformed(null);
+      this.panel.refresh(null);
     }
   }
 

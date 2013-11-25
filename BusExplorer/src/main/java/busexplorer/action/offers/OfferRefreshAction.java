@@ -7,14 +7,14 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.OfferWrapper;
 import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
 import admin.BusAdmin;
+import busexplorer.action.BusAdminAbstractAction;
+import busexplorer.wrapper.OfferWrapper;
 
 /**
  * Ação que atualiza a tabela de ofertas
@@ -29,8 +29,8 @@ public class OfferRefreshAction extends BusAdminAbstractAction {
   }
 
   @Override
-  public int crudActionType() {
-    return TYPE_ACTION_OTHER;
+  public CRUDActionType crudActionType() {
+    return CRUDActionType.OTHER;
   }
 
   @Override

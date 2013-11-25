@@ -1,5 +1,6 @@
 package admin;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,21 +72,9 @@ public class BusAdminImpl implements BusAdmin {
    * @param orb ORB do barramento
    */
   public BusAdminImpl(String host, short port, ORB orb) {
-    setHostPort(host, port, orb);
-  }
-
-  /**
-   * Ajusta configurações de host e porta do barramento.
-   * 
-   * @param host Host do barramento
-   * @param port Porta do barramento
-   * @param orb ORB do barramento
-   */
-  public void setHostPort(String host, short port, ORB orb) {
     this.host = host;
     this.port = port;
     this.orb = orb;
-
     obtainRegistries();
   }
 
@@ -93,7 +82,6 @@ public class BusAdminImpl implements BusAdmin {
    * Obtém as facetas dos registros do barramento.
    */
   private void obtainRegistries() {
-
     try {
       IComponent iComponent =
         Util.getIComponent(this.host, this.port, this.orb);
@@ -142,7 +130,8 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public List<EntityCategoryDesc> getCategories() throws ServiceFailure {
     try {
-      return Arrays.asList(this.entityRegistry.getEntityCategories());
+      EntityCategoryDesc[] array = this.entityRegistry.getEntityCategories();
+      return new ArrayList<EntityCategoryDesc>(Arrays.asList(array));
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -167,7 +156,8 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public List<ServiceOfferDesc> getOffers() throws ServiceFailure {
     try {
-      return Arrays.asList(this.offerRegistry.getAllServices());
+      ServiceOfferDesc[] array = this.offerRegistry.getAllServices();
+      return new ArrayList<ServiceOfferDesc>(Arrays.asList(array));
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -191,7 +181,8 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public List<String> getInterfaces() throws ServiceFailure {
     try {
-      return Arrays.asList(this.interfaceRegistry.getInterfaces());
+      String[] array = this.interfaceRegistry.getInterfaces();
+      return new ArrayList<String>(Arrays.asList(array));
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -215,8 +206,8 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public List<RegisteredEntityDesc> getEntities() throws ServiceFailure {
     try {
-
-      return Arrays.asList(this.entityRegistry.getEntities());
+      RegisteredEntityDesc[] array = this.entityRegistry.getEntities();
+      return new ArrayList<RegisteredEntityDesc>(Arrays.asList(array));
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -242,8 +233,8 @@ public class BusAdminImpl implements BusAdmin {
   public List<String> getEntitiesWithCertificate() throws ServiceFailure,
     UnauthorizedOperation {
     try {
-      return Arrays.asList(this.certificateRegistry
-        .getEntitiesWithCertificate());
+      String[] array = this.certificateRegistry.getEntitiesWithCertificate();
+      return new ArrayList<String>(Arrays.asList(array));
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -273,17 +264,13 @@ public class BusAdminImpl implements BusAdmin {
     throws ServiceFailure {
     Map<RegisteredEntityDesc, List<String>> map =
       new LinkedHashMap<RegisteredEntityDesc, List<String>>();
-
     try {
-
       RegisteredEntityDesc[] entitiesDesc =
         this.entityRegistry.getAuthorizedEntities();
-
       for (RegisteredEntityDesc entityDesc : entitiesDesc) {
         map.put(entityDesc, Arrays
           .asList(entityDesc.ref.getGrantedInterfaces()));
       }
-
       return map;
     }
     catch (TRANSIENT e) {
@@ -307,12 +294,11 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public List<LoginInfo> getLogins() throws ServiceFailure, TRANSIENT,
-    COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
-
+  public List<LoginInfo> getLogins() throws ServiceFailure,
+    UnauthorizedOperation {
     try {
-      return Arrays.asList(this.loginRegistry.getAllLogins());
-
+      LoginInfo[] array = this.loginRegistry.getAllLogins();
+      return new ArrayList<LoginInfo>(Arrays.asList(array));
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -339,7 +325,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
-    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
+    UnauthorizedOperation {
     try {
       desc.ref.remove();
     }
@@ -368,7 +354,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
-    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
+    UnauthorizedOperation {
     try {
       this.loginRegistry.invalidateLogin(loginInfo.id);
     }
@@ -397,8 +383,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void createCategory(String categoryID, String categoryName)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, EntityCategoryAlreadyExists {
+    throws ServiceFailure, UnauthorizedOperation, EntityCategoryAlreadyExists {
 
     try {
       this.entityRegistry.createEntityCategory(categoryID, categoryName);
@@ -432,8 +417,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void createInterface(String interfaceName) throws ServiceFailure,
-    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
-    InvalidInterface {
+    UnauthorizedOperation, InvalidInterface {
     try {
       this.interfaceRegistry.registerInterface(interfaceName);
     }
@@ -466,13 +450,13 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void createEntity(String entityID, String entityName, String categoryID)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, EntityAlreadyRegistered {
+  public RegisteredEntity createEntity(String entityID, String entityName,
+    String categoryID) throws ServiceFailure, UnauthorizedOperation,
+    EntityAlreadyRegistered {
     try {
       EntityCategory category =
         this.entityRegistry.getEntityCategory(categoryID);
-      category.registerEntity(entityID, entityName);
+      return category.registerEntity(entityID, entityName);
 
     }
     catch (TRANSIENT e) {
@@ -504,8 +488,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void registerCertificate(String entityID, byte[] certificate)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, InvalidCertificate {
+    throws ServiceFailure, UnauthorizedOperation, InvalidCertificate {
     try {
       this.certificateRegistry.registerCertificate(entityID, certificate);
     }
@@ -538,8 +521,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void removeCategory(String categoryID) throws ServiceFailure,
-    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
-    EntityCategoryInUse {
+    UnauthorizedOperation, EntityCategoryInUse {
     try {
       EntityCategory category =
         this.entityRegistry.getEntityCategory(categoryID);
@@ -573,11 +555,15 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void removeEntity(String entityID) throws ServiceFailure, TRANSIENT,
-    COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
+  public boolean removeEntity(String entityID) throws ServiceFailure,
+    UnauthorizedOperation {
     try {
       RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
-      entity.remove();
+      if (entity != null) {
+        entity.remove();
+        return true;
+      }
+      return false;
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -604,7 +590,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void removeCertificate(String entityID) throws ServiceFailure,
-    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation {
+    UnauthorizedOperation {
     try {
       this.certificateRegistry.removeCertificate(entityID);
     }
@@ -633,8 +619,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void removeInterface(String interfaceName) throws ServiceFailure,
-    TRANSIENT, COMM_FAILURE, NO_PERMISSION, UnauthorizedOperation,
-    InterfaceInUse {
+    UnauthorizedOperation, InterfaceInUse {
     try {
       this.interfaceRegistry.removeInterface(interfaceName);
     }
@@ -666,13 +651,11 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void setAuthorization(String entityID, String interfaceName)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, InvalidInterface {
+  public boolean setAuthorization(String entityID, String interfaceName)
+    throws ServiceFailure, UnauthorizedOperation, InvalidInterface {
     try {
       RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
-      entity.grantInterface(interfaceName);
-
+      return entity.grantInterface(interfaceName);
     }
     catch (TRANSIENT e) {
       throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
@@ -703,8 +686,8 @@ public class BusAdminImpl implements BusAdmin {
    */
   @Override
   public void revokeAuthorization(String entityID, String interfaceName)
-    throws ServiceFailure, TRANSIENT, COMM_FAILURE, NO_PERMISSION,
-    UnauthorizedOperation, InvalidInterface, AuthorizationInUse {
+    throws ServiceFailure, UnauthorizedOperation, InvalidInterface,
+    AuthorizationInUse {
     try {
       RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
       entity.revokeInterface(interfaceName);

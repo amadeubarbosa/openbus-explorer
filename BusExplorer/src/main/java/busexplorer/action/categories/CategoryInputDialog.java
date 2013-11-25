@@ -7,13 +7,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
-import busexplorer.wrapper.EntityCategoryDescWrapper;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import admin.BusAdmin;
+import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
+import busexplorer.wrapper.EntityCategoryDescWrapper;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de
@@ -36,8 +36,8 @@ public class CategoryInputDialog extends
    * @param blockType Modo de Bloqueio da janela mãe.
    */
   public CategoryInputDialog(JFrame parentWindow, String title,
-    CRUDPanel<EntityCategoryDescWrapper> panel, BusAdmin admin) {
-    super(parentWindow, title, panel, admin);
+    ObjectTableModel<EntityCategoryDescWrapper> model, BusAdmin admin) {
+    super(parentWindow, title, model, admin);
   }
 
   @Override

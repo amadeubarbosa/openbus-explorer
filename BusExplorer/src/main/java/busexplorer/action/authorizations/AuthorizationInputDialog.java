@@ -8,13 +8,13 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
-import busexplorer.wrapper.AuthorizationWrapper;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import admin.BusAdmin;
+import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
+import busexplorer.wrapper.AuthorizationWrapper;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de
@@ -39,9 +39,9 @@ public class AuthorizationInputDialog extends
    * @param title Título do Diálogo.
    */
   public AuthorizationInputDialog(JFrame parentWindow, String title,
-    CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin,
+    ObjectTableModel<AuthorizationWrapper> model, BusAdmin admin,
     List<String> entitiesIDList, List<String> interfacesList) {
-    super(parentWindow, title, panel, admin);
+    super(parentWindow, title, model, admin);
 
     this.entitiesIDList = entitiesIDList;
     this.interfacesList = interfacesList;
@@ -71,7 +71,7 @@ public class AuthorizationInputDialog extends
     return (String) this.interfaceNameCombo.getSelectedItem();
   }
 
-  /*
+  /**
    * Lança exceção em caso de existência prévia da autorização a ser adicionada;
    * o barramento, por padrão, não o faz.
    */

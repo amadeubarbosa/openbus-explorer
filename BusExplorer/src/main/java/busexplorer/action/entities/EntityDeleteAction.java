@@ -7,17 +7,18 @@ import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
 import test.ActionType;
 import test.OpenBusAction;
 import admin.BusAdmin;
+import busexplorer.wrapper.EntityInfo;
 
 /**
  * Classe de ação para a remoção de uma entidade.
  * 
  * @author Tecgraf
  */
-public class EntityDeleteAction extends OpenBusAction<RegisteredEntityDesc> {
+public class EntityDeleteAction extends OpenBusAction<EntityInfo> {
 
   /**
    * Construtor da ação.
@@ -26,7 +27,8 @@ public class EntityDeleteAction extends OpenBusAction<RegisteredEntityDesc> {
    * @param admin
    */
   public EntityDeleteAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get("EntityDeleteAction.name"));
+    super(parentWindow, admin, LNG.get(EntityDeleteAction.class.getSimpleName()
+      + ".name"));
   }
 
   /**
@@ -43,36 +45,31 @@ public class EntityDeleteAction extends OpenBusAction<RegisteredEntityDesc> {
   @Override
   public void actionPerformed(ActionEvent e) {
     int option =
-      JOptionPane.showConfirmDialog(parentWindow, LNG
-        .get("DeleteAction.confirm.msg"),
-        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
+        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
         JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
     }
 
-    Task<Boolean> task = new Task<Boolean>() {
+    Task<Object> task = new Task<Object>() {
       @Override
       protected void performTask() throws Exception {
-        // TODO: verificar consistencia.
-        // é mais prático permitir a remoção de apenas uma entidade por vez 
-        RegisteredEntityDesc entity = getPanelComponent().getSelectedElement();
-        setResult(true);
-        if (!admin.removeEntity(entity.id)) {
-          setResult(false);
-        }
+        EntityInfo entity = getPanelComponent().getSelectedElement();
+        RegisteredEntity ref = entity.getDescriptor().ref;
+        ref.remove();
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getStatus() && getResult()) {
+        if (getStatus()) {
           getPanelComponent().removeSelectedElements();
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
-      .get("DeleteAction.waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
 }

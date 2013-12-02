@@ -94,10 +94,9 @@ public class PanelComponent<T> extends JPanel {
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     table.sort(0, SortOrder.ASCENDING);
 
-    // TODO: comentado enquanto não é revisto o mecanismo de listener.
-    //    DirectActionsListener l = new DirectActionsListener();
-    //    table.addMouseListener(l);
-    //    table.addKeyListener(l);
+    DirectActionsListener l = new DirectActionsListener();
+    table.addMouseListener(l);
+    table.addKeyListener(l);
   }
 
   /**
@@ -354,23 +353,18 @@ public class PanelComponent<T> extends JPanel {
    * correspondentes.
    */
   class DirectActionsListener extends MouseAdapter implements KeyListener {
-    // TODO: revisar este mecanismo de listener.
 
     /** {@inheritDoc} */
     @Override
     public void mouseClicked(MouseEvent e) {
       if (e.getClickCount() == 2) {
-        //        if (hasEditButton && crudActionEdit.isEnabled()) {
         int selectedRow = table.getSelectedRow();
         int selectedColumn = table.getSelectedColumn();
         if (table.isCellEditable(selectedRow, selectedColumn)) {
           /* Caso a célula seja editável, inibe a ação de edição via botão */
-          //        }
-          //        else if (editActionOnUneditableCellDoubleClick) {
-          /* Se a célula não for editável, aciona o botão de edit */
-          //            CRUDPanel.this.crudActionEdit.actionPerformed(new ActionEvent(
-          //              editButton, ActionEvent.ACTION_PERFORMED, ""));
-          //          }
+        }
+        else if (editBtn != null && editBtn.isEnabled()) {
+          editBtn.doClick();
         }
       }
     }
@@ -390,10 +384,9 @@ public class PanelComponent<T> extends JPanel {
         if (table.isCellEditable(selectedRow, selectedColumn)) {
           /* Caso a célula seja editável, inibe a ação de edição via teclado */
         }
-        //        else if (hasRemoveButton && crudActionRemove.isEnabled()) {
-        //          crudActionRemove.actionPerformed(new ActionEvent(removeButton,
-        //            ActionEvent.ACTION_PERFORMED, ""));
-        //        }
+        else if (removeBtn != null && removeBtn.isEnabled()) {
+          removeBtn.doClick();
+        }
       }
     }
 

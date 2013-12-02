@@ -26,7 +26,6 @@ import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.assistant.Assistant;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import test.PanelActionInterface;
 import test.PanelComponent;
 import admin.BusAdmin;
@@ -60,6 +59,7 @@ import busexplorer.action.offers.OffersTableProvider;
 import busexplorer.gui.RunnableList;
 import busexplorer.wrapper.AuthorizationWrapper;
 import busexplorer.wrapper.EntityCategoryDescWrapper;
+import busexplorer.wrapper.EntityInfo;
 import busexplorer.wrapper.IdentifierWrapper;
 import busexplorer.wrapper.InterfaceWrapper;
 import busexplorer.wrapper.LoginInfoWrapper;
@@ -112,7 +112,7 @@ public class MainDialog {
   /** Painel de gerência das categorias no barramento */
   private CRUDPanel<EntityCategoryDescWrapper> panelCategory;
   /** Painel de gerência das entidades registradas no barramento */
-  private PanelComponent<RegisteredEntityDesc> panelEntity;
+  private PanelComponent<EntityInfo> panelEntity;
   /** Painel de gerência dos certificados registrados no barramento */
   private CRUDPanel<IdentifierWrapper> panelCertificate;
   /** Painel de gerência das interfaces registradas no barramento */
@@ -327,17 +327,16 @@ public class MainDialog {
 
   /** Inicializa o painel de CRUD de entidades */
   private void initPanelEntity() {
-    ObjectTableModel<RegisteredEntityDesc> model =
-      new ObjectTableModel<RegisteredEntityDesc>(
-        new ArrayList<RegisteredEntityDesc>(), new EntityTableProvider());
-    List<PanelActionInterface<RegisteredEntityDesc>> actionsVector =
-      new Vector<PanelActionInterface<RegisteredEntityDesc>>();
+    ObjectTableModel<EntityInfo> model =
+      new ObjectTableModel<EntityInfo>(new ArrayList<EntityInfo>(),
+        new EntityTableProvider());
+    List<PanelActionInterface<EntityInfo>> actionsVector =
+      new Vector<PanelActionInterface<EntityInfo>>();
     actionsVector.add(new EntityRefreshAction(desktop, admin));
     actionsVector.add(new EntityAddAction(desktop, admin));
     actionsVector.add(new EntityDeleteAction(desktop, admin));
 
-    panelEntity =
-      new PanelComponent<RegisteredEntityDesc>(model, actionsVector);
+    panelEntity = new PanelComponent<EntityInfo>(model, actionsVector);
   }
 
   /** Inicializa o painel de CRUD de certificados */
@@ -504,10 +503,10 @@ public class MainDialog {
    */
   private class EntityFeatureRunnable implements Runnable {
 
-    PanelComponent<RegisteredEntityDesc> panel;
+    PanelComponent<EntityInfo> panel;
 
     public EntityFeatureRunnable(JFrame parentWindow,
-      PanelComponent<RegisteredEntityDesc> panelEntity, BusAdmin admin) {
+      PanelComponent<EntityInfo> panelEntity, BusAdmin admin) {
       this.panel = panelEntity;
     }
 

@@ -1,15 +1,14 @@
 package busexplorer.action.entities;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import busexplorer.wrapper.EntityInfo;
 
 /**
  * Provedor de dados para a tabela de Entidades
  * 
  * @author Tecgraf
  */
-public class EntityTableProvider implements
-  ObjectTableProvider<RegisteredEntityDesc> {
+public class EntityTableProvider implements ObjectTableProvider<EntityInfo> {
 
   /** Índice da coluna ID da Entidade */
   private static final int ENTITY_ID = 0;
@@ -23,7 +22,7 @@ public class EntityTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "Entidade", "Categoria", "Nome" };
+    String[] colNames = { "Entidade", "Categoria", "Descrição" };
     return colNames;
   }
 
@@ -40,18 +39,17 @@ public class EntityTableProvider implements
    * {@inheritDoc}
    */
   @Override
-  public Object getCellValue(RegisteredEntityDesc row, int col) {
-    final RegisteredEntityDesc entityDesc = row;
+  public Object getCellValue(EntityInfo row, int col) {
+    final EntityInfo entity = row;
     switch (col) {
       case ENTITY_ID:
-        return entityDesc.id;
+        return entity.getId();
 
       case CATEGORY_ID:
-        // FIXME: chamada remota na EDT. Precisa mudar o tipo de elemento
-        return entityDesc.category.id();
+        return entity.getCategory();
 
       case ENTITY_NAME:
-        return entityDesc.name;
+        return entity.getName();
 
       default:
         break;

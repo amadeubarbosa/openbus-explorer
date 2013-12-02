@@ -3,6 +3,7 @@ package test;
 import javax.swing.JFrame;
 
 import reuse.modified.logistic.client.util.InputDialog;
+import tecgraf.javautils.LNG;
 import admin.BusAdmin;
 
 public abstract class BusExplorerAbstractInputDialog extends InputDialog {
@@ -39,4 +40,13 @@ public abstract class BusExplorerAbstractInputDialog extends InputDialog {
     super.dispose();
   }
 
+  /**
+   * Busca pelo valor associado a chave no LNG
+   * 
+   * @param key a chave
+   * @return o valor associado à chave.
+   */
+  protected String getString(String key) {
+    return LNG.get(this.getClass().getSimpleName() + "." + key);
+  }
 }

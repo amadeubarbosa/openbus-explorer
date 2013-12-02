@@ -18,7 +18,7 @@ import busexplorer.wrapper.EntityInfo;
  * 
  * @author Tecgraf
  */
-public class EntityAddAction extends OpenBusAction<EntityInfo> {
+public class EntityEditAction extends OpenBusAction<EntityInfo> {
 
   /**
    * Construtor da ação.
@@ -26,8 +26,8 @@ public class EntityAddAction extends OpenBusAction<EntityInfo> {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param panel painel de CRUD
    */
-  public EntityAddAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(EntityAddAction.class.getSimpleName()
+  public EntityEditAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin, LNG.get(EntityEditAction.class.getSimpleName()
       + ".name"));
   }
 
@@ -54,7 +54,7 @@ public class EntityAddAction extends OpenBusAction<EntityInfo> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          new EntityInputDialog(EntityAddAction.this.parentWindow,
+          new EntityInputDialog(EntityEditAction.this.parentWindow,
             getPanelComponent(), admin, getResult()).showDialog();
         }
       }

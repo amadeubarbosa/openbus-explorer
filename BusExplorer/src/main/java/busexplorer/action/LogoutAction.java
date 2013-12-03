@@ -30,8 +30,7 @@ public class LogoutAction extends AbstractAction {
       @Override
       protected void afterTaskUI() {
         if (getError() == null) {
-          parentWindow.dispose();
-          new LoginDialog().show();
+          new LoginDialog(parentWindow);
         }
       }
     };

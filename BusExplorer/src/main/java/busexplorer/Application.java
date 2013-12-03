@@ -1,9 +1,10 @@
 package busexplorer;
 
+import java.awt.EventQueue;
 import java.util.Locale;
 
 import tecgraf.javautils.LNG;
-import busexplorer.desktop.dialog.LoginDialog;
+import busexplorer.desktop.dialog.MainDialog;
 
 /**
  * Classe principal da aplicação.
@@ -24,8 +25,13 @@ public class Application {
     LNG.load("reuse.modified.planref.client.resources.language.idiom",
       new Locale("pt", "BR"));
 
-    LoginDialog loginDialog = new LoginDialog();
-    loginDialog.show();
+    EventQueue.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        MainDialog mainDialog = new MainDialog();
+        mainDialog.show();
+      }
+    });
   }
 
 }

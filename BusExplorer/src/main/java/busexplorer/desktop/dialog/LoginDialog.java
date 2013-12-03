@@ -2,13 +2,14 @@ package busexplorer.desktop.dialog;
 
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -20,7 +21,6 @@ import tecgraf.diagnostic.addons.openbus.v20.OpenBusMonitor;
 import tecgraf.diagnostic.commom.StatusCode;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.GUIUtils;
 import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.assistant.Assistant;
@@ -45,7 +45,7 @@ public class LoginDialog {
   /** Label de senha */
   JLabel passwordLabel = null;
   /** Diálogo */
-  private JFrame loginDialog;
+  private JDialog loginDialog;
   /** Campo de texto para o endereço do barramento */
   private JTextField addressField;
   /** Campo de texto para a porta do barramento */
@@ -53,7 +53,7 @@ public class LoginDialog {
   /** Campo de texto para o nome do usuário (entidade do barramento). */
   private JTextField userField;
   /** Campo de texto onde é digitada a senha do usuário. */
-  private JTextField passwordField;
+  private JPasswordField passwordField;
   /** Nome do host do barramento */
   private String host;
   /** Porta do barramento */
@@ -61,14 +61,19 @@ public class LoginDialog {
   /** Acessa os serviços de administração do barramento */
   private Assistant assistant;
 
-  /** Construtor do diálogo. */
-  public LoginDialog() {
-    createDialog();
+  /**
+   * Construtor do diálogo.
+   */
+  public LoginDialog(Window owner) {
+    createDialog(owner);
   }
 
-  /** Cria e inicializa o diálogo de login. */
-  private void createDialog() {
-    loginDialog = new JFrame(getDialogTitle());
+  /**
+   * Cria e inicializa o diálogo de login.
+   */
+  private void createDialog(Window owner) {
+    loginDialog = new JDialog(owner, getDialogTitle(),
+      JDialog.ModalityType.APPLICATION_MODAL);
     JPanel mainPane = new JPanel(new GridBagLayout());
 
     mainPane.add(createLoginPanel(), new GBC(0, 1).north().horizontal().insets(
@@ -78,7 +83,7 @@ public class LoginDialog {
     loginDialog.pack();
 
     loginDialog.setResizable(false);
-    GUIUtils.centerOnScreen(loginDialog);
+    loginDialog.setLocationRelativeTo(owner);
     loginDialog.addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -185,6 +190,27 @@ public class LoginDialog {
   }
 
   /**
+   * Recupera o assistente do barramento.
+   */
+  public Assistant getAssistant() {
+    return assistant;
+  }
+
+  /**
+   * Recupera o nome do host do barramento.
+   */
+  public String getHost() {
+    return host;
+  }
+
+  /**
+   * Recupera a porta do barramento.
+   */
+  public short getPort() {
+    return port;
+  }
+
+  /**
    * Ação que executa login no barramento
    * 
    * @author Tecgraf
@@ -275,8 +301,6 @@ public class LoginDialog {
         @Override
         protected void afterTaskUI() {
           if (getError() == null) {
-            MainDialog mainDialog = new MainDialog(host, port, assistant);
-            mainDialog.show();
             loginDialog.dispose();
           }
         }

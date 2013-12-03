@@ -1,6 +1,7 @@
 package busexplorer.desktop.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -12,6 +13,8 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import admin.BusAdmin;
+import admin.BusAdminImpl;
 import reuse.modified.planref.client.util.crud.CRUDPanel;
 import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
@@ -65,13 +68,13 @@ import busexplorer.wrapper.OfferWrapper;
  */
 public class MainDialog {
   /**
-   * Acessa os serviços barramento relacionados à administração
-   */
-  private BusAdmin admin;
-  /**
    * Assistente do barramento
    */
-  private Assistant assistant;
+  private Assistant assistant = null;
+  /**
+   * Acessa os serviços barramento relacionados à administração
+   */
+  private BusAdmin admin = null;
   /**
    * Informa se o usuário que efetuou login no barramento possui permissão de
    * administração
@@ -99,16 +102,8 @@ public class MainDialog {
 
   /**
    * Construtor
-   * 
-   * @param admin acessa os serviços de administração do barramento
-   * @param assistant assistente do barramento
-   * @param isCurrentUserAdmin informa se o usuário logado possui permissão de
-   *        administração
    */
-  public MainDialog(String host, short port, Assistant assistant) {
-    this.assistant = assistant;
-    admin = new BusAdminImpl(host, port, assistant.orb());
-    this.isCurrentUserAdmin = isCurrentUserAdmin();
+  public MainDialog() {
     buildDialog();
   }
 
@@ -135,6 +130,32 @@ public class MainDialog {
    */
   public void show() {
     mainDialog.setVisible(true);
+
+    if (assistant == null) {
+      login();
+    }
+  }
+
+  /**
+   * Executa as ações de login e, em caso de sucesso, atualiza membros dependentes das novas informações de login.
+   */
+  public void login() {
+    EventQueue.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        LoginDialog loginDialog = new LoginDialog(mainDialog);
+        loginDialog.show();
+
+        // TODO Os dados de login devem ficar na classe LoginDialog? Talvez
+        // fosse melhor ter uma referência diferente que contivesse as
+        // informações de login (assistente, host e porta). --tmartins
+        assistant = loginDialog.getAssistant();
+        admin = new BusAdminImpl(loginDialog.getHost(), loginDialog.getPort(),
+          assistant.orb());
+        updateAccessToAdminFeatures();
+        updateFeatureActions();
+      }
+    });
   }
 
   /**
@@ -154,7 +175,6 @@ public class MainDialog {
         null, LNG.get("MainDialog." + featureName + ".toolTip"));
     }
     initFeaturePanels();
-    updateFeatureActions();
     updateAccessToAdminFeatures();
 
     mainDialog.add(featuresPane, BorderLayout.CENTER);
@@ -275,14 +295,11 @@ public class MainDialog {
   private void initFeaturePanels() {
     initPanelCategory();
     initPanelEntity();
+    initPanelCertificate();
     initPanelInterface();
     initPanelAuthorization();
+    initPanelLogin();
     initPanelOffer();
-
-    if (isCurrentUserAdmin) {
-      initPanelCertificate();
-      initPanelLogin();
-    }
   }
 
   /**
@@ -404,19 +421,6 @@ public class MainDialog {
   }
 
   /**
-   * Atualiza o acesso aos recursos de gerência que necessitam de permissão
-   * administrativa.
-   */
-  private void updateAccessToAdminFeatures() {
-    String[] featureNames = { "certificate", "login" };
-    for (String featureName : featureNames) {
-      int index = featuresPane.indexOfTab(LNG.get("MainDialog." + featureName +
-        ".title"));
-      featuresPane.setEnabledAt(index, isCurrentUserAdmin);
-    }
-  }
-
-  /**
    * Verifica se o usuário tem permissões para administrar o barramento.
    */
   private boolean isCurrentUserAdmin() {
@@ -428,6 +432,21 @@ public class MainDialog {
     }
     catch (Exception e) {
       return false;
+    }
+  }
+
+  /**
+   * Atualiza o acesso aos recursos de gerência que necessitam de permissão
+   * administrativa.
+   */
+  private void updateAccessToAdminFeatures() {
+    isCurrentUserAdmin = isCurrentUserAdmin();
+
+    String[] featureNames = { "certificate", "login" };
+    for (String featureName : featureNames) {
+      int index = featuresPane.indexOfTab(LNG.get("MainDialog." + featureName +
+        ".title"));
+      featuresPane.setEnabledAt(index, isCurrentUserAdmin);
     }
   }
 

@@ -308,7 +308,7 @@ public class MainDialog {
    */
   private void updateCategoryActions() {
     Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>();
+      new Vector<CRUDbleActionInterface>(3);
     actionsVector.add(new CategoryRefreshAction(mainDialog, panelCategory
       .getTable(), admin));
     actionsVector.add(new CategoryAddAction(mainDialog, panelCategory, admin));
@@ -332,7 +332,7 @@ public class MainDialog {
    */
   private void updateCertificateActions() {
     Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>();
+      new Vector<CRUDbleActionInterface>(3);
     actionsVector.add(new CertificateRefreshAction(mainDialog, panelCertificate
       .getTable(), admin));
     actionsVector.add(new CertificateAddAction(mainDialog, panelCertificate,
@@ -349,7 +349,7 @@ public class MainDialog {
    */
   private void updateInterfaceActions() {
     Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>();
+      new Vector<CRUDbleActionInterface>(3);
     actionsVector.add(new InterfaceRefreshAction(mainDialog, panelInterface
       .getTable(), admin));
     actionsVector
@@ -366,7 +366,7 @@ public class MainDialog {
    */
   private void updateAuthorizationActions() {
     Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>();
+      new Vector<CRUDbleActionInterface>(3);
     actionsVector.add(new AuthorizationRefreshAction(mainDialog,
       panelAuthorization.getTable(), admin));
     actionsVector.add(new AuthorizationAddAction(mainDialog,
@@ -383,7 +383,7 @@ public class MainDialog {
    */
   private void updateLoginActions() {
     Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>();
+      new Vector<CRUDbleActionInterface>(2);
     actionsVector.add(new LoginRefreshAction(mainDialog, panelLogin.getTable(),
       admin));
     actionsVector.add(new LoginDeleteAction(mainDialog, panelLogin, admin));
@@ -397,7 +397,7 @@ public class MainDialog {
    */
   private void updateOfferActions() {
     Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>();
+      new Vector<CRUDbleActionInterface>(2);
     actionsVector.add(new OfferRefreshAction(mainDialog, panelOffer.getTable(),
       admin));
     actionsVector.add(new OfferDeleteAction(mainDialog, panelOffer, admin));

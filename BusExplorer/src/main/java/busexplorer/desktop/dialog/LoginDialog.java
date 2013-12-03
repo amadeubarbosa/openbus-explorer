@@ -28,8 +28,6 @@ import tecgraf.openbus.assistant.AssistantParams;
 import tecgraf.openbus.assistant.OnFailureCallback;
 import tecgraf.openbus.core.v2_0.services.access_control.AccessDenied;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
-import admin.BusAdmin;
-import admin.BusAdminImpl;
 
 /**
  * Diálogo que obtém os dados do usuário e do barramento para efetuar login
@@ -56,6 +54,10 @@ public class LoginDialog {
   private JTextField userField;
   /** Campo de texto onde é digitada a senha do usuário. */
   private JTextField passwordField;
+  /** Nome do host do barramento */
+  private String host;
+  /** Porta do barramento */
+  private short port;
   /** Acessa os serviços de administração do barramento */
   private Assistant assistant;
 
@@ -191,7 +193,7 @@ public class LoginDialog {
     /** Intervalo de tempo para verificar se o login já foi efetuado */
     final int LOGIN_CHECK_INTERVAL = 250;
     /** Número máximo de tentativas de login */
-    final int MAX_LOGIN_FAILS = 2;
+    final int MAX_LOGIN_FAILS = 3;
     /** Última exceção lançada no login */
     Exception lastException = null;
 
@@ -204,18 +206,18 @@ public class LoginDialog {
     public void actionPerformed(ActionEvent event) {
 
       Task task = new Task() {
-        BusAdmin admin;
         volatile int failedAttempts = 0;
         volatile boolean accessDenied = false;
-        boolean isCurrentUserAdmin;
 
         @Override
         protected void performTask() throws Exception {
-          String host = addressField.getText();
-          short port = Short.valueOf(portField.getText());
+          host = addressField.getText();
+          port = Short.valueOf(portField.getText());
+
           String entity = userField.getText();
           String password = passwordField.getText();
           AssistantParams params = new AssistantParams();
+
           params.callback = new OnFailureCallback() {
 
             @Override
@@ -249,38 +251,31 @@ public class LoginDialog {
             new OpenBusMonitor("openbus", (OpenBusContext) assistant.orb()
               .resolve_initial_references("OpenBusContext"));
 
-          while (!wasCancelled() && !accessDenied
-            && failedAttempts <= MAX_LOGIN_FAILS
-            && monitor.checkResource().code != StatusCode.OK) {
+          while (true) {
+            if (wasCancelled()) {
+              assistant.shutdown();
+              return;
+            }
+            if (accessDenied || failedAttempts == MAX_LOGIN_FAILS) {
+              assistant.shutdown();
+              throw lastException;
+            }
+            if (monitor.checkResource().code == StatusCode.OK) {
+              return;
+            }
+
             try {
               Thread.sleep(LOGIN_CHECK_INTERVAL);
             }
             catch (InterruptedException e) {
-
             }
-          }
-
-          if (wasCancelled()) {
-            assistant.shutdown();
-            return;
-          }
-
-          //Se verdadeiro, o usuário logou no barramento
-          if (!accessDenied && failedAttempts <= MAX_LOGIN_FAILS) {
-            admin = new BusAdminImpl(host, port, assistant.orb());
-            isCurrentUserAdmin = isCurrentUserAdmin();
-          }
-          else {
-            assistant.shutdown();
-            throw lastException;
           }
         }
 
         @Override
         protected void afterTaskUI() {
           if (getError() == null) {
-            MainDialog mainDialog =
-              new MainDialog(admin, assistant, isCurrentUserAdmin);
+            MainDialog mainDialog = new MainDialog(host, port, assistant);
             mainDialog.show();
             loginDialog.dispose();
           }
@@ -300,18 +295,6 @@ public class LoginDialog {
                 .get("ProgressDialog.error.title"), JOptionPane.ERROR_MESSAGE);
             }
           }
-        }
-
-        //caso não lance uma exceção, o usuário logado está cadastrado como administrador no barramento
-        private boolean isCurrentUserAdmin() {
-          try {
-            admin.getLogins();
-            return true;
-          }
-          catch (Exception e) {
-            return false;
-          }
-
         }
       };
 

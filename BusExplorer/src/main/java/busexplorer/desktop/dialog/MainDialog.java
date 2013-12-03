@@ -21,6 +21,7 @@ import tecgraf.openbus.assistant.Assistant;
 import test.PanelActionInterface;
 import test.PanelComponent;
 import admin.BusAdmin;
+import admin.BusAdminImpl;
 // TODO Implementar logout. --tmartins
 // import busexplorer.action.LogoutAction;
 import busexplorer.action.authorizations.AuthorizationAddAction;
@@ -104,11 +105,10 @@ public class MainDialog {
    * @param isCurrentUserAdmin informa se o usuário logado possui permissão de
    *        administração
    */
-  public MainDialog(BusAdmin admin, Assistant assistant,
-    boolean isCurrentUserAdmin) {
+  public MainDialog(String host, short port, Assistant assistant) {
     this.assistant = assistant;
-    this.admin = admin;
-    this.isCurrentUserAdmin = isCurrentUserAdmin;
+    admin = new BusAdminImpl(host, port, assistant.orb());
+    this.isCurrentUserAdmin = isCurrentUserAdmin();
     buildDialog();
   }
 
@@ -413,6 +413,21 @@ public class MainDialog {
       int index = featuresPane.indexOfTab(LNG.get("MainDialog." + featureName +
         ".title"));
       featuresPane.setEnabledAt(index, isCurrentUserAdmin);
+    }
+  }
+
+  /**
+   * Verifica se o usuário tem permissões para administrar o barramento.
+   */
+  private boolean isCurrentUserAdmin() {
+    // Se o método getLogins() não lançar exceção, o usuário logado está
+    // cadastrado como administrador no barramento.
+    try {
+      admin.getLogins();
+      return true;
+    }
+    catch (Exception e) {
+      return false;
     }
   }
 

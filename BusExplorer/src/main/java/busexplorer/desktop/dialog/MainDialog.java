@@ -420,6 +420,8 @@ public class MainDialog {
 
   /**
    * Verifica se o usuário tem permissões para administrar o barramento.
+   *
+   * @return Booleano que indica se o usuário é administrador ou não.
    */
   private boolean isCurrentUserAdmin() {
     // Se o método getLogins() não lançar exceção, o usuário logado está
@@ -461,6 +463,8 @@ public class MainDialog {
   }
 
   /**
+   * Obtém o título do diálogo.
+   * 
    * @return Título do diálogo
    */
   private String getDialogTitle() {

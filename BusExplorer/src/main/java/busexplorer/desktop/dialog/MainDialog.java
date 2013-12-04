@@ -160,8 +160,6 @@ public class MainDialog {
 
   /**
    * Constrói o painel das funcionalidades
-   * 
-   * @return painel contendo as tabelas e botões
    */
   private void buildFeaturesComponent() {
     featuresPane = new JTabbedPane(JTabbedPane.TOP);

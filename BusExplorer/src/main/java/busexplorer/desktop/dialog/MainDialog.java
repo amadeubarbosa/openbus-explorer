@@ -2,6 +2,8 @@ package busexplorer.desktop.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -9,8 +11,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 
 import admin.BusAdmin;
@@ -19,14 +24,11 @@ import reuse.modified.planref.client.util.crud.CRUDPanel;
 import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
 import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.assistant.Assistant;
 import test.PanelActionInterface;
 import test.PanelComponent;
-import admin.BusAdmin;
-import admin.BusAdminImpl;
-// TODO Implementar logout. --tmartins
-// import busexplorer.action.LogoutAction;
 import busexplorer.action.authorizations.AuthorizationAddAction;
 import busexplorer.action.authorizations.AuthorizationDeleteAction;
 import busexplorer.action.authorizations.AuthorizationRefreshAction;
@@ -83,6 +85,8 @@ public class MainDialog {
 
   /** A janela principal da aplicação */
   private JFrame mainDialog;
+  /** Barra de menu da janela */
+  private JMenuBar menuBar;
   /** Pane de recursos de gerência do barramento */
   private JTabbedPane featuresPane;
   /** Painel de gerência das categorias no barramento */
@@ -108,6 +112,14 @@ public class MainDialog {
   }
 
   /**
+   * Exibe a janela
+   */
+  public void show() {
+    mainDialog.setVisible(true);
+    login();
+  }
+
+  /**
    * Constrói os componentes da janela
    */
   private void buildDialog() {
@@ -122,40 +134,57 @@ public class MainDialog {
       }
     });
 
+    buildMenuBar();
     buildFeaturesComponent();
   }
 
   /**
-   * Exibe a janela
+   * Constrói a barra de menu da janela
    */
-  public void show() {
-    mainDialog.setVisible(true);
+  private void buildMenuBar() {
+    menuBar = new JMenuBar();
 
-    if (assistant == null) {
-      login();
-    }
-  }
+    JMenu menuConnection = new JMenu(LNG.get("MainDialog.menuBar.connection"));
+    menuBar.add(menuConnection);
 
-  /**
-   * Executa as ações de login e, em caso de sucesso, atualiza membros dependentes das novas informações de login.
-   */
-  public void login() {
-    EventQueue.invokeLater(new Runnable() {
+    JMenuItem itemDisconnect = new
+      JMenuItem(LNG.get("MainDialog.menuBar.connection.disconnect"));
+    itemDisconnect.addActionListener(new ActionListener() {
       @Override
-      public void run() {
-        LoginDialog loginDialog = new LoginDialog(mainDialog);
-        loginDialog.show();
+      public void actionPerformed(ActionEvent e) {
+        Task task = new Task() {
+          @Override
+          protected void performTask() throws Exception {
+            if (assistant != null) {
+              assistant.shutdown();
+            }
+          }
 
-        // TODO Os dados de login devem ficar na classe LoginDialog? Talvez
-        // fosse melhor ter uma referência diferente que contivesse as
-        // informações de login (assistente, host e porta). --tmartins
-        assistant = loginDialog.getAssistant();
-        admin = new BusAdminImpl(loginDialog.getHost(), loginDialog.getPort(),
-          assistant.orb());
-        updateAccessToAdminFeatures();
-        updateFeatureActions();
+          @Override
+          protected void afterTaskUI() {
+            login();
+          }
+        };
+
+        task.execute(mainDialog, LNG.get("MainDialog.logout.waiting.title"), LNG
+          .get("MainDialog.logout.waiting.msg"));
       }
     });
+    menuConnection.add(itemDisconnect);
+
+    menuConnection.add(new JSeparator());
+
+    JMenuItem itemQuit = new
+      JMenuItem(LNG.get("MainDialog.menuBar.connection.quit"));
+    itemQuit.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        shutdownMainDialog();
+      }
+    });
+    menuConnection.add(itemQuit);
+
+    mainDialog.add(menuBar, BorderLayout.NORTH);
   }
 
   /**
@@ -451,15 +480,34 @@ public class MainDialog {
   }
 
   /**
+   * Executa as ações de login e, em caso de sucesso, atualiza membros dependentes das novas informações de login.
+   */
+  private void login() {
+    EventQueue.invokeLater(new Runnable() {
+      @Override
+      public void run() {
+        LoginDialog loginDialog = new LoginDialog(mainDialog);
+        loginDialog.show();
+
+        // TODO Os dados de login devem ficar na classe LoginDialog? Talvez
+        // fosse melhor ter uma referência diferente que contivesse as
+        // informações de login (assistente, host e porta). --tmartins
+        assistant = loginDialog.getAssistant();
+        admin = new BusAdminImpl(loginDialog.getHost(), loginDialog.getPort(),
+          assistant.orb());
+        updateAccessToAdminFeatures();
+        updateFeatureActions();
+        // TODO Tratar seleção de abas potencialmente desabilitadas. --tmartins
+      }
+    });
+  }
+
+  /**
    * Faz shutdown do diálogo principal.
    */
   private void shutdownMainDialog() {
     mainDialog.dispose();
-    try {
-      assistant.shutdown();
-    }
-    catch (Exception e) {
-    }
+    assistant.shutdown();
   }
 
   /**

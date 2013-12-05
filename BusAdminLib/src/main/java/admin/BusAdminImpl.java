@@ -66,12 +66,30 @@ public class BusAdminImpl implements BusAdmin {
 
   /**
    * Construtor da classe.
+   */
+  public BusAdminImpl() {
+  }
+
+  /**
+   * Construtor da classe.
    * 
    * @param host Host do barramento
    * @param port Porta do barramento
    * @param orb ORB do barramento
    */
   public BusAdminImpl(String host, short port, ORB orb) {
+    connect(host, port, orb);
+  }
+
+  /**
+   * Conecta a instância do objeto a um barramento. Como efeito colateral,
+   * atualiza as referências aos registros do barramento.
+   * 
+   * @param host Host do barramento
+   * @param port Porta do barramento
+   * @param orb ORB do barramento
+   */
+  public void connect(String host, short port, ORB orb) {
     this.host = host;
     this.port = port;
     this.orb = orb;

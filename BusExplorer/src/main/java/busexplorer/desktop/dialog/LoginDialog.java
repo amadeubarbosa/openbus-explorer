@@ -6,6 +6,8 @@ import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -149,6 +151,7 @@ public class LoginDialog {
     fieldPort = new JTextField();
     fieldPort.setToolTipText(LNG.get("LoginDialog.port.help"));
     configPanel.add(fieldPort, new GBC(1, 4).horizontal().insets(0, 0, 6, 6));
+    fieldPort.addFocusListener(new SelectAllTextListener());
 
     JLabel labelUser = new JLabel(LNG.get("LoginDialog.user.label"));
     labelUser.setFont(FONT_LABEL);
@@ -157,6 +160,7 @@ public class LoginDialog {
     fieldUser = new JTextField();
     fieldUser.setToolTipText(LNG.get("LoginDialog.user.help"));
     configPanel.add(fieldUser, new GBC(0, 6).horizontal().insets(0, 6, 6, 9));
+    fieldUser.addFocusListener(new SelectAllTextListener());
 
     JLabel labelPassword = new JLabel(LNG.get("LoginDialog.password.label"));
     labelPassword.setFont(FONT_LABEL);
@@ -166,6 +170,7 @@ public class LoginDialog {
     fieldPassword.setToolTipText(LNG.get("LoginDialog.password.help"));
     configPanel.add(fieldPassword, new
       GBC(1, 6).horizontal().insets(0, 0, 6, 6));
+    fieldPassword.addFocusListener(new SelectAllTextListener());
 
     loginPanel.add(configPanel, BorderLayout.CENTER);
 
@@ -209,6 +214,21 @@ public class LoginDialog {
    */
   public short getPort() {
     return port;
+  }
+
+  /**
+   * Listener de seleção de texto em um JTextField.
+   *
+   * @author Tecgraf
+   */
+  private class SelectAllTextListener extends FocusAdapter {
+    /**
+     * Seleciona o texto do componente focado.
+     */
+    @Override
+    public void focusGained(FocusEvent event) {
+      ((JTextField)event.getComponent()).selectAll();
+    }
   }
 
   /**
@@ -320,6 +340,8 @@ public class LoginDialog {
                 .get("ProgressDialog.error.title"), JOptionPane.ERROR_MESSAGE);
             }
           }
+          // Retorna o foco para o TextField de host (o primeiro).
+          fieldHost.requestFocus();
         }
       };
 

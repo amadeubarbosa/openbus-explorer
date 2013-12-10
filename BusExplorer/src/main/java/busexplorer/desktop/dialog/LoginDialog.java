@@ -142,6 +142,7 @@ public class LoginDialog {
 
     fieldHost = new JTextField();
     fieldHost.setToolTipText(LNG.get("LoginDialog.host.help"));
+    fieldHost.addFocusListener(new SelectAllTextListener());
     configPanel.add(fieldHost, new GBC(0, 4).horizontal().insets(0, 6, 6, 9));
 
     labelPort = new JLabel(LNG.get("LoginDialog.port.label"));

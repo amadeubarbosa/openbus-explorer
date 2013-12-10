@@ -1,13 +1,15 @@
 package busexplorer.desktop.dialog;
 
+import java.awt.Font;
+import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -15,6 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.TitledBorder;
 
 import scs.core.IComponent;
 import tecgraf.diagnostic.addons.openbus.v20.OpenBusMonitor;
@@ -34,26 +38,20 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
  */
 public class LoginDialog {
 
-  /** Botão de confirmação do login */
-  JButton loginButton = null;
   /** Label de endereço do barramento */
-  JLabel addressLabel = null;
+  JLabel labelHost = null;
   /** Label de porta do barramento */
-  JLabel portLabel = null;
-  /** Label de chave */
-  JLabel userLabel = null;
-  /** Label de senha */
-  JLabel passwordLabel = null;
+  JLabel labelPort = null;
   /** Diálogo */
   private JDialog loginDialog;
   /** Campo de texto para o endereço do barramento */
-  private JTextField addressField;
+  private JTextField fieldHost;
   /** Campo de texto para a porta do barramento */
-  private JTextField portField;
+  private JTextField fieldPort;
   /** Campo de texto para o nome do usuário (entidade do barramento). */
-  private JTextField userField;
+  private JTextField fieldUser;
   /** Campo de texto onde é digitada a senha do usuário. */
-  private JPasswordField passwordField;
+  private JPasswordField fieldPassword;
   /** Nome do host do barramento */
   private String host;
   /** Porta do barramento */
@@ -74,14 +72,6 @@ public class LoginDialog {
   private void createDialog(Window owner) {
     loginDialog = new JDialog(owner, getDialogTitle(),
       JDialog.ModalityType.APPLICATION_MODAL);
-    JPanel mainPane = new JPanel(new GridBagLayout());
-
-    mainPane.add(createLoginPanel(), new GBC(0, 1).north().horizontal().insets(
-      new Insets(6, 10, 11, 11)));
-
-    loginDialog.getContentPane().add(mainPane);
-    loginDialog.pack();
-
     loginDialog.setResizable(false);
     loginDialog.setLocationRelativeTo(owner);
     loginDialog.addWindowListener(new WindowAdapter() {
@@ -89,8 +79,11 @@ public class LoginDialog {
       public void windowClosing(WindowEvent e) {
         shutdownLoginDialog();
       }
-
     });
+
+    buildLoginPane();
+
+    loginDialog.pack();
   }
 
   /**
@@ -120,73 +113,81 @@ public class LoginDialog {
   }
 
   /**
-   * Cria um painel para login.
-   * 
-   * @return o painel de login.
+   * Constrói o pane de login.
    */
-  private JPanel createLoginPanel() {
-    JPanel loginPane = new JPanel(new GridBagLayout());
+  private void buildLoginPane() {
+    JPanel loginPanel = new JPanel(new BorderLayout());
+    loginPanel.setBorder(new EmptyBorder(6, 6, 6, 6));
 
-    //Label de configurações de acesso ao barramento
-    portLabel = new JLabel(LNG.get("LoginDialog.config.label"));
-    loginPane.add(portLabel, new GBC(0, 0).none());
+    JPanel configPanel = new JPanel();
 
-    //Label de endereço
-    addressLabel = new JLabel(LNG.get("LoginDialog.address.label"));
-    loginPane.add(addressLabel, new GBC(0, 1).west().insets(
-      new Insets(20, 0, 0, 0)).none());
+    GridBagLayout configLayout = new GridBagLayout();
+    configLayout.columnWidths = new int[] { 300, 120 };
+    configPanel.setLayout(configLayout);
 
-    //Campo de endereço
-    addressField = new JTextField("localhost", 1);
-    addressField.setName("address");
-    addressField.setToolTipText(LNG.get("LoginDialog.address.help"));
-    loginPane.add(addressField, new GBC(0, 2).west().insets(
-      new Insets(0, 0, 0, 0)).horizontal());
+    TitledBorder configBorder = new TitledBorder(null, 
+      LNG.get("LoginDialog.config.label"));
+    configPanel.setBorder(configBorder);
 
-    //Label de porta
-    portLabel = new JLabel(LNG.get("LoginDialog.port.label"));
-    loginPane.add(portLabel, new GBC(1, 1).southwest().insets(
-      new Insets(0, 6, 0, 0)));
+    // TODO ComboBox de barramentos pré-configurados; foi por isso que as
+    // GridBagConstraints "pularam" para a linha 3. --tmartins
 
-    //Campo de porta
-    portField = new JTextField("2089", 1);
-    portField.setName("port");
-    portField.setToolTipText(LNG.get("LoginDialog.port.help"));
-    loginPane.add(portField, new GBC(1, 2).insets(new Insets(0, 6, 0, 0))
-      .horizontal());
+    final Font FONT_LABEL = new Font("Dialog", Font.PLAIN, 12);
 
-    //Label de usuário
-    userLabel = new JLabel(LNG.get("LoginDialog.user.label"));
-    loginPane.add(userLabel, new GBC(0, 3).west());
+    labelHost = new JLabel(LNG.get("LoginDialog.host.label"));
+    labelHost.setFont(FONT_LABEL);
+    configPanel.add(labelHost, new GBC(0, 3).west().insets(6, 6, 3, 6));
 
-    //Campo de usuário
-    userField = new JTextField(1);
-    userField.setName("username");
-    userField.setToolTipText(LNG.get("LoginDialog.user.help"));
-    loginPane.add(userField, new GBC(0, 4).west().horizontal());
+    fieldHost = new JTextField();
+    fieldHost.setToolTipText(LNG.get("LoginDialog.host.help"));
+    configPanel.add(fieldHost, new GBC(0, 4).horizontal().insets(0, 6, 6, 9));
 
-    //Label de senha
-    passwordLabel = new JLabel(LNG.get("LoginDialog.password.label"));
-    loginPane.add(passwordLabel, new GBC(1, 3).west().insets(
-      new Insets(0, 6, 0, 0)).right(70));
+    labelPort = new JLabel(LNG.get("LoginDialog.port.label"));
+    labelPort.setFont(FONT_LABEL);
+    configPanel.add(labelPort, new GBC(1, 3).west().insets(6, 0, 3, 6));
 
-    //Campo de senha
-    passwordField = new JPasswordField(1);
-    passwordField.setName("password");
-    passwordField.setToolTipText(LNG.get("LoginDialog.password.help"));
-    loginPane.add(passwordField, new GBC(1, 4).west().horizontal().insets(
-      new Insets(0, 6, 0, 0)));
+    fieldPort = new JTextField();
+    fieldPort.setToolTipText(LNG.get("LoginDialog.port.help"));
+    configPanel.add(fieldPort, new GBC(1, 4).horizontal().insets(0, 0, 6, 6));
 
-    //Botão de login
-    loginButton = new JButton(LNG.get("LoginDialog.confirm.button"));
-    loginButton.setToolTipText(LNG.get("LoginDialog.confirm.help"));
-    loginPane.add(loginButton, new GBC(2, 2).insets(new Insets(0, 6, 0, 0)));
+    JLabel labelUser = new JLabel(LNG.get("LoginDialog.user.label"));
+    labelUser.setFont(FONT_LABEL);
+    configPanel.add(labelUser, new GBC(0, 5).west().insets(6, 6, 3, 6));
 
-    loginDialog.getRootPane().setDefaultButton(loginButton);
+    fieldUser = new JTextField();
+    fieldUser.setToolTipText(LNG.get("LoginDialog.user.help"));
+    configPanel.add(fieldUser, new GBC(0, 6).horizontal().insets(0, 6, 6, 9));
 
-    loginButton.addActionListener(new LoginAction());
+    JLabel labelPassword = new JLabel(LNG.get("LoginDialog.password.label"));
+    labelPassword.setFont(FONT_LABEL);
+    configPanel.add(labelPassword, new GBC(1, 5).west().insets(6, 0, 3, 6));
 
-    return loginPane;
+    fieldPassword = new JPasswordField();
+    fieldPassword.setToolTipText(LNG.get("LoginDialog.password.help"));
+    configPanel.add(fieldPassword, new
+      GBC(1, 6).horizontal().insets(0, 0, 6, 6));
+
+    loginPanel.add(configPanel, BorderLayout.CENTER);
+
+    JButton buttonLogin = new JButton(LNG.get("LoginDialog.confirm.button"));
+    buttonLogin.setToolTipText(LNG.get("LoginDialog.confirm.help"));
+    buttonLogin.addActionListener(new LoginAction());
+    
+    JButton buttonQuit = new JButton(LNG.get("LoginDialog.quit.button"));
+    buttonQuit.setToolTipText(LNG.get("LoginDialog.quit.help"));
+    buttonQuit.addActionListener(new QuitAction());
+
+    Box buttonsBox = Box.createHorizontalBox();
+    buttonsBox.setBorder(new EmptyBorder(9, 3, 3, 3));
+    buttonsBox.add(Box.createHorizontalGlue());
+    buttonsBox.add(buttonLogin);
+    buttonsBox.add(Box.createHorizontalStrut(9));
+    buttonsBox.add(buttonQuit);
+    loginPanel.add(buttonsBox, BorderLayout.SOUTH);
+
+    loginDialog.getRootPane().setDefaultButton(buttonLogin);
+
+    loginDialog.setContentPane(loginPanel);
   }
 
   /**
@@ -237,11 +238,11 @@ public class LoginDialog {
 
         @Override
         protected void performTask() throws Exception {
-          host = addressField.getText();
-          port = Short.valueOf(portField.getText());
+          host = fieldHost.getText();
+          port = Short.valueOf(fieldPort.getText());
 
-          String entity = userField.getText();
-          String password = passwordField.getText();
+          String entity = fieldUser.getText();
+          String password = fieldPassword.getText();
           AssistantParams params = new AssistantParams();
 
           params.callback = new OnFailureCallback() {
@@ -327,4 +328,18 @@ public class LoginDialog {
     }
   }
 
+  /**
+   * Ação que termina a aplicação.
+   *
+   * @author Tecgraf
+   */
+  private class QuitAction implements ActionListener {
+    /**
+     * Termina a aplicação.
+     */
+    @Override
+    public void actionPerformed(ActionEvent event) {
+      shutdownLoginDialog();
+    }
+  }
 }

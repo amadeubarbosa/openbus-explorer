@@ -222,7 +222,7 @@ public class MainDialog {
         new EntityTableProvider());
 
     List<PanelActionInterface<EntityInfo>> actionsVector =
-      new Vector<PanelActionInterface<EntityInfo>>();
+      new Vector<PanelActionInterface<EntityInfo>>(3);
     actionsVector.add(new EntityRefreshAction(mainDialog, admin));
     actionsVector.add(new EntityAddAction(mainDialog, admin));
     actionsVector.add(new EntityDeleteAction(mainDialog, admin));

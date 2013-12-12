@@ -4,8 +4,8 @@ import org.omg.CORBA.ORB;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -19,6 +19,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import admin.BusAdminImpl;
 import tecgraf.javautils.LNG;
@@ -185,6 +187,17 @@ public class MainDialog {
         null, LNG.get("MainDialog." + featureName + ".toolTip"));
     }
     initFeaturePanels();
+
+    featuresPane.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent event) {
+        PanelComponent<?> component =
+          (PanelComponent<?>)featuresPane.getSelectedComponent();
+        // TODO Corrigir parâmetro do método refresh, ou sobrecarregá-lo.
+        // --tmartins
+        component.refresh(null);
+      }
+    });
 
     mainDialog.add(featuresPane, BorderLayout.CENTER);
   }

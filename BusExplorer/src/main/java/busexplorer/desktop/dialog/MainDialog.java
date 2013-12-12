@@ -21,9 +21,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 
 import admin.BusAdminImpl;
-import reuse.modified.planref.client.util.crud.CRUDPanel;
-import reuse.modified.planref.client.util.crud.CRUDbleActionInterface;
-import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
@@ -339,20 +336,20 @@ public class MainDialog {
    * Inicializa o painel CRUD de logins.
    */
   private void initPanelLogin() {
-    ObjectTableModel<LoginInfoWrapper> m =
-      new ModifiableObjectTableModel<LoginInfoWrapper>(
-        new LinkedList<LoginInfoWrapper>(), new LoginTableProvider());
+    ObjectTableModel<LoginInfoWrapper> model =
+      new ObjectTableModel<LoginInfoWrapper>(new LinkedList<LoginInfoWrapper>(),
+        new LoginTableProvider());
 
-    CRUDPanel<LoginInfoWrapper> panelLogin = new CRUDPanel<LoginInfoWrapper>(m,
-      0);
+    List<PanelActionInterface<LoginInfoWrapper>> actionsVector =
+      new Vector<PanelActionInterface<LoginInfoWrapper>>(2);
+    // TODO Refatorar implementação das ações. --tmartins
+/*
+    actionsVector.add(new LoginRefreshAction(mainDialog, admin));
+    actionsVector.add(new LoginDeleteAction(mainDialog, admin));
+*/
 
-    Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>(2);
-    actionsVector.add(new LoginRefreshAction(mainDialog, panelLogin.getTable(),
-      admin));
-    actionsVector.add(new LoginDeleteAction(mainDialog, panelLogin, admin));
-
-    panelLogin.setButtonsPane(actionsVector);
+    PanelComponent<LoginInfoWrapper> panelLogin = new
+      PanelComponent<LoginInfoWrapper>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.login.title"));
     featuresPane.setComponentAt(index, panelLogin);

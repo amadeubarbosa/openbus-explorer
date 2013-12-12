@@ -241,23 +241,21 @@ public class MainDialog {
    * Inicializa o painel de CRUD de certificados.
    */
   private void initPanelCertificate() {
-    ObjectTableModel<IdentifierWrapper> m =
-      new ModifiableObjectTableModel<IdentifierWrapper>(
+    ObjectTableModel<IdentifierWrapper> model =
+      new ObjectTableModel<IdentifierWrapper>(
         new LinkedList<IdentifierWrapper>(), new CertificateTableProvider());
 
-    CRUDPanel<IdentifierWrapper> panelCertificate = new
-      CRUDPanel<IdentifierWrapper>(m, 0);
+    List<PanelActionInterface<IdentifierWrapper>> actionsVector =
+      new Vector<PanelActionInterface<IdentifierWrapper>>(3);
+    // TODO Refatorar implementação das ações. --tmartins
+/*
+    actionsVector.add(new CertificateRefreshAction(mainDialog, admin));
+    actionsVector.add(new CertificateAddAction(mainDialog, admin));
+    actionsVector.add(new CertificateDeleteAction(mainDialog, admin));
+*/
 
-    Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>(3);
-    actionsVector.add(new CertificateRefreshAction(mainDialog, panelCertificate
-      .getTable(), admin));
-    actionsVector.add(new CertificateAddAction(mainDialog, panelCertificate,
-      admin));
-    actionsVector.add(new CertificateDeleteAction(mainDialog, panelCertificate,
-      admin));
-
-    panelCertificate.setButtonsPane(actionsVector);
+    PanelComponent<IdentifierWrapper> panelCertificate = new
+      PanelComponent<IdentifierWrapper>(model, actionsVector);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.certificate.title"));

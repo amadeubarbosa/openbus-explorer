@@ -316,19 +316,20 @@ public class MainDialog {
    * Inicializa o painel de CRUD de ofertas.
    */
   private void initPanelOffer() {
-    ObjectTableModel<OfferWrapper> m =
-      new ModifiableObjectTableModel<OfferWrapper>(
-        new LinkedList<OfferWrapper>(), new OffersTableProvider());
+    ObjectTableModel<OfferWrapper> model =
+      new ObjectTableModel<OfferWrapper>(new LinkedList<OfferWrapper>(),
+        new OffersTableProvider());
 
-    CRUDPanel<OfferWrapper> panelOffer = new CRUDPanel<OfferWrapper>(m, 0);
+    List<PanelActionInterface<OfferWrapper>> actionsVector =
+      new Vector<PanelActionInterface<OfferWrapper>>(2);
+    // TODO Refatorar implementação das ações. --tmartins
+/*
+    actionsVector.add(new OfferRefreshAction(mainDialog, admin));
+    actionsVector.add(new OfferDeleteAction(mainDialog, admin));
+*/
 
-    Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>(2);
-    actionsVector.add(new OfferRefreshAction(mainDialog, panelOffer.getTable(),
-      admin));
-    actionsVector.add(new OfferDeleteAction(mainDialog, panelOffer, admin));
-
-    panelOffer.setButtonsPane(actionsVector);
+    PanelComponent<OfferWrapper> panelOffer = new
+      PanelComponent<OfferWrapper>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.offer.title"));
     featuresPane.setComponentAt(index, panelOffer);

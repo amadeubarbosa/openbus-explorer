@@ -290,24 +290,22 @@ public class MainDialog {
    * Inicializa o painel de CRUD de autorizações.
    */
   private void initPanelAuthorization() {
-    ObjectTableModel<AuthorizationWrapper> m =
-      new ModifiableObjectTableModel<AuthorizationWrapper>(
+    ObjectTableModel<AuthorizationWrapper> model =
+      new ObjectTableModel<AuthorizationWrapper>(
         new LinkedList<AuthorizationWrapper>(),
         new AuthorizationTableProvider());
 
-    CRUDPanel<AuthorizationWrapper> panelAuthorization = new
-      CRUDPanel<AuthorizationWrapper>(m, 0);
+    List<PanelActionInterface<AuthorizationWrapper>> actionsVector =
+      new Vector<PanelActionInterface<AuthorizationWrapper>>(3);
+    // TODO Refatorar implementação das ações. --tmartins
+/*
+    actionsVector.add(new AuthorizationRefreshAction(mainDialog, admin));
+    actionsVector.add(new AuthorizationAddAction(mainDialog, admin));
+    actionsVector.add(new AuthorizationDeleteAction(mainDialog, admin));
+*/
 
-    Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>(3);
-    actionsVector.add(new AuthorizationRefreshAction(mainDialog,
-      panelAuthorization.getTable(), admin));
-    actionsVector.add(new AuthorizationAddAction(mainDialog,
-      panelAuthorization, admin));
-    actionsVector.add(new AuthorizationDeleteAction(mainDialog,
-      panelAuthorization, admin));
-
-    panelAuthorization.setButtonsPane(actionsVector);
+    PanelComponent<AuthorizationWrapper> panelAuthorization = new
+      PanelComponent<AuthorizationWrapper>(model, actionsVector);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.authorization.title"));

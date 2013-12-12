@@ -195,23 +195,22 @@ public class MainDialog {
    * Inicializa o painel de CRUD de categorias.
    */
   private void initPanelCategory() {
-    ObjectTableModel<EntityCategoryDescWrapper> m =
-      new ModifiableObjectTableModel<EntityCategoryDescWrapper>(
+    ObjectTableModel<EntityCategoryDescWrapper> model =
+      new ObjectTableModel<EntityCategoryDescWrapper>(
         new LinkedList<EntityCategoryDescWrapper>(),
         new CategoryTableProvider());
 
-    CRUDPanel<EntityCategoryDescWrapper> panelCategory = new
-      CRUDPanel<EntityCategoryDescWrapper>(m, 0);
+    List<PanelActionInterface<EntityCategoryDescWrapper>> actionsVector =
+      new Vector<PanelActionInterface<EntityCategoryDescWrapper>>(3);
+    // TODO Refatorar implementação das ações. --tmartins
+/*
+    actionsVector.add(new CategoryRefreshAction(mainDialog, admin));
+    actionsVector.add(new CategoryAddAction(mainDialog, admin));
+    actionsVector.add(new CategoryDeleteAction(mainDialog, admin));
+*/
 
-    Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>(3);
-    actionsVector.add(new CategoryRefreshAction(mainDialog, panelCategory
-      .getTable(), admin));
-    actionsVector.add(new CategoryAddAction(mainDialog, panelCategory, admin));
-    actionsVector
-      .add(new CategoryDeleteAction(mainDialog, panelCategory, admin));
-
-    panelCategory.setButtonsPane(actionsVector);
+    PanelComponent<EntityCategoryDescWrapper> panelCategory = new
+      PanelComponent<EntityCategoryDescWrapper>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.category.title"));
     featuresPane.setComponentAt(index, panelCategory);

@@ -266,23 +266,21 @@ public class MainDialog {
    * Inicializa o painel de CRUD de interfaces.
    */
   private void initPanelInterface() {
-    ObjectTableModel<InterfaceWrapper> m =
-      new ModifiableObjectTableModel<InterfaceWrapper>(
-        new LinkedList<InterfaceWrapper>(), new InterfaceTableProvider());
+    ObjectTableModel<InterfaceWrapper> model =
+      new ObjectTableModel<InterfaceWrapper>(new LinkedList<InterfaceWrapper>(),
+        new InterfaceTableProvider());
 
-    CRUDPanel<InterfaceWrapper> panelInterface = new
-      CRUDPanel<InterfaceWrapper>(m, 0);
+    List<PanelActionInterface<InterfaceWrapper>> actionsVector =
+      new Vector<PanelActionInterface<InterfaceWrapper>>(3);
+    // TODO Refatorar implementação das ações. --tmartins
+/*
+    actionsVector.add(new InterfaceRefreshAction(mainDialog, admin));
+    actionsVector.add(new InterfaceAddAction(mainDialog, admin));
+    actionsVector.add(new InterfaceDeleteAction(mainDialog, admin));
+*/
 
-    Vector<CRUDbleActionInterface> actionsVector =
-      new Vector<CRUDbleActionInterface>(3);
-    actionsVector.add(new InterfaceRefreshAction(mainDialog, panelInterface
-      .getTable(), admin));
-    actionsVector
-      .add(new InterfaceAddAction(mainDialog, panelInterface, admin));
-    actionsVector.add(new InterfaceDeleteAction(mainDialog, panelInterface,
-      admin));
-
-    panelInterface.setButtonsPane(actionsVector);
+    PanelComponent<InterfaceWrapper> panelInterface = new
+      PanelComponent<InterfaceWrapper>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.interface.title"));
     featuresPane.setComponentAt(index, panelInterface);

@@ -1,22 +1,26 @@
 package busexplorer.action.logins;
 
-import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
-import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
-import busexplorer.wrapper.LoginInfoWrapper;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+import busexplorer.wrapper.LoginInfoInfo;
 
 /**
  * Provedor de dados para a tabela de Logins
  * 
  * @author Tecgraf
  */
-public class LoginTableProvider extends VerifiableModifiableObjectTableProvider {
+public class LoginTableProvider implements ObjectTableProvider<LoginInfoInfo> {
+
+  /** Índice da coluna Login */
+  private static final int LOGIN_ID = 0;
+  /** Índice da coluna Entidade */
+  private static final int ENTITY_ID = 1;
 
   /**
    * {@inheritDoc}
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "ID Login", "ID Entidade" };
+    String[] colNames = { "Login", "Entidade" };
     return colNames;
   }
 
@@ -33,42 +37,18 @@ public class LoginTableProvider extends VerifiableModifiableObjectTableProvider 
    * {@inheritDoc}
    */
   @Override
-  public void setValueAt(Object row, Object newValue, int colIndex) {
+  public Object getCellValue(LoginInfoInfo row, int col) {
+    final LoginInfoInfo login = row;
+    switch (col) {
+    case LOGIN_ID:
+      return login.getId();
 
-  }
+    case ENTITY_ID:
+      return login.getEntityId();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isCellEditable(Object row, int rowIndex, int columnIndex) {
-    return false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isValid(Object row, int columnIndex) {
-    return false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getTooltip(int columnIndex) {
+    default:
+      break;
+    }
     return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object[] getCellValues(Object row) {
-    final LoginInfoWrapper loginInfoWrapper = (LoginInfoWrapper) row;
-
-    final LoginInfo loginInfo = loginInfoWrapper.getLoginInfo();
-    return new Object[] { loginInfo.id, loginInfo.entity };
   }
 }

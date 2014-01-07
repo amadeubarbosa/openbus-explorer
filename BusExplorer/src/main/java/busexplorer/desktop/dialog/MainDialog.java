@@ -60,7 +60,7 @@ import busexplorer.wrapper.CategoryInfo;
 import busexplorer.wrapper.CertificateInfo;
 import busexplorer.wrapper.EntityInfo;
 import busexplorer.wrapper.InterfaceInfo;
-import busexplorer.wrapper.LoginInfoWrapper;
+import busexplorer.wrapper.LoginInfoInfo;
 import busexplorer.wrapper.OfferInfo;
 
 /**
@@ -348,20 +348,20 @@ public class MainDialog {
    * Inicializa o painel CRUD de logins.
    */
   private void initPanelLogin() {
-    ObjectTableModel<LoginInfoWrapper> model =
-      new ObjectTableModel<LoginInfoWrapper>(new LinkedList<LoginInfoWrapper>(),
+    ObjectTableModel<LoginInfoInfo> model =
+      new ObjectTableModel<LoginInfoInfo>(new LinkedList<LoginInfoInfo>(),
         new LoginTableProvider());
 
-    List<PanelActionInterface<LoginInfoWrapper>> actionsVector =
-      new Vector<PanelActionInterface<LoginInfoWrapper>>(2);
+    List<PanelActionInterface<LoginInfoInfo>> actionsVector =
+      new Vector<PanelActionInterface<LoginInfoInfo>>(2);
     // TODO Refatorar implementação das ações. --tmartins
-/*
     actionsVector.add(new LoginRefreshAction(mainDialog, admin));
+/*
     actionsVector.add(new LoginDeleteAction(mainDialog, admin));
 */
 
-    PanelComponent<LoginInfoWrapper> panelLogin = new
-      PanelComponent<LoginInfoWrapper>(model, actionsVector);
+    PanelComponent<LoginInfoInfo> panelLogin = new
+      PanelComponent<LoginInfoInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.login.title"));
     featuresPane.setComponentAt(index, panelLogin);

@@ -1,20 +1,16 @@
 package busexplorer.action.logins;
 
 import java.awt.event.ActionEvent;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JTable;
 
-import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
+import test.ActionType;
+import test.OpenBusAction;
 import admin.BusAdmin;
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.LoginInfoWrapper;
+import busexplorer.wrapper.LoginInfoInfo;
 
 /**
  * Ação que atualiza a tabela de categorias
@@ -22,47 +18,49 @@ import busexplorer.wrapper.LoginInfoWrapper;
  * @author Tecgraf
  * 
  */
-public class LoginRefreshAction extends BusAdminAbstractAction {
+public class LoginRefreshAction extends OpenBusAction<LoginInfoInfo> {
 
-  public LoginRefreshAction(JFrame parentWindow, JTable table, BusAdmin admin) {
-    super(parentWindow, table, admin, LNG.get("LoginRefreshAction.name"));
+  /**
+   * Construtor.
+   * 
+   * @param parentWindow janela pai.
+   * @param admin biblioteca de administração.
+   */
+  public LoginRefreshAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin, LNG.get(LoginRefreshAction.class.getSimpleName()
+      + ".name"));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.OTHER;
+  public ActionType getActionType() {
+    return ActionType.REFRESH;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task task = new Task() {
-      List<LoginInfo> logins = null;
+    Task<List<LoginInfoInfo>> task = new Task<List<LoginInfoInfo>>() {
 
       @Override
       protected void performTask() throws Exception {
-        logins = admin.getLogins();
+        setResult(LoginInfoInfo.convertToInfo(admin.getLogins()));
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getError() == null) {
-          List<LoginInfoWrapper> wrappersList =
-            new LinkedList<LoginInfoWrapper>();
-
-          for (LoginInfo loginInfo : logins) {
-            wrappersList.add(new LoginInfoWrapper(loginInfo));
-          }
-
-          ObjectTableModel<LoginInfoWrapper> m =
-            new ModifiableObjectTableModel<LoginInfoWrapper>(wrappersList,
-              new LoginTableProvider());
-
-          table.setModel(m);
+        if (getStatus()) {
+          getPanelComponent().setElements(getResult());
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
-      .get("ListAction.waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
+
 }

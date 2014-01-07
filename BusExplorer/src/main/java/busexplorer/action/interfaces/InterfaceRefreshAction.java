@@ -1,19 +1,16 @@
 package busexplorer.action.interfaces;
 
 import java.awt.event.ActionEvent;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JTable;
 
-import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
-import tecgraf.javautils.gui.table.ObjectTableModel;
+import test.ActionType;
+import test.OpenBusAction;
 import admin.BusAdmin;
-import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.InterfaceWrapper;
+import busexplorer.wrapper.InterfaceInfo;
 
 /**
  * Ação que atualiza a tabela de interfaces
@@ -21,19 +18,25 @@ import busexplorer.wrapper.InterfaceWrapper;
  * @author Tecgraf
  * 
  */
-public class InterfaceRefreshAction extends BusAdminAbstractAction {
+public class InterfaceRefreshAction extends OpenBusAction<InterfaceInfo> {
 
-  public InterfaceRefreshAction(JFrame parentWindow, JTable table,
-    BusAdmin admin) {
-    super(parentWindow, table, admin, LNG.get("InterfaceRefreshAction.name"));
+  /**
+   * Construtor.
+   * 
+   * @param parentWindow janela pai.
+   * @param admin biblioteca de administração.
+   */
+  public InterfaceRefreshAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin,
+      LNG.get(InterfaceRefreshAction.class.getSimpleName() + ".name"));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.OTHER;
+  public ActionType getActionType() {
+    return ActionType.REFRESH;
   }
 
   /**
@@ -41,35 +44,23 @@ public class InterfaceRefreshAction extends BusAdminAbstractAction {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task task = new Task() {
-      List<String> interfaces = null;
+    Task<List<InterfaceInfo>> task = new Task<List<InterfaceInfo>>() {
 
       @Override
       protected void performTask() throws Exception {
-        interfaces = admin.getInterfaces();
+        setResult(InterfaceInfo.convertToInfo(admin.getInterfaces()));
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getError() == null) {
-          List<InterfaceWrapper> wrappersList =
-            new LinkedList<InterfaceWrapper>();
-
-          for (String interfaceName : interfaces) {
-            wrappersList.add(new InterfaceWrapper(interfaceName));
-          }
-
-          ObjectTableModel<InterfaceWrapper> m =
-            new ModifiableObjectTableModel<InterfaceWrapper>(wrappersList,
-              new InterfaceTableProvider());
-
-          table.setModel(m);
+        if (getStatus()) {
+          getPanelComponent().setElements(getResult());
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
-      .get("ListAction.waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
 
 }

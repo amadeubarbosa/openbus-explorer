@@ -59,7 +59,7 @@ import busexplorer.wrapper.AuthorizationWrapper;
 import busexplorer.wrapper.CategoryInfo;
 import busexplorer.wrapper.CertificateInfo;
 import busexplorer.wrapper.EntityInfo;
-import busexplorer.wrapper.InterfaceWrapper;
+import busexplorer.wrapper.InterfaceInfo;
 import busexplorer.wrapper.LoginInfoWrapper;
 import busexplorer.wrapper.OfferWrapper;
 
@@ -275,21 +275,21 @@ public class MainDialog {
    * Inicializa o painel de CRUD de interfaces.
    */
   private void initPanelInterface() {
-    ObjectTableModel<InterfaceWrapper> model =
-      new ObjectTableModel<InterfaceWrapper>(new LinkedList<InterfaceWrapper>(),
+    ObjectTableModel<InterfaceInfo> model =
+      new ObjectTableModel<InterfaceInfo>(new LinkedList<InterfaceInfo>(),
         new InterfaceTableProvider());
 
-    List<PanelActionInterface<InterfaceWrapper>> actionsVector =
-      new Vector<PanelActionInterface<InterfaceWrapper>>(3);
+    List<PanelActionInterface<InterfaceInfo>> actionsVector =
+      new Vector<PanelActionInterface<InterfaceInfo>>(3);
+    actionsVector.add(new InterfaceRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
 /*
-    actionsVector.add(new InterfaceRefreshAction(mainDialog, admin));
     actionsVector.add(new InterfaceAddAction(mainDialog, admin));
     actionsVector.add(new InterfaceDeleteAction(mainDialog, admin));
 */
 
-    PanelComponent<InterfaceWrapper> panelInterface = new
-      PanelComponent<InterfaceWrapper>(model, actionsVector);
+    PanelComponent<InterfaceInfo> panelInterface = new
+      PanelComponent<InterfaceInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.interface.title"));
     featuresPane.setComponentAt(index, panelInterface);

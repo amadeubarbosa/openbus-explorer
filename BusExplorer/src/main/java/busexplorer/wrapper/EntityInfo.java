@@ -29,20 +29,11 @@ public class EntityInfo {
    * @param desc descritor da entidade
    * @param category identificador da categoria associada.
    */
-  public EntityInfo(RegisteredEntityDesc desc, String category) {
+  public EntityInfo(RegisteredEntityDesc desc) {
     this.desc = desc;
     this.id = desc.id;
     this.name = desc.name;
     this.category = desc.category.id();
-  }
-
-  /**
-   * Construtor.
-   * 
-   * @param desc descritor da entidade
-   */
-  public EntityInfo(RegisteredEntityDesc desc) {
-    this(desc, desc.category.id());
   }
 
   /**
@@ -100,8 +91,8 @@ public class EntityInfo {
   public static List<EntityInfo> convertToInfo(
     List<RegisteredEntityDesc> entities) {
     List<EntityInfo> list = new ArrayList<EntityInfo>();
-    for (RegisteredEntityDesc desc : entities) {
-      list.add(new EntityInfo(desc));
+    for (RegisteredEntityDesc entity : entities) {
+      list.add(new EntityInfo(entity));
     }
     return list;
   }

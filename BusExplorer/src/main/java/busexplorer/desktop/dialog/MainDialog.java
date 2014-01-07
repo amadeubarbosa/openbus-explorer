@@ -56,7 +56,7 @@ import busexplorer.action.offers.OfferDeleteAction;
 import busexplorer.action.offers.OfferRefreshAction;
 import busexplorer.action.offers.OffersTableProvider;
 import busexplorer.wrapper.AuthorizationWrapper;
-import busexplorer.wrapper.EntityCategoryDescWrapper;
+import busexplorer.wrapper.CategoryInfo;
 import busexplorer.wrapper.EntityInfo;
 import busexplorer.wrapper.IdentifierWrapper;
 import busexplorer.wrapper.InterfaceWrapper;
@@ -205,22 +205,21 @@ public class MainDialog {
    * Inicializa o painel de CRUD de categorias.
    */
   private void initPanelCategory() {
-    ObjectTableModel<EntityCategoryDescWrapper> model =
-      new ObjectTableModel<EntityCategoryDescWrapper>(
-        new LinkedList<EntityCategoryDescWrapper>(),
-        new CategoryTableProvider());
+    ObjectTableModel<CategoryInfo> model = new ObjectTableModel<CategoryInfo>(
+      new LinkedList<CategoryInfo>(),
+      new CategoryTableProvider());
 
-    List<PanelActionInterface<EntityCategoryDescWrapper>> actionsVector =
-      new Vector<PanelActionInterface<EntityCategoryDescWrapper>>(3);
+    List<PanelActionInterface<CategoryInfo>> actionsVector =
+      new Vector<PanelActionInterface<CategoryInfo>>(3);
+    actionsVector.add(new CategoryRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
 /*
-    actionsVector.add(new CategoryRefreshAction(mainDialog, admin));
     actionsVector.add(new CategoryAddAction(mainDialog, admin));
     actionsVector.add(new CategoryDeleteAction(mainDialog, admin));
 */
 
-    PanelComponent<EntityCategoryDescWrapper> panelCategory = new
-      PanelComponent<EntityCategoryDescWrapper>(model, actionsVector);
+    PanelComponent<CategoryInfo> panelCategory = new
+      PanelComponent<CategoryInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.category.title"));
     featuresPane.setComponentAt(index, panelCategory);

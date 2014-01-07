@@ -55,7 +55,7 @@ import busexplorer.action.logins.LoginTableProvider;
 import busexplorer.action.offers.OfferDeleteAction;
 import busexplorer.action.offers.OfferRefreshAction;
 import busexplorer.action.offers.OffersTableProvider;
-import busexplorer.wrapper.AuthorizationWrapper;
+import busexplorer.wrapper.AuthorizationInfo;
 import busexplorer.wrapper.CategoryInfo;
 import busexplorer.wrapper.CertificateInfo;
 import busexplorer.wrapper.EntityInfo;
@@ -299,22 +299,22 @@ public class MainDialog {
    * Inicializa o painel de CRUD de autorizações.
    */
   private void initPanelAuthorization() {
-    ObjectTableModel<AuthorizationWrapper> model =
-      new ObjectTableModel<AuthorizationWrapper>(
-        new LinkedList<AuthorizationWrapper>(),
+    ObjectTableModel<AuthorizationInfo> model =
+      new ObjectTableModel<AuthorizationInfo>(
+        new LinkedList<AuthorizationInfo>(),
         new AuthorizationTableProvider());
 
-    List<PanelActionInterface<AuthorizationWrapper>> actionsVector =
-      new Vector<PanelActionInterface<AuthorizationWrapper>>(3);
+    List<PanelActionInterface<AuthorizationInfo>> actionsVector =
+      new Vector<PanelActionInterface<AuthorizationInfo>>(3);
+    actionsVector.add(new AuthorizationRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
 /*
-    actionsVector.add(new AuthorizationRefreshAction(mainDialog, admin));
     actionsVector.add(new AuthorizationAddAction(mainDialog, admin));
     actionsVector.add(new AuthorizationDeleteAction(mainDialog, admin));
 */
 
-    PanelComponent<AuthorizationWrapper> panelAuthorization = new
-      PanelComponent<AuthorizationWrapper>(model, actionsVector);
+    PanelComponent<AuthorizationInfo> panelAuthorization = new
+      PanelComponent<AuthorizationInfo>(model, actionsVector);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.authorization.title"));

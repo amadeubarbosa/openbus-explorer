@@ -1,23 +1,27 @@
 package busexplorer.action.authorizations;
 
-import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
-import busexplorer.wrapper.AuthorizationWrapper;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+import busexplorer.wrapper.AuthorizationInfo;
 
 /**
  * Provedor de dados para a tabela de Autorizações
  * 
  * @author Tecgraf
  */
-public class AuthorizationTableProvider extends
-  VerifiableModifiableObjectTableProvider {
+public class AuthorizationTableProvider implements
+  ObjectTableProvider<AuthorizationInfo> {
+
+  /** Índice da coluna ID da Entidade */
+  private static final int ENTITY_ID = 0;
+  /** Índice da coluna Interface */
+  private static final int INTERFACE = 1;
 
   /**
    * {@inheritDoc}
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "ID Entidade", "Interface" };
+    String[] colNames = { "Entidade", "Interface" };
     return colNames;
   }
 
@@ -34,46 +38,18 @@ public class AuthorizationTableProvider extends
    * {@inheritDoc}
    */
   @Override
-  public void setValueAt(Object row, Object newValue, int colIndex) {
+  public Object getCellValue(AuthorizationInfo row, int col) {
+    final AuthorizationInfo authorization = row;
+    switch (col) {
+      case ENTITY_ID:
+        return authorization.getEntityId();
 
-  }
+      case INTERFACE:
+        return authorization.getInterface();
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isCellEditable(Object row, int rowIndex, int columnIndex) {
-    return false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isValid(Object row, int columnIndex) {
-    return true;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getTooltip(int columnIndex) {
-    // TODO Auto-generated method stub
+      default:
+        break;
+    }
     return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object[] getCellValues(Object row) {
-    final AuthorizationWrapper authorizationWrapper =
-      (AuthorizationWrapper) row;
-
-    RegisteredEntityDesc entity = authorizationWrapper.getEntity();
-    String interfaceName = authorizationWrapper.getInterface();
-
-    return new Object[] { entity.id, interfaceName };
   }
 }

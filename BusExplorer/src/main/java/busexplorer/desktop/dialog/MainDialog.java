@@ -54,14 +54,14 @@ import busexplorer.action.logins.LoginRefreshAction;
 import busexplorer.action.logins.LoginTableProvider;
 import busexplorer.action.offers.OfferDeleteAction;
 import busexplorer.action.offers.OfferRefreshAction;
-import busexplorer.action.offers.OffersTableProvider;
+import busexplorer.action.offers.OfferTableProvider;
 import busexplorer.wrapper.AuthorizationInfo;
 import busexplorer.wrapper.CategoryInfo;
 import busexplorer.wrapper.CertificateInfo;
 import busexplorer.wrapper.EntityInfo;
 import busexplorer.wrapper.InterfaceInfo;
 import busexplorer.wrapper.LoginInfoWrapper;
-import busexplorer.wrapper.OfferWrapper;
+import busexplorer.wrapper.OfferInfo;
 
 /**
  * Diálogo principal da aplicação
@@ -325,20 +325,20 @@ public class MainDialog {
    * Inicializa o painel de CRUD de ofertas.
    */
   private void initPanelOffer() {
-    ObjectTableModel<OfferWrapper> model =
-      new ObjectTableModel<OfferWrapper>(new LinkedList<OfferWrapper>(),
-        new OffersTableProvider());
+    ObjectTableModel<OfferInfo> model =
+      new ObjectTableModel<OfferInfo>(new LinkedList<OfferInfo>(),
+        new OfferTableProvider());
 
-    List<PanelActionInterface<OfferWrapper>> actionsVector =
-      new Vector<PanelActionInterface<OfferWrapper>>(2);
+    List<PanelActionInterface<OfferInfo>> actionsVector =
+      new Vector<PanelActionInterface<OfferInfo>>(2);
+    actionsVector.add(new OfferRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
 /*
-    actionsVector.add(new OfferRefreshAction(mainDialog, admin));
     actionsVector.add(new OfferDeleteAction(mainDialog, admin));
 */
 
-    PanelComponent<OfferWrapper> panelOffer = new
-      PanelComponent<OfferWrapper>(model, actionsVector);
+    PanelComponent<OfferInfo> panelOffer = new
+      PanelComponent<OfferInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.offer.title"));
     featuresPane.setComponentAt(index, panelOffer);

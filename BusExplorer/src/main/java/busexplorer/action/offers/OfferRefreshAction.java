@@ -1,20 +1,17 @@
 package busexplorer.action.offers;
 
 import java.awt.event.ActionEvent;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
-import javax.swing.JTable;
 
-import reuse.modified.planref.client.util.crud.ModifiableObjectTableModel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
+import test.ActionType;
+import test.OpenBusAction;
 import admin.BusAdmin;
 import busexplorer.action.BusAdminAbstractAction;
-import busexplorer.wrapper.OfferWrapper;
+import busexplorer.wrapper.OfferInfo;
 
 /**
  * Ação que atualiza a tabela de ofertas
@@ -22,47 +19,49 @@ import busexplorer.wrapper.OfferWrapper;
  * @author Tecgraf
  * 
  */
-public class OfferRefreshAction extends BusAdminAbstractAction {
+public class OfferRefreshAction extends OpenBusAction<OfferInfo> {
 
-  public OfferRefreshAction(JFrame parentWindow, JTable table, BusAdmin admin) {
-    super(parentWindow, table, admin, LNG.get("OfferRefreshAction.name"));
+  /**
+   * Construtor.
+   * 
+   * @param parentWindow janela pai.
+   * @param admin biblioteca de administração.
+   */
+  public OfferRefreshAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin, LNG.get(OfferRefreshAction.class.getSimpleName()
+      +  ".name"));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.OTHER;
+  public ActionType getActionType() {
+    return ActionType.REFRESH;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task task = new Task() {
-      List<ServiceOfferDesc> offers = null;
+    Task<List<OfferInfo>> task = new Task<List<OfferInfo>>() {
 
       @Override
       protected void performTask() throws Exception {
-        offers = admin.getOffers();
+          setResult(OfferInfo.convertToInfo(admin.getOffers()));
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getError() == null) {
-          List<OfferWrapper> wrappersList = new LinkedList<OfferWrapper>();
-
-          for (ServiceOfferDesc offer : offers) {
-            wrappersList.add(new OfferWrapper(offer));
-          }
-
-          ObjectTableModel<OfferWrapper> m =
-            new ModifiableObjectTableModel<OfferWrapper>(wrappersList,
-              new OffersTableProvider());
-
-          table.setModel(m);
+        if (getStatus()) {
+          getPanelComponent().setElements(getResult());
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("ListAction.waiting.title"), LNG
-      .get("ListAction.waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
 
 }

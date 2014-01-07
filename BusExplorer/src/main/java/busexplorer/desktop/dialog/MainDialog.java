@@ -416,8 +416,12 @@ public class MainDialog {
         featureName + ".title"));
       featuresPane.setEnabledAt(index, isCurrentUserAdmin);
     }
-    // Seleciona a primeira aba do pane de funcionalidades.
+    // Seleciona e atualiza a primeira aba do pane de funcionalidades.
     featuresPane.setSelectedIndex(0);
+    // A atualização explícita é necessária porque, como esperado, o
+    // ChangeListener da pane só é ativado se a aba corrente for modificada.
+    // TODO Corrigir parâmetro do método refresh, ou sobrecarregá-lo. --tmartins
+    ((PanelComponent<?>)featuresPane.getSelectedComponent()).refresh(null);
   }
 
   /**

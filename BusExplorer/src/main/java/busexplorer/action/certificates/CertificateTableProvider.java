@@ -1,15 +1,15 @@
 package busexplorer.action.certificates;
 
-import reuse.modified.planref.client.util.crud.VerifiableModifiableObjectTableProvider;
-import busexplorer.wrapper.IdentifierWrapper;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+import busexplorer.wrapper.CertificateInfo;
 
 /**
  * Provedor de dados para a tabela de Categorias
  * 
  * @author Tecgraf
  */
-public class CertificateTableProvider extends
-  VerifiableModifiableObjectTableProvider {
+public class CertificateTableProvider implements
+  ObjectTableProvider<CertificateInfo> {
 
   /** Índice da coluna ID da Entidade */
   private static final int ENTITY_ID = 0;
@@ -19,7 +19,7 @@ public class CertificateTableProvider extends
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "ID Entidade" };
+    String[] colNames = { "Entidade" };
     return colNames;
   }
 
@@ -36,61 +36,16 @@ public class CertificateTableProvider extends
    * {@inheritDoc}
    */
   @Override
-  public void setValueAt(Object row, Object newValue, int colIndex) {
-    IdentifierWrapper identifierWrapper = (IdentifierWrapper) row;
+  public Object getCellValue(CertificateInfo row, int col) {
+    final CertificateInfo certificate = row;
 
-    String identifier = identifierWrapper.getIdentifier();
-
-    switch (colIndex) {
+    switch (col) {
       case ENTITY_ID:
-        identifier = (String) newValue;
-        break;
+        return certificate.getEntity();
+
       default:
         break;
     }
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isCellEditable(Object row, int rowIndex, int columnIndex) {
-    return false;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isValid(Object row, int columnIndex) {
-    String identifier = ((IdentifierWrapper) row).getIdentifier();
-
-    if (!identifier.isEmpty()) {
-      return true;
-    }
-    else {
-      return false;
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String getTooltip(int columnIndex) {
-    // TODO Auto-generated method stub
     return null;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Object[] getCellValues(Object row) {
-    final IdentifierWrapper identifierWrapper = (IdentifierWrapper) row;
-
-    final String identifier = identifierWrapper.getIdentifier();
-    return new Object[] { identifier };
   }
 }

@@ -10,9 +10,9 @@ import busexplorer.wrapper.CategoryInfo;
  */
 public class CategoryTableProvider implements ObjectTableProvider<CategoryInfo> {
 
-  /** Índice da coluna ID da Categoria */
+  /** Índice da coluna Categoria */
   private static final int CATEGORY_ID = 0;
-  /** Índice da coluna Nome */
+  /** Índice da coluna Descrição */
   private static final int CATEGORY_NAME = 1;
 
   /**
@@ -20,7 +20,7 @@ public class CategoryTableProvider implements ObjectTableProvider<CategoryInfo> 
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "Categoria", "Nome" };
+    String[] colNames = { "Categoria", "Descrição" };
     return colNames;
   }
 

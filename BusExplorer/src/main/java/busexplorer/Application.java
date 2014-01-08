@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import tecgraf.javautils.LNG;
 import busexplorer.desktop.dialog.MainDialog;
+import busexplorer.exception.BusExplorerExceptionHandler;
 
 /**
  * Classe principal da aplicação.
@@ -12,6 +13,9 @@ import busexplorer.desktop.dialog.MainDialog;
  * @author Tecgraf
  */
 public class Application {
+
+  private static BusExplorerExceptionHandler handler =
+    new BusExplorerExceptionHandler();
 
   /**
    * Inicializa a aplicação, criando o diálogo de login.
@@ -32,6 +36,10 @@ public class Application {
         mainDialog.show();
       }
     });
+  }
+
+  public static BusExplorerExceptionHandler exceptionHandler() {
+    return handler;
   }
 
 }

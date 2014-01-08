@@ -117,4 +117,13 @@ public class AuthorizationInputDialog extends
     failOnExistingAuthorization(newAuthorizationWrapper);
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected boolean hasValidFields() {
+    // TODO Auto-generated method stub
+    return true;
+  }
+
 }

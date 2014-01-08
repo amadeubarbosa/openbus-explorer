@@ -1,7 +1,5 @@
 package busexplorer.desktop.dialog;
 
-import org.omg.CORBA.ORB;
-
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
@@ -22,37 +20,30 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import admin.BusAdminImpl;
+import org.omg.CORBA.ORB;
+
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.assistant.Assistant;
 import test.PanelActionInterface;
 import test.PanelComponent;
-import busexplorer.action.authorizations.AuthorizationAddAction;
-import busexplorer.action.authorizations.AuthorizationDeleteAction;
+import admin.BusAdminImpl;
 import busexplorer.action.authorizations.AuthorizationRefreshAction;
 import busexplorer.action.authorizations.AuthorizationTableProvider;
-import busexplorer.action.categories.CategoryAddAction;
-import busexplorer.action.categories.CategoryDeleteAction;
 import busexplorer.action.categories.CategoryRefreshAction;
 import busexplorer.action.categories.CategoryTableProvider;
-import busexplorer.action.certificates.CertificateAddAction;
-import busexplorer.action.certificates.CertificateDeleteAction;
 import busexplorer.action.certificates.CertificateRefreshAction;
 import busexplorer.action.certificates.CertificateTableProvider;
 import busexplorer.action.entities.EntityAddAction;
 import busexplorer.action.entities.EntityDeleteAction;
+import busexplorer.action.entities.EntityEditAction;
 import busexplorer.action.entities.EntityRefreshAction;
 import busexplorer.action.entities.EntityTableProvider;
-import busexplorer.action.interfaces.InterfaceAddAction;
-import busexplorer.action.interfaces.InterfaceDeleteAction;
 import busexplorer.action.interfaces.InterfaceRefreshAction;
 import busexplorer.action.interfaces.InterfaceTableProvider;
-import busexplorer.action.logins.LoginDeleteAction;
 import busexplorer.action.logins.LoginRefreshAction;
 import busexplorer.action.logins.LoginTableProvider;
-import busexplorer.action.offers.OfferDeleteAction;
 import busexplorer.action.offers.OfferRefreshAction;
 import busexplorer.action.offers.OfferTableProvider;
 import busexplorer.wrapper.AuthorizationInfo;
@@ -116,6 +107,7 @@ public class MainDialog {
         shutdownMainDialog();
       }
     });
+    mainDialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     buildMenuBar();
     buildFeaturesComponent();
@@ -130,8 +122,8 @@ public class MainDialog {
     JMenu menuConnection = new JMenu(LNG.get("MainDialog.menuBar.connection"));
     menuBar.add(menuConnection);
 
-    JMenuItem itemDisconnect = new
-      JMenuItem(LNG.get("MainDialog.menuBar.connection.disconnect"));
+    JMenuItem itemDisconnect =
+      new JMenuItem(LNG.get("MainDialog.menuBar.connection.disconnect"));
     itemDisconnect.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -149,16 +141,16 @@ public class MainDialog {
           }
         };
 
-        task.execute(mainDialog, LNG.get("MainDialog.logout.waiting.title"), LNG
-          .get("MainDialog.logout.waiting.msg"));
+        task.execute(mainDialog, LNG.get("MainDialog.logout.waiting.title"),
+          LNG.get("MainDialog.logout.waiting.msg"));
       }
     });
     menuConnection.add(itemDisconnect);
 
     menuConnection.add(new JSeparator());
 
-    JMenuItem itemQuit = new
-      JMenuItem(LNG.get("MainDialog.menuBar.connection.quit"));
+    JMenuItem itemQuit =
+      new JMenuItem(LNG.get("MainDialog.menuBar.connection.quit"));
     itemQuit.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -180,11 +172,12 @@ public class MainDialog {
 
     // A primeira aba não deve depender de permissões administrativas; vide
     // método updateAdminFeatures().
-    String[] featureNames = { "category", "entity", "certificate", "interface",
-      "authorization", "offer", "login" };
+    String[] featureNames =
+      { "category", "entity", "certificate", "interface", "authorization",
+          "offer", "login" };
     for (String featureName : featureNames) {
-      featuresPane.addTab(LNG.get("MainDialog." + featureName + ".title"), null,
-        null, LNG.get("MainDialog." + featureName + ".toolTip"));
+      featuresPane.addTab(LNG.get("MainDialog." + featureName + ".title"),
+        null, null, LNG.get("MainDialog." + featureName + ".toolTip"));
     }
     initFeaturePanels();
 
@@ -192,7 +185,7 @@ public class MainDialog {
       @Override
       public void stateChanged(ChangeEvent event) {
         PanelComponent<?> component =
-          (PanelComponent<?>)featuresPane.getSelectedComponent();
+          (PanelComponent<?>) featuresPane.getSelectedComponent();
         // TODO Corrigir parâmetro do método refresh, ou sobrecarregá-lo.
         // --tmartins
         component.refresh(null);
@@ -201,25 +194,26 @@ public class MainDialog {
 
     mainDialog.add(featuresPane, BorderLayout.CENTER);
   }
+
   /**
    * Inicializa o painel de CRUD de categorias.
    */
   private void initPanelCategory() {
-    ObjectTableModel<CategoryInfo> model = new ObjectTableModel<CategoryInfo>(
-      new LinkedList<CategoryInfo>(),
-      new CategoryTableProvider());
+    ObjectTableModel<CategoryInfo> model =
+      new ObjectTableModel<CategoryInfo>(new LinkedList<CategoryInfo>(),
+        new CategoryTableProvider());
 
     List<PanelActionInterface<CategoryInfo>> actionsVector =
       new Vector<PanelActionInterface<CategoryInfo>>(3);
     actionsVector.add(new CategoryRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
-/*
-    actionsVector.add(new CategoryAddAction(mainDialog, admin));
-    actionsVector.add(new CategoryDeleteAction(mainDialog, admin));
-*/
+    /*
+     * actionsVector.add(new CategoryAddAction(mainDialog, admin));
+     * actionsVector.add(new CategoryDeleteAction(mainDialog, admin));
+     */
 
-    PanelComponent<CategoryInfo> panelCategory = new
-      PanelComponent<CategoryInfo>(model, actionsVector);
+    PanelComponent<CategoryInfo> panelCategory =
+      new PanelComponent<CategoryInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.category.title"));
     featuresPane.setComponentAt(index, panelCategory);
@@ -237,16 +231,17 @@ public class MainDialog {
       new Vector<PanelActionInterface<EntityInfo>>(3);
     actionsVector.add(new EntityRefreshAction(mainDialog, admin));
     actionsVector.add(new EntityAddAction(mainDialog, admin));
+    actionsVector.add(new EntityEditAction(mainDialog, admin));
     actionsVector.add(new EntityDeleteAction(mainDialog, admin));
 
-    PanelComponent<EntityInfo> panelEntity = new
-      PanelComponent<EntityInfo>(model, actionsVector);
+    PanelComponent<EntityInfo> panelEntity =
+      new PanelComponent<EntityInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.entity.title"));
     featuresPane.setComponentAt(index, panelEntity);
   }
 
-  /** 
+  /**
    * Inicializa o painel de CRUD de certificados.
    */
   private void initPanelCertificate() {
@@ -258,13 +253,13 @@ public class MainDialog {
       new Vector<PanelActionInterface<CertificateInfo>>(3);
     actionsVector.add(new CertificateRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
-/*
-    actionsVector.add(new CertificateAddAction(mainDialog, admin));
-    actionsVector.add(new CertificateDeleteAction(mainDialog, admin));
-*/
+    /*
+     * actionsVector.add(new CertificateAddAction(mainDialog, admin));
+     * actionsVector.add(new CertificateDeleteAction(mainDialog, admin));
+     */
 
-    PanelComponent<CertificateInfo> panelCertificate = new
-      PanelComponent<CertificateInfo>(model, actionsVector);
+    PanelComponent<CertificateInfo> panelCertificate =
+      new PanelComponent<CertificateInfo>(model, actionsVector);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.certificate.title"));
@@ -283,13 +278,13 @@ public class MainDialog {
       new Vector<PanelActionInterface<InterfaceInfo>>(3);
     actionsVector.add(new InterfaceRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
-/*
-    actionsVector.add(new InterfaceAddAction(mainDialog, admin));
-    actionsVector.add(new InterfaceDeleteAction(mainDialog, admin));
-*/
+    /*
+     * actionsVector.add(new InterfaceAddAction(mainDialog, admin));
+     * actionsVector.add(new InterfaceDeleteAction(mainDialog, admin));
+     */
 
-    PanelComponent<InterfaceInfo> panelInterface = new
-      PanelComponent<InterfaceInfo>(model, actionsVector);
+    PanelComponent<InterfaceInfo> panelInterface =
+      new PanelComponent<InterfaceInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.interface.title"));
     featuresPane.setComponentAt(index, panelInterface);
@@ -301,20 +296,19 @@ public class MainDialog {
   private void initPanelAuthorization() {
     ObjectTableModel<AuthorizationInfo> model =
       new ObjectTableModel<AuthorizationInfo>(
-        new LinkedList<AuthorizationInfo>(),
-        new AuthorizationTableProvider());
+        new LinkedList<AuthorizationInfo>(), new AuthorizationTableProvider());
 
     List<PanelActionInterface<AuthorizationInfo>> actionsVector =
       new Vector<PanelActionInterface<AuthorizationInfo>>(3);
     actionsVector.add(new AuthorizationRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
-/*
-    actionsVector.add(new AuthorizationAddAction(mainDialog, admin));
-    actionsVector.add(new AuthorizationDeleteAction(mainDialog, admin));
-*/
+    /*
+     * actionsVector.add(new AuthorizationAddAction(mainDialog, admin));
+     * actionsVector.add(new AuthorizationDeleteAction(mainDialog, admin));
+     */
 
-    PanelComponent<AuthorizationInfo> panelAuthorization = new
-      PanelComponent<AuthorizationInfo>(model, actionsVector);
+    PanelComponent<AuthorizationInfo> panelAuthorization =
+      new PanelComponent<AuthorizationInfo>(model, actionsVector);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.authorization.title"));
@@ -333,12 +327,12 @@ public class MainDialog {
       new Vector<PanelActionInterface<OfferInfo>>(2);
     actionsVector.add(new OfferRefreshAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
-/*
-    actionsVector.add(new OfferDeleteAction(mainDialog, admin));
-*/
+    /*
+     * actionsVector.add(new OfferDeleteAction(mainDialog, admin));
+     */
 
-    PanelComponent<OfferInfo> panelOffer = new
-      PanelComponent<OfferInfo>(model, actionsVector);
+    PanelComponent<OfferInfo> panelOffer =
+      new PanelComponent<OfferInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.offer.title"));
     featuresPane.setComponentAt(index, panelOffer);
@@ -356,12 +350,12 @@ public class MainDialog {
       new Vector<PanelActionInterface<LoginInfoInfo>>(2);
     // TODO Refatorar implementação das ações. --tmartins
     actionsVector.add(new LoginRefreshAction(mainDialog, admin));
-/*
-    actionsVector.add(new LoginDeleteAction(mainDialog, admin));
-*/
+    /*
+     * actionsVector.add(new LoginDeleteAction(mainDialog, admin));
+     */
 
-    PanelComponent<LoginInfoInfo> panelLogin = new
-      PanelComponent<LoginInfoInfo>(model, actionsVector);
+    PanelComponent<LoginInfoInfo> panelLogin =
+      new PanelComponent<LoginInfoInfo>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.login.title"));
     featuresPane.setComponentAt(index, panelLogin);
@@ -400,7 +394,7 @@ public class MainDialog {
 
   /**
    * Atualiza as funcionalidades administrativas da aplicação.
-   *
+   * 
    * @param host Host do barramento a ser administrado
    * @param port Porta do barramento a ser administrado
    * @param orb ORB que contém o contexto OpenBus
@@ -411,8 +405,9 @@ public class MainDialog {
     String[] featureNames = { "certificate", "login" };
     for (String featureName : featureNames) {
       boolean isCurrentUserAdmin = isCurrentUserAdmin();
-      int index = featuresPane.indexOfTab(LNG.get("MainDialog." +
-        featureName + ".title"));
+      int index =
+        featuresPane
+          .indexOfTab(LNG.get("MainDialog." + featureName + ".title"));
       featuresPane.setEnabledAt(index, isCurrentUserAdmin);
     }
     // Seleciona e atualiza a primeira aba do pane de funcionalidades.
@@ -420,12 +415,12 @@ public class MainDialog {
     // A atualização explícita é necessária porque, como esperado, o
     // ChangeListener da pane só é ativado se a aba corrente for modificada.
     // TODO Corrigir parâmetro do método refresh, ou sobrecarregá-lo. --tmartins
-    ((PanelComponent<?>)featuresPane.getSelectedComponent()).refresh(null);
+    ((PanelComponent<?>) featuresPane.getSelectedComponent()).refresh(null);
   }
 
   /**
    * Verifica se o usuário tem permissões para administrar o barramento.
-   *
+   * 
    * @return Booleano que indica se o usuário é administrador ou não.
    */
   private boolean isCurrentUserAdmin() {

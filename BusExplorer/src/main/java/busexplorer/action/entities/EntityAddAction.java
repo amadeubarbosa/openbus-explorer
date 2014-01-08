@@ -24,7 +24,7 @@ public class EntityAddAction extends OpenBusAction<EntityInfo> {
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param panel painel de CRUD
+   * @param admin biblioteca de administração
    */
   public EntityAddAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin, LNG.get(EntityAddAction.class.getSimpleName()

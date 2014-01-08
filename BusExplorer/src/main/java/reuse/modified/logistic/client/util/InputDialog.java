@@ -9,9 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
 
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,9 +18,6 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
-import reuse.modified.logistic.client.util.UI;
-import reuse.modified.logistic.client.util.text.EditFloatFormat;
-import reuse.modified.logistic.client.util.text.Formatter;
 import reuse.modified.logistic.client.action.FrameCancelAction;
 import tecgraf.javautils.LNG;
 import admin.BusAdmin;
@@ -30,23 +25,11 @@ import admin.BusAdmin;
 /**
  * Interface para entrada de dados.
  * 
- * Modificada para usar JFrame, ao invés de GenericFrame, e um objeto de
- * acesso ao barramento.
+ * Modificada para usar JFrame, ao invés de GenericFrame, e um objeto de acesso
+ * ao barramento.
  * 
  */
 public abstract class InputDialog extends JFrame {
-
-  /**
-   * Formatador de números.
-   */
-  protected static final EditFloatFormat editFormatter = Formatter
-    .getNumberEditFormat();
-
-  /**
-   * Formatador de datas.
-   */
-  protected static final SimpleDateFormat dateFormatter = Formatter
-    .getDateFormat();
 
   /**
    * Imagem de aviso colocada se houver problemas no preenchimento de dados.
@@ -231,8 +214,6 @@ public abstract class InputDialog extends JFrame {
   /**
    * Cria os botões para alterar os dados da alocação e para cancelar.
    * 
-   * @param tooltip dica a ser apresentada no botão de ACEITAR.
-   * 
    * @return painel com os botões.
    */
   private JPanel buildButtons() {
@@ -316,39 +297,15 @@ public abstract class InputDialog extends JFrame {
    * 
    * @return um indicativo booleano da aceitação.
    */
-  protected boolean accept() {
-    return false;
-  }
-
-  public boolean hasValidFields() {
-
-    return true;
-  }
+  protected abstract boolean accept();
 
   /**
-   * Altera o nome dos botões.
+   * Método a ser sobrescrito para definição de regras de validação de dados do
+   * diálogo.
    * 
-   * @param acceptText nome do botão de aceitar.
-   * @param cancelText nome do botão de cancelar.
+   * @return <code>true</code> caso os dados sejam válidos ou false caso
+   *         contrário.
    */
-  public void setButtonTexts(String acceptText, String cancelText) {
-    accept.setText(acceptText);
-    cancel.setText(cancelText);
-  }
-
-  /**
-   * Altera a ação do botão de aceitar.
-   * 
-   * @param action ação do botão de aceitar.
-   */
-  public void setAcceptAction(AbstractAction action) {
-    accept.setAction(action);
-  }
-
-  /**
-   * Método que habilita o botão de aceitação da janela.
-   */
-  public void setAcceptButtonEnabled() {
-  }
+  protected abstract boolean hasValidFields();
 
 }

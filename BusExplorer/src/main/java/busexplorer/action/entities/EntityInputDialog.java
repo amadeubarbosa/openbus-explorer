@@ -1,6 +1,8 @@
 package busexplorer.action.entities;
 
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,7 +13,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
@@ -38,6 +39,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     new HashMap<String, EntityCategoryDesc>();
   private PanelComponent<EntityInfo> panel;
 
+  private EntityInfo editingEntity = null;
+
   /**
    * Construtor.
    * 
@@ -55,6 +58,20 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   }
 
   /**
+   * Configura o diálogo para trabalhar em modo de edição.
+   * 
+   * @param info o dado sendo editado.
+   */
+  public void setEditionMode(EntityInfo info) {
+    this.editingEntity = info;
+    this.categoryIDCombo.setSelectedItem(info.getCategory());
+    this.categoryIDCombo.setEnabled(false);
+    this.entityIDField.setText(info.getId());
+    this.entityIDField.setEnabled(false);
+    this.entityNameField.setText(info.getName());
+  }
+
+  /**
    * {@inheritDoc}
    */
   @Override
@@ -63,28 +80,50 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    final String id = getEntityId();
-    final String name = getEntityName();
-    final EntityCategory category = getCategory().ref;
+    if (editingEntity == null) {
+      final String id = getEntityId();
+      final String name = getEntityName();
+      final EntityCategory category = getCategory().ref;
 
-    Task<EntityInfo> task = new Task<EntityInfo>() {
+      Task<EntityInfo> task = new Task<EntityInfo>() {
 
-      @Override
-      protected void performTask() throws Exception {
-        RegisteredEntity entity = category.registerEntity(id, name);
-        RegisteredEntityDesc desc = entity.describe();
-        setResult(new EntityInfo(desc));
-      }
-
-      @Override
-      protected void afterTaskUI() {
-        if (getStatus()) {
-          panel.refresh(null);
+        @Override
+        protected void performTask() throws Exception {
+          RegisteredEntity entity = category.registerEntity(id, name);
+          RegisteredEntityDesc desc = entity.describe();
+          setResult(new EntityInfo(desc));
         }
-      }
-    };
-    task.execute(this, getString("waiting.title"), getString("waiting.msg"));
-    return task.getStatus();
+
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            panel.refresh(null);
+          }
+        }
+      };
+      task.execute(this, getString("waiting.title"), getString("waiting.msg"));
+      return task.getStatus();
+    }
+    else {
+      final String name = getEntityName();
+      final RegisteredEntity entity = editingEntity.getDescriptor().ref;
+      Task<Object> task = new Task<Object>() {
+
+        @Override
+        protected void performTask() throws Exception {
+          entity.setName(name);
+        }
+
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            panel.refresh(null);
+          }
+        }
+      };
+      task.execute(this, getString("waiting.title"), getString("waiting.msg"));
+      return task.getStatus();
+    }
   }
 
   private String getEntityId() {
@@ -105,25 +144,80 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   @Override
   protected JPanel buildFields() {
     JPanel panel = new JPanel(new GridBagLayout());
-
-    entityIDLabel = new JLabel(getString("entityID.label"));
-    panel.add(entityIDLabel, new GBC(0, 0).west());
-
-    entityIDField = new JTextField(30);
-    panel.add(entityIDField, new GBC(0, 1).west());
+    GridBagConstraints c = new GridBagConstraints();
 
     categoryIDLabel = new JLabel(getString("categoryID.label"));
-    panel.add(categoryIDLabel, new GBC(0, 2).west());
+    c.insets = new Insets(5, 5, 5, 5);
+    c.gridx = 0;
+    c.gridy = 0;
+    c.weightx = 0;
+    c.weighty = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.anchor = GridBagConstraints.NORTHWEST;
+    panel.add(categoryIDLabel, c);
 
     categoryIDCombo =
       new JComboBox(categories.keySet().toArray(new String[categories.size()]));
-    panel.add(categoryIDCombo, new GBC(0, 3).west());
+    c.insets = new Insets(5, 5, 5, 5);
+    c.gridx = 0;
+    c.gridy = 1;
+    c.weightx = 0;
+    c.weighty = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.NORTHWEST;
+    panel.add(categoryIDCombo, c);
 
-    entityNameLabel = new JLabel(getString("interfaceName.label"));
-    panel.add(entityNameLabel, new GBC(0, 4).west());
+    entityIDLabel = new JLabel(getString("entityID.label"));
+    c.insets = new Insets(5, 5, 5, 5);
+    c.gridx = 0;
+    c.gridy = 2;
+    c.weightx = 0;
+    c.weighty = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.anchor = GridBagConstraints.NORTHWEST;
+    panel.add(entityIDLabel, c);
 
-    entityNameField = new JTextField(30);
-    panel.add(entityNameField, new GBC(0, 5).west());
+    entityIDField = new JTextField();
+    c.insets = new Insets(5, 5, 5, 5);
+    c.gridx = 0;
+    c.gridy = 3;
+    c.weightx = 1;
+    c.weighty = 0;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.NORTHWEST;
+    panel.add(entityIDField, c);
+
+    entityNameLabel = new JLabel(getString("entityName.label"));
+    c.insets = new Insets(5, 5, 5, 5);
+    c.gridx = 0;
+    c.gridy = 4;
+    c.weightx = 0;
+    c.weighty = 0;
+    c.gridwidth = 1;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.NONE;
+    c.anchor = GridBagConstraints.NORTHWEST;
+    panel.add(entityNameLabel, c);
+
+    entityNameField = new JTextField();
+    c.insets = new Insets(5, 5, 5, 5);
+    c.gridx = 0;
+    c.gridy = 5;
+    c.weightx = 1;
+    c.weighty = 0;
+    c.gridwidth = 2;
+    c.gridheight = 1;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.anchor = GridBagConstraints.NORTHWEST;
+    panel.add(entityNameField, c);
 
     return panel;
   }

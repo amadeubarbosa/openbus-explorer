@@ -24,7 +24,7 @@ public class EntityEditAction extends OpenBusAction<EntityInfo> {
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param panel painel de CRUD
+   * @param admin biblioteca de administração
    */
   public EntityEditAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin, LNG.get(EntityEditAction.class.getSimpleName()
@@ -36,7 +36,7 @@ public class EntityEditAction extends OpenBusAction<EntityInfo> {
    */
   @Override
   public ActionType getActionType() {
-    return ActionType.ADD;
+    return ActionType.EDIT;
   }
 
   /**
@@ -54,8 +54,12 @@ public class EntityEditAction extends OpenBusAction<EntityInfo> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          new EntityInputDialog(EntityEditAction.this.parentWindow,
-            getPanelComponent(), admin, getResult()).showDialog();
+          EntityInputDialog dialog =
+            new EntityInputDialog(EntityEditAction.this.parentWindow,
+              getPanelComponent(), admin, getResult());
+          dialog.showDialog();
+          EntityInfo entity = getPanelComponent().getSelectedElement();
+          dialog.setEditionMode(entity);
         }
       }
     };

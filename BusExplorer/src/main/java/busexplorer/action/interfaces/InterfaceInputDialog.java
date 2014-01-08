@@ -76,4 +76,13 @@ public class InterfaceInputDialog extends
     admin.createInterface(interfaceName);
 
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected boolean hasValidFields() {
+    // TODO Auto-generated method stub
+    return true;
+  }
 }

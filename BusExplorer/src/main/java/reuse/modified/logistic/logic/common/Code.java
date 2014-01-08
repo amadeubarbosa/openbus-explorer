@@ -7,8 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import tecgraf.javautils.concurrent.locks.SharedAccessObject;
-
 /**
  * Classe genérica usada para encapsular códigos de objetos. O tipo paramétrico
  * T é a classe para a qual o código está sendo criado. Por exemplo Code<User>
@@ -20,8 +18,7 @@ import tecgraf.javautils.concurrent.locks.SharedAccessObject;
  * 
  * @author mjulia
  */
-public class Code<T> implements Serializable, Comparable<Code<T>>,
-  SharedAccessObject {
+public class Code<T> implements Serializable, Comparable<Code<T>> {
 
   /**
    * Identificação da versão da classe, segundo a serialização padrão de Java.
@@ -143,12 +140,6 @@ public class Code<T> implements Serializable, Comparable<Code<T>>,
     catch (NumberFormatException e) {
       return (trimmedString).compareTo(other.trimmedString);
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Object getUniqueCode() {
-    return code;
   }
 
   /**

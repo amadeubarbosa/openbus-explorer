@@ -4,9 +4,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import reuse.modified.logistic.logic.tradeservice.Limits;
 import tecgraf.javautils.LNG;
 
 /**
@@ -202,25 +200,4 @@ public class Formatter {
     return shortMonthFormat;
   }
 
-  /**
-   * Formata limites de data.
-   * 
-   * @param limits os limites.
-   * 
-   * @return texto formatado dd/mm - dd/mm
-   */
-  public static String formatDateLimits(Limits limits) {
-    SimpleDateFormat formatter = getNoYearDateFormat();
-    Long startLimit = limits.getStartLimit();
-    Long endLimit = limits.getEndLimit();
-    if ((limits.getStartLimit() == null) && (limits.getEndLimit() == null)) {
-      return "    ";
-    }
-    String startDateFormatted =
-      (startLimit == null) ? "    " : formatter.format(new Date(startLimit));
-    String endDateFormatted =
-      (endLimit == null) ? "    " : formatter.format(new Date(endLimit));
-    String limitsString = startDateFormatted + " - " + endDateFormatted;
-    return limitsString;
-  }
 }

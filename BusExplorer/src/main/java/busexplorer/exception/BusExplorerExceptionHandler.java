@@ -2,6 +2,7 @@ package busexplorer.exception;
 
 import org.omg.CORBA.NO_PERMISSION;
 
+import tecgraf.javautils.LNG;
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.access_control.InvalidRemoteCode;
 import tecgraf.openbus.core.v2_0.services.access_control.NoLoginCode;
@@ -31,17 +32,15 @@ public class BusExplorerExceptionHandler extends
       case AccessDenied:
         switch (context) {
           case LoginByPassword:
-            exception.setErrorMessage("a senha fornecida foi negada");
+            exception.setErrorMessage(getString("access.denied.password"));
             break;
 
           case LoginByCertificate:
-            exception
-              .setErrorMessage("a chave não corresponde ao certificado da entidade cadastrado junto ao barramento");
+            exception.setErrorMessage(getString("access.denied.key"));
             break;
 
           default:
-            exception
-              .setErrorMessage("autenticação junto ao barramento falhou.");
+            exception.setErrorMessage(getString("access.denied"));
             break;
         }
         break;
@@ -49,14 +48,12 @@ public class BusExplorerExceptionHandler extends
       case ServiceFailure:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(String.format(
-              "falha severa no barramento: %s",
+            exception.setErrorMessage(getString("service.failure.core",
               ((ServiceFailure) theException).message));
             break;
 
           default:
-            exception.setErrorMessage(String.format(
-              "falha severa no serviço: %s",
+            exception.setErrorMessage(getString("service.failure",
               ((ServiceFailure) theException).message));
             break;
         }
@@ -65,12 +62,11 @@ public class BusExplorerExceptionHandler extends
       case OBJECT_NOT_EXIST:
         switch (context) {
           case BusCore:
-            exception
-              .setErrorMessage("não existe referência para o barramento no host e porta especificados.");
+            exception.setErrorMessage(getString("not.exist.core"));
             break;
 
           default:
-            exception.setErrorMessage("referência para o serviço não existe");
+            exception.setErrorMessage(getString("not.exist"));
             break;
         }
         break;
@@ -78,12 +74,11 @@ public class BusExplorerExceptionHandler extends
       case TRANSIENT:
         switch (context) {
           case BusCore:
-            exception
-              .setErrorMessage("o barramento está inacessível no momento");
+            exception.setErrorMessage(getString("transient.core"));
             break;
 
           default:
-            exception.setErrorMessage("serviço está indisponível no momento.");
+            exception.setErrorMessage(getString("transient"));
             break;
         }
         break;
@@ -91,13 +86,11 @@ public class BusExplorerExceptionHandler extends
       case COMM_FAILURE:
         switch (context) {
           case BusCore:
-            exception
-              .setErrorMessage("falha de comunicação ao acessar serviços núcleo do barramento");
+            exception.setErrorMessage(getString("comm.failure.core"));
             break;
 
           default:
-            exception
-              .setErrorMessage("falha de comunicação ao acessar serviço.");
+            exception.setErrorMessage(getString("comm.failure"));
         }
         break;
 
@@ -107,33 +100,30 @@ public class BusExplorerExceptionHandler extends
           case Service:
             switch (noPermission.minor) {
               case NoLoginCode.value:
-                exception.setErrorMessage("não há um login válido no momento");
+                exception.setErrorMessage(getString("no.permission.no.login"));
                 break;
 
               case UnknownBusCode.value:
-                exception
-                  .setErrorMessage("o serviço encontrado não está mais logado ao barramento");
+                exception.setErrorMessage(getString("unknown.bus"));
                 break;
 
               case UnverifiedLoginCode.value:
-                exception
-                  .setErrorMessage("o serviço encontrado não foi capaz de validar a chamada");
+                exception.setErrorMessage(getString("unverified.login"));
                 break;
 
               case InvalidRemoteCode.value:
                 exception
-                  .setErrorMessage("integração do serviço encontrado com o barramento está incorreta");
+                  .setErrorMessage(getString("no.permission.invalid.remote"));
                 break;
             }
             break;
 
           default:
             if (noPermission.minor == NoLoginCode.value) {
-              exception.setErrorMessage("não há um login válido no momento");
+              exception.setErrorMessage(getString("no.permission.no.login"));
             }
             else {
-              exception.setErrorMessage(String.format(
-                "Erro NO_PERMISSION inesperado. Minor code = %d",
+              exception.setErrorMessage(getString("no.permission.unspected",
                 noPermission.minor));
             }
             break;
@@ -142,16 +132,15 @@ public class BusExplorerExceptionHandler extends
 
       case InvalidName:
         // Este erro nunca deveria ocorrer se o código foi bem escrito
-        exception.setErrorMessage(String.format("CORBA.InvalidName: %s",
-          theException.getMessage()));
+        exception.setErrorMessage(getString("corba.invalid.name", theException
+          .getMessage()));
         System.exit(1);
         break;
 
       case Unspecified:
       default:
-        exception.setErrorMessage(String.format(
-          "Erro não esperado.\nExceção: %s\nMensagem: %s", theException
-            .getClass().getName(), theException.getMessage()));
+        exception.setErrorMessage(getString("unspecified", theException
+          .getClass().getName(), theException.getMessage()));
         break;
     }
   }
@@ -165,4 +154,24 @@ public class BusExplorerExceptionHandler extends
     return new BusExplorerHandlingException(exception, context);
   }
 
+  /**
+   * Busca pelo valor associado a chave no LNG
+   * 
+   * @param key a chave
+   * @return o valor associado à chave.
+   */
+  protected String getString(String key) {
+    return LNG.get(this.getClass().getSimpleName() + "." + key);
+  }
+
+  /**
+   * Busca pelo valor associado a chave no LNG
+   * 
+   * @param key a chave
+   * @param args argumentos a serem formatados na mensagem.
+   * @return o valor associado à chave.
+   */
+  protected String getString(String key, Object... args) {
+    return LNG.get(this.getClass().getSimpleName() + "." + key, args);
+  }
 }

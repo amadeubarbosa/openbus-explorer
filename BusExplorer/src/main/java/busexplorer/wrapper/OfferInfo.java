@@ -2,8 +2,10 @@ package busexplorer.wrapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
+import busexplorer.utils.Utils;
 
 /**
  * Classe que detém as informações locais da oferta para apresentação em
@@ -15,26 +17,28 @@ public class OfferInfo {
   /** Identificador da entidade */
   private final String entity;
   /** Nome da interface */
-  private final String interfaceName;
+  private final Vector<String> interfaces;
   /** Data da oferta */
   private final String date;
   /** Hora da oferta */
   private final String time;
 
   /**
-
-  /**
-   * Construtor.
+   * /** Construtor.
    * 
    * @param desc descritor da oferta
    */
   public OfferInfo(ServiceOfferDesc desc) {
-    this.entity = desc.properties[2].value;
-    this.interfaceName = desc.properties[18].value;
-    this.date = desc.properties[6].value + "/" + desc.properties[5].value + "/"
-      + desc.properties[4].value;
-    this.time = desc.properties[7].value + ":" + desc.properties[8].value + ":"
-      + desc.properties[9].value;
+    this.entity = Utils.getProperty(desc, "openbus.offer.entity");
+    this.interfaces = Utils.getProperties(desc, "openbus.component.interface");
+    this.date =
+      String.format("%s/%s/%s", Utils.getProperty(desc, "openbus.offer.day"),
+        Utils.getProperty(desc, "openbus.offer.month"), Utils.getProperty(desc,
+          "openbus.offer.year"));
+    this.time =
+      String.format("%s:%s:%s", Utils.getProperty(desc, "openbus.offer.hour"),
+        Utils.getProperty(desc, "openbus.offer.minute"), Utils.getProperty(
+          desc, "openbus.offer.second"));
   }
 
   /**
@@ -48,11 +52,11 @@ public class OfferInfo {
 
   /**
    * Obtém nome da interface da oferta.
-   *
+   * 
    * @return nome da interface.
    */
-  public String getInterfaceName() {
-    return interfaceName;
+  public Vector<String> getInterfaces() {
+    return interfaces;
   }
 
   /**

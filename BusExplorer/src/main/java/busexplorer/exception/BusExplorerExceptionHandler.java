@@ -2,12 +2,12 @@ package busexplorer.exception;
 
 import org.omg.CORBA.NO_PERMISSION;
 
-import tecgraf.javautils.LNG;
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.access_control.InvalidRemoteCode;
 import tecgraf.openbus.core.v2_0.services.access_control.NoLoginCode;
 import tecgraf.openbus.core.v2_0.services.access_control.UnknownBusCode;
 import tecgraf.openbus.core.v2_0.services.access_control.UnverifiedLoginCode;
+import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
 import exception.handling.ExceptionHandler;
 import exception.handling.ExceptionType;
@@ -32,15 +32,18 @@ public class BusExplorerExceptionHandler extends
       case AccessDenied:
         switch (context) {
           case LoginByPassword:
-            exception.setErrorMessage(getString("access.denied.password"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "access.denied.password"));
             break;
 
           case LoginByCertificate:
-            exception.setErrorMessage(getString("access.denied.key"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "access.denied.key"));
             break;
 
           default:
-            exception.setErrorMessage(getString("access.denied"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "access.denied"));
             break;
         }
         break;
@@ -48,13 +51,13 @@ public class BusExplorerExceptionHandler extends
       case ServiceFailure:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(getString("service.failure.core",
-              ((ServiceFailure) theException).message));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "service.failure.core", ((ServiceFailure) theException).message));
             break;
 
           default:
-            exception.setErrorMessage(getString("service.failure",
-              ((ServiceFailure) theException).message));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "service.failure", ((ServiceFailure) theException).message));
             break;
         }
         break;
@@ -62,11 +65,13 @@ public class BusExplorerExceptionHandler extends
       case OBJECT_NOT_EXIST:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(getString("not.exist.core"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "not.exist.core"));
             break;
 
           default:
-            exception.setErrorMessage(getString("not.exist"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "not.exist"));
             break;
         }
         break;
@@ -74,11 +79,13 @@ public class BusExplorerExceptionHandler extends
       case TRANSIENT:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(getString("transient.core"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "transient.core"));
             break;
 
           default:
-            exception.setErrorMessage(getString("transient"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "transient"));
             break;
         }
         break;
@@ -86,11 +93,13 @@ public class BusExplorerExceptionHandler extends
       case COMM_FAILURE:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(getString("comm.failure.core"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "comm.failure.core"));
             break;
 
           default:
-            exception.setErrorMessage(getString("comm.failure"));
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "comm.failure"));
         }
         break;
 
@@ -100,31 +109,35 @@ public class BusExplorerExceptionHandler extends
           case Service:
             switch (noPermission.minor) {
               case NoLoginCode.value:
-                exception.setErrorMessage(getString("no.permission.no.login"));
+                exception.setErrorMessage(Utils.getString(this.getClass(),
+                  "no.permission.no.login"));
                 break;
 
               case UnknownBusCode.value:
-                exception.setErrorMessage(getString("unknown.bus"));
+                exception.setErrorMessage(Utils.getString(this.getClass(),
+                  "unknown.bus"));
                 break;
 
               case UnverifiedLoginCode.value:
-                exception.setErrorMessage(getString("unverified.login"));
+                exception.setErrorMessage(Utils.getString(this.getClass(),
+                  "unverified.login"));
                 break;
 
               case InvalidRemoteCode.value:
-                exception
-                  .setErrorMessage(getString("no.permission.invalid.remote"));
+                exception.setErrorMessage(Utils.getString(this.getClass(),
+                  "no.permission.invalid.remote"));
                 break;
             }
             break;
 
           default:
             if (noPermission.minor == NoLoginCode.value) {
-              exception.setErrorMessage(getString("no.permission.no.login"));
+              exception.setErrorMessage(Utils.getString(this.getClass(),
+                "no.permission.no.login"));
             }
             else {
-              exception.setErrorMessage(getString("no.permission.unspected",
-                noPermission.minor));
+              exception.setErrorMessage(Utils.getString(this.getClass(),
+                "no.permission.unspected", noPermission.minor));
             }
             break;
         }
@@ -132,15 +145,16 @@ public class BusExplorerExceptionHandler extends
 
       case InvalidName:
         // Este erro nunca deveria ocorrer se o código foi bem escrito
-        exception.setErrorMessage(getString("corba.invalid.name", theException
-          .getMessage()));
+        exception.setErrorMessage(Utils.getString(this.getClass(),
+          "corba.invalid.name", theException.getMessage()));
         System.exit(1);
         break;
 
       case Unspecified:
       default:
-        exception.setErrorMessage(getString("unspecified", theException
-          .getClass().getName(), theException.getMessage()));
+        exception.setErrorMessage(Utils.getString(this.getClass(),
+          "unspecified", theException.getClass().getName(), theException
+            .getMessage()));
         break;
     }
   }
@@ -154,24 +168,4 @@ public class BusExplorerExceptionHandler extends
     return new BusExplorerHandlingException(exception, context);
   }
 
-  /**
-   * Busca pelo valor associado a chave no LNG
-   * 
-   * @param key a chave
-   * @return o valor associado à chave.
-   */
-  protected String getString(String key) {
-    return LNG.get(this.getClass().getSimpleName() + "." + key);
-  }
-
-  /**
-   * Busca pelo valor associado a chave no LNG
-   * 
-   * @param key a chave
-   * @param args argumentos a serem formatados na mensagem.
-   * @return o valor associado à chave.
-   */
-  protected String getString(String key, Object... args) {
-    return LNG.get(this.getClass().getSimpleName() + "." + key, args);
-  }
 }

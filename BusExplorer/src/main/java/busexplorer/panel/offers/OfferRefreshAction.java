@@ -9,7 +9,6 @@ import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
-import busexplorer.panel.BusAdminAbstractAction;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.wrapper.OfferInfo;
 
@@ -29,7 +28,7 @@ public class OfferRefreshAction extends OpenBusAction<OfferInfo> {
    */
   public OfferRefreshAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin, LNG.get(OfferRefreshAction.class.getSimpleName()
-      +  ".name"));
+      + ".name"));
   }
 
   /**
@@ -49,7 +48,7 @@ public class OfferRefreshAction extends OpenBusAction<OfferInfo> {
 
       @Override
       protected void performTask() throws Exception {
-          setResult(OfferInfo.convertToInfo(admin.getOffers()));
+        setResult(OfferInfo.convertToInfo(admin.getOffers()));
       }
 
       @Override

@@ -1,5 +1,7 @@
 package busexplorer.panel.offers;
 
+import java.util.Vector;
+
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 import busexplorer.wrapper.OfferInfo;
 
@@ -34,7 +36,7 @@ public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
   @Override
   public Class<?>[] getColumnClasses() {
     Class<?>[] colClasses =
-      { String.class, String.class, String.class, String.class };
+      { String.class, Vector.class, String.class, String.class };
     return colClasses;
   }
 
@@ -43,13 +45,13 @@ public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
    */
   @Override
   public Object getCellValue(OfferInfo row, int col) {
-    final OfferInfo offer = (OfferInfo) row;
+    final OfferInfo offer = row;
     switch (col) {
       case ENTITY_ID:
         return offer.getEntityId();
 
       case INTERFACE:
-        return offer.getInterfaceName();
+        return offer.getInterfaces();
 
       case DATE:
         return offer.getDate();

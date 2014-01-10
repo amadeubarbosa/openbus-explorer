@@ -1,7 +1,10 @@
 package busexplorer.desktop.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.FontMetrics;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -19,12 +22,14 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.TableColumn;
 
 import org.omg.CORBA.ORB;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.javautils.gui.table.SortableTable;
 import tecgraf.openbus.assistant.Assistant;
 import admin.BusAdminImpl;
 import busexplorer.panel.PanelActionInterface;
@@ -46,6 +51,7 @@ import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
+import busexplorer.utils.Utils;
 import busexplorer.wrapper.AuthorizationInfo;
 import busexplorer.wrapper.CategoryInfo;
 import busexplorer.wrapper.CertificateInfo;
@@ -98,7 +104,7 @@ public class MainDialog {
    */
   private void buildDialog() {
     mainDialog = new JFrame(getDialogTitle());
-    mainDialog.setSize(640, 480);
+    mainDialog.setMinimumSize(new Dimension(800, 600));
     mainDialog.setLocationByPlatform(true);
     mainDialog.setLayout(new BorderLayout(0, 0));
     mainDialog.addWindowListener(new WindowAdapter() {
@@ -111,6 +117,7 @@ public class MainDialog {
 
     buildMenuBar();
     buildFeaturesComponent();
+    mainDialog.pack();
   }
 
   /**
@@ -332,7 +339,44 @@ public class MainDialog {
      */
 
     PanelComponent<OfferInfo> panelOffer =
-      new PanelComponent<OfferInfo>(model, actionsVector);
+      new PanelComponent<OfferInfo>(model, actionsVector) {
+        /**
+         * {@inheritDoc} Atualizando para acertar altura e larguras de célula
+         * multi-linha.
+         */
+        @Override
+        public void setElements(List<OfferInfo> objects) {
+          super.setElements(objects);
+          SortableTable table = this.getTable();
+          for (int i = 0; i < table.getRowCount(); i++) {
+            ObjectTableModel<OfferInfo> model = this.getTableModel();
+            OfferInfo offerInfo = model.getRow(i);
+            Vector<String> interfaces = offerInfo.getInterfaces();
+            Insets insets = table.getInsets();
+            FontMetrics metrics = table.getFontMetrics(getFont());
+            // Calcula as dimensões do texto.
+            int width = 0;
+            for (String aLine : interfaces) {
+              width = Math.max(width, metrics.stringWidth(aLine));
+            }
+            int height = +((metrics.getHeight() + 2) * interfaces.size());
+
+            // Inclui o gap e os insets
+            //width += insets.left + insets.right;
+            height += 8 + insets.top + insets.bottom;
+            table.setRowHeight(i, height);
+
+            TableColumn column =
+              table.getColumn(Utils.getString(OfferTableProvider.class,
+                "interface"));
+            int w = column.getWidth();
+            if (w < width) {
+              column.setWidth(width);
+              column.setMinWidth(width * 2 / 3);
+            }
+          }
+        }
+      };
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.offer.title"));
     featuresPane.setComponentAt(index, panelOffer);

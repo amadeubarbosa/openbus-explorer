@@ -10,6 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -19,13 +20,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 
-import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
 import tecgraf.javautils.gui.crud.RegistrationImages;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 import tecgraf.javautils.gui.table.SortableTable;
+import busexplorer.utils.Utils;
+import busexplorer.utils.VectorCellRenderer;
 
 /**
  * Componente que define um painel com uma {@link SortableTable} e modulariza o
@@ -93,6 +95,7 @@ public class PanelComponent<T> extends JPanel {
     table.setModel(model);
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     table.sort(0, SortOrder.ASCENDING);
+    table.setDefaultRenderer(Vector.class, new VectorCellRenderer());
 
     DirectActionsListener l = new DirectActionsListener();
     table.addMouseListener(l);
@@ -110,21 +113,24 @@ public class PanelComponent<T> extends JPanel {
       switch (action.getActionType()) {
         case ADD:
           addBtn = new JButton(action);
-          addBtn.setToolTipText(getString("add.tooltip"));
+          addBtn
+            .setToolTipText(Utils.getString(this.getClass(), "add.tooltip"));
           addBtn.setIcon(RegistrationImages.ICON_ADD_16);
           hasBtns = true;
           break;
 
         case REMOVE:
           removeBtn = new JButton(action);
-          removeBtn.setToolTipText(getString("remove.tooltip"));
+          removeBtn.setToolTipText(Utils.getString(this.getClass(),
+            "remove.tooltip"));
           removeBtn.setIcon(RegistrationImages.ICON_DELETE_16);
           hasBtns = true;
           break;
 
         case EDIT:
           editBtn = new JButton(action);
-          editBtn.setToolTipText(getString("edit.tooltip"));
+          editBtn.setToolTipText(Utils.getString(this.getClass(),
+            "edit.tooltip"));
           editBtn.setIcon(RegistrationImages.ICON_EDIT_16);
           hasBtns = true;
           break;
@@ -216,7 +222,7 @@ public class PanelComponent<T> extends JPanel {
    */
   private JButton getOthersButton() {
     final JButton others = new JButton();
-    others.setText(getString("button.others"));
+    others.setText(Utils.getString(this.getClass(), "button.others"));
     others.setIcon(RegistrationImages.ICON_DOWN_4);
     others.setHorizontalTextPosition(SwingConstants.RIGHT);
     others.addActionListener(new ActionListener() {
@@ -333,18 +339,17 @@ public class PanelComponent<T> extends JPanel {
    * 
    * @return o modelo da tabela.
    */
-  private ObjectTableModel<T> getTableModel() {
+  protected ObjectTableModel<T> getTableModel() {
     return (ObjectTableModel<T>) this.table.getModel();
   }
 
   /**
-   * Busca pelo valor associado a chave no LNG
+   * Recupera a tabela deste painel.
    * 
-   * @param key a chave
-   * @return o valor associado à chave.
+   * @return a tabela do painel.
    */
-  private String getString(String key) {
-    return LNG.get(PanelComponent.class.getSimpleName() + "." + key);
+  protected SortableTable getTable() {
+    return this.table;
   }
 
   /**

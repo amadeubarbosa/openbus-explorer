@@ -23,6 +23,7 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerAbstractInputDialog;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.PanelComponent;
+import busexplorer.utils.Utils;
 import busexplorer.wrapper.EntityInfo;
 import exception.handling.ExceptionContext;
 
@@ -106,7 +107,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
             }
           }
         };
-      task.execute(this, getString("waiting.title"), getString("waiting.msg"));
+      task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
+        Utils.getString(this.getClass(), "waiting.msg"));
       return task.getStatus();
     }
     else {
@@ -128,7 +130,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
             }
           }
         };
-      task.execute(this, getString("waiting.title"), getString("waiting.msg"));
+      task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
+        Utils.getString(this.getClass(), "waiting.msg"));
       return task.getStatus();
     }
   }
@@ -153,7 +156,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     JPanel panel = new JPanel(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
 
-    categoryIDLabel = new JLabel(getString("categoryID.label"));
+    categoryIDLabel =
+      new JLabel(Utils.getString(this.getClass(), "categoryID.label"));
     c.insets = new Insets(5, 5, 5, 5);
     c.gridx = 0;
     c.gridy = 0;
@@ -178,7 +182,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     c.anchor = GridBagConstraints.NORTHWEST;
     panel.add(categoryIDCombo, c);
 
-    entityIDLabel = new JLabel(getString("entityID.label"));
+    entityIDLabel =
+      new JLabel(Utils.getString(this.getClass(), "entityID.label"));
     c.insets = new Insets(5, 5, 5, 5);
     c.gridx = 0;
     c.gridy = 2;
@@ -202,7 +207,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     c.anchor = GridBagConstraints.NORTHWEST;
     panel.add(entityIDField, c);
 
-    entityNameLabel = new JLabel(getString("entityName.label"));
+    entityNameLabel =
+      new JLabel(Utils.getString(this.getClass(), "entityName.label"));
     c.insets = new Insets(5, 5, 5, 5);
     c.gridx = 0;
     c.gridy = 4;
@@ -237,7 +243,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     String entityID = entityIDField.getText();
 
     if (entityID.equals("")) {
-      setErrorMessage(getString("error.validation.emptyID"));
+      setErrorMessage(Utils.getString(this.getClass(),
+        "error.validation.emptyID"));
       return false;
     }
 

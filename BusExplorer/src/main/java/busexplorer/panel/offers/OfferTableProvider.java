@@ -3,6 +3,7 @@ package busexplorer.panel.offers;
 import java.util.Vector;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
+import busexplorer.utils.Utils;
 import busexplorer.wrapper.OfferInfo;
 
 /**
@@ -26,7 +27,11 @@ public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "Entidade", "Interface", "Data", "Hora" };
+    String[] colNames =
+      { Utils.getString(this.getClass(), "entity"),
+          Utils.getString(this.getClass(), "interface"),
+          Utils.getString(this.getClass(), "date"),
+          Utils.getString(this.getClass(), "time") };
     return colNames;
   }
 

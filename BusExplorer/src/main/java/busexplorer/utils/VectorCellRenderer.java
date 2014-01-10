@@ -1,9 +1,6 @@
 package busexplorer.utils;
 
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Insets;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -17,11 +14,6 @@ import javax.swing.table.DefaultTableCellRenderer;
  * @author Tecgraf
  */
 public class VectorCellRenderer extends DefaultTableCellRenderer {
-
-  /** Espaçamento vertical entre as bordas e o texto */
-  private int verticalGap = 8;
-  /** Espaço entre as linhas. */
-  private int lineSpace = 2;
 
   /**
    * {@inheritDoc}
@@ -50,26 +42,6 @@ public class VectorCellRenderer extends DefaultTableCellRenderer {
     }
     builder.append("</html>");
     ((JLabel) component).setText(builder.toString());
-
-    Insets insets = getInsets();
-    FontMetrics metrics = getFontMetrics(getFont());
-    // Calcula as dimensões do texto.
-    int width = 0;
-    for (String aLine : interfaces) {
-      width = Math.max(width, metrics.stringWidth(aLine));
-    }
-    int height = +((metrics.getHeight() + lineSpace) * interfaces.size());
-
-    // Inclui o gap e os insets
-    width += insets.left + insets.right;
-    height += verticalGap + insets.top + insets.bottom;
-
-    Dimension size = new Dimension(width, height);
-    component.setPreferredSize(size);
-    component.setMinimumSize(size);
-    // FIXME esta linha parece que esta gerando um problema de processamento exagerado.
-    //table.setRowHeight(row, height);
-
     return component;
   }
 }

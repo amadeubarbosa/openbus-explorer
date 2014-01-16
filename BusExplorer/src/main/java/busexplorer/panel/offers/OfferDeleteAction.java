@@ -6,13 +6,16 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOffer;
 import admin.BusAdmin;
-import busexplorer.panel.BusAdminAbstractAction;
-import busexplorer.wrapper.OfferWrapper;
+import busexplorer.Application;
+import busexplorer.exception.BusExplorerTask;
+import busexplorer.panel.ActionType;
+import busexplorer.panel.OpenBusAction;
+import busexplorer.wrapper.OfferInfo;
+import exception.handling.ExceptionContext;
 
 /**
  * Ação que atualiza a tabela de ofertas
@@ -20,55 +23,48 @@ import busexplorer.wrapper.OfferWrapper;
  * @author Tecgraf
  * 
  */
-public class OfferDeleteAction extends BusAdminAbstractAction {
+public class OfferDeleteAction extends OpenBusAction<OfferInfo> {
 
-  /** Painel com o CRUD de ofertas */
-  private CRUDPanel<OfferWrapper> panel;
-
-  public OfferDeleteAction(JFrame parentWindow, CRUDPanel<OfferWrapper> panel,
-    BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin, LNG
-      .get("OfferDeleteAction.name"));
-    this.panel = panel;
+  public OfferDeleteAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin, LNG.get(OfferDeleteAction.class.getSimpleName() +
+      ".name"));
   }
 
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.REMOVE;
+  public ActionType getActionType() {
+    return ActionType.REMOVE;
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     int option =
-      JOptionPane.showConfirmDialog(parentWindow, LNG
-        .get("DeleteAction.confirm.msg"),
-        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
+        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
         JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
     }
 
-    Task task = new Task() {
+    Task<Object> task = new
+    BusExplorerTask<Object>(Application.exceptionHandler(),
+      ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        List<OfferWrapper> selectedWrappers = panel.getSelectedInfos();
-        for (OfferWrapper wrapper : selectedWrappers) {
-          ServiceOfferDesc offer = wrapper.getOffer();
-          admin.removeOffer(offer);
-        }
+        OfferInfo offer = getPanelComponent().getSelectedElement();
+        ServiceOffer ref = offer.getDescriptor().ref;
+        ref.remove();
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getError() == null) {
-          panel.removeSelectedInfos();
-          panel.getTableModel().fireTableDataChanged();
+        if (getStatus()) {
+          getPanelComponent().removeSelectedElements();
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
-      .get("DeleteAction.waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
 }

@@ -53,6 +53,7 @@ import busexplorer.panel.interfaces.InterfaceRefreshAction;
 import busexplorer.panel.interfaces.InterfaceTableProvider;
 import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
+import busexplorer.panel.offers.OfferDeleteAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
@@ -338,10 +339,7 @@ public class MainDialog {
     List<PanelActionInterface<OfferInfo>> actionsVector =
       new Vector<PanelActionInterface<OfferInfo>>(2);
     actionsVector.add(new OfferRefreshAction(mainDialog, admin));
-    // TODO Refatorar implementação das ações. --tmartins
-    /*
-     * actionsVector.add(new OfferDeleteAction(mainDialog, admin));
-     */
+    actionsVector.add(new OfferDeleteAction(mainDialog, admin));
 
     PanelComponent<OfferInfo> panelOffer =
       new PanelComponent<OfferInfo>(model, actionsVector) {

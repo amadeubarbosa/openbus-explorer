@@ -14,6 +14,9 @@ import busexplorer.utils.Utils;
  * @author Tecgraf
  */
 public class OfferInfo {
+  /** Objeto descritor da oferta */
+  private ServiceOfferDesc desc;
+
   /** Identificador da entidade */
   private final String entity;
   /** Nome da interface */
@@ -29,6 +32,7 @@ public class OfferInfo {
    * @param desc descritor da oferta
    */
   public OfferInfo(ServiceOfferDesc desc) {
+    this.desc = desc;
     this.entity = Utils.getProperty(desc, "openbus.offer.entity");
     this.interfaces = Utils.getProperties(desc, "openbus.component.interface");
     this.date =
@@ -75,6 +79,15 @@ public class OfferInfo {
    */
   public String getTime() {
     return time;
+  }
+
+  /**
+   * Recupera o próprio objeto descritor de oferta.
+   * 
+   * @return o objeto descritor.
+   */
+  public ServiceOfferDesc getDescriptor() {
+    return desc;
   }
 
   /**

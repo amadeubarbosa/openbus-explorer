@@ -90,6 +90,34 @@ public class BusExplorerExceptionHandler extends
         }
         break;
 
+      case InvalidInterface:
+        switch (context) {
+          case BusCore:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "invalid.interface.core"));
+            break;
+
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "invalid.interface"));
+            break;
+        }
+        break;
+
+      case AuthorizationInUse:
+        switch (context) {
+          case BusCore:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "authorization.inuse.core"));
+            break;
+
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "authorization.inuse"));
+            break;
+        }
+        break;
+
       case OBJECT_NOT_EXIST:
         switch (context) {
           case BusCore:

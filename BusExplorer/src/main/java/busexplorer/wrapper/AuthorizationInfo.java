@@ -13,6 +13,9 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEn
  * @author Tecgraf
  */
 public class AuthorizationInfo {
+  /** objeto descritor de entidade autorizada */
+  private RegisteredEntityDesc desc;
+
   /** Identificador da entidade autorizada */
   private final String id;
   /** Interface */
@@ -26,6 +29,7 @@ public class AuthorizationInfo {
    * @param interfaceName interface 
    */
   public AuthorizationInfo(RegisteredEntityDesc desc, String interfaceName) {
+    this.desc = desc;
     this.id = desc.id;
     this.interfaceName = interfaceName;
   }
@@ -47,6 +51,15 @@ public class AuthorizationInfo {
    */
   public String getEntityId() {
     return id;
+  }
+
+  /**
+   * Recupera o objeto descritor da entidade autorizada.
+   *
+   * @return o objeto descritor da entidade autorizada.
+   */
+  public RegisteredEntityDesc getEntityDescriptor() {
+    return desc;
   }
 
   /**

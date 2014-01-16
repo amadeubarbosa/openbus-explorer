@@ -6,43 +6,42 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
 import admin.BusAdmin;
-import busexplorer.panel.BusAdminAbstractAction;
-import busexplorer.wrapper.AuthorizationWrapper;
+import busexplorer.Application;
+import busexplorer.exception.BusExplorerTask;
+import busexplorer.panel.ActionType;
+import busexplorer.panel.OpenBusAction;
+import busexplorer.wrapper.AuthorizationInfo;
+import exception.handling.ExceptionContext;
 
 /**
  * Classe de ação para a remoção de uma autorização.
  * 
  * @author Tecgraf
  */
-public class AuthorizationDeleteAction extends BusAdminAbstractAction {
-
-  /** Painel com o CRUD de autorizações */
-  private CRUDPanel<AuthorizationWrapper> panel;
+public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationInfo>
+  {
 
   /**
    * Construtor da ação
    * 
    * @param parentWindow janela mãe do diálogo a ser criado pela ação
-   * @param panel painel de CRUD
    * @param admin
    */
-  public AuthorizationDeleteAction(JFrame parentWindow,
-    CRUDPanel<AuthorizationWrapper> panel, BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin, LNG
-      .get("AuthorizationDeleteAction.name"));
-    this.panel = panel;
+  public AuthorizationDeleteAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin,
+      LNG.get(AuthorizationDeleteAction.class.getSimpleName() + ".name"));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.REMOVE;
+  public ActionType getActionType() {
+    return ActionType.REMOVE;
   }
 
   /**
@@ -51,36 +50,37 @@ public class AuthorizationDeleteAction extends BusAdminAbstractAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     int option =
-      JOptionPane.showConfirmDialog(parentWindow, LNG
-        .get("DeleteAction.confirm.msg"),
-        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
+        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
         JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
     }
 
-    Task task = new Task() {
+    Task<Object> task = new
+    BusExplorerTask<Object>(Application.exceptionHandler(),
+      ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        List<AuthorizationWrapper> selectedWrappers = panel.getSelectedInfos();
-        for (AuthorizationWrapper wrapper : selectedWrappers) {
-          String entityID = wrapper.getEntity().id;
-          String interfaceName = wrapper.getInterface();
-          admin.revokeAuthorization(entityID, interfaceName);
-        }
+        AuthorizationInfo authorization =
+          getPanelComponent().getSelectedElement();
+
+        RegisteredEntity ref = authorization.getEntityDescriptor().ref;
+        String interfaceName = authorization.getInterface();
+
+        ref.revokeInterface(interfaceName);
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getError() == null) {
-          panel.removeSelectedInfos();
-          panel.getTableModel().fireTableDataChanged();
+        if (getStatus()) {
+          getPanelComponent().removeSelectedElements();
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
-      .get("DeleteAction.waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
 }

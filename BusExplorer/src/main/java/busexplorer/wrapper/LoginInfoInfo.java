@@ -11,6 +11,9 @@ import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
  * @author Tecgraf
  */
 public class LoginInfoInfo {
+  /** Informações do login */
+  private LoginInfo info;
+
   /** Identificador do login */
   private final String id;
   /** Entidade */
@@ -22,6 +25,7 @@ public class LoginInfoInfo {
    * @param info informações de login
    */
   public LoginInfoInfo(LoginInfo info) {
+    this.info = info;
     this.id = info.id;
     this.entity = info.entity;
   }
@@ -43,6 +47,16 @@ public class LoginInfoInfo {
   public String getEntityId() {
     return entity;
   }
+
+  /**
+   * Recupera a própria informação de login.
+   * 
+   * @return a informação de login.
+   */
+  public LoginInfo getInfo() {
+    return info;
+  }
+
 
   /**
    * Método utilitário para converter lista de {@link LoginInfo} para

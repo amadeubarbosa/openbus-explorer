@@ -6,13 +6,16 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import admin.BusAdmin;
-import busexplorer.panel.BusAdminAbstractAction;
-import busexplorer.wrapper.LoginInfoWrapper;
+import busexplorer.Application;
+import busexplorer.exception.BusExplorerTask;
+import busexplorer.panel.ActionType;
+import busexplorer.panel.OpenBusAction;
+import busexplorer.wrapper.LoginInfoInfo;
+import exception.handling.ExceptionContext;
 
 /**
  * Ação que atualiza a tabela de categorias
@@ -20,55 +23,59 @@ import busexplorer.wrapper.LoginInfoWrapper;
  * @author Tecgraf
  * 
  */
-public class LoginDeleteAction extends BusAdminAbstractAction {
+public class LoginDeleteAction extends OpenBusAction<LoginInfoInfo> {
 
-  /** Painel com o CRUD de logins */
-  private CRUDPanel<LoginInfoWrapper> panel;
-
-  public LoginDeleteAction(JFrame parentWindow,
-    CRUDPanel<LoginInfoWrapper> panel, BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin, LNG
-      .get("LoginDeleteAction.name"));
-    this.panel = panel;
+  /**
+   * Construtor da ação.
+   * 
+   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   * @param admin
+   */
+  public LoginDeleteAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin, LNG.get(LoginDeleteAction.class.getSimpleName() +
+      ".name"));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.REMOVE;
+  public ActionType getActionType() {
+    return ActionType.REMOVE;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void actionPerformed(ActionEvent e) {
     int option =
-      JOptionPane.showConfirmDialog(parentWindow, LNG
-        .get("DeleteAction.confirm.msg"),
-        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
+        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
         JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
     }
 
-    Task task = new Task() {
+    Task<Object> task =
+      new BusExplorerTask<Object>(Application.exceptionHandler(),
+        ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        List<LoginInfoWrapper> selectedWrappers = panel.getSelectedInfos();
-        for (LoginInfoWrapper wrapper : selectedWrappers) {
-          LoginInfo loginInfo = wrapper.getLoginInfo();
-          admin.invalidateLogin(loginInfo);
-        }
+        LoginInfoInfo login = getPanelComponent().getSelectedElement();
+        admin.invalidateLogin(login.getInfo());
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getError() == null) {
-          panel.removeSelectedInfos();
-          panel.getTableModel().fireTableDataChanged();
+        if (getStatus()) {
+          getPanelComponent().removeSelectedElements();
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
-      .get("DeleteAction.waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
 }

@@ -51,6 +51,7 @@ import busexplorer.panel.entities.EntityTableProvider;
 import busexplorer.panel.interfaces.InterfaceDeleteAction;
 import busexplorer.panel.interfaces.InterfaceRefreshAction;
 import busexplorer.panel.interfaces.InterfaceTableProvider;
+import busexplorer.panel.logins.LoginDeleteAction;
 import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
 import busexplorer.panel.offers.OfferDeleteAction;
@@ -395,11 +396,8 @@ public class MainDialog {
 
     List<PanelActionInterface<LoginInfoInfo>> actionsVector =
       new Vector<PanelActionInterface<LoginInfoInfo>>(2);
-    // TODO Refatorar implementação das ações. --tmartins
     actionsVector.add(new LoginRefreshAction(mainDialog, admin));
-    /*
-     * actionsVector.add(new LoginDeleteAction(mainDialog, admin));
-     */
+    actionsVector.add(new LoginDeleteAction(mainDialog, admin));
 
     PanelComponent<LoginInfoInfo> panelLogin =
       new PanelComponent<LoginInfoInfo>(model, actionsVector);

@@ -14,6 +14,7 @@ public enum ExceptionType {
   AlreadyLoggedIn,
   // Contexto BusCore
   ServiceFailure,
+  UnauthorizedOperation,
   UnauthorizedFacets,
   InvalidService,
   // Exceções CORBA

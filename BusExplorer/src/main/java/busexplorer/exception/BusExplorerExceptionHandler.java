@@ -62,6 +62,20 @@ public class BusExplorerExceptionHandler extends
         }
         break;
 
+      case UnauthorizedOperation:
+        switch (context) {
+          case BusCore:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "unauthorized.operation.core"));
+            break;
+
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "unauthorized.operation"));
+            break;
+        }
+        break;
+
       case OBJECT_NOT_EXIST:
         switch (context) {
           case BusCore:

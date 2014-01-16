@@ -6,43 +6,40 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
-import busexplorer.panel.BusAdminAbstractAction;
-import busexplorer.wrapper.InterfaceWrapper;
+import busexplorer.Application;
+import busexplorer.exception.BusExplorerTask;
+import busexplorer.panel.ActionType;
+import busexplorer.panel.OpenBusAction;
+import busexplorer.wrapper.InterfaceInfo;
+import exception.handling.ExceptionContext;
 
 /**
  * Classe de ação para a remoção de uma interface.
  * 
  * @author Tecgraf
  */
-public class InterfaceDeleteAction extends BusAdminAbstractAction {
-
-  /** Painel com o CRUD de interfaces */
-  private CRUDPanel<InterfaceWrapper> panel;
+public class InterfaceDeleteAction extends OpenBusAction<InterfaceInfo> {
 
   /**
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param panel painel de CRUD
    * @param admin
    */
-  public InterfaceDeleteAction(JFrame parentWindow,
-    CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin, LNG
-      .get("InterfaceDeleteAction.name"));
-    this.panel = panel;
+  public InterfaceDeleteAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin,
+      LNG.get(InterfaceDeleteAction.class.getSimpleName() + ".name"));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.REMOVE;
+  public ActionType getActionType() {
+    return ActionType.REMOVE;
   }
 
   /**
@@ -51,35 +48,33 @@ public class InterfaceDeleteAction extends BusAdminAbstractAction {
   @Override
   public void actionPerformed(ActionEvent e) {
     int option =
-      JOptionPane.showConfirmDialog(parentWindow, LNG
-        .get("DeleteAction.confirm.msg"),
-        LNG.get("DeleteAction.confirm.title"), JOptionPane.YES_NO_OPTION,
+      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
+        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
         JOptionPane.QUESTION_MESSAGE);
 
     if (option != JOptionPane.YES_OPTION) {
       return;
     }
 
-    Task task = new Task() {
+    Task<Object> task =
+      new BusExplorerTask<Object>(Application.exceptionHandler(),
+      ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        List<InterfaceWrapper> selectedWrappers = panel.getSelectedInfos();
-        for (InterfaceWrapper wrapper : selectedWrappers) {
-          String interfaceName = wrapper.getInterface();
-          admin.removeInterface(interfaceName);
-        }
+        InterfaceInfo interfaceInfo = getPanelComponent().getSelectedElement();
+        String interfaceName = interfaceInfo.getName();
+        admin.removeInterface(interfaceName);
       }
 
       @Override
       protected void afterTaskUI() {
-        if (getError() == null) {
-          panel.removeSelectedInfos();
-          panel.getTableModel().fireTableDataChanged();
+        if (getStatus()) {
+          getPanelComponent().removeSelectedElements();
         }
       }
     };
 
-    task.execute(parentWindow, LNG.get("DeleteAction.waiting.title"), LNG
-      .get("DeleteAction.waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
 }

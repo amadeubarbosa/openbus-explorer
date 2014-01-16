@@ -17,6 +17,7 @@ public enum ExceptionType {
   UnauthorizedOperation,
   UnauthorizedFacets,
   InvalidService,
+  InterfaceInUse,
   // Exceções CORBA
   InvalidName,
   NO_PERMISSION,

@@ -76,6 +76,20 @@ public class BusExplorerExceptionHandler extends
         }
         break;
 
+      case InterfaceInUse:
+        switch (context) {
+          case BusCore:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "interface.inuse.core"));
+            break;
+
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "interface.inuse"));
+            break;
+        }
+        break;
+
       case OBJECT_NOT_EXIST:
         switch (context) {
           case BusCore:

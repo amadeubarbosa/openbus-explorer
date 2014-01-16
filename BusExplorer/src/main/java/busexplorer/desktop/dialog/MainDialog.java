@@ -47,6 +47,7 @@ import busexplorer.panel.entities.EntityDeleteAction;
 import busexplorer.panel.entities.EntityEditAction;
 import busexplorer.panel.entities.EntityRefreshAction;
 import busexplorer.panel.entities.EntityTableProvider;
+import busexplorer.panel.interfaces.InterfaceDeleteAction;
 import busexplorer.panel.interfaces.InterfaceRefreshAction;
 import busexplorer.panel.interfaces.InterfaceTableProvider;
 import busexplorer.panel.logins.LoginRefreshAction;
@@ -286,6 +287,7 @@ public class MainDialog {
     List<PanelActionInterface<InterfaceInfo>> actionsVector =
       new Vector<PanelActionInterface<InterfaceInfo>>(3);
     actionsVector.add(new InterfaceRefreshAction(mainDialog, admin));
+    actionsVector.add(new InterfaceDeleteAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
     /*
      * actionsVector.add(new InterfaceAddAction(mainDialog, admin));

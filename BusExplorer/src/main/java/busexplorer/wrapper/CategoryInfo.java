@@ -12,6 +12,9 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCatego
  * @author Tecgraf
  */
 public class CategoryInfo {
+  /** objeto descritor da categoria */
+  private EntityCategoryDesc desc;
+
   /** Identificador */
   private final String id;
   /** Nome descritivo */
@@ -23,6 +26,7 @@ public class CategoryInfo {
    * @param desc descritor da categoria
    */
   public CategoryInfo(EntityCategoryDesc desc) {
+    this.desc = desc;
     this.id = desc.id;
     this.name = desc.name;
   }
@@ -52,6 +56,15 @@ public class CategoryInfo {
    */
   public void setName(String name) {
     this.name = name;
+  }
+
+  /**
+   * Recupera o próprio objeto descritor da categoria.
+   *
+   * @return o objeto descritor da categoria.
+   */
+  public EntityCategoryDesc getDescriptor() {
+    return desc;
   }
 
   /**

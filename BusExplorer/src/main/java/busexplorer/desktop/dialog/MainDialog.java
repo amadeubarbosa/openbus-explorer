@@ -39,6 +39,7 @@ import busexplorer.panel.authorizations.AuthorizationTableProvider;
 import busexplorer.panel.categories.CategoryDeleteAction;
 import busexplorer.panel.categories.CategoryRefreshAction;
 import busexplorer.panel.categories.CategoryTableProvider;
+import busexplorer.panel.certificates.CertificateDeleteAction;
 import busexplorer.panel.certificates.CertificateRefreshAction;
 import busexplorer.panel.certificates.CertificateTableProvider;
 import busexplorer.panel.entities.EntityAddAction;
@@ -260,10 +261,10 @@ public class MainDialog {
     List<PanelActionInterface<CertificateInfo>> actionsVector =
       new Vector<PanelActionInterface<CertificateInfo>>(3);
     actionsVector.add(new CertificateRefreshAction(mainDialog, admin));
+    actionsVector.add(new CertificateDeleteAction(mainDialog, admin));
     // TODO Refatorar implementação das ações. --tmartins
     /*
      * actionsVector.add(new CertificateAddAction(mainDialog, admin));
-     * actionsVector.add(new CertificateDeleteAction(mainDialog, admin));
      */
 
     PanelComponent<CertificateInfo> panelCertificate =

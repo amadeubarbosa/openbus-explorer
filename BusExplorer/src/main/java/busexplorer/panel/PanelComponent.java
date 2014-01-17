@@ -16,9 +16,12 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
@@ -79,7 +82,7 @@ public class PanelComponent<T> extends JPanel {
    */
   public PanelComponent(ObjectTableModel<T> pTableModel,
     List<? extends PanelActionInterface<T>> actions) {
-    createTable(pTableModel.getRows(), pTableModel);
+    createTable(pTableModel);
     processActions(actions);
     init();
   }
@@ -87,15 +90,16 @@ public class PanelComponent<T> extends JPanel {
   /**
    * Cria a tabela do componente.
    * 
-   * @param info conjunto de infomações iniciais da tabela.
    * @param model o modelo da tabela.
    */
-  private void createTable(List<T> info, ObjectTableModel<T> model) {
+  private void createTable(ObjectTableModel<T> model) {
     table = new SortableTable(true);
     table.setModel(model);
-    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     table.sort(0, SortOrder.ASCENDING);
     table.setDefaultRenderer(Vector.class, new VectorCellRenderer());
+    table.getSelectionModel().addListSelectionListener(
+      new TableSelectionListener(table));
 
     DirectActionsListener l = new DirectActionsListener();
     table.addMouseListener(l);
@@ -123,6 +127,7 @@ public class PanelComponent<T> extends JPanel {
           removeBtn = new JButton(action);
           removeBtn.setToolTipText(Utils.getString(this.getClass(),
             "remove.tooltip"));
+          removeBtn.setEnabled(false);
           removeBtn.setIcon(RegistrationImages.ICON_DELETE_16);
           hasBtns = true;
           break;
@@ -131,12 +136,20 @@ public class PanelComponent<T> extends JPanel {
           editBtn = new JButton(action);
           editBtn.setToolTipText(Utils.getString(this.getClass(),
             "edit.tooltip"));
+          editBtn.setEnabled(false);
           editBtn.setIcon(RegistrationImages.ICON_EDIT_16);
           hasBtns = true;
           break;
 
         case REFRESH:
           this.refreshAction = action;
+          break;
+
+        case OTHER_ONLY_MULTI_SELECTION:
+        case OTHER_MULTI_SELECTION:
+          // informações como tooltip e icones devem ser configurados na ação
+          othersActions.add(action);
+          action.setEnabled(false);
           break;
 
         default:
@@ -350,6 +363,98 @@ public class PanelComponent<T> extends JPanel {
    */
   protected SortableTable getTable() {
     return this.table;
+  }
+
+  /**
+   * Listener de seleção da tabela.
+   * 
+   * @author Tecgraf
+   */
+  class TableSelectionListener implements ListSelectionListener {
+
+    /**
+     * Referência para a tabela do componente.
+     */
+    private JTable table;
+
+    /**
+     * Construtor.
+     * 
+     * @param table a tabela sendo observada.
+     */
+    public TableSelectionListener(JTable table) {
+      this.table = table;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+      int[] selectedRows = table.getSelectedRows();
+      int length = selectedRows.length;
+
+      switch (length) {
+        case 0:
+          if (removeBtn != null) {
+            removeBtn.setEnabled(false);
+          }
+          if (editBtn != null) {
+            editBtn.setEnabled(false);
+          }
+          for (PanelActionInterface<T> action : othersActions) {
+            if (!action.getActionType().equals(ActionType.OTHER)) {
+              action.setEnabled(false);
+            }
+          }
+          break;
+
+        case 1:
+          if (removeBtn != null) {
+            removeBtn.setEnabled(true);
+          }
+          if (editBtn != null) {
+            editBtn.setEnabled(true);
+          }
+          for (PanelActionInterface<T> action : othersActions) {
+            switch (action.getActionType()) {
+              case OTHER_SINGLE_SELECTION:
+              case OTHER_MULTI_SELECTION:
+                action.setEnabled(true);
+                break;
+              case OTHER_ONLY_MULTI_SELECTION:
+                action.setEnabled(false);
+                break;
+              default:
+                action.setEnabled(true);
+                break;
+            }
+          }
+          break;
+
+        default:
+          // length > 1
+          if (removeBtn != null) {
+            removeBtn.setEnabled(false);
+          }
+          if (editBtn != null) {
+            editBtn.setEnabled(false);
+          }
+          for (PanelActionInterface<T> action : othersActions) {
+            switch (action.getActionType()) {
+              case OTHER_SINGLE_SELECTION:
+                action.setEnabled(false);
+                break;
+              case OTHER_MULTI_SELECTION:
+              case OTHER_ONLY_MULTI_SELECTION:
+                action.setEnabled(true);
+                break;
+              default:
+                action.setEnabled(true);
+                break;
+            }
+          }
+          break;
+      }
+    }
   }
 
   /**

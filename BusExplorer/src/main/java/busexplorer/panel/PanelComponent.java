@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -12,16 +14,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Document;
 
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
@@ -61,6 +70,10 @@ public class PanelComponent<T> extends JPanel {
   private boolean hasBtns = false;
   /** Ação de Refresh */
   private PanelActionInterface<T> refreshAction;
+  /** Campo de filtro */
+  private JTextField filterText;
+  /** Botão de limpar texto de filtro */
+  private JButton filterButton;
 
   /**
    * Construtor
@@ -164,6 +177,7 @@ public class PanelComponent<T> extends JPanel {
   private void init() {
     // Define BorderLayout como o gerenciador padrão
     this.setLayout(new BorderLayout());
+    this.add(getFilterPanel(), BorderLayout.NORTH);
     this.add(getScrollPane(), BorderLayout.CENTER);
     this.add(getButtonsPanel(), BorderLayout.SOUTH);
     if (!hasBtns) {
@@ -171,6 +185,94 @@ public class PanelComponent<T> extends JPanel {
     }
     this.validate();
     this.setVisible(true);
+  }
+
+  /**
+   * Constrói o painel de filtro da tabela
+   * 
+   * @return o painel de filtro.
+   */
+  private JPanel getFilterPanel() {
+    final JPanel panel = new JPanel(new GridBagLayout());
+    GBC gbc = new GBC(0, 0).west().insets(10, 10, 10, 0);
+    final JLabel filterLabel =
+      new JLabel(Utils.getString(this.getClass(), "filter.label"));
+    panel.add(filterLabel, gbc);
+
+    filterText = new JTextField();
+    gbc = new GBC(1, 0).insets(10).horizontal().filly();
+    panel.add(filterText, gbc);
+
+    filterButton =
+      new JButton(Utils.getString(this.getClass(), "filter.clear"));
+    gbc = new GBC(2, 0).east().insets(10, 0, 10, 10);
+    panel.add(filterButton, gbc);
+
+    setupFilterControls();
+    return panel;
+  }
+
+  /**
+   * Configura os controles (textfield + botão) para filtragem da tabela com os
+   * usuários.
+   */
+  private void setupFilterControls() {
+    // Implementamos um DocumentListener para ativar o filtro quando o conteúdo
+    // do campo for alterado de qualquer forma
+    final Document document = filterText.getDocument();
+    document.addDocumentListener(new DocumentListener() {
+      @Override
+      public void changedUpdate(DocumentEvent e) {
+        filterTableContent();
+      }
+
+      @Override
+      public void insertUpdate(DocumentEvent e) {
+        filterTableContent();
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent e) {
+        filterTableContent();
+      }
+    });
+
+    // Queremos que o conteúdo do filtro seja todo selecionado quando o campo
+    // ganhar o foco
+    filterText.addFocusListener(new FocusListener() {
+      @Override
+      public void focusGained(FocusEvent e) {
+        filterText.selectAll();
+      }
+
+      @Override
+      public void focusLost(FocusEvent e) {
+        filterText.select(0, 0);
+      }
+    });
+
+    // ação do botão "limpar"
+    filterButton.addActionListener(new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        filterText.setText("");
+        filterTableContent();
+      }
+    });
+  }
+
+  /**
+   * Filtra o conteúdo da tabela a partir do conteúdo do campo "filtro". O texto
+   * do campo é usado como <code>".*texto.*"</code>.
+   */
+  private void filterTableContent() {
+    final String text = filterText.getText();
+    if (text.length() > 0) {
+      table.setRowFilter(RowFilter.regexFilter(".*" + text + ".*"));
+    }
+    else {
+      table.setRowFilter(null);
+    }
   }
 
   /**

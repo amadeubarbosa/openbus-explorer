@@ -3,8 +3,6 @@ package busexplorer.desktop.dialog;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.FontMetrics;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -12,6 +10,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.JFrame;
@@ -22,16 +21,15 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.TableColumn;
 
 import org.omg.CORBA.ORB;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.javautils.gui.table.SortableTable;
 import tecgraf.openbus.assistant.Assistant;
 import admin.BusAdminImpl;
+import busexplorer.Application;
 import busexplorer.panel.PanelActionInterface;
 import busexplorer.panel.PanelComponent;
 import busexplorer.panel.authorizations.AuthorizationDeleteAction;
@@ -55,6 +53,7 @@ import busexplorer.panel.logins.LoginDeleteAction;
 import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
 import busexplorer.panel.offers.OfferDeleteAction;
+import busexplorer.panel.offers.OfferPanelComponent;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
@@ -88,12 +87,19 @@ public class MainDialog {
    * Pane de recursos de gerência do barramento.
    */
   private JTabbedPane featuresPane;
+  /**
+   * Propriedades da aplicação.
+   */
+  private Properties properties;
 
   /**
    * Construtor.
+   * 
+   * @param properties proprieades da aplicação.
    */
-  public MainDialog() {
-    admin = new BusAdminImpl();
+  public MainDialog(Properties properties) {
+    this.admin = new BusAdminImpl();
+    this.properties = properties;
     buildDialog();
   }
 
@@ -103,6 +109,10 @@ public class MainDialog {
   public void show() {
     mainDialog.setVisible(true);
     login();
+  }
+
+  public Properties getProperties() {
+    return this.properties;
   }
 
   /**
@@ -343,46 +353,9 @@ public class MainDialog {
     actionsVector.add(new OfferDeleteAction(mainDialog, admin));
 
     PanelComponent<OfferInfo> panelOffer =
-      new PanelComponent<OfferInfo>(model, actionsVector) {
-        /**
-         * {@inheritDoc} Atualizando para acertar altura e larguras de célula
-         * multi-linha.
-         */
-        @Override
-        public void setElements(List<OfferInfo> objects) {
-          super.setElements(objects);
-          SortableTable table = this.getTable();
-          for (int i = 0; i < table.getRowCount(); i++) {
-            ObjectTableModel<OfferInfo> model = this.getTableModel();
-            OfferInfo offerInfo = model.getRow(i);
-            Vector<String> interfaces = offerInfo.getInterfaces();
-            Insets insets = table.getInsets();
-            FontMetrics metrics = table.getFontMetrics(getFont());
-            // Calcula as dimensões do texto.
-            int width = 0;
-            for (String aLine : interfaces) {
-              width = Math.max(width, metrics.stringWidth(aLine));
-            }
-            int height = +((metrics.getHeight() + 2) * interfaces.size());
-
-            // Inclui o gap e os insets
-            //width += insets.left + insets.right;
-            height += 8 + insets.top + insets.bottom;
-            table.setRowHeight(i, height);
-
-            TableColumn column =
-              table.getColumn(Utils.getString(OfferTableProvider.class,
-                "interface"));
-            int w = column.getWidth();
-            if (w < width) {
-              column.setWidth(width);
-              column.setMinWidth(width * 2 / 3);
-            }
-          }
-        }
-      };
-
-    int index = featuresPane.indexOfTab(LNG.get("MainDialog.offer.title"));
+      new OfferPanelComponent(model, actionsVector);
+    int index =
+      featuresPane.indexOfTab(Utils.getString(this.getClass(), "offer.title"));
     featuresPane.setComponentAt(index, panelOffer);
   }
 
@@ -494,7 +467,8 @@ public class MainDialog {
    * @return Título do diálogo
    */
   private String getDialogTitle() {
-    return LNG.get("MainDialog.title") + " - " + LNG.get("Application.title");
+    return Utils.getString(this.getClass(), "title") + " - "
+      + Utils.getString(Application.class, "title");
   }
 
 }

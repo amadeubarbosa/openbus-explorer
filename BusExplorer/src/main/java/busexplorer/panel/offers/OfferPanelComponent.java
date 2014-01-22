@@ -54,8 +54,9 @@ public class OfferPanelComponent extends PanelComponent<OfferInfo> {
   public void setElements(List<OfferInfo> objects) {
     super.setElements(objects);
     SortableTable table = this.getTable();
-    for (int i = 0; i < table.getRowCount(); i++) {
+    for (int idx = 0; idx < table.getRowCount(); idx++) {
       ObjectTableModel<OfferInfo> model = this.getTableModel();
+      int i = table.convertRowIndexToModel(idx);
       OfferInfo offerInfo = model.getRow(i);
       Vector<String> interfaces = offerInfo.getInterfaces();
 
@@ -70,7 +71,7 @@ public class OfferPanelComponent extends PanelComponent<OfferInfo> {
 
       // Inclui o gap e os insets
       //width += insets.left + insets.right;
-      height += 8 + insets.top + insets.bottom;
+      height += insets.top + insets.bottom;
       table.setRowHeight(i, height);
 
       TableColumn column =

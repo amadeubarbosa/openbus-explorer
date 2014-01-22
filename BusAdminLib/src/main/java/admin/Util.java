@@ -116,7 +116,7 @@ public class Util {
    * @param orb instância do orb do barramento
    * @return a corbaloc criada
    */
-  private static org.omg.CORBA.Object buildCorbaLoc(String host, short port,
+  private static org.omg.CORBA.Object buildCorbaLoc(String host, int port,
     ORB orb) {
     String str =
       String.format("corbaloc::1.0@%s:%d/%s", host, port, BusObjectKey.value);
@@ -132,7 +132,7 @@ public class Util {
    * @param orb instância do orb do barramento
    * @return a faceta IComponent
    */
-  public static IComponent getIComponent(String host, short port, ORB orb) {
+  public static IComponent getIComponent(String host, int port, ORB orb) {
     org.omg.CORBA.Object obj = buildCorbaLoc(host, port, orb);
 
     try {

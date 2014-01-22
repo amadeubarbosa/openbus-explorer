@@ -49,7 +49,7 @@ public class BusAdminImpl implements BusAdmin {
   /** Host do barramento. */
   private String host;
   /** Porta do barramento. */
-  private short port;
+  private int port;
   /** {@link ORB} do barramento. */
   private ORB orb;
 
@@ -77,7 +77,7 @@ public class BusAdminImpl implements BusAdmin {
    * @param port Porta do barramento
    * @param orb ORB do barramento
    */
-  public BusAdminImpl(String host, short port, ORB orb) {
+  public BusAdminImpl(String host, int port, ORB orb) {
     connect(host, port, orb);
   }
 
@@ -89,7 +89,7 @@ public class BusAdminImpl implements BusAdmin {
    * @param port Porta do barramento
    * @param orb ORB do barramento
    */
-  public void connect(String host, short port, ORB orb) {
+  public void connect(String host, int port, ORB orb) {
     this.host = host;
     this.port = port;
     this.orb = orb;

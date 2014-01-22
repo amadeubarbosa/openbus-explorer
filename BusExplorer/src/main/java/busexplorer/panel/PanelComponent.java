@@ -202,11 +202,15 @@ public class PanelComponent<T> extends JPanel {
     filterText = new JTextField();
     gbc = new GBC(1, 0).insets(10).horizontal().filly();
     panel.add(filterText, gbc);
+    filterText.setToolTipText(Utils
+      .getString(this.getClass(), "filter.tooltip"));
 
     filterButton =
       new JButton(Utils.getString(this.getClass(), "filter.clear"));
     gbc = new GBC(2, 0).east().insets(10, 0, 10, 10);
     panel.add(filterButton, gbc);
+    filterButton.setToolTipText(Utils.getString(this.getClass(),
+      "filter.clear.tooltip"));
 
     setupFilterControls();
     return panel;

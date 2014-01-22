@@ -1,7 +1,7 @@
 package busexplorer.desktop.dialog;
 
-import java.awt.Font;
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -32,8 +32,11 @@ import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.assistant.Assistant;
 import tecgraf.openbus.assistant.AssistantParams;
 import tecgraf.openbus.assistant.OnFailureCallback;
+import tecgraf.openbus.core.v2_0.services.ServiceFailure;
+import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_0.services.access_control.AccessDenied;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+import admin.BusAdminImpl;
 
 /**
  * Diálogo que obtém os dados do usuário e do barramento para efetuar login
@@ -60,20 +63,33 @@ public class LoginDialog {
   private short port;
   /** Acessa os serviços de administração do barramento */
   private Assistant assistant;
+  /** Indicador de sucesso na realização de login pelo diálogo */
+  private boolean success = false;
+  /** Referência para a biblioteca de administração */
+  private BusAdminImpl admin;
+  /** Indicador se o usuário autenticado possui perfil de administração */
+  boolean isAdmin = false;
 
   /**
    * Construtor do diálogo.
+   * 
+   * @param owner janela pai.
+   * @param admin biblioteca de administração
    */
-  public LoginDialog(Window owner) {
+  public LoginDialog(Window owner, BusAdminImpl admin) {
     createDialog(owner);
+    this.admin = admin;
   }
 
   /**
    * Cria e inicializa o diálogo de login.
+   * 
+   * @param owner janela pai.
    */
   private void createDialog(Window owner) {
-    loginDialog = new JDialog(owner, getDialogTitle(),
-      JDialog.ModalityType.APPLICATION_MODAL);
+    loginDialog =
+      new JDialog(owner, getDialogTitle(),
+        JDialog.ModalityType.APPLICATION_MODAL);
     loginDialog.setResizable(false);
     loginDialog.setLocationRelativeTo(owner);
     loginDialog.addWindowListener(new WindowAdapter() {
@@ -84,7 +100,6 @@ public class LoginDialog {
     });
 
     buildLoginPane();
-
     loginDialog.pack();
   }
 
@@ -92,19 +107,19 @@ public class LoginDialog {
    * Faz shutdown do diálogo de login.
    */
   private void shutdownLoginDialog() {
-    loginDialog.dispose();
-    try {
-      System.exit(0);
-    }
-    catch (Exception e) {
-    }
+    loginDialog.getOwner().dispose();
   }
 
   /**
    * Exibe o diálogo de login.
+   * 
+   * @return <code>true</code> se realizou um login com sucesso, e
+   *         <code>false</code> caso contrário.
    */
-  public void show() {
+  public boolean show() {
+    fieldHost.requestFocusInWindow();
     loginDialog.setVisible(true);
+    return success;
   }
 
   /**
@@ -127,8 +142,8 @@ public class LoginDialog {
     configLayout.columnWidths = new int[] { 300, 120 };
     configPanel.setLayout(configLayout);
 
-    TitledBorder configBorder = new TitledBorder(null, 
-      LNG.get("LoginDialog.config.label"));
+    TitledBorder configBorder =
+      new TitledBorder(null, LNG.get("LoginDialog.config.label"));
     configPanel.setBorder(configBorder);
 
     // TODO ComboBox de barramentos pré-configurados; foi por isso que as
@@ -141,6 +156,7 @@ public class LoginDialog {
     configPanel.add(labelHost, new GBC(0, 3).west().insets(6, 6, 3, 6));
 
     fieldHost = new JTextField();
+    fieldHost.setFocusable(true);
     fieldHost.setToolTipText(LNG.get("LoginDialog.host.help"));
     fieldHost.addFocusListener(new SelectAllTextListener());
     configPanel.add(fieldHost, new GBC(0, 4).horizontal().insets(0, 6, 6, 9));
@@ -152,6 +168,7 @@ public class LoginDialog {
     fieldPort = new JTextField();
     fieldPort.setToolTipText(LNG.get("LoginDialog.port.help"));
     configPanel.add(fieldPort, new GBC(1, 4).horizontal().insets(0, 0, 6, 6));
+    fieldPort.setFocusable(true);
     fieldPort.addFocusListener(new SelectAllTextListener());
 
     JLabel labelUser = new JLabel(LNG.get("LoginDialog.user.label"));
@@ -161,6 +178,7 @@ public class LoginDialog {
     fieldUser = new JTextField();
     fieldUser.setToolTipText(LNG.get("LoginDialog.user.help"));
     configPanel.add(fieldUser, new GBC(0, 6).horizontal().insets(0, 6, 6, 9));
+    fieldUser.setFocusable(true);
     fieldUser.addFocusListener(new SelectAllTextListener());
 
     JLabel labelPassword = new JLabel(LNG.get("LoginDialog.password.label"));
@@ -169,8 +187,9 @@ public class LoginDialog {
 
     fieldPassword = new JPasswordField();
     fieldPassword.setToolTipText(LNG.get("LoginDialog.password.help"));
-    configPanel.add(fieldPassword, new
-      GBC(1, 6).horizontal().insets(0, 0, 6, 6));
+    configPanel.add(fieldPassword, new GBC(1, 6).horizontal()
+      .insets(0, 0, 6, 6));
+    fieldPassword.setFocusable(true);
     fieldPassword.addFocusListener(new SelectAllTextListener());
 
     loginPanel.add(configPanel, BorderLayout.CENTER);
@@ -178,7 +197,7 @@ public class LoginDialog {
     JButton buttonLogin = new JButton(LNG.get("LoginDialog.confirm.button"));
     buttonLogin.setToolTipText(LNG.get("LoginDialog.confirm.help"));
     buttonLogin.addActionListener(new LoginAction());
-    
+
     JButton buttonQuit = new JButton(LNG.get("LoginDialog.quit.button"));
     buttonQuit.setToolTipText(LNG.get("LoginDialog.quit.help"));
     buttonQuit.addActionListener(new QuitAction());
@@ -198,6 +217,8 @@ public class LoginDialog {
 
   /**
    * Recupera o assistente do barramento.
+   * 
+   * @return o instância do assistente
    */
   public Assistant getAssistant() {
     return assistant;
@@ -205,6 +226,8 @@ public class LoginDialog {
 
   /**
    * Recupera o nome do host do barramento.
+   * 
+   * @return o host ao qual estamos conectados.
    */
   public String getHost() {
     return host;
@@ -212,14 +235,16 @@ public class LoginDialog {
 
   /**
    * Recupera a porta do barramento.
+   * 
+   * @return a porta à qual estamos conectados
    */
-  public short getPort() {
+  public int getPort() {
     return port;
   }
 
   /**
    * Listener de seleção de texto em um JTextField.
-   *
+   * 
    * @author Tecgraf
    */
   private class SelectAllTextListener extends FocusAdapter {
@@ -228,7 +253,7 @@ public class LoginDialog {
      */
     @Override
     public void focusGained(FocusEvent event) {
-      ((JTextField)event.getComponent()).selectAll();
+      ((JTextField) event.getComponent()).selectAll();
     }
   }
 
@@ -263,18 +288,20 @@ public class LoginDialog {
           port = Short.valueOf(fieldPort.getText());
 
           String entity = fieldUser.getText();
-          String password = fieldPassword.getText();
+          String password = new String(fieldPassword.getPassword());
           AssistantParams params = new AssistantParams();
 
           params.callback = new OnFailureCallback() {
 
             @Override
             public void onStartSharedAuthFailure(Assistant arg0, Throwable arg1) {
+              // não iremos utilizar este recurso
             }
 
             @Override
             public void onRegisterFailure(Assistant arg0, IComponent arg1,
               ServiceProperty[] arg2, Throwable arg3) {
+              // não iremos utilizar este recurso
             }
 
             @Override
@@ -288,6 +315,7 @@ public class LoginDialog {
 
             @Override
             public void onFindFailure(Assistant arg0, Throwable arg1) {
+              // TODO precisamos realizar algum tratamento aqui?
             }
           };
 
@@ -302,14 +330,14 @@ public class LoginDialog {
           while (true) {
             if (wasCancelled()) {
               assistant.shutdown();
-              return;
+              break;
             }
             if (accessDenied || failedAttempts == MAX_LOGIN_FAILS) {
               assistant.shutdown();
               throw lastException;
             }
             if (monitor.checkResource().code == StatusCode.OK) {
-              return;
+              break;
             }
 
             try {
@@ -318,17 +346,21 @@ public class LoginDialog {
             catch (InterruptedException e) {
             }
           }
+          admin.connect(host, port, assistant.orb());
+          isAdmin = isCurrentUserAdmin();
         }
 
         @Override
         protected void afterTaskUI() {
           if (getError() == null) {
             loginDialog.dispose();
+            success = true;
           }
         }
 
         @Override
         protected void handleError(Exception exception) {
+          // TODO Alterar tratamento de erros. Outros erros podem ocorrer
           if (exception != null) {
             if (accessDenied) {
               JOptionPane.showMessageDialog(loginDialog, LNG
@@ -343,6 +375,8 @@ public class LoginDialog {
           }
           // Retorna o foco para o TextField de host (o primeiro).
           fieldHost.requestFocus();
+          success = false;
+          isAdmin = false;
         }
       };
 
@@ -352,8 +386,37 @@ public class LoginDialog {
   }
 
   /**
+   * Verifica se o usuário tem permissões para administrar o barramento.
+   * 
+   * @return Booleano que indica se o usuário é administrador ou não.
+   * @throws ServiceFailure erro ao acessar registro de logins.
+   */
+  private boolean isCurrentUserAdmin() throws ServiceFailure {
+    // Se o método getLogins() não lançar exceção, o usuário logado está
+    // cadastrado como administrador no barramento.
+    try {
+      admin.getLogins();
+      return true;
+    }
+    catch (UnauthorizedOperation e) {
+      return false;
+    }
+  }
+
+  /**
+   * Indica se o usuário autenticado no momento possui permissão de
+   * administração.
+   * 
+   * @return <code>true</code> se possui permissão de administração e
+   *         <code>false</code> caso contrário.
+   */
+  public boolean isAdmin() {
+    return isAdmin;
+  }
+
+  /**
    * Ação que termina a aplicação.
-   *
+   * 
    * @author Tecgraf
    */
   private class QuitAction implements ActionListener {
@@ -362,6 +425,7 @@ public class LoginDialog {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
+      loginDialog.dispose();
       shutdownLoginDialog();
     }
   }

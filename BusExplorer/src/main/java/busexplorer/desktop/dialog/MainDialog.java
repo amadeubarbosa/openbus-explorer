@@ -2,7 +2,6 @@ package busexplorer.desktop.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -21,8 +20,6 @@ import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-
-import org.omg.CORBA.ORB;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
@@ -125,7 +122,7 @@ public class MainDialog {
     mainDialog.setLayout(new BorderLayout(0, 0));
     mainDialog.addWindowListener(new WindowAdapter() {
       @Override
-      public void windowClosing(WindowEvent e) {
+      public void windowClosed(WindowEvent e) {
         shutdownMainDialog();
       }
     });
@@ -177,7 +174,7 @@ public class MainDialog {
     itemQuit.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        shutdownMainDialog();
+        mainDialog.dispose();
       }
     });
     menuConnection.add(itemQuit);
@@ -397,36 +394,28 @@ public class MainDialog {
    * dependentes das novas informações de login.
    */
   private void login() {
-    EventQueue.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        LoginDialog loginDialog = new LoginDialog(mainDialog);
-        loginDialog.show();
-
-        assistant = loginDialog.getAssistant();
-        updateAdminFeatures(loginDialog.getHost(), loginDialog.getPort(),
-          assistant.orb());
-      }
-    });
+    LoginDialog loginDialog = new LoginDialog(mainDialog, admin);
+    boolean success = loginDialog.show();
+    if (success) {
+      assistant = loginDialog.getAssistant();
+      boolean isAdmin = loginDialog.isAdmin();
+      updateAdminFeatures(isAdmin);
+    }
   }
 
   /**
    * Atualiza as funcionalidades administrativas da aplicação.
    * 
-   * @param host Host do barramento a ser administrado
-   * @param port Porta do barramento a ser administrado
-   * @param orb ORB que contém o contexto OpenBus
+   * @param isAdmin indicador se o usuário possui permissão de administração.
    */
-  private void updateAdminFeatures(String host, short port, ORB orb) {
-    admin.connect(host, port, orb);
-
+  private void updateAdminFeatures(boolean isAdmin) {
     String[] featureNames = { "certificate", "login" };
     for (String featureName : featureNames) {
-      boolean isCurrentUserAdmin = isCurrentUserAdmin();
       int index =
         featuresPane
           .indexOfTab(LNG.get("MainDialog." + featureName + ".title"));
-      featuresPane.setEnabledAt(index, isCurrentUserAdmin);
+      featuresPane.setEnabledAt(index, isAdmin);
+      // FIXME desabilitar as ações não permitidas para usuários não admin
     }
     // Seleciona e atualiza a primeira aba do pane de funcionalidades.
     featuresPane.setSelectedIndex(0);
@@ -437,28 +426,13 @@ public class MainDialog {
   }
 
   /**
-   * Verifica se o usuário tem permissões para administrar o barramento.
-   * 
-   * @return Booleano que indica se o usuário é administrador ou não.
-   */
-  private boolean isCurrentUserAdmin() {
-    // Se o método getLogins() não lançar exceção, o usuário logado está
-    // cadastrado como administrador no barramento.
-    try {
-      admin.getLogins();
-      return true;
-    }
-    catch (Exception e) {
-      return false;
-    }
-  }
-
-  /**
    * Faz shutdown do diálogo principal.
    */
   private void shutdownMainDialog() {
-    mainDialog.dispose();
-    assistant.shutdown();
+    if (assistant != null) {
+      assistant.shutdown();
+    }
+    System.exit(0);
   }
 
   /**

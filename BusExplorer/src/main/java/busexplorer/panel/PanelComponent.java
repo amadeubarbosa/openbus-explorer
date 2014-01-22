@@ -10,11 +10,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,7 +36,6 @@ import javax.swing.text.Document;
 
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
-import tecgraf.javautils.gui.crud.RegistrationImages;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 import tecgraf.javautils.gui.table.SortableTable;
@@ -211,6 +212,15 @@ public class PanelComponent<T> extends JPanel {
     panel.add(filterButton, gbc);
     filterButton.setToolTipText(Utils.getString(this.getClass(),
       "filter.clear.tooltip"));
+
+    JButton refreshButton =
+      new JButton(Utils.getString(this.getClass(), "refresh"));
+    refreshButton.setAction(refreshAction);
+    gbc = new GBC(3, 0).east().insets(10, 0, 10, 10);
+    refreshButton.setToolTipText(Utils.getString(this.getClass(),
+      "refresh.tooltip"));
+    refreshButton.setIcon(RegistrationImages.ICON_REFRESH_16);
+    panel.add(refreshButton, gbc);
 
     setupFilterControls();
     return panel;
@@ -611,6 +621,57 @@ public class PanelComponent<T> extends JPanel {
     public void keyTyped(KeyEvent e) {
     }
 
+  }
+
+  /**
+   * Local para imagens internas.
+   * 
+   * @author Tecgraf
+   */
+  public static class RegistrationImages {
+
+    /**
+     * Adição.
+     */
+    public static final ImageIcon ICON_ADD_16 = createImageIcon("Add16.gif");
+
+    /**
+     * Edição.
+     */
+    public static final ImageIcon ICON_EDIT_16 = createImageIcon("Edit16.gif");
+
+    /**
+     * Remoção.
+     */
+    public static final ImageIcon ICON_DELETE_16 =
+      createImageIcon("Delete16.gif");
+
+    /**
+     * Atualização.
+     */
+    public static final ImageIcon ICON_REFRESH_16 =
+      createImageIcon("Refresh16.gif");
+
+    /**
+     * Setinha da opção mais
+     */
+
+    public static final ImageIcon ICON_DOWN_4 = createImageIcon("Down4.gif");
+
+    /**
+     * Montagem da ícone do diretório-padrão.
+     * 
+     * @param imageIconName nome do arquivo de imagem.
+     * @return uma imagem (ícone)
+     */
+    protected static ImageIcon createImageIcon(String imageIconName) {
+      final String DIR = "/busexplorer/resources/images/";
+      URL res = RegistrationImages.class.getResource(DIR + imageIconName);
+      if (res == null) {
+        return null;
+      }
+      return new ImageIcon(res);
+    }
   }
 
 }

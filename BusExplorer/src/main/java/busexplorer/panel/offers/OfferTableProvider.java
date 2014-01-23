@@ -1,5 +1,6 @@
 package busexplorer.panel.offers;
 
+import java.util.Date;
 import java.util.Vector;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
@@ -19,8 +20,6 @@ public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
   private static final int INTERFACE = 1;
   /** Índice da coluna Data */
   private static final int DATE = 2;
-  /** Índice da coluna Hora */
-  private static final int TIME = 3;
 
   /**
    * {@inheritDoc}
@@ -30,8 +29,7 @@ public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
     String[] colNames =
       { Utils.getString(this.getClass(), "entity"),
           Utils.getString(this.getClass(), "interface"),
-          Utils.getString(this.getClass(), "date"),
-          Utils.getString(this.getClass(), "time") };
+          Utils.getString(this.getClass(), "date") };
     return colNames;
   }
 
@@ -40,8 +38,7 @@ public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses =
-      { String.class, Vector.class, String.class, String.class };
+    Class<?>[] colClasses = { String.class, Vector.class, Date.class };
     return colClasses;
   }
 
@@ -60,9 +57,6 @@ public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
 
       case DATE:
         return offer.getDate();
-
-      case TIME:
-        return offer.getTime();
 
       default:
         break;

@@ -1,6 +1,8 @@
 package busexplorer.wrapper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -22,9 +24,7 @@ public class OfferInfo {
   /** Nome da interface */
   private final Vector<String> interfaces;
   /** Data da oferta */
-  private final String date;
-  /** Hora da oferta */
-  private final String time;
+  private final Date date;
 
   /**
    * /** Construtor.
@@ -35,14 +35,17 @@ public class OfferInfo {
     this.desc = desc;
     this.entity = Utils.getProperty(desc, "openbus.offer.entity");
     this.interfaces = Utils.getProperties(desc, "openbus.component.interface");
-    this.date =
-      String.format("%s/%s/%s", Utils.getProperty(desc, "openbus.offer.day"),
-        Utils.getProperty(desc, "openbus.offer.month"), Utils.getProperty(desc,
-          "openbus.offer.year"));
-    this.time =
-      String.format("%s:%s:%s", Utils.getProperty(desc, "openbus.offer.hour"),
-        Utils.getProperty(desc, "openbus.offer.minute"), Utils.getProperty(
-          desc, "openbus.offer.second"));
+    int year = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.year"));
+    // precisa decrementar o mes em 1
+    int month =
+      Integer.parseInt(Utils.getProperty(desc, "openbus.offer.month")) - 1;
+    int day = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.day"));
+    int hour = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.hour"));
+    int min = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.minute"));
+    int sec = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.second"));
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(year, month, day, hour, min, sec);
+    this.date = calendar.getTime();
   }
 
   /**
@@ -68,17 +71,8 @@ public class OfferInfo {
    * 
    * @return String que representa a data de início da oferta.
    */
-  public String getDate() {
+  public Date getDate() {
     return date;
-  }
-
-  /**
-   * Obtém hora de início da oferta.
-   * 
-   * @return String que representa a hora de início da oferta.
-   */
-  public String getTime() {
-    return time;
   }
 
   /**

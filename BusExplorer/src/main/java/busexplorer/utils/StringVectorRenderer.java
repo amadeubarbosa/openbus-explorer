@@ -13,7 +13,7 @@ import javax.swing.table.DefaultTableCellRenderer;
  * 
  * @author Tecgraf
  */
-public class VectorCellRenderer extends DefaultTableCellRenderer {
+public class StringVectorRenderer extends DefaultTableCellRenderer {
 
   /**
    * {@inheritDoc}

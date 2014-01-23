@@ -50,7 +50,6 @@ import busexplorer.panel.logins.LoginDeleteAction;
 import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
 import busexplorer.panel.offers.OfferDeleteAction;
-import busexplorer.panel.offers.OfferPanelComponent;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
@@ -350,7 +349,7 @@ public class MainDialog {
     actionsVector.add(new OfferDeleteAction(mainDialog, admin));
 
     PanelComponent<OfferInfo> panelOffer =
-      new OfferPanelComponent(model, actionsVector);
+      new PanelComponent<OfferInfo>(model, actionsVector);
     int index =
       featuresPane.indexOfTab(Utils.getString(this.getClass(), "offer.title"));
     featuresPane.setComponentAt(index, panelOffer);

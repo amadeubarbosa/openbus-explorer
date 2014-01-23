@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -39,8 +40,9 @@ import tecgraf.javautils.gui.GUIUtils;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 import tecgraf.javautils.gui.table.SortableTable;
+import busexplorer.utils.DateTimeRenderer;
+import busexplorer.utils.StringVectorRenderer;
 import busexplorer.utils.Utils;
-import busexplorer.utils.VectorCellRenderer;
 
 /**
  * Componente que define um painel com uma {@link SortableTable} e modulariza o
@@ -74,7 +76,7 @@ public class PanelComponent<T> extends JPanel {
   /** Campo de filtro */
   private JTextField filterText;
   /** Botão de limpar texto de filtro */
-  private JButton filterButton;
+  private JButton clearButton;
 
   /**
    * Construtor
@@ -111,7 +113,8 @@ public class PanelComponent<T> extends JPanel {
     table.setModel(model);
     table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     table.sort(0, SortOrder.ASCENDING);
-    table.setDefaultRenderer(Vector.class, new VectorCellRenderer());
+    table.setDefaultRenderer(Vector.class, new StringVectorRenderer());
+    table.setDefaultRenderer(Date.class, new DateTimeRenderer());
     table.getSelectionModel().addListSelectionListener(
       new TableSelectionListener(table));
 
@@ -206,12 +209,12 @@ public class PanelComponent<T> extends JPanel {
     filterText.setToolTipText(Utils
       .getString(this.getClass(), "filter.tooltip"));
 
-    filterButton =
-      new JButton(Utils.getString(this.getClass(), "filter.clear"));
+    clearButton = new JButton(Utils.getString(this.getClass(), "filter.clear"));
     gbc = new GBC(2, 0).east().insets(10, 0, 10, 10);
-    panel.add(filterButton, gbc);
-    filterButton.setToolTipText(Utils.getString(this.getClass(),
+    clearButton.setToolTipText(Utils.getString(this.getClass(),
       "filter.clear.tooltip"));
+    clearButton.setIcon(RegistrationImages.ICON_CLEAR_16);
+    panel.add(clearButton, gbc);
 
     JButton refreshButton =
       new JButton(Utils.getString(this.getClass(), "refresh"));
@@ -266,7 +269,7 @@ public class PanelComponent<T> extends JPanel {
     });
 
     // ação do botão "limpar"
-    filterButton.addActionListener(new AbstractAction() {
+    clearButton.addActionListener(new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent e) {
         filterText.setText("");
@@ -319,19 +322,19 @@ public class PanelComponent<T> extends JPanel {
     idx++;
     if (addBtn != null) {
       buttonsPanel.add(addBtn, new GBC(idx, 0).center().none().insets(2));
-      addBtn.setText(null);
+      //addBtn.setText(null);
       idx++;
       toMatch.add(addBtn);
     }
     if (editBtn != null) {
       buttonsPanel.add(editBtn, new GBC(idx, 0).center().none().insets(2));
-      editBtn.setText(null);
+      //editBtn.setText(null);
       idx++;
       toMatch.add(editBtn);
     }
     if (removeBtn != null) {
       buttonsPanel.add(removeBtn, new GBC(idx, 0).center().none().insets(2));
-      removeBtn.setText(null);
+      //removeBtn.setText(null);
       idx++;
       toMatch.add(removeBtn);
     }
@@ -383,6 +386,7 @@ public class PanelComponent<T> extends JPanel {
   public void setElements(List<T> objects) {
     ObjectTableModel<T> model = getTableModel();
     model.setRows(objects);
+    table.adjustSize();
   }
 
   /**
@@ -651,6 +655,12 @@ public class PanelComponent<T> extends JPanel {
      */
     public static final ImageIcon ICON_REFRESH_16 =
       createImageIcon("Refresh16.gif");
+
+    /**
+     * Limpar.
+     */
+    public static final ImageIcon ICON_CLEAR_16 =
+      createImageIcon("Clear16.gif");
 
     /**
      * Setinha da opção mais

@@ -3,11 +3,11 @@ package busexplorer.panel.entities;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -50,7 +50,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
    * 
    * @param parentWindow Janela mãe do Diálogo
    */
-  public EntityInputDialog(JFrame parentWindow,
+  public EntityInputDialog(Window parentWindow,
     PanelComponent<EntityInfo> panel, BusAdmin admin,
     List<EntityCategoryDesc> categoryDescList) {
     super(parentWindow, LNG.get(EntityInputDialog.class.getSimpleName()

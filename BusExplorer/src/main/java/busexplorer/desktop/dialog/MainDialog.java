@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
@@ -50,6 +52,7 @@ import busexplorer.panel.logins.LoginDeleteAction;
 import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
 import busexplorer.panel.offers.OfferDeleteAction;
+import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
@@ -347,9 +350,24 @@ public class MainDialog {
       new Vector<PanelActionInterface<OfferInfo>>(2);
     actionsVector.add(new OfferRefreshAction(mainDialog, admin));
     actionsVector.add(new OfferDeleteAction(mainDialog, admin));
+    final OfferPropertiesAction propertiesAction =
+      new OfferPropertiesAction(mainDialog, admin);
+    actionsVector.add(propertiesAction);
 
     PanelComponent<OfferInfo> panelOffer =
       new PanelComponent<OfferInfo>(model, actionsVector);
+    /*
+     * Inclui listener de duplo clique para disparar ação de visualizar
+     * propriedades da oferta, dado que não temos ação de edição neste painel.
+     */
+    panelOffer.addTableMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2) {
+          propertiesAction.actionPerformed(null);
+        }
+      }
+    });
     int index =
       featuresPane.indexOfTab(Utils.getString(this.getClass(), "offer.title"));
     featuresPane.setComponentAt(index, panelOffer);

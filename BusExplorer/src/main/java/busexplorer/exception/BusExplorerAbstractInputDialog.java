@@ -1,6 +1,6 @@
 package busexplorer.exception;
 
-import javax.swing.JFrame;
+import java.awt.Window;
 
 import reuse.modified.logistic.client.util.InputDialog;
 import admin.BusAdmin;
@@ -14,7 +14,7 @@ public abstract class BusExplorerAbstractInputDialog extends InputDialog {
    * @param title Título do Diálogo.
    * @param admin Biblioteca de administração
    */
-  public BusExplorerAbstractInputDialog(JFrame parentWindow, String title,
+  public BusExplorerAbstractInputDialog(Window parentWindow, String title,
     BusAdmin admin) {
     super(parentWindow, title, admin);
   }

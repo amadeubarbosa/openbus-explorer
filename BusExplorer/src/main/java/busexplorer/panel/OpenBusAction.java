@@ -1,10 +1,11 @@
 package busexplorer.panel;
 
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
+import java.awt.Window;
 
-import tecgraf.javautils.LNG;
+import javax.swing.AbstractAction;
+
 import admin.BusAdmin;
+import busexplorer.utils.Utils;
 
 /**
  * Ação que contém os principais componentes a serem utilizados na janela
@@ -18,7 +19,7 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
   PanelActionInterface<T> {
 
   protected BusAdmin admin;
-  protected JFrame parentWindow;
+  protected Window parentWindow;
   private PanelComponent<T> panel;
 
   /**
@@ -28,7 +29,7 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
    * @param admin
    * @param actionName nome da ação
    */
-  public OpenBusAction(JFrame parentWindow, BusAdmin admin, String actionName) {
+  public OpenBusAction(Window parentWindow, BusAdmin admin, String actionName) {
     super(actionName);
     this.admin = admin;
     this.parentWindow = parentWindow;
@@ -57,6 +58,6 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
    * @return o valor associado à chave.
    */
   protected String getString(String key) {
-    return LNG.get(this.getClass().getSimpleName() + "." + key);
+    return Utils.getString(this.getClass(), key);
   }
 }

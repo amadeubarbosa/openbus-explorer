@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -66,7 +67,7 @@ public abstract class InputDialog extends JFrame {
    */
   protected JTextPane messageText;
 
-  private JFrame parentWindow;
+  private Window parentWindow;
 
   protected BusAdmin admin;
 
@@ -79,7 +80,7 @@ public abstract class InputDialog extends JFrame {
    * @param tooltip dica no botão aceitar.
    * @param blockType modo de bloqueio da janela.
    */
-  public InputDialog(JFrame parentWindow, String title, BusAdmin admin) {
+  public InputDialog(Window parentWindow, String title, BusAdmin admin) {
     super(title);
     this.parentWindow = parentWindow;
     this.admin = admin;
@@ -130,7 +131,7 @@ public abstract class InputDialog extends JFrame {
    * @return janela pai deste diálogo
    */
   @Override
-  public JFrame getOwner() {
+  public Window getOwner() {
     return parentWindow;
   }
 

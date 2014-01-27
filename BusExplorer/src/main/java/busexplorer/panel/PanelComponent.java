@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,6 +67,8 @@ public class PanelComponent<T> extends JPanel {
   private JButton editBtn;
   /** Botão de remoção */
   private JButton removeBtn;
+  /** Botão outros */
+  private JButton othersBtn;
   /** Conjunto de ações a serem incluídas no botão "outros" */
   private List<PanelActionInterface<T>> othersActions =
     new ArrayList<PanelActionInterface<T>>();
@@ -121,6 +124,7 @@ public class PanelComponent<T> extends JPanel {
     DirectActionsListener l = new DirectActionsListener();
     table.addMouseListener(l);
     table.addKeyListener(l);
+    table.adjustSize();
   }
 
   /**
@@ -129,6 +133,7 @@ public class PanelComponent<T> extends JPanel {
    * @param actions
    */
   private void processActions(List<? extends PanelActionInterface<T>> actions) {
+    boolean hasActiveOthers = false;
     for (PanelActionInterface<T> action : actions) {
       action.setPanelComponent(this);
       switch (action.getActionType()) {
@@ -164,6 +169,7 @@ public class PanelComponent<T> extends JPanel {
 
         case OTHER_ONLY_MULTI_SELECTION:
         case OTHER_MULTI_SELECTION:
+        case OTHER_SINGLE_SELECTION:
           // informações como tooltip e icones devem ser configurados na ação
           othersActions.add(action);
           action.setEnabled(false);
@@ -172,7 +178,17 @@ public class PanelComponent<T> extends JPanel {
         default:
           // informações como tooltip e icones devem ser configurados na ação
           othersActions.add(action);
+          hasActiveOthers = true;
           break;
+      }
+    }
+    if (!othersActions.isEmpty()) {
+      initOthersButton();
+      if (hasActiveOthers) {
+        othersBtn.setEnabled(true);
+      }
+      else {
+        othersBtn.setEnabled(false);
       }
     }
   }
@@ -339,8 +355,7 @@ public class PanelComponent<T> extends JPanel {
       toMatch.add(removeBtn);
     }
     if (!othersActions.isEmpty()) {
-      buttonsPanel.add(getOthersButton(), new GBC(idx, 0).center().none()
-        .insets(2));
+      buttonsPanel.add(othersBtn, new GBC(idx, 0).center().none().insets(2));
       idx++;
     }
     GUIUtils.matchPreferredSizes(toMatch.toArray(new JButton[toMatch.size()]));
@@ -349,15 +364,13 @@ public class PanelComponent<T> extends JPanel {
 
   /**
    * Inicialização do botão: others.
-   * 
-   * @return o botão
    */
-  private JButton getOthersButton() {
-    final JButton others = new JButton();
-    others.setText(Utils.getString(this.getClass(), "button.others"));
-    others.setIcon(RegistrationImages.ICON_DOWN_4);
-    others.setHorizontalTextPosition(SwingConstants.RIGHT);
-    others.addActionListener(new ActionListener() {
+  private void initOthersButton() {
+    othersBtn = new JButton();
+    othersBtn.setText(Utils.getString(this.getClass(), "button.others"));
+    othersBtn.setIcon(RegistrationImages.ICON_DOWN_4);
+    othersBtn.setHorizontalTextPosition(SwingConstants.RIGHT);
+    othersBtn.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
         final T selectedObject = getSelectedElement();
@@ -371,11 +384,10 @@ public class PanelComponent<T> extends JPanel {
         for (PanelActionInterface<T> action : othersActions) {
           menu.add(action);
         }
-        final int y = others.getHeight();
-        menu.show(others, 0, y);
+        final int y = othersBtn.getHeight();
+        menu.show(othersBtn, 0, y);
       }
     });
-    return others;
   }
 
   /**
@@ -511,6 +523,7 @@ public class PanelComponent<T> extends JPanel {
     public void valueChanged(ListSelectionEvent e) {
       int[] selectedRows = table.getSelectedRows();
       int length = selectedRows.length;
+      boolean hasOtherActive = false;
 
       switch (length) {
         case 0:
@@ -523,6 +536,10 @@ public class PanelComponent<T> extends JPanel {
           for (PanelActionInterface<T> action : othersActions) {
             if (!action.getActionType().equals(ActionType.OTHER)) {
               action.setEnabled(false);
+            }
+            else {
+              action.setEnabled(true);
+              hasOtherActive = true;
             }
           }
           break;
@@ -539,12 +556,14 @@ public class PanelComponent<T> extends JPanel {
               case OTHER_SINGLE_SELECTION:
               case OTHER_MULTI_SELECTION:
                 action.setEnabled(true);
+                hasOtherActive = true;
                 break;
               case OTHER_ONLY_MULTI_SELECTION:
                 action.setEnabled(false);
                 break;
               default:
                 action.setEnabled(true);
+                hasOtherActive = true;
                 break;
             }
           }
@@ -566,15 +585,44 @@ public class PanelComponent<T> extends JPanel {
               case OTHER_MULTI_SELECTION:
               case OTHER_ONLY_MULTI_SELECTION:
                 action.setEnabled(true);
+                hasOtherActive = true;
                 break;
               default:
                 action.setEnabled(true);
+                hasOtherActive = true;
                 break;
             }
           }
           break;
       }
+
+      if (!othersActions.isEmpty()) {
+        if (hasOtherActive) {
+          othersBtn.setEnabled(true);
+        }
+        else {
+          othersBtn.setEnabled(false);
+        }
+      }
     }
+  }
+
+  /**
+   * Inclui listener de mouse na tabela do painel.
+   * 
+   * @param listener o listener a ser incluído.
+   */
+  public void addTableMouseListener(MouseListener listener) {
+    table.addMouseListener(listener);
+  }
+
+  /**
+   * Inclui listener de teclado na tabela do painel.
+   * 
+   * @param listener o listener a ser incluído.
+   */
+  public void addTableKeyListener(KeyListener listener) {
+    table.addKeyListener(listener);
   }
 
   /**

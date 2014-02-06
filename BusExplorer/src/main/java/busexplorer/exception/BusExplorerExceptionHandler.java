@@ -75,6 +75,20 @@ public class BusExplorerExceptionHandler extends
         }
         break;
 
+      case EntityAlreadyRegistered:
+        switch (context) {
+          case BusCore:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "entity.already.registered.core"));
+            break;
+
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "entity.already.registered"));
+            break;
+        }
+        break;
+
       case EntityCategoryAlreadyExists:
         switch (context) {
           case BusCore:

@@ -17,6 +17,7 @@ public enum ExceptionType {
   UnauthorizedOperation,
   UnauthorizedFacets,
   InvalidService,
+  EntityAlreadyRegistered,
   EntityCategoryAlreadyExists,
   InterfaceInUse,
   InvalidInterface,

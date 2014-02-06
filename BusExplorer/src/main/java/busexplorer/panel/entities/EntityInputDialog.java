@@ -1,8 +1,6 @@
 package busexplorer.panel.entities;
 
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Window;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +11,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.exception.BusExplorerAbstractInputDialog;
@@ -39,8 +37,10 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   private JComboBox categoryIDCombo;
   private JLabel entityNameLabel;
   private JTextField entityNameField;
+
   private HashMap<String, EntityCategoryDesc> categories =
     new HashMap<String, EntityCategoryDesc>();
+
   private PanelComponent<EntityInfo> panel;
 
   private EntityInfo editingEntity = null;
@@ -48,7 +48,10 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   /**
    * Construtor.
    * 
-   * @param parentWindow Janela mãe do Diálogo
+   * @param parentWindow Janela mãe do Diálogo.
+   * @param panel Painel a ser atualizado após a adição/edição.
+   * @param admin Acesso às funcionalidade de administração do barramento.
+   * @param categoryDescList Lista de categorias.
    */
   public EntityInputDialog(Window parentWindow,
     PanelComponent<EntityInfo> panel, BusAdmin admin,
@@ -62,20 +65,6 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   }
 
   /**
-   * Configura o diálogo para trabalhar em modo de edição.
-   * 
-   * @param info o dado sendo editado.
-   */
-  public void setEditionMode(EntityInfo info) {
-    this.editingEntity = info;
-    this.categoryIDCombo.setSelectedItem(info.getCategory());
-    this.categoryIDCombo.setEnabled(false);
-    this.entityIDField.setText(info.getId());
-    this.entityIDField.setEnabled(false);
-    this.entityNameField.setText(info.getName());
-  }
-
-  /**
    * {@inheritDoc}
    */
   @Override
@@ -84,68 +73,31 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    if (editingEntity == null) {
-      final String id = getEntityId();
-      final String name = getEntityName();
-      final EntityCategory category = getCategory().ref;
+    Task<Object> task =
+      new BusExplorerTask<Object>(Application.exceptionHandler(),
+        ExceptionContext.BusCore) {
 
-      Task<EntityInfo> task =
-        new BusExplorerTask<EntityInfo>(Application.exceptionHandler(),
-          ExceptionContext.BusCore) {
-
-          @Override
-          protected void performTask() throws Exception {
-            RegisteredEntity entity = category.registerEntity(id, name);
-            RegisteredEntityDesc desc = entity.describe();
-            setResult(new EntityInfo(desc));
+        @Override
+        protected void performTask() throws Exception {
+          if (editingEntity == null) {
+            EntityCategory category = getCategory().ref;
+            category.registerEntity(getEntityId(), getEntityName());
+          } else {
+            RegisteredEntity entity = editingEntity.getDescriptor().ref;
+            entity.setName(getEntityName());
           }
+        }
 
-          @Override
-          protected void afterTaskUI() {
-            if (getStatus()) {
-              panel.refresh(null);
-            }
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            panel.refresh(null);
           }
-        };
-      task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-        Utils.getString(this.getClass(), "waiting.msg"));
-      return task.getStatus();
-    }
-    else {
-      final String name = getEntityName();
-      final RegisteredEntity entity = editingEntity.getDescriptor().ref;
-      Task<Object> task =
-        new BusExplorerTask<Object>(Application.exceptionHandler(),
-          ExceptionContext.BusCore) {
-
-          @Override
-          protected void performTask() throws Exception {
-            entity.setName(name);
-          }
-
-          @Override
-          protected void afterTaskUI() {
-            if (getStatus()) {
-              panel.refresh(null);
-            }
-          }
-        };
-      task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-        Utils.getString(this.getClass(), "waiting.msg"));
-      return task.getStatus();
-    }
-  }
-
-  private String getEntityId() {
-    return this.entityIDField.getText();
-  }
-
-  private String getEntityName() {
-    return this.entityNameField.getText();
-  }
-
-  private EntityCategoryDesc getCategory() {
-    return categories.get(this.categoryIDCombo.getSelectedItem());
+        }
+      };
+    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
+      Utils.getString(this.getClass(), "waiting.msg"));
+    return task.getStatus();
   }
 
   /**
@@ -154,83 +106,29 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   @Override
   protected JPanel buildFields() {
     JPanel panel = new JPanel(new GridBagLayout());
-    GridBagConstraints c = new GridBagConstraints();
+    GBC baseGBC = new GBC().gridx(0).insets(5).west();
 
     categoryIDLabel =
       new JLabel(Utils.getString(this.getClass(), "categoryID.label"));
-    c.insets = new Insets(5, 5, 5, 5);
-    c.gridx = 0;
-    c.gridy = 0;
-    c.weightx = 0;
-    c.weighty = 0;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.NORTHWEST;
-    panel.add(categoryIDLabel, c);
+    panel.add(categoryIDLabel, new GBC(baseGBC).gridy(0).none());
 
     categoryIDCombo =
       new JComboBox(categories.keySet().toArray(new String[categories.size()]));
-    c.insets = new Insets(5, 5, 5, 5);
-    c.gridx = 0;
-    c.gridy = 1;
-    c.weightx = 0;
-    c.weighty = 0;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.NORTHWEST;
-    panel.add(categoryIDCombo, c);
+    panel.add(categoryIDCombo, new GBC(baseGBC).gridy(1).horizontal());
 
     entityIDLabel =
       new JLabel(Utils.getString(this.getClass(), "entityID.label"));
-    c.insets = new Insets(5, 5, 5, 5);
-    c.gridx = 0;
-    c.gridy = 2;
-    c.weightx = 0;
-    c.weighty = 0;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.NORTHWEST;
-    panel.add(entityIDLabel, c);
+    panel.add(entityIDLabel, new GBC(baseGBC).gridy(2).none());
 
     entityIDField = new JTextField();
-    c.insets = new Insets(5, 5, 5, 5);
-    c.gridx = 0;
-    c.gridy = 3;
-    c.weightx = 1;
-    c.weighty = 0;
-    c.gridwidth = 2;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.NORTHWEST;
-    panel.add(entityIDField, c);
+    panel.add(entityIDField, new GBC(baseGBC).gridy(3).horizontal());
 
     entityNameLabel =
       new JLabel(Utils.getString(this.getClass(), "entityName.label"));
-    c.insets = new Insets(5, 5, 5, 5);
-    c.gridx = 0;
-    c.gridy = 4;
-    c.weightx = 0;
-    c.weighty = 0;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.NORTHWEST;
-    panel.add(entityNameLabel, c);
+    panel.add(entityNameLabel, new GBC(baseGBC).gridy(4).none());
 
     entityNameField = new JTextField();
-    c.insets = new Insets(5, 5, 5, 5);
-    c.gridx = 0;
-    c.gridy = 5;
-    c.weightx = 1;
-    c.weighty = 0;
-    c.gridwidth = 2;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.anchor = GridBagConstraints.NORTHWEST;
-    panel.add(entityNameField, c);
+    panel.add(entityNameField, new GBC(baseGBC).gridy(5).horizontal());
 
     return panel;
   }
@@ -248,7 +146,48 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    setErrorMessage(null);
+    clearErrorMessage();
     return true;
+  }
+
+  /**
+   * Configura o diálogo para trabalhar em modo de edição.
+   * 
+   * @param info o dado sendo editado.
+   */
+  public void setEditionMode(EntityInfo info) {
+    this.editingEntity = info;
+    this.categoryIDCombo.setSelectedItem(info.getCategory());
+    this.categoryIDCombo.setEnabled(false);
+    this.entityIDField.setText(info.getId());
+    this.entityIDField.setEnabled(false);
+    this.entityNameField.setText(info.getName());
+  }
+
+  /**
+   * Obtém o identificador da entidade a ser adicionada/editada.
+   *
+   * @return o identificador da entidade a ser adicionada/editada.
+   */
+  private String getEntityId() {
+    return this.entityIDField.getText();
+  }
+
+  /**
+   * Obtém o nome da entidade a ser adicionada/editada.
+   *
+   * @return o nome da entidade a ser adicionada/editada.
+   */
+  private String getEntityName() {
+    return this.entityNameField.getText();
+  }
+
+  /**
+   * Obtém a categoria que conterá a entidade a ser adicionada/editada.
+   *
+   * @return a categoria que conterá a entidade a ser adicionada/editada.
+   */
+  private EntityCategoryDesc getCategory() {
+    return categories.get(this.categoryIDCombo.getSelectedItem());
   }
 }

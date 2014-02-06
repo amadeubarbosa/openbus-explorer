@@ -35,6 +35,7 @@ import busexplorer.panel.authorizations.AuthorizationAddAction;
 import busexplorer.panel.authorizations.AuthorizationDeleteAction;
 import busexplorer.panel.authorizations.AuthorizationRefreshAction;
 import busexplorer.panel.authorizations.AuthorizationTableProvider;
+import busexplorer.panel.categories.CategoryAddAction;
 import busexplorer.panel.categories.CategoryDeleteAction;
 import busexplorer.panel.categories.CategoryRefreshAction;
 import busexplorer.panel.categories.CategoryTableProvider;
@@ -229,11 +230,8 @@ public class MainDialog {
     List<PanelActionInterface<CategoryInfo>> actionsVector =
       new Vector<PanelActionInterface<CategoryInfo>>(3);
     actionsVector.add(new CategoryRefreshAction(mainDialog, admin));
+    actionsVector.add(new CategoryAddAction(mainDialog, admin));
     actionsVector.add(new CategoryDeleteAction(mainDialog, admin));
-    // TODO Refatorar implementação das ações. --tmartins
-    /*
-     * actionsVector.add(new CategoryAddAction(mainDialog, admin));
-     */
 
     PanelComponent<CategoryInfo> panelCategory =
       new PanelComponent<CategoryInfo>(model, actionsVector);

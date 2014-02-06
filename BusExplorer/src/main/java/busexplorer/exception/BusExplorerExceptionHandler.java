@@ -1,7 +1,6 @@
 package busexplorer.exception;
 
-import org.omg.CORBA.NO_PERMISSION;
-
+import org.omg.CORBA.NO_PERMISSION; 
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.access_control.InvalidRemoteCode;
 import tecgraf.openbus.core.v2_0.services.access_control.NoLoginCode;
@@ -72,6 +71,20 @@ public class BusExplorerExceptionHandler extends
           default:
             exception.setErrorMessage(Utils.getString(this.getClass(),
               "unauthorized.operation"));
+            break;
+        }
+        break;
+
+      case EntityCategoryAlreadyExists:
+        switch (context) {
+          case BusCore:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "category.already.exists.core"));
+            break;
+
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "category.already.exists"));
             break;
         }
         break;

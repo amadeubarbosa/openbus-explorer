@@ -4,12 +4,11 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JFrame;
 
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
-import busexplorer.panel.BusAdminAbstractAction;
-import busexplorer.wrapper.EntityCategoryDescWrapper;
+import busexplorer.panel.ActionType;
+import busexplorer.panel.OpenBusAction;
+import busexplorer.wrapper.CategoryInfo;
 
 /**
  * Classe de ação para criar uma categoria. Esta dispara um diálogo.
@@ -17,28 +16,34 @@ import busexplorer.wrapper.EntityCategoryDescWrapper;
  * 
  * @author Tecgraf
  */
-public class CategoryAddAction extends BusAdminAbstractAction {
+public class CategoryAddAction extends OpenBusAction<CategoryInfo> {
 
-  public CategoryAddAction(JFrame parentWindow,
-    CRUDPanel<EntityCategoryDescWrapper> panel, BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin, LNG
-      .get("CategoryAddAction.name"));
+  /**
+   * Construtor da ação.
+   * 
+   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   * @param admin biblioteca de administração
+   */
+  public CategoryAddAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin, LNG.get(CategoryAddAction.class.getSimpleName() +
+      ".name"));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.ADD;
+  public ActionType getActionType() {
+    return ActionType.ADD;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    ObjectTableModel<EntityCategoryDescWrapper> model =
-      (ObjectTableModel<EntityCategoryDescWrapper>) this.table.getModel();
-    new CategoryInputDialog(parentWindow, LNG
-      .get("CategoryAddAction.inputDialog.title"), model, admin).showDialog();
+    new CategoryInputDialog(parentWindow, getPanelComponent(),
+      admin).showDialog();
   }
 
 }

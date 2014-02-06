@@ -35,8 +35,6 @@ public class Application {
     LNG.load("busexplorer.resources.language.idiom", new Locale("pt", "BR"));
     LNG.load("reuse.modified.logistic.client.resources.language.idiom",
       new Locale("pt", "BR"));
-    LNG.load("reuse.modified.planref.client.resources.language.idiom",
-      new Locale("pt", "BR"));
 
     final Properties properties = new Properties();
     try {

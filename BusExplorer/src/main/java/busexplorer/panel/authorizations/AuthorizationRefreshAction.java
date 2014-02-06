@@ -9,7 +9,6 @@ import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
-import busexplorer.panel.BusAdminAbstractAction;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.wrapper.AuthorizationInfo;
 

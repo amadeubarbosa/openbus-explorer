@@ -1,20 +1,25 @@
 package busexplorer.panel.authorizations;
 
 import java.awt.GridBagLayout;
+import java.awt.Window;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
-import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
-import busexplorer.wrapper.AuthorizationWrapper;
+import busexplorer.Application;
+import busexplorer.exception.BusExplorerAbstractInputDialog;
+import busexplorer.exception.BusExplorerTask;
+import busexplorer.panel.PanelComponent;
+import busexplorer.utils.Utils;
+import busexplorer.wrapper.AuthorizationInfo;
+import exception.handling.ExceptionContext;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de
@@ -22,8 +27,7 @@ import busexplorer.wrapper.AuthorizationWrapper;
  * 
  * @author Tecgraf
  */
-public class AuthorizationInputDialog extends
-  BusAdminAbstractInputDialog<AuthorizationWrapper> {
+public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel entityIDLabel;
   private JComboBox entityIDCombo;
   private JLabel interfaceNameLabel;
@@ -32,98 +36,107 @@ public class AuthorizationInputDialog extends
   private List<String> entitiesIDList;
   private List<String> interfacesList;
 
+  private PanelComponent<AuthorizationInfo> panel;
+
   /**
    * Construtor.
    * 
-   * @param parentWindow Janela mãe do Diálogo
-   * @param title Título do Diálogo.
+   * @param parentWindow Janela mãe do Diálogo.
+   * @param panel Painel a ser atualizado após a adição.
+   * @param admin Acesso às funcionalidade de administração do barramento.
+   * @param entitiesIDList Lista de entidades.
+   * @param interfacesList Lista de interfaces.
    */
-  public AuthorizationInputDialog(JFrame parentWindow, String title,
-    ObjectTableModel<AuthorizationWrapper> model, BusAdmin admin,
-    List<String> entitiesIDList, List<String> interfacesList) {
-    super(parentWindow, title, model, admin);
+  public AuthorizationInputDialog(Window parentWindow,
+    PanelComponent<AuthorizationInfo> panel, BusAdmin admin, List<String>
+    entitiesIDList, List<String> interfacesList) {
+    super(parentWindow, LNG.get(AuthorizationInputDialog.class.getSimpleName() +
+      ".title") , admin);
+
+    this.panel = panel;
+
+    Collections.sort(entitiesIDList, String.CASE_INSENSITIVE_ORDER);
+    Collections.sort(interfacesList, String.CASE_INSENSITIVE_ORDER);
 
     this.entitiesIDList = entitiesIDList;
     this.interfacesList = interfacesList;
-  }
-
-  @Override
-  protected boolean accept() {
-    if (hasValidFields()) {
-      RegisteredEntityDesc entity = new RegisteredEntityDesc();
-      entity.id = getEntityID();
-
-      String interfaceName = getInterfaceName();
-
-      setNewRow(new AuthorizationWrapper(entity, interfaceName));
-      if (apply()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private String getEntityID() {
-    return (String) this.entityIDCombo.getSelectedItem();
-  }
-
-  private String getInterfaceName() {
-    return (String) this.interfaceNameCombo.getSelectedItem();
-  }
-
-  /**
-   * Lança exceção em caso de existência prévia da autorização a ser adicionada;
-   * o barramento, por padrão, não o faz.
-   */
-  private void failOnExistingAuthorization(
-    AuthorizationWrapper newAuthorizationWrapper) throws Exception {
-    for (AuthorizationWrapper authorization : getRows()) {
-      if (newAuthorizationWrapper.equals(authorization)) {
-        throw new Exception("Autorização já existente");
-      }
-    }
-  }
-
-  @Override
-  protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-
-    entityIDLabel =
-      new JLabel(LNG.get("AuthorizationInputDialog.entityID.label"));
-    panel.add(entityIDLabel, new GBC(0, 0).west());
-
-    entityIDCombo = new JComboBox(entitiesIDList.toArray());
-    panel.add(entityIDCombo, new GBC(0, 1).west());
-
-    interfaceNameLabel =
-      new JLabel(LNG.get("AuthorizationInputDialog.interfaceName.label"));
-    panel.add(interfaceNameLabel, new GBC(0, 2).west());
-
-    interfaceNameCombo = new JComboBox(interfacesList.toArray());
-    panel.add(interfaceNameCombo, new GBC(0, 3).west());
-
-    return panel;
-  }
-
-  @Override
-  protected void openBusCall() throws Exception {
-    AuthorizationWrapper newAuthorizationWrapper = getNewRow();
-
-    String entityID = newAuthorizationWrapper.getEntity().id;
-    String interfaceName = newAuthorizationWrapper.getInterface();
-
-    admin.setAuthorization(entityID, interfaceName);
-
-    failOnExistingAuthorization(newAuthorizationWrapper);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected boolean hasValidFields() {
-    // TODO Auto-generated method stub
+  protected boolean accept() {
+    Task<Object> task =
+      new BusExplorerTask<Object>(Application.exceptionHandler(),
+        ExceptionContext.BusCore) {
+
+        @Override
+        protected void performTask() throws Exception {
+          admin.setAuthorization(getEntityID(), getInterfaceName());
+        }
+
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            panel.refresh(null);
+          }
+        }
+      };
+
+    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
+      Utils.getString(this.getClass(), "waiting.msg"));
+
+    return task.getStatus();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected JPanel buildFields() {
+    JPanel panel = new JPanel(new GridBagLayout());
+
+    entityIDLabel =
+      new JLabel(Utils.getString(this.getClass(), "entityID.label"));
+    panel.add(entityIDLabel, new GBC(0, 0).insets(5).none().west());
+
+    entityIDCombo = new JComboBox(entitiesIDList.toArray());
+    panel.add(entityIDCombo, new GBC(0, 1).insets(5).horizontal().west());
+
+    interfaceNameLabel =
+      new JLabel(Utils.getString(this.getClass(), "interfaceName.label"));
+    panel.add(interfaceNameLabel, new GBC(0, 2).insets(5).none().west());
+
+    interfaceNameCombo = new JComboBox(interfacesList.toArray());
+    panel.add(interfaceNameCombo, new GBC(0, 3).insets(5).horizontal().west());
+
+    return panel;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasValidFields() {
     return true;
   }
 
+  /**
+   * Obtém o identificador da entidade da autorização a ser adicionada.
+   *
+   * @return o identificador da entidade da autorização a ser adicionada.
+   */
+  private String getEntityID() {
+    return (String) this.entityIDCombo.getSelectedItem();
+  }
+
+  /**
+   * Obtém o nome da interface da autorização a ser adicionada.
+   *
+   * @return o nome da interface da autorização a ser adicionada.
+   */
+  private String getInterfaceName() {
+    return (String) this.interfaceNameCombo.getSelectedItem();
+  }
 }

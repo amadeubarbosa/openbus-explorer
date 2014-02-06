@@ -31,6 +31,7 @@ import admin.BusAdminImpl;
 import busexplorer.Application;
 import busexplorer.panel.PanelActionInterface;
 import busexplorer.panel.PanelComponent;
+import busexplorer.panel.authorizations.AuthorizationAddAction;
 import busexplorer.panel.authorizations.AuthorizationDeleteAction;
 import busexplorer.panel.authorizations.AuthorizationRefreshAction;
 import busexplorer.panel.authorizations.AuthorizationTableProvider;
@@ -324,11 +325,8 @@ public class MainDialog {
     List<PanelActionInterface<AuthorizationInfo>> actionsVector =
       new Vector<PanelActionInterface<AuthorizationInfo>>(3);
     actionsVector.add(new AuthorizationRefreshAction(mainDialog, admin));
+    actionsVector.add(new AuthorizationAddAction(mainDialog, admin));
     actionsVector.add(new AuthorizationDeleteAction(mainDialog, admin));
-    // TODO Refatorar implementação das ações. --tmartins
-    /*
-     * actionsVector.add(new AuthorizationAddAction(mainDialog, admin));
-     */
 
     PanelComponent<AuthorizationInfo> panelAuthorization =
       new PanelComponent<AuthorizationInfo>(model, actionsVector);

@@ -1,18 +1,23 @@
 package busexplorer.panel.interfaces;
 
 import java.awt.GridBagLayout;
+import java.awt.Window;
 
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
-import busexplorer.desktop.dialog.BusAdminAbstractInputDialog;
-import busexplorer.wrapper.InterfaceWrapper;
+import busexplorer.Application;
+import busexplorer.exception.BusExplorerAbstractInputDialog;
+import busexplorer.exception.BusExplorerTask;
+import busexplorer.panel.PanelComponent;
+import busexplorer.utils.Utils;
+import busexplorer.wrapper.InterfaceInfo;
+import exception.handling.ExceptionContext;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de
@@ -20,69 +25,97 @@ import busexplorer.wrapper.InterfaceWrapper;
  * 
  * @author Tecgraf
  */
-public class InterfaceInputDialog extends
-  BusAdminAbstractInputDialog<InterfaceWrapper> {
+public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel interfaceNameLabel;
   private JTextField interfaceNameField;
+
+  private PanelComponent<InterfaceInfo> panel;
 
   /**
    * Construtor.
    * 
-   * @param parentWindow Janela mãe do Diálogo
-   * @param title Título do Diálogo.
-   * @param blockType Modo de Bloqueio da janela mãe.
+   * @param parentWindow Janela mãe do Diálogo.
+   * @param panel Painel a ser atualizado após a adição.
+   * @param admin Acesso às funcionalidade de administração do barramento.
    */
-  public InterfaceInputDialog(JFrame parentWindow, String title,
-    ObjectTableModel<InterfaceWrapper> model, BusAdmin admin) {
-    super(parentWindow, title, model, admin);
-  }
-
-  @Override
-  protected boolean accept() {
-    if (hasValidFields()) {
-      String interfaceName = getInterfaceName();
-
-      setNewRow(new InterfaceWrapper(interfaceName));
-      if (apply()) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private String getInterfaceName() {
-    return this.interfaceNameField.getText();
-  }
-
-  @Override
-  protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-
-    interfaceNameLabel =
-      new JLabel(LNG.get("InterfaceInputDialog.interfaceName.label"));
-    panel.add(interfaceNameLabel, new GBC(0, 0).west());
-
-    interfaceNameField = new JTextField(30);
-    panel.add(interfaceNameField, new GBC(0, 1).west());
-
-    return panel;
-  }
-
-  @Override
-  protected void openBusCall() throws Exception {
-    InterfaceWrapper newInterfaceWrapper = getNewRow();
-    String interfaceName = newInterfaceWrapper.getInterface();
-
-    admin.createInterface(interfaceName);
-
+  public InterfaceInputDialog(Window parentWindow, PanelComponent<InterfaceInfo>
+    panel, BusAdmin admin) {
+    super(parentWindow, LNG.get(InterfaceInputDialog.class.getSimpleName() +
+      ".title"), admin);
+    this.panel = panel;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  protected boolean hasValidFields() {
-    // TODO Auto-generated method stub
+  protected boolean accept() {
+    if (!hasValidFields()) {
+      return false;
+    }
+
+    Task<Object> task =
+      new BusExplorerTask<Object>(Application.exceptionHandler(),
+        ExceptionContext.BusCore) {
+
+        @Override
+        protected void performTask() throws Exception {
+          admin.createInterface(getInterfaceName());
+        }
+
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            panel.refresh(null);
+          }
+        }
+      };
+    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
+      Utils.getString(this.getClass(), "waiting.msg"));
+    return task.getStatus();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected JPanel buildFields() {
+    JPanel panel = new JPanel(new GridBagLayout());
+    GBC baseGBC = new GBC().gridx(0).insets(5).west();
+
+    interfaceNameLabel =
+      new JLabel(LNG.get("InterfaceInputDialog.interfaceName.label"));
+    panel.add(interfaceNameLabel, new GBC(baseGBC).gridy(0).none());
+
+    interfaceNameField = new JTextField(30);
+    panel.add(interfaceNameField, new GBC(baseGBC).gridy(1).horizontal());
+
+    return panel;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasValidFields() {
+    String interfaceName = interfaceNameField.getText();
+
+    if (interfaceName.equals("")) {
+      setErrorMessage(Utils.getString(this.getClass(),
+        "error.validation.emptyID"));
+      return false;
+    }
+
+    clearErrorMessage();
     return true;
+  }
+
+  /**
+   * Obtém o nome da interface a ser adicionada.
+   *
+   * @return o nome da interface a ser adicionada.
+   */
+  private String getInterfaceName() {
+    return this.interfaceNameField.getText();
   }
 }

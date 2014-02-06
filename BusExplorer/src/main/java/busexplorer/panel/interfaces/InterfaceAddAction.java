@@ -4,12 +4,11 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JFrame;
 
-import reuse.modified.planref.client.util.crud.CRUDPanel;
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
-import busexplorer.panel.BusAdminAbstractAction;
-import busexplorer.wrapper.InterfaceWrapper;
+import busexplorer.panel.ActionType;
+import busexplorer.panel.OpenBusAction;
+import busexplorer.wrapper.InterfaceInfo;
 
 /**
  * Classe de ação para criar uma interface. Esta dispara um diálogo.
@@ -17,28 +16,34 @@ import busexplorer.wrapper.InterfaceWrapper;
  * 
  * @author Tecgraf
  */
-public class InterfaceAddAction extends BusAdminAbstractAction {
+public class InterfaceAddAction extends OpenBusAction<InterfaceInfo> {
 
-  public InterfaceAddAction(JFrame parentWindow,
-    CRUDPanel<InterfaceWrapper> panel, BusAdmin admin) {
-    super(parentWindow, panel.getTable(), admin, LNG
-      .get("InterfaceAddAction.name"));
+  /**
+   * Construtor da ação.
+   * 
+   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   * @param admin biblioteca de administração
+   */
+  public InterfaceAddAction(JFrame parentWindow, BusAdmin admin) {
+    super(parentWindow, admin, LNG.get(InterfaceAddAction.class.getSimpleName()
+      + ".name"));
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public CRUDActionType crudActionType() {
-    return CRUDActionType.ADD;
+  public ActionType getActionType() {
+    return ActionType.ADD;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    ObjectTableModel<InterfaceWrapper> model =
-      (ObjectTableModel<InterfaceWrapper>) this.table.getModel();
-    new InterfaceInputDialog(parentWindow, LNG
-      .get("InterfaceAddAction.inputDialog.title"), model, admin).showDialog();
+    new InterfaceInputDialog(parentWindow, getPanelComponent(),
+      admin).showDialog();
   }
 
 }

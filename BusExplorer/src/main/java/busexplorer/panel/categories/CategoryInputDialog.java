@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.Task;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.exception.BusExplorerAbstractInputDialog;
@@ -34,6 +34,8 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
 
   private PanelComponent<CategoryInfo> panel;
 
+  private CategoryInfo editingCategory = null;
+
   /**
    * Construtor.
    * 
@@ -48,9 +50,6 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
     this.panel = panel;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   protected boolean accept() {
     if (!hasValidFields()) {
@@ -63,7 +62,12 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
 
         @Override
         protected void performTask() throws Exception {
-          admin.createCategory(getCategoryID(), getCategoryName());
+          if (editingCategory == null) {
+            admin.createCategory(getCategoryID(), getCategoryName());
+          } else {
+            EntityCategory ref = editingCategory.getDescriptor().ref;
+            ref.setName(getCategoryName());
+          }
         }
 
         @Override
@@ -118,6 +122,18 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
 
     clearErrorMessage();
     return true;
+  }
+
+  /**
+   * Configura o diálogo para trabalhar em modo de edição.
+   *
+   * @param info o dado sendo editado.
+   */
+  public void setEditionMode(CategoryInfo info) {
+    this.editingCategory = info;
+    this.categoryIDField.setText(info.getId());
+    this.categoryIDField.setEnabled(false);
+    this.categoryNameField.setText(info.getName());
   }
 
   /**

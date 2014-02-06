@@ -2,8 +2,8 @@ package busexplorer.panel.entities;
 
 import java.awt.GridBagLayout;
 import java.awt.Window;
-import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -38,8 +38,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel entityNameLabel;
   private JTextField entityNameField;
 
-  private HashMap<String, EntityCategoryDesc> categories =
-    new HashMap<String, EntityCategoryDesc>();
+  private TreeMap<String, EntityCategoryDesc> categories =
+    new TreeMap<String, EntityCategoryDesc>(String.CASE_INSENSITIVE_ORDER);
 
   private PanelComponent<EntityInfo> panel;
 

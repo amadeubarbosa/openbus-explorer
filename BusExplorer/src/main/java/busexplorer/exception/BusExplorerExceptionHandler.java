@@ -103,6 +103,20 @@ public class BusExplorerExceptionHandler extends
         }
         break;
 
+      case InvalidCertificate:
+        switch (context) {
+          case BusCore:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "invalid.certificate.core"));
+            break;
+
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "invalid.certificate"));
+            break;
+        }
+        break;
+
       case InterfaceInUse:
         switch (context) {
           case BusCore:

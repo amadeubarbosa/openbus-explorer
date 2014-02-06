@@ -19,6 +19,7 @@ public enum ExceptionType {
   InvalidService,
   EntityAlreadyRegistered,
   EntityCategoryAlreadyExists,
+  InvalidCertificate,
   InterfaceInUse,
   InvalidInterface,
   AuthorizationInUse,

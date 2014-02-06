@@ -149,6 +149,16 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
   }
 
   /**
+   * Configura o diálogo para trabalhar em modo de edição.
+   * 
+   * @param info o dado sendo editado.
+   */
+  public void setEditionMode(CertificateInfo info) {
+    this.identifierField.setText(info.getEntity());
+    this.identifierField.setEnabled(false);
+  }
+
+  /**
    * Seleciona o certificado no sistema de arquivos e atualiza o campo que
    * indica seu caminho.
    */

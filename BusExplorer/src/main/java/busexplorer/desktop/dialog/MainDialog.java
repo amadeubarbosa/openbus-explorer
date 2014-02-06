@@ -41,6 +41,7 @@ import busexplorer.panel.categories.CategoryDeleteAction;
 import busexplorer.panel.categories.CategoryRefreshAction;
 import busexplorer.panel.categories.CategoryTableProvider;
 import busexplorer.panel.certificates.CertificateAddAction;
+import busexplorer.panel.certificates.CertificateEditAction;
 import busexplorer.panel.certificates.CertificateDeleteAction;
 import busexplorer.panel.certificates.CertificateRefreshAction;
 import busexplorer.panel.certificates.CertificateTableProvider;
@@ -276,8 +277,9 @@ public class MainDialog {
 
     List<PanelActionInterface<CertificateInfo>> actionsVector =
       new Vector<PanelActionInterface<CertificateInfo>>(3);
-    actionsVector.add(new CertificateAddAction(mainDialog, admin));
     actionsVector.add(new CertificateRefreshAction(mainDialog, admin));
+    actionsVector.add(new CertificateAddAction(mainDialog, admin));
+    actionsVector.add(new CertificateEditAction(mainDialog, admin));
     actionsVector.add(new CertificateDeleteAction(mainDialog, admin));
 
     PanelComponent<CertificateInfo> panelCertificate =
@@ -298,8 +300,8 @@ public class MainDialog {
 
     List<PanelActionInterface<InterfaceInfo>> actionsVector =
       new Vector<PanelActionInterface<InterfaceInfo>>(3);
-    actionsVector.add(new InterfaceAddAction(mainDialog, admin));
     actionsVector.add(new InterfaceRefreshAction(mainDialog, admin));
+    actionsVector.add(new InterfaceAddAction(mainDialog, admin));
     actionsVector.add(new InterfaceDeleteAction(mainDialog, admin));
 
     PanelComponent<InterfaceInfo> panelInterface =

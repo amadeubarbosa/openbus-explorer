@@ -195,7 +195,15 @@ public class MainDialog {
     itemQuit.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        mainDialog.dispose();
+        int option =
+          JOptionPane.showConfirmDialog(mainDialog,
+            Utils.getString(MainDialog.class, "quit.confirm.msg"),
+            Utils.getString(MainDialog.class, "quit.confirm.title"),
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (option == JOptionPane.YES_OPTION) {
+          mainDialog.dispose();
+        }
       }
     });
     menuConnection.add(itemQuit);

@@ -18,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
@@ -172,8 +173,17 @@ public class MainDialog {
           }
         };
 
-        task.execute(mainDialog, LNG.get("MainDialog.logout.waiting.title"),
-          LNG.get("MainDialog.logout.waiting.msg"));
+        int option =
+          JOptionPane.showConfirmDialog(mainDialog,
+            Utils.getString(MainDialog.class, "disconnect.confirm.msg"),
+            Utils.getString(MainDialog.class, "disconnect.confirm.title"),
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+        if (option == JOptionPane.YES_OPTION) {
+          task.execute(mainDialog,
+            Utils.getString(MainDialog.class, "logout.waiting.title"),
+            Utils.getString(MainDialog.class, "logout.waiting.msg"));
+        }
       }
     });
     menuConnection.add(itemDisconnect);

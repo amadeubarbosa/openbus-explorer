@@ -124,7 +124,7 @@ public class MainDialog {
    * Constrói os componentes da janela.
    */
   private void buildDialog() {
-    mainDialog = new JFrame(getDialogTitle());
+    mainDialog = new JFrame();
     mainDialog.setMinimumSize(new Dimension(800, 600));
     mainDialog.setLocationByPlatform(true);
     mainDialog.setLayout(new BorderLayout(0, 0));
@@ -139,6 +139,8 @@ public class MainDialog {
     buildMenuBar();
     buildFeaturesComponent();
     mainDialog.pack();
+
+    setDialogTitle(LNG.get("MainDialog.title.disconnected"));
   }
 
   /**
@@ -161,6 +163,7 @@ public class MainDialog {
             if (assistant != null) {
               assistant.shutdown();
             }
+            setDialogTitle(LNG.get("MainDialog.title.disconnected"));
           }
 
           @Override
@@ -409,6 +412,9 @@ public class MainDialog {
     LoginDialog loginDialog = new LoginDialog(mainDialog, admin);
     boolean success = loginDialog.show();
     if (success) {
+      String loginData = loginDialog.getEntity() + "@" + loginDialog.getHost() +
+        ":" + loginDialog.getPort();
+      setDialogTitle(loginData);
       assistant = loginDialog.getAssistant();
       boolean isAdmin = loginDialog.isAdmin();
       updateAdminFeatures(isAdmin);
@@ -448,13 +454,13 @@ public class MainDialog {
   }
 
   /**
-   * Obtém o título do diálogo.
+   * Ajusta o título do diálogo.
    * 
-   * @return Título do diálogo
+   * @param title Título do diálogo.
    */
-  private String getDialogTitle() {
-    return Utils.getString(this.getClass(), "title") + " - "
-      + Utils.getString(Application.class, "title");
+  private void setDialogTitle(String title) {
+    mainDialog.setTitle(Utils.getString(Application.class, "title") + " - " +
+      title);
   }
 
 }

@@ -57,6 +57,8 @@ public class LoginDialog {
   private JTextField fieldUser;
   /** Campo de texto onde é digitada a senha do usuário. */
   private JPasswordField fieldPassword;
+  /** ID da entidade que realiza o login no barramento. */
+  private String entity;
   /** Nome do host do barramento */
   private String host;
   /** Porta do barramento */
@@ -225,6 +227,16 @@ public class LoginDialog {
   }
 
   /**
+   * Recupera o identificador de entidade utilizado para a conexão ao
+   * barramento.
+   *
+   * @return o identificador de entidade utilizado para a conexão ao barramento.
+   */
+  public String getEntity() {
+    return entity;
+  }
+
+  /**
    * Recupera o nome do host do barramento.
    * 
    * @return o host ao qual estamos conectados.
@@ -287,7 +299,7 @@ public class LoginDialog {
           host = fieldHost.getText();
           port = Short.valueOf(fieldPort.getText());
 
-          String entity = fieldUser.getText();
+          entity = fieldUser.getText();
           String password = new String(fieldPassword.getPassword());
           AssistantParams params = new AssistantParams();
 

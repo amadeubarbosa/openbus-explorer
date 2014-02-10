@@ -10,8 +10,8 @@ import javax.swing.JDialog;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
 import busexplorer.panel.PanelActionInterface;
 import busexplorer.panel.PanelComponent;
+import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.OfferInfo;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de Entidades
@@ -28,7 +28,7 @@ public class PropertiesDialog extends JDialog {
   /**
    * Oferta sendo visualizada.
    */
-  private OfferInfo offer;
+  private OfferWrapper offer;
 
   /**
    * Construtor.
@@ -36,7 +36,7 @@ public class PropertiesDialog extends JDialog {
    * @param owner janela pai
    * @param offer oferta sendo visualizada
    */
-  public PropertiesDialog(Window owner, OfferInfo offer) {
+  public PropertiesDialog(Window owner, OfferWrapper offer) {
     super(owner, Utils.getString(PropertiesDialog.class, "title"),
       JDialog.ModalityType.APPLICATION_MODAL);
     this.offer = offer;

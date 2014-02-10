@@ -14,7 +14,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.OfferInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -23,7 +22,7 @@ import exception.handling.ExceptionContext;
  * @author Tecgraf
  * 
  */
-public class OfferDeleteAction extends OpenBusAction<OfferInfo> {
+public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
 
   public OfferDeleteAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin, LNG.get(OfferDeleteAction.class.getSimpleName() +
@@ -51,7 +50,7 @@ public class OfferDeleteAction extends OpenBusAction<OfferInfo> {
       ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        OfferInfo offer = getPanelComponent().getSelectedElement();
+        OfferWrapper offer = getPanelComponent().getSelectedElement();
         ServiceOffer ref = offer.getDescriptor().ref;
         ref.remove();
       }

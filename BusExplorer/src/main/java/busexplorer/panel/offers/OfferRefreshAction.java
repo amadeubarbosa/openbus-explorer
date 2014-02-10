@@ -10,7 +10,6 @@ import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.OfferInfo;
 
 /**
  * Ação que atualiza a tabela de ofertas
@@ -18,7 +17,7 @@ import busexplorer.wrapper.OfferInfo;
  * @author Tecgraf
  * 
  */
-public class OfferRefreshAction extends OpenBusAction<OfferInfo> {
+public class OfferRefreshAction extends OpenBusAction<OfferWrapper> {
 
   /**
    * Construtor.
@@ -44,11 +43,11 @@ public class OfferRefreshAction extends OpenBusAction<OfferInfo> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<OfferInfo>> task = new Task<List<OfferInfo>>() {
+    Task<List<OfferWrapper>> task = new Task<List<OfferWrapper>>() {
 
       @Override
       protected void performTask() throws Exception {
-        setResult(OfferInfo.convertToInfo(admin.getOffers()));
+        setResult(OfferWrapper.convertToInfo(admin.getOffers()));
       }
 
       @Override

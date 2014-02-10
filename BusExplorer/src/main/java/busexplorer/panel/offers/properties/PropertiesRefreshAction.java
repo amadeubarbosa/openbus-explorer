@@ -12,8 +12,8 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.OfferInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -33,7 +33,7 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
    * @param parentWindow janela pai.
    * @param offer oferta cujas propriedades serão exibidas
    */
-  public PropertiesRefreshAction(Window parentWindow, OfferInfo offer) {
+  public PropertiesRefreshAction(Window parentWindow, OfferWrapper offer) {
     super(parentWindow, null, Utils.getString(PropertiesRefreshAction.class,
       "name"));
     this.offer = offer.getDescriptor().ref;

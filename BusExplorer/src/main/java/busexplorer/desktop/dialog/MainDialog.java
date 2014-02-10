@@ -65,11 +65,11 @@ import busexplorer.panel.logins.LoginWrapper;
 import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
 import busexplorer.panel.offers.OfferDeleteAction;
+import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.OfferInfo;
 
 /**
  * Diálogo principal da aplicação
@@ -358,20 +358,20 @@ public class MainDialog {
    * Inicializa o painel de CRUD de ofertas.
    */
   private void initPanelOffer() {
-    ObjectTableModel<OfferInfo> model =
-      new ObjectTableModel<OfferInfo>(new LinkedList<OfferInfo>(),
+    ObjectTableModel<OfferWrapper> model =
+      new ObjectTableModel<OfferWrapper>(new LinkedList<OfferWrapper>(),
         new OfferTableProvider());
 
-    List<PanelActionInterface<OfferInfo>> actionsVector =
-      new Vector<PanelActionInterface<OfferInfo>>(2);
+    List<PanelActionInterface<OfferWrapper>> actionsVector =
+      new Vector<PanelActionInterface<OfferWrapper>>(2);
     actionsVector.add(new OfferRefreshAction(mainDialog, admin));
     actionsVector.add(new OfferDeleteAction(mainDialog, admin));
     final OfferPropertiesAction propertiesAction =
       new OfferPropertiesAction(mainDialog, admin);
     actionsVector.add(propertiesAction);
 
-    PanelComponent<OfferInfo> panelOffer =
-      new PanelComponent<OfferInfo>(model, actionsVector);
+    PanelComponent<OfferWrapper> panelOffer =
+      new PanelComponent<OfferWrapper>(model, actionsVector);
     /*
      * Inclui listener de duplo clique para disparar ação de visualizar
      * propriedades da oferta, dado que não temos ação de edição neste painel.

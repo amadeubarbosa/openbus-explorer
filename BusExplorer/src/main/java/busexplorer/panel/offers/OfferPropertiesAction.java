@@ -8,7 +8,6 @@ import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.offers.properties.PropertiesDialog;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.OfferInfo;
 
 /**
  * Ação que apresenta propriedades da oferta.
@@ -16,7 +15,7 @@ import busexplorer.wrapper.OfferInfo;
  * @author Tecgraf
  * 
  */
-public class OfferPropertiesAction extends OpenBusAction<OfferInfo> {
+public class OfferPropertiesAction extends OpenBusAction<OfferWrapper> {
 
   /**
    * Construtor.
@@ -44,7 +43,7 @@ public class OfferPropertiesAction extends OpenBusAction<OfferInfo> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    OfferInfo offer = getPanelComponent().getSelectedElement();
+    OfferWrapper offer = getPanelComponent().getSelectedElement();
     PropertiesDialog dialog = new PropertiesDialog(parentWindow, offer);
     dialog.setVisible(true);
   }

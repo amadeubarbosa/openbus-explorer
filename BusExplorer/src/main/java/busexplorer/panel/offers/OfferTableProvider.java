@@ -5,14 +5,13 @@ import java.util.Vector;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.OfferInfo;
 
 /**
  * Provedor de dados para a tabela de Ofertas
  * 
  * @author Tecgraf
  */
-public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
+public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
 
   /** Índice da coluna ID da entidade */
   private static final int ENTITY_ID = 0;
@@ -46,8 +45,8 @@ public class OfferTableProvider implements ObjectTableProvider<OfferInfo> {
    * {@inheritDoc}
    */
   @Override
-  public Object getCellValue(OfferInfo row, int col) {
-    final OfferInfo offer = row;
+  public Object getCellValue(OfferWrapper row, int col) {
+    final OfferWrapper offer = row;
     switch (col) {
       case ENTITY_ID:
         return offer.getEntityId();

@@ -1,4 +1,4 @@
-package busexplorer.wrapper;
+package busexplorer.panel.offers;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,7 +15,7 @@ import busexplorer.utils.Utils;
  * 
  * @author Tecgraf
  */
-public class OfferInfo {
+public class OfferWrapper {
   /** Objeto descritor da oferta */
   private ServiceOfferDesc desc;
 
@@ -31,7 +31,7 @@ public class OfferInfo {
    * 
    * @param desc descritor da oferta
    */
-  public OfferInfo(ServiceOfferDesc desc) {
+  public OfferWrapper(ServiceOfferDesc desc) {
     this.desc = desc;
     this.entity = Utils.getProperty(desc, "openbus.offer.entity");
     this.interfaces = Utils.getProperties(desc, "openbus.component.interface");
@@ -86,15 +86,15 @@ public class OfferInfo {
 
   /**
    * Método utilitário para converter lista de {@link ServiceOfferDesc} para
-   * {@link OfferInfo}
+   * {@link OfferWrapper}
    * 
    * @param offers a lista de {@link ServiceOfferDesc}
-   * @return a lista de {@link OfferInfo}
+   * @return a lista de {@link OfferWrapper}
    */
-  public static List<OfferInfo> convertToInfo(List<ServiceOfferDesc> offers) {
-    List<OfferInfo> list = new ArrayList<OfferInfo>();
+  public static List<OfferWrapper> convertToInfo(List<ServiceOfferDesc> offers) {
+    List<OfferWrapper> list = new ArrayList<OfferWrapper>();
     for (ServiceOfferDesc offer : offers) {
-      list.add(new OfferInfo(offer));
+      list.add(new OfferWrapper(offer));
     }
     return list;
   }

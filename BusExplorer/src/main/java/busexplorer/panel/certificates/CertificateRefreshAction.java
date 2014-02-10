@@ -10,7 +10,6 @@ import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.CertificateInfo;
 
 /**
  * Ação que atualiza a tabela de categorias
@@ -18,7 +17,7 @@ import busexplorer.wrapper.CertificateInfo;
  * @author Tecgraf
  * 
  */
-public class CertificateRefreshAction extends OpenBusAction<CertificateInfo> {
+public class CertificateRefreshAction extends OpenBusAction<CertificateWrapper> {
 
   /**
    * Construtor.
@@ -44,11 +43,11 @@ public class CertificateRefreshAction extends OpenBusAction<CertificateInfo> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<CertificateInfo>> task = new Task<List<CertificateInfo>>() {
+    Task<List<CertificateWrapper>> task = new Task<List<CertificateWrapper>>() {
 
       @Override
       protected void performTask() throws Exception {
-        setResult(CertificateInfo.convertToInfo(
+        setResult(CertificateWrapper.convertToInfo(
           admin.getEntitiesWithCertificate()));
       }
 

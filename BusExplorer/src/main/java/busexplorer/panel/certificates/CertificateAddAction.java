@@ -8,7 +8,6 @@ import tecgraf.javautils.LNG;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.CertificateInfo;
 
 /**
  * Classe de ação para criar uma interface. Esta dispara um diálogo.
@@ -16,7 +15,7 @@ import busexplorer.wrapper.CertificateInfo;
  * 
  * @author Tecgraf
  */
-public class CertificateAddAction extends OpenBusAction<CertificateInfo> {
+public class CertificateAddAction extends OpenBusAction<CertificateWrapper> {
 
   /**
    * Construtor da ação.

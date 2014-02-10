@@ -8,7 +8,6 @@ import tecgraf.javautils.LNG;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.CertificateInfo;
 
 /**
  * Classe de ação para criar uma interface. Esta dispara um diálogo.
@@ -16,7 +15,7 @@ import busexplorer.wrapper.CertificateInfo;
  * 
  * @author Tecgraf
  */
-public class CertificateEditAction extends OpenBusAction<CertificateInfo> {
+public class CertificateEditAction extends OpenBusAction<CertificateWrapper> {
 
   /**
    * Construtor da ação.
@@ -45,7 +44,7 @@ public class CertificateEditAction extends OpenBusAction<CertificateInfo> {
     CertificateInputDialog dialog = new CertificateInputDialog(parentWindow,
       getPanelComponent(), admin);
     dialog.showDialog();
-    CertificateInfo certificate = getPanelComponent().getSelectedElement();
+    CertificateWrapper certificate = getPanelComponent().getSelectedElement();
     dialog.setEditionMode(certificate);
   }
 

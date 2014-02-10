@@ -13,7 +13,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.CertificateInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -21,7 +20,7 @@ import exception.handling.ExceptionContext;
  * 
  * @author Tecgraf
  */
-public class CertificateDeleteAction extends OpenBusAction<CertificateInfo> {
+public class CertificateDeleteAction extends OpenBusAction<CertificateWrapper> {
 
   /**
    * Construtor da ação.
@@ -61,7 +60,7 @@ public class CertificateDeleteAction extends OpenBusAction<CertificateInfo> {
       ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        CertificateInfo certificate = getPanelComponent().getSelectedElement();
+        CertificateWrapper certificate = getPanelComponent().getSelectedElement();
         String entityId = certificate.getEntity();
         admin.removeCertificate(entityId);
       }

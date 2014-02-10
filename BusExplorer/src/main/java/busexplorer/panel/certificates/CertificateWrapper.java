@@ -1,4 +1,4 @@
-package busexplorer.wrapper;
+package busexplorer.panel.certificates;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Tecgraf
  */
-public class CertificateInfo {
+public class CertificateWrapper {
   /** Entidade vinculada ao certificado */
   private final String entity;
 
@@ -18,7 +18,7 @@ public class CertificateInfo {
    * 
    * @param entity entidade vinculada ao certificado
    */
-  public CertificateInfo(String entity) {
+  public CertificateWrapper(String entity) {
     this.entity = entity;
   }
 
@@ -33,16 +33,16 @@ public class CertificateInfo {
 
   /**
    * Método utilitário para converter lista de {@link String} para
-   * {@link CertificateInfo}
+   * {@link CertificateWrapper}
    * 
    * @param entities lista de {@link String} que representa as entidades com
    *  certificado
-   * @return a lista de {@link CertificateInfo}
+   * @return a lista de {@link CertificateWrapper}
    */
-  public static List<CertificateInfo> convertToInfo(List<String> entities) {
-    List<CertificateInfo> list = new ArrayList<CertificateInfo>();
+  public static List<CertificateWrapper> convertToInfo(List<String> entities) {
+    List<CertificateWrapper> list = new ArrayList<CertificateWrapper>();
     for (String entity : entities) {
-      list.add(new CertificateInfo(entity));
+      list.add(new CertificateWrapper(entity));
     }
     return list;
   }

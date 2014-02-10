@@ -23,7 +23,6 @@ import busexplorer.exception.BusExplorerAbstractInputDialog;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.PanelComponent;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.CertificateInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -39,7 +38,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
   private JTextField certificateField;
   private JButton certificateButton;
 
-  private PanelComponent<CertificateInfo> panel;
+  private PanelComponent<CertificateWrapper> panel;
 
   /**
    * Construtor.
@@ -49,7 +48,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public CertificateInputDialog(Window parentWindow,
-    PanelComponent<CertificateInfo> panel, BusAdmin admin) {
+    PanelComponent<CertificateWrapper> panel, BusAdmin admin) {
     super(parentWindow, LNG.get(CertificateInputDialog.class.getSimpleName() +
       ".title"), admin);
     this.panel = panel;
@@ -153,7 +152,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    * 
    * @param info o dado sendo editado.
    */
-  public void setEditionMode(CertificateInfo info) {
+  public void setEditionMode(CertificateWrapper info) {
     this.identifierField.setText(info.getEntity());
     this.identifierField.setEnabled(false);
   }

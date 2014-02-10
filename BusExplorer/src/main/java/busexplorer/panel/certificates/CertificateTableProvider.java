@@ -1,7 +1,6 @@
 package busexplorer.panel.certificates;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
-import busexplorer.wrapper.CertificateInfo;
 
 /**
  * Provedor de dados para a tabela de Categorias
@@ -9,7 +8,7 @@ import busexplorer.wrapper.CertificateInfo;
  * @author Tecgraf
  */
 public class CertificateTableProvider implements
-  ObjectTableProvider<CertificateInfo> {
+  ObjectTableProvider<CertificateWrapper> {
 
   /** Índice da coluna ID da Entidade */
   private static final int ENTITY_ID = 0;
@@ -36,8 +35,8 @@ public class CertificateTableProvider implements
    * {@inheritDoc}
    */
   @Override
-  public Object getCellValue(CertificateInfo row, int col) {
-    final CertificateInfo certificate = row;
+  public Object getCellValue(CertificateWrapper row, int col) {
+    final CertificateWrapper certificate = row;
 
     switch (col) {
       case ENTITY_ID:

@@ -46,6 +46,7 @@ import busexplorer.panel.categories.CategoryTableProvider;
 import busexplorer.panel.certificates.CertificateAddAction;
 import busexplorer.panel.certificates.CertificateEditAction;
 import busexplorer.panel.certificates.CertificateDeleteAction;
+import busexplorer.panel.certificates.CertificateWrapper;
 import busexplorer.panel.certificates.CertificateRefreshAction;
 import busexplorer.panel.certificates.CertificateTableProvider;
 import busexplorer.panel.entities.EntityAddAction;
@@ -65,7 +66,6 @@ import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.CertificateInfo;
 import busexplorer.wrapper.EntityInfo;
 import busexplorer.wrapper.InterfaceInfo;
 import busexplorer.wrapper.LoginInfoInfo;
@@ -292,19 +292,19 @@ public class MainDialog {
    * Inicializa o painel de CRUD de certificados.
    */
   private void initPanelCertificate() {
-    ObjectTableModel<CertificateInfo> model =
-      new ObjectTableModel<CertificateInfo>(new LinkedList<CertificateInfo>(),
+    ObjectTableModel<CertificateWrapper> model =
+      new ObjectTableModel<CertificateWrapper>(new LinkedList<CertificateWrapper>(),
         new CertificateTableProvider());
 
-    List<PanelActionInterface<CertificateInfo>> actionsVector =
-      new Vector<PanelActionInterface<CertificateInfo>>(3);
+    List<PanelActionInterface<CertificateWrapper>> actionsVector =
+      new Vector<PanelActionInterface<CertificateWrapper>>(3);
     actionsVector.add(new CertificateRefreshAction(mainDialog, admin));
     actionsVector.add(new CertificateAddAction(mainDialog, admin));
     actionsVector.add(new CertificateEditAction(mainDialog, admin));
     actionsVector.add(new CertificateDeleteAction(mainDialog, admin));
 
-    PanelComponent<CertificateInfo> panelCertificate =
-      new PanelComponent<CertificateInfo>(model, actionsVector);
+    PanelComponent<CertificateWrapper> panelCertificate =
+      new PanelComponent<CertificateWrapper>(model, actionsVector);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.certificate.title"));

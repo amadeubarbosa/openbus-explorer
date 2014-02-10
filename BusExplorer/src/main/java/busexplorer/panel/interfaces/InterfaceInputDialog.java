@@ -12,7 +12,7 @@ import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.Application;
-import busexplorer.exception.BusExplorerAbstractInputDialog;
+import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.PanelComponent;
 import busexplorer.utils.Utils;

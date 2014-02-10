@@ -18,7 +18,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCatego
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
 import admin.BusAdmin;
 import busexplorer.Application;
-import busexplorer.exception.BusExplorerAbstractInputDialog;
+import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.PanelComponent;
 import busexplorer.utils.Utils;

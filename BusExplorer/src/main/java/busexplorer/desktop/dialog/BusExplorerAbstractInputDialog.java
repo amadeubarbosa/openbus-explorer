@@ -1,10 +1,16 @@
-package busexplorer.exception;
+package busexplorer.desktop.dialog;
 
 import java.awt.Window;
 
 import reuse.modified.logistic.client.util.InputDialog;
 import admin.BusAdmin;
 
+/**
+ * A classe abstrata BusExplorerAbstractInputDialog implementa as
+ * funcionalidades básicas dos diálogos de entrada do BusExplorer.
+ * 
+ * @author Tecgraf
+ */
 public abstract class BusExplorerAbstractInputDialog extends InputDialog {
 
   /**

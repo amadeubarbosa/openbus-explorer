@@ -12,7 +12,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.EntityInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -20,7 +19,7 @@ import exception.handling.ExceptionContext;
  * 
  * @author Tecgraf
  */
-public class EntityAddAction extends OpenBusAction<EntityInfo> {
+public class EntityAddAction extends OpenBusAction<EntityWrapper> {
 
   /**
    * Construtor da ação.

@@ -52,6 +52,7 @@ import busexplorer.panel.certificates.CertificateTableProvider;
 import busexplorer.panel.entities.EntityAddAction;
 import busexplorer.panel.entities.EntityDeleteAction;
 import busexplorer.panel.entities.EntityEditAction;
+import busexplorer.panel.entities.EntityWrapper;
 import busexplorer.panel.entities.EntityRefreshAction;
 import busexplorer.panel.entities.EntityTableProvider;
 import busexplorer.panel.interfaces.InterfaceAddAction;
@@ -66,7 +67,6 @@ import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.EntityInfo;
 import busexplorer.wrapper.InterfaceInfo;
 import busexplorer.wrapper.LoginInfoInfo;
 import busexplorer.wrapper.OfferInfo;
@@ -270,19 +270,19 @@ public class MainDialog {
    * Inicializa o painel de CRUD de entidades.
    */
   private void initPanelEntity() {
-    ObjectTableModel<EntityInfo> model =
-      new ObjectTableModel<EntityInfo>(new ArrayList<EntityInfo>(),
+    ObjectTableModel<EntityWrapper> model =
+      new ObjectTableModel<EntityWrapper>(new ArrayList<EntityWrapper>(),
         new EntityTableProvider());
 
-    List<PanelActionInterface<EntityInfo>> actionsVector =
-      new Vector<PanelActionInterface<EntityInfo>>(3);
+    List<PanelActionInterface<EntityWrapper>> actionsVector =
+      new Vector<PanelActionInterface<EntityWrapper>>(3);
     actionsVector.add(new EntityRefreshAction(mainDialog, admin));
     actionsVector.add(new EntityAddAction(mainDialog, admin));
     actionsVector.add(new EntityEditAction(mainDialog, admin));
     actionsVector.add(new EntityDeleteAction(mainDialog, admin));
 
-    PanelComponent<EntityInfo> panelEntity =
-      new PanelComponent<EntityInfo>(model, actionsVector);
+    PanelComponent<EntityWrapper> panelEntity =
+      new PanelComponent<EntityWrapper>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.entity.title"));
     featuresPane.setComponentAt(index, panelEntity);

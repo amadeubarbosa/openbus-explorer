@@ -13,7 +13,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.EntityInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -21,7 +20,7 @@ import exception.handling.ExceptionContext;
  * 
  * @author Tecgraf
  */
-public class EntityEditAction extends OpenBusAction<EntityInfo> {
+public class EntityEditAction extends OpenBusAction<EntityWrapper> {
 
   /**
    * Construtor da ação.
@@ -63,7 +62,7 @@ public class EntityEditAction extends OpenBusAction<EntityInfo> {
               new EntityInputDialog(EntityEditAction.this.parentWindow,
                 getPanelComponent(), admin, getResult());
             dialog.showDialog();
-            EntityInfo entity = getPanelComponent().getSelectedElement();
+            EntityWrapper entity = getPanelComponent().getSelectedElement();
             dialog.setEditionMode(entity);
           }
         }

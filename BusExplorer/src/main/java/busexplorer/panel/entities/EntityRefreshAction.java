@@ -12,7 +12,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.EntityInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -21,7 +20,7 @@ import exception.handling.ExceptionContext;
  * @author Tecgraf
  * 
  */
-public class EntityRefreshAction extends OpenBusAction<EntityInfo> {
+public class EntityRefreshAction extends OpenBusAction<EntityWrapper> {
 
   /**
    * Construtor.
@@ -48,13 +47,13 @@ public class EntityRefreshAction extends OpenBusAction<EntityInfo> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<EntityInfo>> task =
-      new BusExplorerTask<List<EntityInfo>>(Application.exceptionHandler(),
+    Task<List<EntityWrapper>> task =
+      new BusExplorerTask<List<EntityWrapper>>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
         @Override
         protected void performTask() throws Exception {
-          setResult(EntityInfo.convertToInfo(admin.getEntities()));
+          setResult(EntityWrapper.convertToInfo(admin.getEntities()));
         }
 
         @Override

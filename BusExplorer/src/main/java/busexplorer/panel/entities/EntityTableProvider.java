@@ -1,14 +1,13 @@
 package busexplorer.panel.entities;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
-import busexplorer.wrapper.EntityInfo;
 
 /**
  * Provedor de dados para a tabela de Entidades
  * 
  * @author Tecgraf
  */
-public class EntityTableProvider implements ObjectTableProvider<EntityInfo> {
+public class EntityTableProvider implements ObjectTableProvider<EntityWrapper> {
 
   /** Índice da coluna ID da Entidade */
   private static final int ENTITY_ID = 0;
@@ -39,8 +38,8 @@ public class EntityTableProvider implements ObjectTableProvider<EntityInfo> {
    * {@inheritDoc}
    */
   @Override
-  public Object getCellValue(EntityInfo row, int col) {
-    final EntityInfo entity = row;
+  public Object getCellValue(EntityWrapper row, int col) {
+    final EntityWrapper entity = row;
     switch (col) {
       case ENTITY_ID:
         return entity.getId();

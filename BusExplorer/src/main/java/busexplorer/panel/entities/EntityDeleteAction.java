@@ -13,7 +13,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.EntityInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -21,7 +20,7 @@ import exception.handling.ExceptionContext;
  * 
  * @author Tecgraf
  */
-public class EntityDeleteAction extends OpenBusAction<EntityInfo> {
+public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
 
   /**
    * Construtor da ação.
@@ -61,7 +60,7 @@ public class EntityDeleteAction extends OpenBusAction<EntityInfo> {
         ExceptionContext.BusCore) {
         @Override
         protected void performTask() throws Exception {
-          EntityInfo entity = getPanelComponent().getSelectedElement();
+          EntityWrapper entity = getPanelComponent().getSelectedElement();
           RegisteredEntity ref = entity.getDescriptor().ref;
           ref.remove();
         }

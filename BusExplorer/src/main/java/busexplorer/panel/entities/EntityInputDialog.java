@@ -22,7 +22,6 @@ import busexplorer.exception.BusExplorerAbstractInputDialog;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.PanelComponent;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.EntityInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -41,9 +40,9 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   private TreeMap<String, EntityCategoryDesc> categories =
     new TreeMap<String, EntityCategoryDesc>(String.CASE_INSENSITIVE_ORDER);
 
-  private PanelComponent<EntityInfo> panel;
+  private PanelComponent<EntityWrapper> panel;
 
-  private EntityInfo editingEntity = null;
+  private EntityWrapper editingEntity = null;
 
   /**
    * Construtor.
@@ -54,7 +53,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
    * @param categoryDescList Lista de categorias.
    */
   public EntityInputDialog(Window parentWindow,
-    PanelComponent<EntityInfo> panel, BusAdmin admin,
+    PanelComponent<EntityWrapper> panel, BusAdmin admin,
     List<EntityCategoryDesc> categoryDescList) {
     super(parentWindow, LNG.get(EntityInputDialog.class.getSimpleName()
       + ".title"), admin);
@@ -155,7 +154,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
    * 
    * @param info o dado sendo editado.
    */
-  public void setEditionMode(EntityInfo info) {
+  public void setEditionMode(EntityWrapper info) {
     this.editingEntity = info;
     this.categoryIDCombo.setSelectedItem(info.getCategory());
     this.categoryIDCombo.setEnabled(false);

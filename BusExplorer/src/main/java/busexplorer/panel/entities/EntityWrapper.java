@@ -1,4 +1,4 @@
-package busexplorer.wrapper;
+package busexplorer.panel.entities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEn
  * 
  * @author Tecgraf
  */
-public class EntityInfo {
+public class EntityWrapper {
   // TODO: devemos manter essa referência?
   /** objeto descritor de entidade */
   private RegisteredEntityDesc desc;
@@ -27,9 +27,8 @@ public class EntityInfo {
    * Construtor.
    * 
    * @param desc descritor da entidade
-   * @param category identificador da categoria associada.
    */
-  public EntityInfo(RegisteredEntityDesc desc) {
+  public EntityWrapper(RegisteredEntityDesc desc) {
     this.desc = desc;
     this.id = desc.id;
     this.name = desc.name;
@@ -83,16 +82,16 @@ public class EntityInfo {
 
   /**
    * Método utilitário para converter lista de {@link RegisteredEntityDesc} para
-   * {@link EntityInfo}
+   * {@link EntityWrapper}
    * 
    * @param entities a lista de {@link RegisteredEntityDesc}
-   * @return a lista de {@link EntityInfo}
+   * @return a lista de {@link EntityWrapper}
    */
-  public static List<EntityInfo> convertToInfo(
+  public static List<EntityWrapper> convertToInfo(
     List<RegisteredEntityDesc> entities) {
-    List<EntityInfo> list = new ArrayList<EntityInfo>();
+    List<EntityWrapper> list = new ArrayList<EntityWrapper>();
     for (RegisteredEntityDesc entity : entities) {
-      list.add(new EntityInfo(entity));
+      list.add(new EntityWrapper(entity));
     }
     return list;
   }

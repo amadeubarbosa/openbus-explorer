@@ -1,7 +1,6 @@
 package busexplorer.panel.interfaces;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
-import busexplorer.wrapper.InterfaceInfo;
 
 /**
  * Provedor de dados para a tabela de Interfaces
@@ -9,7 +8,7 @@ import busexplorer.wrapper.InterfaceInfo;
  * @author Tecgraf
  */
 public class InterfaceTableProvider implements 
-  ObjectTableProvider<InterfaceInfo> {
+  ObjectTableProvider<InterfaceWrapper> {
 
   /** Índice da coluna Nome da entidade. */
   private static final int INTERFACE_NAME = 0;
@@ -36,8 +35,8 @@ public class InterfaceTableProvider implements
    * {@inheritDoc}
    */
   @Override
-  public Object getCellValue(InterfaceInfo row, int col) {
-    final InterfaceInfo interfaceInfo = row;
+  public Object getCellValue(InterfaceWrapper row, int col) {
+    final InterfaceWrapper interfaceInfo = row;
 
     switch (col) {
       case INTERFACE_NAME:

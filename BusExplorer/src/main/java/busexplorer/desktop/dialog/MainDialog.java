@@ -57,6 +57,7 @@ import busexplorer.panel.entities.EntityRefreshAction;
 import busexplorer.panel.entities.EntityTableProvider;
 import busexplorer.panel.interfaces.InterfaceAddAction;
 import busexplorer.panel.interfaces.InterfaceDeleteAction;
+import busexplorer.panel.interfaces.InterfaceWrapper;
 import busexplorer.panel.interfaces.InterfaceRefreshAction;
 import busexplorer.panel.interfaces.InterfaceTableProvider;
 import busexplorer.panel.logins.LoginDeleteAction;
@@ -67,7 +68,6 @@ import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.InterfaceInfo;
 import busexplorer.wrapper.LoginInfoInfo;
 import busexplorer.wrapper.OfferInfo;
 
@@ -315,18 +315,18 @@ public class MainDialog {
    * Inicializa o painel de CRUD de interfaces.
    */
   private void initPanelInterface() {
-    ObjectTableModel<InterfaceInfo> model =
-      new ObjectTableModel<InterfaceInfo>(new LinkedList<InterfaceInfo>(),
+    ObjectTableModel<InterfaceWrapper> model =
+      new ObjectTableModel<InterfaceWrapper>(new LinkedList<InterfaceWrapper>(),
         new InterfaceTableProvider());
 
-    List<PanelActionInterface<InterfaceInfo>> actionsVector =
-      new Vector<PanelActionInterface<InterfaceInfo>>(3);
+    List<PanelActionInterface<InterfaceWrapper>> actionsVector =
+      new Vector<PanelActionInterface<InterfaceWrapper>>(3);
     actionsVector.add(new InterfaceRefreshAction(mainDialog, admin));
     actionsVector.add(new InterfaceAddAction(mainDialog, admin));
     actionsVector.add(new InterfaceDeleteAction(mainDialog, admin));
 
-    PanelComponent<InterfaceInfo> panelInterface =
-      new PanelComponent<InterfaceInfo>(model, actionsVector);
+    PanelComponent<InterfaceWrapper> panelInterface =
+      new PanelComponent<InterfaceWrapper>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.interface.title"));
     featuresPane.setComponentAt(index, panelInterface);

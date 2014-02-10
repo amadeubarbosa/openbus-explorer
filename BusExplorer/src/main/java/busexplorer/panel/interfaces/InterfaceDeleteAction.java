@@ -13,7 +13,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.InterfaceInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -21,7 +20,7 @@ import exception.handling.ExceptionContext;
  * 
  * @author Tecgraf
  */
-public class InterfaceDeleteAction extends OpenBusAction<InterfaceInfo> {
+public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
 
   /**
    * Construtor da ação.
@@ -61,7 +60,7 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceInfo> {
       ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        InterfaceInfo interfaceInfo = getPanelComponent().getSelectedElement();
+        InterfaceWrapper interfaceInfo = getPanelComponent().getSelectedElement();
         String interfaceName = interfaceInfo.getName();
         admin.removeInterface(interfaceName);
       }

@@ -1,4 +1,4 @@
-package busexplorer.wrapper;
+package busexplorer.panel.interfaces;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
  * 
  * @author Tecgraf
  */
-public class InterfaceInfo {
+public class InterfaceWrapper {
   /** Nome da interface */
   private final String name;
 
@@ -18,7 +18,7 @@ public class InterfaceInfo {
    * 
    * @param name nome da interface.
    */
-  public InterfaceInfo(String name) {
+  public InterfaceWrapper(String name) {
     this.name = name;
   }
 
@@ -33,15 +33,15 @@ public class InterfaceInfo {
 
   /**
    * Método utilitário para converter lista de {@link String} para
-   * {@link InterfaceInfo}
+   * {@link InterfaceWrapper}
    * 
    * @param interfaces a lista de {@link String}
-   * @return a lista de {@link InterfaceInfo}
+   * @return a lista de {@link InterfaceWrapper}
    */
-  public static List<InterfaceInfo> convertToInfo(List<String> interfaces) {
-    List<InterfaceInfo> list = new ArrayList<InterfaceInfo>();
+  public static List<InterfaceWrapper> convertToInfo(List<String> interfaces) {
+    List<InterfaceWrapper> list = new ArrayList<InterfaceWrapper>();
     for (String interfaceName : interfaces) {
-      list.add(new InterfaceInfo(interfaceName));
+      list.add(new InterfaceWrapper(interfaceName));
     }
     return list;
   }

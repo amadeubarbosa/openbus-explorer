@@ -10,7 +10,6 @@ import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.InterfaceInfo;
 
 /**
  * Ação que atualiza a tabela de interfaces
@@ -18,7 +17,7 @@ import busexplorer.wrapper.InterfaceInfo;
  * @author Tecgraf
  * 
  */
-public class InterfaceRefreshAction extends OpenBusAction<InterfaceInfo> {
+public class InterfaceRefreshAction extends OpenBusAction<InterfaceWrapper> {
 
   /**
    * Construtor.
@@ -44,11 +43,11 @@ public class InterfaceRefreshAction extends OpenBusAction<InterfaceInfo> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<InterfaceInfo>> task = new Task<List<InterfaceInfo>>() {
+    Task<List<InterfaceWrapper>> task = new Task<List<InterfaceWrapper>>() {
 
       @Override
       protected void performTask() throws Exception {
-        setResult(InterfaceInfo.convertToInfo(admin.getInterfaces()));
+        setResult(InterfaceWrapper.convertToInfo(admin.getInterfaces()));
       }
 
       @Override

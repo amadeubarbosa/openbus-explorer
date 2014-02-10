@@ -16,7 +16,6 @@ import busexplorer.exception.BusExplorerAbstractInputDialog;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.PanelComponent;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.InterfaceInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -29,7 +28,7 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel interfaceNameLabel;
   private JTextField interfaceNameField;
 
-  private PanelComponent<InterfaceInfo> panel;
+  private PanelComponent<InterfaceWrapper> panel;
 
   /**
    * Construtor.
@@ -38,7 +37,7 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
    * @param panel Painel a ser atualizado após a adição.
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
-  public InterfaceInputDialog(Window parentWindow, PanelComponent<InterfaceInfo>
+  public InterfaceInputDialog(Window parentWindow, PanelComponent<InterfaceWrapper>
     panel, BusAdmin admin) {
     super(parentWindow, LNG.get(InterfaceInputDialog.class.getSimpleName() +
       ".title"), admin);

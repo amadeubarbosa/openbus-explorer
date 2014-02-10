@@ -1,24 +1,48 @@
-package busexplorer.exception;
+package busexplorer.utils;
 
 import java.awt.Dialog.ModalityType;
 
+import tecgraf.javautils.gui.StandardDialogs;
+import busexplorer.exception.BusExplorerHandlingException;
 import exception.handling.ExceptionContext;
 import exception.handling.ExceptionHandler;
 
-import tecgraf.javautils.gui.StandardDialogs;
-
+/**
+ * A classe abstrata BusExplorerTask permite a realização das tarefas do
+ * BusExplorer em threads separadas. Ela realiza o tratamento padrão de exceções
+ * para tais tarefas.
+ * 
+ * @author Tecgraf
+ * @param <T> A classe do resultado da tarefa.
+ */
 public abstract class BusExplorerTask<T> extends tecgraf.javautils.gui.Task<T> {
 
+  /** Manipulador de exceções */
   private ExceptionHandler<BusExplorerHandlingException> handler;
+  /** Contexto das exceções recebidas */
   private ExceptionContext context;
 
-  public BusExplorerTask(ExceptionHandler<BusExplorerHandlingException> handler,
+  /**
+   * Construtor.
+   * 
+   * @param handler Manipulador de exceções.
+   * @param context Contexto das exceções recebidas.
+   */
+  public BusExplorerTask(
+    ExceptionHandler<BusExplorerHandlingException> handler,
     ExceptionContext context) {
     super();
     this.handler = handler;
     this.context = context;
   }
 
+  /**
+   * Construtor.
+   * 
+   * @param modality Tipo de modalidade do diálogo.
+   * @param handler Manipulador de exceções.
+   * @param context Contexto das exceções recebidas.
+   */
   public BusExplorerTask(ModalityType modality,
     ExceptionHandler<BusExplorerHandlingException> handler,
     ExceptionContext context) {
@@ -27,6 +51,9 @@ public abstract class BusExplorerTask<T> extends tecgraf.javautils.gui.Task<T> {
     this.context = context;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   protected void handleError(Exception exception) {
     BusExplorerHandlingException handlingException =

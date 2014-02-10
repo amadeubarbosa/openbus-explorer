@@ -9,9 +9,9 @@ import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.Application;
-import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.utils.BusExplorerTask;
 import exception.handling.ExceptionContext;
 
 /**

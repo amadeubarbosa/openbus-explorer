@@ -11,9 +11,9 @@ import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOffer;
 import admin.BusAdmin;
 import busexplorer.Application;
-import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.utils.BusExplorerTask;
 import exception.handling.ExceptionContext;
 
 /**

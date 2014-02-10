@@ -10,7 +10,6 @@ import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.CategoryInfo;
 
 /**
  * Ação que atualiza a tabela de categorias
@@ -18,7 +17,7 @@ import busexplorer.wrapper.CategoryInfo;
  * @author Tecgraf
  * 
  */
-public class CategoryRefreshAction extends OpenBusAction<CategoryInfo> {
+public class CategoryRefreshAction extends OpenBusAction<CategoryWrapper> {
 
   /**
    * Construtor.
@@ -44,11 +43,11 @@ public class CategoryRefreshAction extends OpenBusAction<CategoryInfo> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<CategoryInfo>> task = new Task<List<CategoryInfo>>() {
+    Task<List<CategoryWrapper>> task = new Task<List<CategoryWrapper>>() {
 
       @Override
       protected void performTask() throws Exception {
-        setResult(CategoryInfo.convertToInfo(admin.getCategories()));
+        setResult(CategoryWrapper.convertToInfo(admin.getCategories()));
       }
 
       @Override

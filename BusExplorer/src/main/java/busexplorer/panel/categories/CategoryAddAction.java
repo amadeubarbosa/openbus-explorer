@@ -8,7 +8,6 @@ import tecgraf.javautils.LNG;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.CategoryInfo;
 
 /**
  * Classe de ação para criar uma categoria. Esta dispara um diálogo.
@@ -16,7 +15,7 @@ import busexplorer.wrapper.CategoryInfo;
  * 
  * @author Tecgraf
  */
-public class CategoryAddAction extends OpenBusAction<CategoryInfo> {
+public class CategoryAddAction extends OpenBusAction<CategoryWrapper> {
 
   /**
    * Construtor da ação.

@@ -8,7 +8,6 @@ import tecgraf.javautils.LNG;
 import admin.BusAdmin;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.CategoryInfo;
 
 /**
  * Classe de ação para criar uma categoria. Esta dispara um diálogo.
@@ -16,7 +15,7 @@ import busexplorer.wrapper.CategoryInfo;
  * 
  * @author Tecgraf
  */
-public class CategoryEditAction extends OpenBusAction<CategoryInfo> {
+public class CategoryEditAction extends OpenBusAction<CategoryWrapper> {
 
   /**
    * Construtor da ação.
@@ -45,7 +44,7 @@ public class CategoryEditAction extends OpenBusAction<CategoryInfo> {
     CategoryInputDialog dialog = new CategoryInputDialog(parentWindow,
       getPanelComponent(), admin);
     dialog.showDialog();
-    CategoryInfo category = getPanelComponent().getSelectedElement();
+    CategoryWrapper category = getPanelComponent().getSelectedElement();
     dialog.setEditionMode(category);
   }
 

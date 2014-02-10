@@ -1,14 +1,13 @@
 package busexplorer.panel.categories;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
-import busexplorer.wrapper.CategoryInfo;
 
 /**
  * Provedor de dados para a tabela de Categorias
  * 
  * @author Tecgraf
  */
-public class CategoryTableProvider implements ObjectTableProvider<CategoryInfo> {
+public class CategoryTableProvider implements ObjectTableProvider<CategoryWrapper> {
 
   /** Índice da coluna Categoria */
   private static final int CATEGORY_ID = 0;
@@ -37,8 +36,8 @@ public class CategoryTableProvider implements ObjectTableProvider<CategoryInfo> 
    * {@inheritDoc}
    */
   @Override
-  public Object getCellValue(CategoryInfo row, int col) {
-    final CategoryInfo category = row;
+  public Object getCellValue(CategoryWrapper row, int col) {
+    final CategoryWrapper category = row;
      
     switch (col) {
       case CATEGORY_ID:

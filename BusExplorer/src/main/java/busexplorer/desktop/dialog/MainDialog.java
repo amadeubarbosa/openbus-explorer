@@ -40,6 +40,7 @@ import busexplorer.panel.authorizations.AuthorizationTableProvider;
 import busexplorer.panel.categories.CategoryAddAction;
 import busexplorer.panel.categories.CategoryEditAction;
 import busexplorer.panel.categories.CategoryDeleteAction;
+import busexplorer.panel.categories.CategoryWrapper;
 import busexplorer.panel.categories.CategoryRefreshAction;
 import busexplorer.panel.categories.CategoryTableProvider;
 import busexplorer.panel.certificates.CertificateAddAction;
@@ -64,7 +65,6 @@ import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.CategoryInfo;
 import busexplorer.wrapper.CertificateInfo;
 import busexplorer.wrapper.EntityInfo;
 import busexplorer.wrapper.InterfaceInfo;
@@ -248,19 +248,19 @@ public class MainDialog {
    * Inicializa o painel de CRUD de categorias.
    */
   private void initPanelCategory() {
-    ObjectTableModel<CategoryInfo> model =
-      new ObjectTableModel<CategoryInfo>(new LinkedList<CategoryInfo>(),
+    ObjectTableModel<CategoryWrapper> model =
+      new ObjectTableModel<CategoryWrapper>(new LinkedList<CategoryWrapper>(),
         new CategoryTableProvider());
 
-    List<PanelActionInterface<CategoryInfo>> actionsVector =
-      new Vector<PanelActionInterface<CategoryInfo>>(3);
+    List<PanelActionInterface<CategoryWrapper>> actionsVector =
+      new Vector<PanelActionInterface<CategoryWrapper>>(3);
     actionsVector.add(new CategoryRefreshAction(mainDialog, admin));
     actionsVector.add(new CategoryAddAction(mainDialog, admin));
     actionsVector.add(new CategoryEditAction(mainDialog, admin));
     actionsVector.add(new CategoryDeleteAction(mainDialog, admin));
 
-    PanelComponent<CategoryInfo> panelCategory =
-      new PanelComponent<CategoryInfo>(model, actionsVector);
+    PanelComponent<CategoryWrapper> panelCategory =
+      new PanelComponent<CategoryWrapper>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.category.title"));
     featuresPane.setComponentAt(index, panelCategory);

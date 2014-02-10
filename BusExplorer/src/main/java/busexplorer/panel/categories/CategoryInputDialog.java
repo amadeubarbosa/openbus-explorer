@@ -17,7 +17,6 @@ import busexplorer.exception.BusExplorerAbstractInputDialog;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.PanelComponent;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.CategoryInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -32,9 +31,9 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel categoryNameLabel;
   private JTextField categoryNameField;
 
-  private PanelComponent<CategoryInfo> panel;
+  private PanelComponent<CategoryWrapper> panel;
 
-  private CategoryInfo editingCategory = null;
+  private CategoryWrapper editingCategory = null;
 
   /**
    * Construtor.
@@ -43,7 +42,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
    * @param panel Painel a ser atualizado após a adição/edição.
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
-  public CategoryInputDialog(Window parentWindow, PanelComponent<CategoryInfo>
+  public CategoryInputDialog(Window parentWindow, PanelComponent<CategoryWrapper>
     panel, BusAdmin admin) {
     super(parentWindow, LNG.get(CategoryInputDialog.class.getSimpleName() +
       ".title"), admin);
@@ -129,7 +128,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
    *
    * @param info o dado sendo editado.
    */
-  public void setEditionMode(CategoryInfo info) {
+  public void setEditionMode(CategoryWrapper info) {
     this.editingCategory = info;
     this.categoryIDField.setText(info.getId());
     this.categoryIDField.setEnabled(false);

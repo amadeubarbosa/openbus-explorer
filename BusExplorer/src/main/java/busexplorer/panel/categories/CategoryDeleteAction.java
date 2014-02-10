@@ -14,7 +14,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.CategoryInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -22,7 +21,7 @@ import exception.handling.ExceptionContext;
  * 
  * @author Tecgraf
  */
-public class CategoryDeleteAction extends OpenBusAction<CategoryInfo> {
+public class CategoryDeleteAction extends OpenBusAction<CategoryWrapper> {
 
   /**
    * Construtor da ação.
@@ -62,7 +61,7 @@ public class CategoryDeleteAction extends OpenBusAction<CategoryInfo> {
       ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        CategoryInfo category = getPanelComponent().getSelectedElement();
+        CategoryWrapper category = getPanelComponent().getSelectedElement();
         EntityCategory ref = category.getDescriptor().ref;
         ref.remove();
       }

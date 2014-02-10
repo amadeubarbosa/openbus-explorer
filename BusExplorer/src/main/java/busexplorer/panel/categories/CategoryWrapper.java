@@ -1,4 +1,4 @@
-package busexplorer.wrapper;
+package busexplorer.panel.categories;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCatego
  * 
  * @author Tecgraf
  */
-public class CategoryInfo {
+public class CategoryWrapper {
   /** objeto descritor da categoria */
   private EntityCategoryDesc desc;
 
@@ -25,7 +25,7 @@ public class CategoryInfo {
    * 
    * @param desc descritor da categoria
    */
-  public CategoryInfo(EntityCategoryDesc desc) {
+  public CategoryWrapper(EntityCategoryDesc desc) {
     this.desc = desc;
     this.id = desc.id;
     this.name = desc.name;
@@ -69,16 +69,16 @@ public class CategoryInfo {
 
   /**
    * Método utilitário para converter lista de {@link EntityCategoryDesc} para
-   * {@link CategoryInfo}
+   * {@link CategoryWrapper}
    * 
    * @param categories a lista de {@link EntityCategoryDesc}
-   * @return a lista de {@link CategoryInfo}
+   * @return a lista de {@link CategoryWrapper}
    */
-  public static List<CategoryInfo> convertToInfo(
+  public static List<CategoryWrapper> convertToInfo(
     List<EntityCategoryDesc> categories) {
-    List<CategoryInfo> list = new ArrayList<CategoryInfo>();
+    List<CategoryWrapper> list = new ArrayList<CategoryWrapper>();
     for (EntityCategoryDesc category : categories) {
-      list.add(new CategoryInfo(category));
+      list.add(new CategoryWrapper(category));
     }
     return list;
   }

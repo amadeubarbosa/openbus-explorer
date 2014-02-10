@@ -18,7 +18,6 @@ import busexplorer.exception.BusExplorerAbstractInputDialog;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.PanelComponent;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.AuthorizationInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -36,7 +35,7 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
   private List<String> entitiesIDList;
   private List<String> interfacesList;
 
-  private PanelComponent<AuthorizationInfo> panel;
+  private PanelComponent<AuthorizationWrapper> panel;
 
   /**
    * Construtor.
@@ -48,7 +47,7 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    * @param interfacesList Lista de interfaces.
    */
   public AuthorizationInputDialog(Window parentWindow,
-    PanelComponent<AuthorizationInfo> panel, BusAdmin admin, List<String>
+    PanelComponent<AuthorizationWrapper> panel, BusAdmin admin, List<String>
     entitiesIDList, List<String> interfacesList) {
     super(parentWindow, LNG.get(AuthorizationInputDialog.class.getSimpleName() +
       ".title") , admin);

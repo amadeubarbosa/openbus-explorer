@@ -13,7 +13,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.AuthorizationInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -22,7 +21,7 @@ import exception.handling.ExceptionContext;
  * 
  * @author Tecgraf
  */
-public class AuthorizationAddAction extends OpenBusAction<AuthorizationInfo> {
+public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> {
 
   /**
    * Construtor da ação.

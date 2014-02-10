@@ -1,7 +1,6 @@
 package busexplorer.panel.authorizations;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
-import busexplorer.wrapper.AuthorizationInfo;
 
 /**
  * Provedor de dados para a tabela de Autorizações
@@ -9,7 +8,7 @@ import busexplorer.wrapper.AuthorizationInfo;
  * @author Tecgraf
  */
 public class AuthorizationTableProvider implements
-  ObjectTableProvider<AuthorizationInfo> {
+  ObjectTableProvider<AuthorizationWrapper> {
 
   /** Índice da coluna ID da Entidade */
   private static final int ENTITY_ID = 0;
@@ -38,8 +37,8 @@ public class AuthorizationTableProvider implements
    * {@inheritDoc}
    */
   @Override
-  public Object getCellValue(AuthorizationInfo row, int col) {
-    final AuthorizationInfo authorization = row;
+  public Object getCellValue(AuthorizationWrapper row, int col) {
+    final AuthorizationWrapper authorization = row;
     switch (col) {
       case ENTITY_ID:
         return authorization.getEntityId();

@@ -14,7 +14,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.AuthorizationInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -22,7 +21,7 @@ import exception.handling.ExceptionContext;
  * 
  * @author Tecgraf
  */
-public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationInfo>
+public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrapper>
   {
 
   /**
@@ -63,7 +62,7 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationInfo>
       ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        AuthorizationInfo authorization =
+        AuthorizationWrapper authorization =
           getPanelComponent().getSelectedElement();
 
         RegisteredEntity ref = authorization.getEntityDescriptor().ref;

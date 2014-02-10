@@ -1,4 +1,4 @@
-package busexplorer.wrapper;
+package busexplorer.panel.authorizations;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEn
  * 
  * @author Tecgraf
  */
-public class AuthorizationInfo {
+public class AuthorizationWrapper {
   /** objeto descritor de entidade autorizada */
   private RegisteredEntityDesc desc;
 
@@ -28,7 +28,7 @@ public class AuthorizationInfo {
    * @param desc descritor da entidade autorizada
    * @param interfaceName interface 
    */
-  public AuthorizationInfo(RegisteredEntityDesc desc, String interfaceName) {
+  public AuthorizationWrapper(RegisteredEntityDesc desc, String interfaceName) {
     this.desc = desc;
     this.id = desc.id;
     this.interfaceName = interfaceName;
@@ -64,19 +64,19 @@ public class AuthorizationInfo {
 
   /**
    * Método utilitário para converter um mapa de autorizações em uma lista de
-   * {@link AuthorizationInfo}
+   * {@link AuthorizationWrapper}
    * 
    * @param authorizationsMap o mapa de autorizações
-   * @return a lista de {@link AuthorizationInfo}
+   * @return a lista de {@link AuthorizationWrapper}
    */
-  public static List<AuthorizationInfo> convertToInfo(Map<RegisteredEntityDesc,
+  public static List<AuthorizationWrapper> convertToInfo(Map<RegisteredEntityDesc,
     List<String>> authorizationsMap) {
-    List<AuthorizationInfo> list = new ArrayList<AuthorizationInfo>();
+    List<AuthorizationWrapper> list = new ArrayList<AuthorizationWrapper>();
     for (Map.Entry<RegisteredEntityDesc, List<String>> authorizations :
       authorizationsMap.entrySet()) {
       RegisteredEntityDesc entity = authorizations.getKey();
       for (String interfaceName : authorizations.getValue()) {
-        list.add(new AuthorizationInfo(entity, interfaceName));
+        list.add(new AuthorizationWrapper(entity, interfaceName));
       }
     }
 

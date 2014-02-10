@@ -1,14 +1,13 @@
 package busexplorer.panel.logins;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
-import busexplorer.wrapper.LoginInfoInfo;
 
 /**
  * Provedor de dados para a tabela de Logins
  * 
  * @author Tecgraf
  */
-public class LoginTableProvider implements ObjectTableProvider<LoginInfoInfo> {
+public class LoginTableProvider implements ObjectTableProvider<LoginWrapper> {
 
   /** Índice da coluna Login */
   private static final int LOGIN_ID = 0;
@@ -37,8 +36,8 @@ public class LoginTableProvider implements ObjectTableProvider<LoginInfoInfo> {
    * {@inheritDoc}
    */
   @Override
-  public Object getCellValue(LoginInfoInfo row, int col) {
-    final LoginInfoInfo login = row;
+  public Object getCellValue(LoginWrapper row, int col) {
+    final LoginWrapper login = row;
     switch (col) {
     case LOGIN_ID:
       return login.getId();

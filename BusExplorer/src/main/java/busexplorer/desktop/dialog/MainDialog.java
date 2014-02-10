@@ -61,6 +61,7 @@ import busexplorer.panel.interfaces.InterfaceWrapper;
 import busexplorer.panel.interfaces.InterfaceRefreshAction;
 import busexplorer.panel.interfaces.InterfaceTableProvider;
 import busexplorer.panel.logins.LoginDeleteAction;
+import busexplorer.panel.logins.LoginWrapper;
 import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
 import busexplorer.panel.offers.OfferDeleteAction;
@@ -68,7 +69,6 @@ import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
-import busexplorer.wrapper.LoginInfoInfo;
 import busexplorer.wrapper.OfferInfo;
 
 /**
@@ -393,17 +393,17 @@ public class MainDialog {
    * Inicializa o painel CRUD de logins.
    */
   private void initPanelLogin() {
-    ObjectTableModel<LoginInfoInfo> model =
-      new ObjectTableModel<LoginInfoInfo>(new LinkedList<LoginInfoInfo>(),
+    ObjectTableModel<LoginWrapper> model =
+      new ObjectTableModel<LoginWrapper>(new LinkedList<LoginWrapper>(),
         new LoginTableProvider());
 
-    List<PanelActionInterface<LoginInfoInfo>> actionsVector =
-      new Vector<PanelActionInterface<LoginInfoInfo>>(2);
+    List<PanelActionInterface<LoginWrapper>> actionsVector =
+      new Vector<PanelActionInterface<LoginWrapper>>(2);
     actionsVector.add(new LoginRefreshAction(mainDialog, admin));
     actionsVector.add(new LoginDeleteAction(mainDialog, admin));
 
-    PanelComponent<LoginInfoInfo> panelLogin =
-      new PanelComponent<LoginInfoInfo>(model, actionsVector);
+    PanelComponent<LoginWrapper> panelLogin =
+      new PanelComponent<LoginWrapper>(model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.login.title"));
     featuresPane.setComponentAt(index, panelLogin);

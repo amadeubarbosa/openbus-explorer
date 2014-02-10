@@ -14,7 +14,6 @@ import busexplorer.Application;
 import busexplorer.exception.BusExplorerTask;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.wrapper.LoginInfoInfo;
 import exception.handling.ExceptionContext;
 
 /**
@@ -23,7 +22,7 @@ import exception.handling.ExceptionContext;
  * @author Tecgraf
  * 
  */
-public class LoginDeleteAction extends OpenBusAction<LoginInfoInfo> {
+public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
 
   /**
    * Construtor da ação.
@@ -63,7 +62,7 @@ public class LoginDeleteAction extends OpenBusAction<LoginInfoInfo> {
         ExceptionContext.BusCore) {
       @Override
       protected void performTask() throws Exception {
-        LoginInfoInfo login = getPanelComponent().getSelectedElement();
+        LoginWrapper login = getPanelComponent().getSelectedElement();
         admin.invalidateLogin(login.getInfo());
       }
 

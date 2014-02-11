@@ -2,6 +2,8 @@ package busexplorer.panel.certificates;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
+import busexplorer.utils.Utils;
+
 /**
  * Provedor de dados para a tabela de Categorias
  * 
@@ -18,7 +20,7 @@ public class CertificateTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "Entidade" };
+    String[] colNames = { Utils.getString(this.getClass(), "entity") };
     return colNames;
   }
 

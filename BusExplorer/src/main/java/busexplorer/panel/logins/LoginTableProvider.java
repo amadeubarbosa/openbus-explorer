@@ -2,6 +2,8 @@ package busexplorer.panel.logins;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
+import busexplorer.utils.Utils;
+
 /**
  * Provedor de dados para a tabela de Logins
  * 
@@ -19,7 +21,8 @@ public class LoginTableProvider implements ObjectTableProvider<LoginWrapper> {
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "Login", "Entidade" };
+    String[] colNames = { Utils.getString(this.getClass(), "login"),
+      Utils.getString(this.getClass(), "entity") };
     return colNames;
   }
 

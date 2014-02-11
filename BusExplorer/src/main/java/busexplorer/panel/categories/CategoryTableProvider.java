@@ -2,6 +2,8 @@ package busexplorer.panel.categories;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
+import busexplorer.utils.Utils;
+
 /**
  * Provedor de dados para a tabela de Categorias
  * 
@@ -19,7 +21,8 @@ public class CategoryTableProvider implements ObjectTableProvider<CategoryWrappe
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "Categoria", "Descrição" };
+    String[] colNames = { Utils.getString(this.getClass(), "category"),
+      Utils.getString(this.getClass(), "description") };
     return colNames;
   }
 

@@ -2,6 +2,8 @@ package busexplorer.panel.authorizations;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
+import busexplorer.utils.Utils;
+
 /**
  * Provedor de dados para a tabela de Autorizações
  * 
@@ -20,7 +22,8 @@ public class AuthorizationTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { "Entidade", "Interface" };
+    String[] colNames = { Utils.getString(this.getClass(), "entity"),
+      Utils.getString(this.getClass(), "interface") };
     return colNames;
   }
 

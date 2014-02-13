@@ -45,6 +45,14 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
    * {@inheritDoc}
    */
   @Override
+  public boolean abilityConditions() {
+    return Application.login() != null && Application.login().hasAdminRights();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     int option =
       JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),

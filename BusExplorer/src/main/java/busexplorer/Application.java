@@ -1,6 +1,7 @@
 package busexplorer;
 
 import java.awt.EventQueue;
+import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
@@ -10,8 +11,11 @@ import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
 import busexplorer.desktop.dialog.MainDialog;
+import busexplorer.desktop.dialog.LoginDialog;
 import busexplorer.exception.BusExplorerExceptionHandler;
 import busexplorer.utils.Utils;
+import admin.BusAdmin;
+import admin.BusAdminImpl;
 
 /**
  * Classe principal da aplicação.
@@ -25,6 +29,15 @@ public class Application {
    */
   private static BusExplorerExceptionHandler handler =
     new BusExplorerExceptionHandler();
+
+  /**
+   * Informações de login da aplicação.
+   */
+  private static BusExplorerLogin login;
+
+  private static PropertyChangeSupport loginPcs;
+
+  private static BusAdmin admin = new BusAdminImpl();
 
   /**
    * Inicializa a aplicação, criando o diálogo de login.
@@ -53,10 +66,21 @@ public class Application {
     EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
-        MainDialog mainDialog = new MainDialog(properties);
+        MainDialog mainDialog = new MainDialog(properties, admin);
         mainDialog.show();
+
+        loginPcs = new PropertyChangeSupport(this);
+        loginPcs.addPropertyChangeListener(mainDialog);
+        loginProcess(mainDialog);
       }
     });
+  }
+
+  public static void loginProcess(MainDialog mainDialog) {
+    LoginDialog loginDialog = new LoginDialog(mainDialog, admin);
+    loginDialog.show();
+    login = loginDialog.getLogin();
+    loginPcs.firePropertyChange("Application.login", null, login);
   }
 
   /**
@@ -66,6 +90,15 @@ public class Application {
    */
   public static BusExplorerExceptionHandler exceptionHandler() {
     return handler;
+  }
+
+  /**
+   * Recupera as informações de login da aplicação.
+   *
+   * @return as informações de login da aplicação.
+   */
+  public static BusExplorerLogin login() {
+    return login;
   }
 
 }

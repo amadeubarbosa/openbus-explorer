@@ -22,33 +22,27 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 
-import scs.core.IComponent;
-import tecgraf.diagnostic.addons.openbus.v20.OpenBusMonitor;
-import tecgraf.diagnostic.commom.StatusCode;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.Task;
-import tecgraf.openbus.OpenBusContext;
-import tecgraf.openbus.assistant.Assistant;
-import tecgraf.openbus.assistant.AssistantParams;
-import tecgraf.openbus.assistant.OnFailureCallback;
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_0.services.access_control.AccessDenied;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
-import admin.BusAdminImpl;
+import admin.BusAdmin;
+
+import busexplorer.BusExplorerLogin;
 
 /**
- * Diálogo que obtém os dados do usuário e do barramento para efetuar login
+ * Diálogo que obtém os dados do usuário e do barramento para efetuar login.
+ *
+ * @author Tecgraf
  */
-public class LoginDialog {
+public class LoginDialog extends JDialog {
 
   /** Label de endereço do barramento */
   JLabel labelHost = null;
   /** Label de porta do barramento */
   JLabel labelPort = null;
-  /** Diálogo */
-  private JDialog loginDialog;
   /** Campo de texto para o endereço do barramento */
   private JTextField fieldHost;
   /** Campo de texto para a porta do barramento */
@@ -57,20 +51,10 @@ public class LoginDialog {
   private JTextField fieldUser;
   /** Campo de texto onde é digitada a senha do usuário. */
   private JPasswordField fieldPassword;
-  /** ID da entidade que realiza o login no barramento. */
-  private String entity;
-  /** Nome do host do barramento */
-  private String host;
-  /** Porta do barramento */
-  private short port;
-  /** Acessa os serviços de administração do barramento */
-  private Assistant assistant;
-  /** Indicador de sucesso na realização de login pelo diálogo */
-  private boolean success = false;
+  /** Informações de login */
+  private BusExplorerLogin login;
   /** Referência para a biblioteca de administração */
-  private BusAdminImpl admin;
-  /** Indicador se o usuário autenticado possui perfil de administração */
-  boolean isAdmin = false;
+  private BusAdmin admin;
 
   /**
    * Construtor do diálogo.
@@ -78,57 +62,38 @@ public class LoginDialog {
    * @param owner janela pai.
    * @param admin biblioteca de administração
    */
-  public LoginDialog(Window owner, BusAdminImpl admin) {
-    createDialog(owner);
+  public LoginDialog(Window owner, BusAdmin admin) {
+    super(owner, LNG.get("LoginDialog.title") + " - " +
+      LNG.get("Application.title"), JDialog.ModalityType.APPLICATION_MODAL);
     this.admin = admin;
+    buildDialog();
   }
 
   /**
-   * Cria e inicializa o diálogo de login.
-   * 
-   * @param owner janela pai.
+   * Constrói o diálogo de login.
    */
-  private void createDialog(Window owner) {
-    loginDialog =
-      new JDialog(owner, getDialogTitle(),
-        JDialog.ModalityType.APPLICATION_MODAL);
-    loginDialog.setResizable(false);
-    loginDialog.setLocationRelativeTo(owner);
-    loginDialog.addWindowListener(new WindowAdapter() {
+  private void buildDialog() {
+    setResizable(false);
+    addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
-        shutdownLoginDialog();
+        getOwner().dispose();
+        System.exit(0);
       }
     });
 
     buildLoginPane();
-    loginDialog.pack();
+    pack();
+    setLocationRelativeTo(getOwner());
   }
 
   /**
-   * Faz shutdown do diálogo de login.
+   * Recupera as informações de login.
+   *
+   * @return Informações de login.
    */
-  private void shutdownLoginDialog() {
-    loginDialog.getOwner().dispose();
-  }
-
-  /**
-   * Exibe o diálogo de login.
-   * 
-   * @return <code>true</code> se realizou um login com sucesso, e
-   *         <code>false</code> caso contrário.
-   */
-  public boolean show() {
-    fieldHost.requestFocusInWindow();
-    loginDialog.setVisible(true);
-    return success;
-  }
-
-  /**
-   * @return Título do diálogo
-   */
-  private String getDialogTitle() {
-    return LNG.get("LoginDialog.title") + " - " + LNG.get("Application.title");
+  public BusExplorerLogin getLogin() {
+    return login;
   }
 
   /**
@@ -212,46 +177,11 @@ public class LoginDialog {
     buttonsBox.add(buttonQuit);
     loginPanel.add(buttonsBox, BorderLayout.SOUTH);
 
-    loginDialog.getRootPane().setDefaultButton(buttonLogin);
+    getRootPane().setDefaultButton(buttonLogin);
 
-    loginDialog.setContentPane(loginPanel);
-  }
+    setContentPane(loginPanel);
 
-  /**
-   * Recupera o assistente do barramento.
-   * 
-   * @return o instância do assistente
-   */
-  public Assistant getAssistant() {
-    return assistant;
-  }
-
-  /**
-   * Recupera o identificador de entidade utilizado para a conexão ao
-   * barramento.
-   *
-   * @return o identificador de entidade utilizado para a conexão ao barramento.
-   */
-  public String getEntity() {
-    return entity;
-  }
-
-  /**
-   * Recupera o nome do host do barramento.
-   * 
-   * @return o host ao qual estamos conectados.
-   */
-  public String getHost() {
-    return host;
-  }
-
-  /**
-   * Recupera a porta do barramento.
-   * 
-   * @return a porta à qual estamos conectados
-   */
-  public int getPort() {
-    return port;
+    fieldHost.requestFocusInWindow();
   }
 
   /**
@@ -275,98 +205,34 @@ public class LoginDialog {
    * @author Tecgraf
    */
   private class LoginAction implements ActionListener {
-    /** Intervalo de tempo para verificar se o login já foi efetuado */
-    final int LOGIN_CHECK_INTERVAL = 250;
-    /** Número máximo de tentativas de login */
-    final int MAX_LOGIN_FAILS = 3;
-    /** Última exceção lançada no login */
-    Exception lastException = null;
-
-    /**
-     * Tenta logar no barramento até conseguir, ou a tarefa remota ser
-     * cancelada, ou receber uma exceção AccessDenied, ou o número de tentativas
-     * ultrapassar o limite
-     */
     @Override
     public void actionPerformed(ActionEvent event) {
+      String entity = fieldUser.getText();
+      String host = fieldHost.getText();
+      int port = Integer.valueOf(fieldPort.getText());
+
+      final BusExplorerLogin loginInstance = new BusExplorerLogin(admin, entity, host,
+        port);
 
       Task task = new Task() {
-        volatile int failedAttempts = 0;
-        volatile boolean accessDenied = false;
-
         @Override
         protected void performTask() throws Exception {
-          host = fieldHost.getText();
-          port = Short.valueOf(fieldPort.getText());
-
-          entity = fieldUser.getText();
           String password = new String(fieldPassword.getPassword());
-          AssistantParams params = new AssistantParams();
+          BusExplorerLogin.doLogin(loginInstance, password);
 
-          params.callback = new OnFailureCallback() {
+        }
 
-            @Override
-            public void onStartSharedAuthFailure(Assistant arg0, Throwable arg1) {
-              // não iremos utilizar este recurso
-            }
-
-            @Override
-            public void onRegisterFailure(Assistant arg0, IComponent arg1,
-              ServiceProperty[] arg2, Throwable arg3) {
-              // não iremos utilizar este recurso
-            }
-
-            @Override
-            public void onLoginFailure(Assistant arg0, Throwable arg1) {
-              lastException = (Exception) arg1;
-              if (arg1 instanceof AccessDenied) {
-                accessDenied = true;
-              }
-              failedAttempts++;
-            }
-
-            @Override
-            public void onFindFailure(Assistant arg0, Throwable arg1) {
-              // TODO precisamos realizar algum tratamento aqui?
-            }
-          };
-
-          assistant =
-            Assistant.createWithPassword(host, port, entity, password
-              .getBytes(), params);
-
-          OpenBusMonitor monitor =
-            new OpenBusMonitor("openbus", (OpenBusContext) assistant.orb()
-              .resolve_initial_references("OpenBusContext"));
-
-          while (true) {
-            if (wasCancelled()) {
-              assistant.shutdown();
-              break;
-            }
-            if (accessDenied || failedAttempts == MAX_LOGIN_FAILS) {
-              assistant.shutdown();
-              throw lastException;
-            }
-            if (monitor.checkResource().code == StatusCode.OK) {
-              break;
-            }
-
-            try {
-              Thread.sleep(LOGIN_CHECK_INTERVAL);
-            }
-            catch (InterruptedException e) {
-            }
-          }
-          admin.connect(host, port, assistant.orb());
-          isAdmin = isCurrentUserAdmin();
+        @Override
+        protected void cancelTask() {
+          super.cancelTask();
+          login.getAssistant().shutdown();
         }
 
         @Override
         protected void afterTaskUI() {
           if (getError() == null) {
-            loginDialog.dispose();
-            success = true;
+            LoginDialog.this.dispose();
+            login = loginInstance;
           }
         }
 
@@ -374,56 +240,25 @@ public class LoginDialog {
         protected void handleError(Exception exception) {
           // TODO Alterar tratamento de erros. Outros erros podem ocorrer
           if (exception != null) {
-            if (accessDenied) {
-              JOptionPane.showMessageDialog(loginDialog, LNG
+            if (exception instanceof AccessDenied) {
+              JOptionPane.showMessageDialog(LoginDialog.this, LNG
                 .get("LoginDialog.login.accessDenied.message"), LNG
                 .get("ProgressDialog.error.title"), JOptionPane.ERROR_MESSAGE);
             }
             else {
-              JOptionPane.showMessageDialog(loginDialog, LNG
+              JOptionPane.showMessageDialog(LoginDialog.this, LNG
                 .get("LoginDialog.login.communicationError.message"), LNG
                 .get("ProgressDialog.error.title"), JOptionPane.ERROR_MESSAGE);
             }
           }
           // Retorna o foco para o TextField de host (o primeiro).
           fieldHost.requestFocus();
-          success = false;
-          isAdmin = false;
         }
       };
 
-      task.execute(loginDialog, LNG.get("LoginDialog.waiting.title"), LNG
+      task.execute(LoginDialog.this, LNG.get("LoginDialog.waiting.title"), LNG
         .get("LoginDialog.waiting.msg"));
     }
-  }
-
-  /**
-   * Verifica se o usuário tem permissões para administrar o barramento.
-   * 
-   * @return Booleano que indica se o usuário é administrador ou não.
-   * @throws ServiceFailure erro ao acessar registro de logins.
-   */
-  private boolean isCurrentUserAdmin() throws ServiceFailure {
-    // Se o método getLogins() não lançar exceção, o usuário logado está
-    // cadastrado como administrador no barramento.
-    try {
-      admin.getLogins();
-      return true;
-    }
-    catch (UnauthorizedOperation e) {
-      return false;
-    }
-  }
-
-  /**
-   * Indica se o usuário autenticado no momento possui permissão de
-   * administração.
-   * 
-   * @return <code>true</code> se possui permissão de administração e
-   *         <code>false</code> caso contrário.
-   */
-  public boolean isAdmin() {
-    return isAdmin;
   }
 
   /**
@@ -437,8 +272,8 @@ public class LoginDialog {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-      loginDialog.dispose();
-      shutdownLoginDialog();
+      getOwner().dispose();
+      System.exit(0);
     }
   }
 }

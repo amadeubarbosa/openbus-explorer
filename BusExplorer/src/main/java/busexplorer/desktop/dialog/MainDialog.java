@@ -8,6 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,8 +29,7 @@ import javax.swing.event.ChangeListener;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.assistant.Assistant;
-import admin.BusAdminImpl;
+import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.PanelActionInterface;
 import busexplorer.panel.PanelComponent;
@@ -72,23 +73,15 @@ import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.utils.Utils;
 
 /**
- * Diálogo principal da aplicação
+ * Diálogo principal da aplicação.
  * 
  * @author Tecgraf
  */
-public class MainDialog {
-  /**
-   * Assistente do barramento.
-   */
-  private Assistant assistant = null;
+public class MainDialog extends JFrame implements PropertyChangeListener {
   /**
    * Acessa os serviços barramento relacionados à administração.
    */
-  private BusAdminImpl admin;
-  /**
-   * A janela principal da aplicação.
-   */
-  private JFrame mainDialog;
+  private BusAdmin admin;
   /**
    * Pane de recursos de gerência do barramento.
    */
@@ -102,44 +95,59 @@ public class MainDialog {
    * Construtor.
    * 
    * @param properties proprieades da aplicação.
+   * @param admin instância de administração do barramento.
    */
-  public MainDialog(Properties properties) {
-    this.admin = new BusAdminImpl();
+  public MainDialog(Properties properties, BusAdmin admin) {
+    this.admin = admin;
     this.properties = properties;
     buildDialog();
   }
 
   /**
-   * Exibe a janela.
+   * Obtém as propriedades da aplicação.
+   *
+   * @return propriedades da aplicação.
    */
-  public void show() {
-    mainDialog.setVisible(true);
-    login();
-  }
-
   public Properties getProperties() {
     return this.properties;
+  }
+
+  /**
+   * Desconecta-se do barramento e libera os recursos da janela.
+   */
+  @Override
+  public void dispose() {
+    if (Application.login() != null && Application.login().getAssistant() != null) {
+      Application.login().getAssistant().shutdown();
+    }
+    super.dispose();
+  }
+
+  /**
+   * Atualiza membros dependentes de novas informações de login.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent e) {
+    String propertyName = e.getPropertyName();
+    if ("Application.login".equals(propertyName)) {
+      setDialogTitle(Application.login().entity + "@" + Application.login().host +
+        ":" + Application.login().port);
+      updateAdminFeatures(Application.login().hasAdminRights());
+    }
   }
 
   /**
    * Constrói os componentes da janela.
    */
   private void buildDialog() {
-    mainDialog = new JFrame();
-    mainDialog.setMinimumSize(new Dimension(800, 600));
-    mainDialog.setLocationByPlatform(true);
-    mainDialog.setLayout(new BorderLayout(0, 0));
-    mainDialog.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosed(WindowEvent e) {
-        shutdownMainDialog();
-      }
-    });
-    mainDialog.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setMinimumSize(new Dimension(800, 600));
+    setLocationByPlatform(true);
+    setLayout(new BorderLayout(0, 0));
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
     buildMenuBar();
     buildFeaturesComponent();
-    mainDialog.pack();
+    pack();
 
     setDialogTitle(LNG.get("MainDialog.title.disconnected"));
   }
@@ -161,26 +169,26 @@ public class MainDialog {
         Task task = new Task() {
           @Override
           protected void performTask() throws Exception {
-            if (assistant != null) {
-              assistant.shutdown();
+            if (Application.login().getAssistant() != null) {
+              Application.login().getAssistant().shutdown();
             }
             setDialogTitle(LNG.get("MainDialog.title.disconnected"));
           }
 
           @Override
           protected void afterTaskUI() {
-            login();
+            Application.loginProcess(MainDialog.this);
           }
         };
 
         int option =
-          JOptionPane.showConfirmDialog(mainDialog,
+          JOptionPane.showConfirmDialog(MainDialog.this,
             Utils.getString(MainDialog.class, "disconnect.confirm.msg"),
             Utils.getString(MainDialog.class, "disconnect.confirm.title"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (option == JOptionPane.YES_OPTION) {
-          task.execute(mainDialog,
+          task.execute(MainDialog.this,
             Utils.getString(MainDialog.class, "logout.waiting.title"),
             Utils.getString(MainDialog.class, "logout.waiting.msg"));
         }
@@ -196,19 +204,20 @@ public class MainDialog {
       @Override
       public void actionPerformed(ActionEvent e) {
         int option =
-          JOptionPane.showConfirmDialog(mainDialog,
+          JOptionPane.showConfirmDialog(MainDialog.this,
             Utils.getString(MainDialog.class, "quit.confirm.msg"),
             Utils.getString(MainDialog.class, "quit.confirm.title"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (option == JOptionPane.YES_OPTION) {
-          mainDialog.dispose();
+          dispose();
+          System.exit(0);
         }
       }
     });
     menuConnection.add(itemQuit);
 
-    mainDialog.add(menuBar, BorderLayout.NORTH);
+    add(menuBar, BorderLayout.NORTH);
   }
 
   /**
@@ -235,13 +244,11 @@ public class MainDialog {
       public void stateChanged(ChangeEvent event) {
         PanelComponent<?> component =
           (PanelComponent<?>) featuresPane.getSelectedComponent();
-        // TODO Corrigir parâmetro do método refresh, ou sobrecarregá-lo.
-        // --tmartins
         component.refresh(null);
       }
     });
 
-    mainDialog.add(featuresPane, BorderLayout.CENTER);
+    add(featuresPane, BorderLayout.CENTER);
   }
 
   /**
@@ -254,10 +261,10 @@ public class MainDialog {
 
     List<PanelActionInterface<CategoryWrapper>> actionsVector =
       new Vector<PanelActionInterface<CategoryWrapper>>(3);
-    actionsVector.add(new CategoryRefreshAction(mainDialog, admin));
-    actionsVector.add(new CategoryAddAction(mainDialog, admin));
-    actionsVector.add(new CategoryEditAction(mainDialog, admin));
-    actionsVector.add(new CategoryDeleteAction(mainDialog, admin));
+    actionsVector.add(new CategoryRefreshAction(this, admin));
+    actionsVector.add(new CategoryAddAction(this, admin));
+    actionsVector.add(new CategoryEditAction(this, admin));
+    actionsVector.add(new CategoryDeleteAction(this, admin));
 
     PanelComponent<CategoryWrapper> panelCategory =
       new PanelComponent<CategoryWrapper>(model, actionsVector);
@@ -276,10 +283,10 @@ public class MainDialog {
 
     List<PanelActionInterface<EntityWrapper>> actionsVector =
       new Vector<PanelActionInterface<EntityWrapper>>(3);
-    actionsVector.add(new EntityRefreshAction(mainDialog, admin));
-    actionsVector.add(new EntityAddAction(mainDialog, admin));
-    actionsVector.add(new EntityEditAction(mainDialog, admin));
-    actionsVector.add(new EntityDeleteAction(mainDialog, admin));
+    actionsVector.add(new EntityRefreshAction(this, admin));
+    actionsVector.add(new EntityAddAction(this, admin));
+    actionsVector.add(new EntityEditAction(this, admin));
+    actionsVector.add(new EntityDeleteAction(this, admin));
 
     PanelComponent<EntityWrapper> panelEntity =
       new PanelComponent<EntityWrapper>(model, actionsVector);
@@ -298,10 +305,10 @@ public class MainDialog {
 
     List<PanelActionInterface<CertificateWrapper>> actionsVector =
       new Vector<PanelActionInterface<CertificateWrapper>>(3);
-    actionsVector.add(new CertificateRefreshAction(mainDialog, admin));
-    actionsVector.add(new CertificateAddAction(mainDialog, admin));
-    actionsVector.add(new CertificateEditAction(mainDialog, admin));
-    actionsVector.add(new CertificateDeleteAction(mainDialog, admin));
+    actionsVector.add(new CertificateRefreshAction(this, admin));
+    actionsVector.add(new CertificateAddAction(this, admin));
+    actionsVector.add(new CertificateEditAction(this, admin));
+    actionsVector.add(new CertificateDeleteAction(this, admin));
 
     PanelComponent<CertificateWrapper> panelCertificate =
       new PanelComponent<CertificateWrapper>(model, actionsVector);
@@ -321,9 +328,9 @@ public class MainDialog {
 
     List<PanelActionInterface<InterfaceWrapper>> actionsVector =
       new Vector<PanelActionInterface<InterfaceWrapper>>(3);
-    actionsVector.add(new InterfaceRefreshAction(mainDialog, admin));
-    actionsVector.add(new InterfaceAddAction(mainDialog, admin));
-    actionsVector.add(new InterfaceDeleteAction(mainDialog, admin));
+    actionsVector.add(new InterfaceRefreshAction(this, admin));
+    actionsVector.add(new InterfaceAddAction(this, admin));
+    actionsVector.add(new InterfaceDeleteAction(this, admin));
 
     PanelComponent<InterfaceWrapper> panelInterface =
       new PanelComponent<InterfaceWrapper>(model, actionsVector);
@@ -342,9 +349,9 @@ public class MainDialog {
 
     List<PanelActionInterface<AuthorizationWrapper>> actionsVector =
       new Vector<PanelActionInterface<AuthorizationWrapper>>(3);
-    actionsVector.add(new AuthorizationRefreshAction(mainDialog, admin));
-    actionsVector.add(new AuthorizationAddAction(mainDialog, admin));
-    actionsVector.add(new AuthorizationDeleteAction(mainDialog, admin));
+    actionsVector.add(new AuthorizationRefreshAction(this, admin));
+    actionsVector.add(new AuthorizationAddAction(this, admin));
+    actionsVector.add(new AuthorizationDeleteAction(this, admin));
 
     PanelComponent<AuthorizationWrapper> panelAuthorization =
       new PanelComponent<AuthorizationWrapper>(model, actionsVector);
@@ -364,10 +371,10 @@ public class MainDialog {
 
     List<PanelActionInterface<OfferWrapper>> actionsVector =
       new Vector<PanelActionInterface<OfferWrapper>>(2);
-    actionsVector.add(new OfferRefreshAction(mainDialog, admin));
-    actionsVector.add(new OfferDeleteAction(mainDialog, admin));
+    actionsVector.add(new OfferRefreshAction(this, admin));
+    actionsVector.add(new OfferDeleteAction(this, admin));
     final OfferPropertiesAction propertiesAction =
-      new OfferPropertiesAction(mainDialog, admin);
+      new OfferPropertiesAction(this, admin);
     actionsVector.add(propertiesAction);
 
     PanelComponent<OfferWrapper> panelOffer =
@@ -399,8 +406,8 @@ public class MainDialog {
 
     List<PanelActionInterface<LoginWrapper>> actionsVector =
       new Vector<PanelActionInterface<LoginWrapper>>(2);
-    actionsVector.add(new LoginRefreshAction(mainDialog, admin));
-    actionsVector.add(new LoginDeleteAction(mainDialog, admin));
+    actionsVector.add(new LoginRefreshAction(this, admin));
+    actionsVector.add(new LoginDeleteAction(this, admin));
 
     PanelComponent<LoginWrapper> panelLogin =
       new PanelComponent<LoginWrapper>(model, actionsVector);
@@ -423,23 +430,6 @@ public class MainDialog {
   }
 
   /**
-   * Executa as ações de login e, em caso de sucesso, atualiza membros
-   * dependentes das novas informações de login.
-   */
-  private void login() {
-    LoginDialog loginDialog = new LoginDialog(mainDialog, admin);
-    boolean success = loginDialog.show();
-    if (success) {
-      String loginData = loginDialog.getEntity() + "@" + loginDialog.getHost() +
-        ":" + loginDialog.getPort();
-      setDialogTitle(loginData);
-      assistant = loginDialog.getAssistant();
-      boolean isAdmin = loginDialog.isAdmin();
-      updateAdminFeatures(isAdmin);
-    }
-  }
-
-  /**
    * Atualiza as funcionalidades administrativas da aplicação.
    * 
    * @param isAdmin indicador se o usuário possui permissão de administração.
@@ -451,24 +441,12 @@ public class MainDialog {
         featuresPane
           .indexOfTab(LNG.get("MainDialog." + featureName + ".title"));
       featuresPane.setEnabledAt(index, isAdmin);
-      // FIXME desabilitar as ações não permitidas para usuários não admin
     }
-    // Seleciona e atualiza a primeira aba do pane de funcionalidades.
+    // Seleciona a primeira aba do pane de funcionalidades.
     featuresPane.setSelectedIndex(0);
     // A atualização explícita é necessária porque, como esperado, o
     // ChangeListener da pane só é ativado se a aba corrente for modificada.
-    // TODO Corrigir parâmetro do método refresh, ou sobrecarregá-lo. --tmartins
     ((PanelComponent<?>) featuresPane.getSelectedComponent()).refresh(null);
-  }
-
-  /**
-   * Faz shutdown do diálogo principal.
-   */
-  private void shutdownMainDialog() {
-    if (assistant != null) {
-      assistant.shutdown();
-    }
-    System.exit(0);
   }
 
   /**
@@ -477,8 +455,7 @@ public class MainDialog {
    * @param title Título do diálogo.
    */
   private void setDialogTitle(String title) {
-    mainDialog.setTitle(Utils.getString(Application.class, "title") + " - " +
+    setTitle(Utils.getString(Application.class, "title") + " - " +
       title);
   }
-
 }

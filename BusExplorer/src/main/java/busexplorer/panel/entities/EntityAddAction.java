@@ -44,6 +44,14 @@ public class EntityAddAction extends OpenBusAction<EntityWrapper> {
    * {@inheritDoc}
    */
   @Override
+  public boolean abilityConditions() {
+    return Application.login() != null && Application.login().hasAdminRights();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void actionPerformed(ActionEvent arg0) {
     BusExplorerTask<List<EntityCategoryDesc>> task =
       new BusExplorerTask<List<EntityCategoryDesc>>(Application

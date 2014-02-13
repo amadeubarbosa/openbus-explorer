@@ -45,6 +45,14 @@ public class CertificateDeleteAction extends OpenBusAction<CertificateWrapper> {
    * {@inheritDoc}
    */
   @Override
+  public boolean abilityConditions() {
+    return Application.login() != null && Application.login().hasAdminRights();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void actionPerformed(ActionEvent e) {
     int option =
       JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),

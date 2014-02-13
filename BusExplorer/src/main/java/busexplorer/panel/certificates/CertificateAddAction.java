@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
 import admin.BusAdmin;
+import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 
@@ -34,6 +35,14 @@ public class CertificateAddAction extends OpenBusAction<CertificateWrapper> {
   @Override
   public ActionType getActionType() {
     return ActionType.ADD;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean abilityConditions() {
+    return Application.login() != null && Application.login().hasAdminRights();
   }
 
   /**

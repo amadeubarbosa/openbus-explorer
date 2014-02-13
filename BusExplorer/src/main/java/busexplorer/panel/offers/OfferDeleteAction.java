@@ -34,6 +34,14 @@ public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
     return ActionType.REMOVE;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean abilityConditions() {
+    return Application.login() != null && Application.login().hasAdminRights();
+  }
+
   @Override
   public void actionPerformed(ActionEvent e) {
     int option =

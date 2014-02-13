@@ -69,6 +69,12 @@ public class PanelComponent<T> extends JPanel {
   private JButton removeBtn;
   /** Botão outros */
   private JButton othersBtn;
+  /** Ação de adição */
+  private PanelActionInterface<T> addAction;
+  /** Ação de edição */
+  private PanelActionInterface<T> editAction;
+  /** Ação de remoção */
+  private PanelActionInterface<T> removeAction;
   /** Conjunto de ações a serem incluídas no botão "outros" */
   private List<PanelActionInterface<T>> othersActions =
     new ArrayList<PanelActionInterface<T>>();
@@ -138,6 +144,9 @@ public class PanelComponent<T> extends JPanel {
       action.setPanelComponent(this);
       switch (action.getActionType()) {
         case ADD:
+          addAction = action;
+          addAction.setEnabled(true);
+
           addBtn = new JButton(action);
           addBtn
             .setToolTipText(Utils.getString(this.getClass(), "add.tooltip"));
@@ -146,19 +155,23 @@ public class PanelComponent<T> extends JPanel {
           break;
 
         case REMOVE:
+          removeAction = action;
+          removeAction.setEnabled(false);
+
           removeBtn = new JButton(action);
           removeBtn.setToolTipText(Utils.getString(this.getClass(),
             "remove.tooltip"));
-          removeBtn.setEnabled(false);
           removeBtn.setIcon(RegistrationImages.ICON_DELETE_16);
           hasBtns = true;
           break;
 
         case EDIT:
+          editAction = action;
+          editAction.setEnabled(false);
+
           editBtn = new JButton(action);
           editBtn.setToolTipText(Utils.getString(this.getClass(),
             "edit.tooltip"));
-          editBtn.setEnabled(false);
           editBtn.setIcon(RegistrationImages.ICON_EDIT_16);
           hasBtns = true;
           break;
@@ -391,6 +404,99 @@ public class PanelComponent<T> extends JPanel {
   }
 
   /**
+   * Atualiza as habilitações das ações cadastradas.
+   */
+  private void updateActionsAbilities() {
+    int[] selectedRows = table.getSelectedRows();
+    int length = selectedRows.length;
+    boolean hasOtherActive = false;
+
+    if (addAction != null) {
+      addAction.setEnabled(true);
+    }
+
+    switch (length) {
+      case 0:
+        if (removeAction != null) {
+          removeAction.setEnabled(false);
+        }
+        if (editAction != null) {
+          editAction.setEnabled(false);
+        }
+        for (PanelActionInterface<T> action : othersActions) {
+          if (!action.getActionType().equals(ActionType.OTHER)) {
+            action.setEnabled(false);
+          }
+          else {
+            action.setEnabled(true);
+            hasOtherActive = true;
+          }
+        }
+        break;
+
+      case 1:
+        if (removeAction != null) {
+          removeAction.setEnabled(true);
+        }
+        if (editBtn != null) {
+          editAction.setEnabled(true);
+        }
+        for (PanelActionInterface<T> action : othersActions) {
+          switch (action.getActionType()) {
+            case OTHER_SINGLE_SELECTION:
+            case OTHER_MULTI_SELECTION:
+              action.setEnabled(true);
+              hasOtherActive = true;
+              break;
+            case OTHER_ONLY_MULTI_SELECTION:
+              action.setEnabled(false);
+              break;
+            default:
+              action.setEnabled(true);
+              hasOtherActive = true;
+              break;
+          }
+        }
+        break;
+
+      default:
+        // length > 1
+        if (removeAction != null) {
+          removeAction.setEnabled(false);
+        }
+        if (editAction != null) {
+          editAction.setEnabled(false);
+        }
+        for (PanelActionInterface<T> action : othersActions) {
+          switch (action.getActionType()) {
+            case OTHER_SINGLE_SELECTION:
+              action.setEnabled(false);
+              break;
+            case OTHER_MULTI_SELECTION:
+            case OTHER_ONLY_MULTI_SELECTION:
+              action.setEnabled(true);
+              hasOtherActive = true;
+              break;
+            default:
+              action.setEnabled(true);
+              hasOtherActive = true;
+              break;
+          }
+        }
+        break;
+    }
+
+    if (!othersActions.isEmpty()) {
+      if (hasOtherActive) {
+        othersBtn.setEnabled(true);
+      }
+      else {
+        othersBtn.setEnabled(false);
+      }
+    }
+  }
+
+  /**
    * Configura a lista de elementos associados à tabela.
    * 
    * @param objects a lista de elementos.
@@ -477,6 +583,7 @@ public class PanelComponent<T> extends JPanel {
     else {
       // do nothing
     }
+    updateActionsAbilities();
   }
 
   /**
@@ -521,89 +628,7 @@ public class PanelComponent<T> extends JPanel {
     /** {@inheritDoc} */
     @Override
     public void valueChanged(ListSelectionEvent e) {
-      int[] selectedRows = table.getSelectedRows();
-      int length = selectedRows.length;
-      boolean hasOtherActive = false;
-
-      switch (length) {
-        case 0:
-          if (removeBtn != null) {
-            removeBtn.setEnabled(false);
-          }
-          if (editBtn != null) {
-            editBtn.setEnabled(false);
-          }
-          for (PanelActionInterface<T> action : othersActions) {
-            if (!action.getActionType().equals(ActionType.OTHER)) {
-              action.setEnabled(false);
-            }
-            else {
-              action.setEnabled(true);
-              hasOtherActive = true;
-            }
-          }
-          break;
-
-        case 1:
-          if (removeBtn != null) {
-            removeBtn.setEnabled(true);
-          }
-          if (editBtn != null) {
-            editBtn.setEnabled(true);
-          }
-          for (PanelActionInterface<T> action : othersActions) {
-            switch (action.getActionType()) {
-              case OTHER_SINGLE_SELECTION:
-              case OTHER_MULTI_SELECTION:
-                action.setEnabled(true);
-                hasOtherActive = true;
-                break;
-              case OTHER_ONLY_MULTI_SELECTION:
-                action.setEnabled(false);
-                break;
-              default:
-                action.setEnabled(true);
-                hasOtherActive = true;
-                break;
-            }
-          }
-          break;
-
-        default:
-          // length > 1
-          if (removeBtn != null) {
-            removeBtn.setEnabled(false);
-          }
-          if (editBtn != null) {
-            editBtn.setEnabled(false);
-          }
-          for (PanelActionInterface<T> action : othersActions) {
-            switch (action.getActionType()) {
-              case OTHER_SINGLE_SELECTION:
-                action.setEnabled(false);
-                break;
-              case OTHER_MULTI_SELECTION:
-              case OTHER_ONLY_MULTI_SELECTION:
-                action.setEnabled(true);
-                hasOtherActive = true;
-                break;
-              default:
-                action.setEnabled(true);
-                hasOtherActive = true;
-                break;
-            }
-          }
-          break;
-      }
-
-      if (!othersActions.isEmpty()) {
-        if (hasOtherActive) {
-          othersBtn.setEnabled(true);
-        }
-        else {
-          othersBtn.setEnabled(false);
-        }
-      }
+      updateActionsAbilities();
     }
   }
 

@@ -52,6 +52,14 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
   }
 
   /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean abilityConditions() {
+    return true;
+  }
+
+  /**
    * Busca pelo valor associado a chave no LNG
    * 
    * @param key a chave

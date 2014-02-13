@@ -33,4 +33,11 @@ public interface PanelActionInterface<T> extends Action {
    * @param panel o componente.
    */
   public void setPanelComponent(PanelComponent<T> panel);
+
+  /**
+   * Indica condições de habilitação da ação.
+   *
+   * @return condições de habilitação da ação. 
+   */
+  public boolean abilityConditions();
 }

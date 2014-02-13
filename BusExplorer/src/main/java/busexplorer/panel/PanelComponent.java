@@ -145,7 +145,7 @@ public class PanelComponent<T> extends JPanel {
       switch (action.getActionType()) {
         case ADD:
           addAction = action;
-          addAction.setEnabled(true);
+          addAction.setEnabled(addAction.abilityConditions());
 
           addBtn = new JButton(action);
           addBtn
@@ -191,7 +191,7 @@ public class PanelComponent<T> extends JPanel {
         default:
           // informações como tooltip e icones devem ser configurados na ação
           othersActions.add(action);
-          hasActiveOthers = true;
+          hasActiveOthers = action.abilityConditions();
           break;
       }
     }
@@ -412,7 +412,7 @@ public class PanelComponent<T> extends JPanel {
     boolean hasOtherActive = false;
 
     if (addAction != null) {
-      addAction.setEnabled(true);
+      addAction.setEnabled(addAction.abilityConditions());
     }
 
     switch (length) {
@@ -428,7 +428,7 @@ public class PanelComponent<T> extends JPanel {
             action.setEnabled(false);
           }
           else {
-            action.setEnabled(true);
+            action.setEnabled(action.abilityConditions());
             hasOtherActive = true;
           }
         }
@@ -436,24 +436,24 @@ public class PanelComponent<T> extends JPanel {
 
       case 1:
         if (removeAction != null) {
-          removeAction.setEnabled(true);
+          removeAction.setEnabled(removeAction.abilityConditions());
         }
         if (editBtn != null) {
-          editAction.setEnabled(true);
+          editAction.setEnabled(editAction.abilityConditions());
         }
         for (PanelActionInterface<T> action : othersActions) {
           switch (action.getActionType()) {
             case OTHER_SINGLE_SELECTION:
             case OTHER_MULTI_SELECTION:
-              action.setEnabled(true);
-              hasOtherActive = true;
+              action.setEnabled(action.abilityConditions());
+              hasOtherActive = action.abilityConditions();
               break;
             case OTHER_ONLY_MULTI_SELECTION:
               action.setEnabled(false);
               break;
             default:
-              action.setEnabled(true);
-              hasOtherActive = true;
+              action.setEnabled(action.abilityConditions());
+              hasOtherActive = action.abilityConditions();
               break;
           }
         }
@@ -474,12 +474,12 @@ public class PanelComponent<T> extends JPanel {
               break;
             case OTHER_MULTI_SELECTION:
             case OTHER_ONLY_MULTI_SELECTION:
-              action.setEnabled(true);
-              hasOtherActive = true;
+              action.setEnabled(action.abilityConditions());
+              hasOtherActive = action.abilityConditions();
               break;
             default:
-              action.setEnabled(true);
-              hasOtherActive = true;
+              action.setEnabled(action.abilityConditions());
+              hasOtherActive = action.abilityConditions();
               break;
           }
         }

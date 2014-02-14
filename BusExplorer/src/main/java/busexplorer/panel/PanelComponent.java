@@ -213,9 +213,8 @@ public class PanelComponent<T> extends JPanel {
     this.setLayout(new BorderLayout());
     this.add(getFilterPanel(), BorderLayout.NORTH);
     this.add(getScrollPane(), BorderLayout.CENTER);
-    this.add(getButtonsPanel(), BorderLayout.SOUTH);
-    if (!hasBtns) {
-      getButtonsPanel().setVisible(false);
+    if (hasBtns) {
+      this.add(getButtonsPanel(), BorderLayout.SOUTH);
     }
     this.validate();
     this.setVisible(true);
@@ -580,9 +579,6 @@ public class PanelComponent<T> extends JPanel {
   public void refresh(ActionEvent event) {
     if (this.refreshAction != null) {
       this.refreshAction.actionPerformed(event);
-    }
-    else {
-      // do nothing
     }
     updateActionsAbilities();
   }

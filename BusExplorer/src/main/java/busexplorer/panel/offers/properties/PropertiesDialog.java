@@ -1,12 +1,19 @@
 package busexplorer.panel.offers.properties;
 
+import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JPanel;
 
+import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
 import busexplorer.panel.PanelActionInterface;
 import busexplorer.panel.PanelComponent;
@@ -19,11 +26,6 @@ import busexplorer.utils.Utils;
  * @author Tecgraf
  */
 public class PropertiesDialog extends JDialog {
-
-  /**
-   * O painel do diálogo
-   */
-  private PanelComponent<ServiceProperty> panel;
 
   /**
    * Oferta sendo visualizada.
@@ -47,13 +49,28 @@ public class PropertiesDialog extends JDialog {
    * Inicializa o painel do diálogo.
    */
   private void initPanel() {
+    JPanel panel = new JPanel(new GridBagLayout());
+
     List<PanelActionInterface<ServiceProperty>> actions =
       new ArrayList<PanelActionInterface<ServiceProperty>>();
     actions.add(new PropertiesRefreshAction(this, offer));
     List<ServiceProperty> props =
       Arrays.asList(offer.getDescriptor().properties);
     PropertiesTableProvider provider = new PropertiesTableProvider();
-    panel = new PanelComponent<ServiceProperty>(props, provider, actions);
+    PanelComponent<ServiceProperty> propertiesPanel = new
+      PanelComponent<ServiceProperty>(props, provider, actions);
+    panel.add(propertiesPanel, new GBC(0, 0).none());
+
+    JButton closeButton = new JButton(Utils.getString(PropertiesDialog.class,
+      "button.close"));
+    closeButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        dispose();
+      }
+    });
+    panel.add(closeButton, new GBC(0, 1).none().east().insets(9, 9, 9, 9));
+
     setContentPane(panel);
     pack();
   }

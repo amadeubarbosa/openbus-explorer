@@ -203,6 +203,7 @@ public class PanelComponent<T> extends JPanel {
       else {
         othersBtn.setEnabled(false);
       }
+      hasBtns = true;
     }
   }
 

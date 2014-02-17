@@ -21,7 +21,6 @@
     <openbus-core.version>2.0.0.3</openbus-core.version>
     <openbus-sdk.version>2.0.0.1</openbus-sdk.version>
     <scs.version>1.2.1.1</scs.version>
-    <vljtable.version>1.0</vljtable.version>
     <commons-io.version>1.3.2</commons-io.version>
   </properties>
 
@@ -53,22 +52,6 @@
         <version>2.5</version>
         <inherited>false</inherited>
         <executions>
-          <execution>
-            <id>install-vljtable</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>lib/vljtable-${vljtable.version}.jar</file>
-              <groupId>com.vlsolutions</groupId>
-              <artifactId>vljtable</artifactId>
-              <version>${vljtable.version}</version>
-              <packaging>jar</packaging>
-              <generatePom>true</generatePom>
-            </configuration>
-          </execution>
-
           <execution>
             <id>install-javautils</id>
             <phase>initialize</phase>

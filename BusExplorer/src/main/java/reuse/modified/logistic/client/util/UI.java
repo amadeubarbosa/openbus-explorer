@@ -57,7 +57,7 @@ public class UI extends PrintableUI {
     .getResource(ICON_DIRECTORY + "/expandedHeader.gif"));
   /** Ícone de Warning */
   public static final ImageIcon WARNING_ICON = new ImageIcon(UI.class
-    .getResource(ICON_DIRECTORY + "/warning.gif"));
+    .getResource(ICON_DIRECTORY + "/warning.png"));
   /** Ícone de limpeza em botão */
   public static final ImageIcon BUTTON_CLEAR_ICON = new ImageIcon(UI.class
     .getResource(ICON_DIRECTORY + "/buttonClear.gif"));
@@ -78,7 +78,7 @@ public class UI extends PrintableUI {
     UI.class.getResource(ICON_DIRECTORY + "/listEditableButton.gif"));
   /** Ícone de indicação que a célula tem erro */
   public static final ImageIcon ERROR_ICON = new ImageIcon(UI.class
-    .getResource(ICON_DIRECTORY + "/error.gif"));
+    .getResource(ICON_DIRECTORY + "/error.png"));
   /** Ícone em branco para fazer alinhamento com os ícones de edição */
   public static final ImageIcon BLANK_BUTTON_ICON = new ImageIcon(UI.class
     .getResource(ICON_DIRECTORY + "/blankButton.gif"));

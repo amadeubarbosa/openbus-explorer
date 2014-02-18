@@ -35,7 +35,7 @@ public abstract class InputDialog extends JFrame {
   /**
    * Imagem de aviso colocada se houver problemas no preenchimento de dados.
    */
-  private static final ImageIcon warningIcon = UI.WARNING_ICON;
+  private static final ImageIcon errorIcon = UI.ERROR_ICON;
 
   /**
    * Botão de confirmação de dados.
@@ -263,7 +263,7 @@ public abstract class InputDialog extends JFrame {
     }
     messageText.setText("  " + msg);
     messageText.setCaretPosition(0);
-    messageText.insertIcon(warningIcon);
+    messageText.insertIcon(errorIcon);
     hasError = true;
   }
 

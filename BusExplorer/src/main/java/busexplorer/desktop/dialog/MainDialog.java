@@ -143,7 +143,13 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     setMinimumSize(new Dimension(800, 600));
     setLocationByPlatform(true);
     setLayout(new BorderLayout(0, 0));
-    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        dispose();
+        System.exit(0);
+      }
+    });
 
     buildMenuBar();
     buildFeaturesComponent();

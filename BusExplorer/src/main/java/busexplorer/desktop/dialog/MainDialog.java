@@ -27,7 +27,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
 import busexplorer.Application;
@@ -70,7 +69,9 @@ import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
+import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
+import exception.handling.ExceptionContext;
 
 /**
  * Diálogo principal da aplicação.
@@ -172,7 +173,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     itemDisconnect.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        Task task = new Task() {
+        BusExplorerTask<Object> task =
+          new BusExplorerTask<Object>(Application.exceptionHandler(),
+            ExceptionContext.Service) {
           @Override
           protected void performTask() throws Exception {
             if (Application.login().getAssistant() != null) {

@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
@@ -47,22 +46,22 @@ public class EntityRefreshAction extends OpenBusAction<EntityWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<EntityWrapper>> task =
+    BusExplorerTask<List<EntityWrapper>> task =
       new BusExplorerTask<List<EntityWrapper>>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
-        @Override
-        protected void performTask() throws Exception {
-          setResult(EntityWrapper.convertToInfo(admin.getEntities()));
-        }
+      @Override
+      protected void performTask() throws Exception {
+        setResult(EntityWrapper.convertToInfo(admin.getEntities()));
+      }
 
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            getPanelComponent().setElements(getResult());
-          }
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus()) {
+          getPanelComponent().setElements(getResult());
         }
-      };
+      }
+    };
 
     task.execute(parentWindow, getString("waiting.title"),
       getString("waiting.msg"));

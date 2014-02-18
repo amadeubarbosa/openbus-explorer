@@ -9,7 +9,6 @@ import javax.swing.JTextField;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
@@ -53,22 +52,23 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    Task<Object> task =
+    BusExplorerTask<Object> task =
       new BusExplorerTask<Object>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
-        @Override
-        protected void performTask() throws Exception {
-          admin.createInterface(getInterfaceName());
-        }
+      @Override
+      protected void performTask() throws Exception {
+        admin.createInterface(getInterfaceName());
+      }
 
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            panel.refresh(null);
-          }
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus()) {
+          panel.refresh(null);
         }
-      };
+      }
+    };
+
     task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
       Utils.getString(this.getClass(), "waiting.msg"));
     return task.getStatus();

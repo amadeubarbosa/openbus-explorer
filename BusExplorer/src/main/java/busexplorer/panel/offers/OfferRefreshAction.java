@@ -6,10 +6,12 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
+import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.utils.BusExplorerTask;
+import exception.handling.ExceptionContext;
 
 /**
  * Ação que atualiza a tabela de ofertas
@@ -43,7 +45,9 @@ public class OfferRefreshAction extends OpenBusAction<OfferWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<OfferWrapper>> task = new Task<List<OfferWrapper>>() {
+    BusExplorerTask<List<OfferWrapper>> task =
+      new BusExplorerTask<List<OfferWrapper>>(Application.exceptionHandler(),
+      ExceptionContext.BusCore) {
 
       @Override
       protected void performTask() throws Exception {

@@ -6,10 +6,12 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
+import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.utils.BusExplorerTask;
+import exception.handling.ExceptionContext;
 
 /**
  * Ação que atualiza a tabela de autorizações
@@ -44,7 +46,9 @@ public class AuthorizationRefreshAction extends
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<AuthorizationWrapper>> task = new Task<List<AuthorizationWrapper>>() {
+    BusExplorerTask<List<AuthorizationWrapper>> task =
+      new BusExplorerTask<List<AuthorizationWrapper>>(
+        Application.exceptionHandler(), ExceptionContext.BusCore) {
 
       @Override
       protected void performTask() throws Exception {

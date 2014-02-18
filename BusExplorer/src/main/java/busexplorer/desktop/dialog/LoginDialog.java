@@ -24,13 +24,15 @@ import javax.swing.border.TitledBorder;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_0.services.access_control.AccessDenied;
-import admin.BusAdmin;
 
+import admin.BusAdmin;
+import busexplorer.Application;
 import busexplorer.BusExplorerLogin;
+import busexplorer.utils.BusExplorerTask;
+import exception.handling.ExceptionContext;
 
 /**
  * Diálogo que obtém os dados do usuário e do barramento para efetuar login.
@@ -214,7 +216,9 @@ public class LoginDialog extends JDialog {
       final BusExplorerLogin loginInstance = new BusExplorerLogin(admin, entity, host,
         port);
 
-      Task task = new Task() {
+      BusExplorerTask<Object> task =
+         new BusExplorerTask<Object>(Application.exceptionHandler(),
+           ExceptionContext.LoginByPassword) {
         @Override
         protected void performTask() throws Exception {
           String password = new String(fieldPassword.getPassword());
@@ -238,20 +242,7 @@ public class LoginDialog extends JDialog {
 
         @Override
         protected void handleError(Exception exception) {
-          // TODO Alterar tratamento de erros. Outros erros podem ocorrer
-          if (exception != null) {
-            if (exception instanceof AccessDenied) {
-              JOptionPane.showMessageDialog(LoginDialog.this, LNG
-                .get("LoginDialog.login.accessDenied.message"), LNG
-                .get("ProgressDialog.error.title"), JOptionPane.ERROR_MESSAGE);
-            }
-            else {
-              JOptionPane.showMessageDialog(LoginDialog.this, LNG
-                .get("LoginDialog.login.communicationError.message"), LNG
-                .get("ProgressDialog.error.title"), JOptionPane.ERROR_MESSAGE);
-            }
-          }
-          // Retorna o foco para o TextField de host (o primeiro).
+          super.handleError(exception);
           fieldHost.requestFocus();
         }
       };

@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
 import admin.BusAdmin;
 import busexplorer.Application;
@@ -65,9 +64,10 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrappe
       return;
     }
 
-    Task<Object> task = new
-    BusExplorerTask<Object>(Application.exceptionHandler(),
-      ExceptionContext.BusCore) {
+    BusExplorerTask<Object> task =
+      new BusExplorerTask<Object>(Application.exceptionHandler(),
+        ExceptionContext.BusCore) {
+
       @Override
       protected void performTask() throws Exception {
         AuthorizationWrapper authorization =

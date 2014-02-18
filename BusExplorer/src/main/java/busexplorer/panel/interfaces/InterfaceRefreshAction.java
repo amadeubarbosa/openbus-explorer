@@ -6,10 +6,12 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
+import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.utils.BusExplorerTask;
+import exception.handling.ExceptionContext;
 
 /**
  * Ação que atualiza a tabela de interfaces
@@ -43,7 +45,9 @@ public class InterfaceRefreshAction extends OpenBusAction<InterfaceWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<InterfaceWrapper>> task = new Task<List<InterfaceWrapper>>() {
+    BusExplorerTask<List<InterfaceWrapper>> task =
+      new BusExplorerTask<List<InterfaceWrapper>>(
+        Application.exceptionHandler(), ExceptionContext.BusCore) {
 
       @Override
       protected void performTask() throws Exception {

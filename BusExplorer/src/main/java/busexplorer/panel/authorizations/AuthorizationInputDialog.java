@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
@@ -66,22 +65,22 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected boolean accept() {
-    Task<Object> task =
+    BusExplorerTask<Object> task =
       new BusExplorerTask<Object>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
-        @Override
-        protected void performTask() throws Exception {
-          admin.setAuthorization(getEntityID(), getInterfaceName());
-        }
+      @Override
+      protected void performTask() throws Exception {
+        admin.setAuthorization(getEntityID(), getInterfaceName());
+      }
 
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            panel.refresh(null);
-          }
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus()) {
+          panel.refresh(null);
         }
-      };
+      }
+    };
 
     task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
       Utils.getString(this.getClass(), "waiting.msg"));

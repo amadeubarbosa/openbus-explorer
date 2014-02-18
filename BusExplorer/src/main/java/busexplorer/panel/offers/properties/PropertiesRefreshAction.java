@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
 
-import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOffer;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
 import busexplorer.Application;
@@ -52,22 +51,22 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<ServiceProperty>> task =
+    BusExplorerTask<List<ServiceProperty>> task =
       new BusExplorerTask<List<ServiceProperty>>(
         Application.exceptionHandler(), ExceptionContext.BusCore) {
 
-        @Override
-        protected void performTask() throws Exception {
-          setResult(Arrays.asList(offer.describe().properties));
-        }
+      @Override
+      protected void performTask() throws Exception {
+        setResult(Arrays.asList(offer.describe().properties));
+      }
 
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            getPanelComponent().setElements(getResult());
-          }
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus()) {
+          getPanelComponent().setElements(getResult());
         }
-      };
+      }
+    };
 
     task.execute(parentWindow, getString("waiting.title"),
       getString("waiting.msg"));

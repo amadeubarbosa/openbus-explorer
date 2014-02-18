@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
@@ -63,9 +62,10 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
       return;
     }
 
-    Task<Object> task =
+    BusExplorerTask<Object> task =
       new BusExplorerTask<Object>(Application.exceptionHandler(),
-      ExceptionContext.BusCore) {
+        ExceptionContext.BusCore) {
+
       @Override
       protected void performTask() throws Exception {
         InterfaceWrapper interfaceInfo = getPanelComponent().getSelectedElement();

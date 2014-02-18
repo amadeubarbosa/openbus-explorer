@@ -12,7 +12,6 @@ import javax.swing.JTextField;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
@@ -72,28 +71,29 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    Task<Object> task =
+    BusExplorerTask<Object> task =
       new BusExplorerTask<Object>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
-        @Override
-        protected void performTask() throws Exception {
-          if (editingEntity == null) {
-            EntityCategory category = getCategory().ref;
-            category.registerEntity(getEntityId(), getEntityName());
-          } else {
-            RegisteredEntity entity = editingEntity.getDescriptor().ref;
-            entity.setName(getEntityName());
-          }
+      @Override
+      protected void performTask() throws Exception {
+        if (editingEntity == null) {
+          EntityCategory category = getCategory().ref;
+          category.registerEntity(getEntityId(), getEntityName());
+        } else {
+          RegisteredEntity entity = editingEntity.getDescriptor().ref;
+          entity.setName(getEntityName());
         }
+      }
 
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            panel.refresh(null);
-          }
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus()) {
+          panel.refresh(null);
         }
-      };
+      }
+    };
+
     task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
       Utils.getString(this.getClass(), "waiting.msg"));
     return task.getStatus();

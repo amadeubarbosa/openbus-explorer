@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import admin.BusAdmin;
 import busexplorer.Application;
@@ -65,9 +64,10 @@ public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
       return;
     }
 
-    Task<Object> task =
+    BusExplorerTask<Object> task =
       new BusExplorerTask<Object>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
+
       @Override
       protected void performTask() throws Exception {
         LoginWrapper login = getPanelComponent().getSelectedElement();

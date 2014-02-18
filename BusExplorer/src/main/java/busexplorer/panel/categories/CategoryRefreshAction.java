@@ -6,10 +6,12 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
+import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.utils.BusExplorerTask;
+import exception.handling.ExceptionContext;
 
 /**
  * Ação que atualiza a tabela de categorias
@@ -43,7 +45,9 @@ public class CategoryRefreshAction extends OpenBusAction<CategoryWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    Task<List<CategoryWrapper>> task = new Task<List<CategoryWrapper>>() {
+    BusExplorerTask<List<CategoryWrapper>> task =
+      new BusExplorerTask<List<CategoryWrapper>>(Application.exceptionHandler(),
+        ExceptionContext.BusCore) {
 
       @Override
       protected void performTask() throws Exception {

@@ -9,7 +9,6 @@ import javax.swing.JTextField;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 import admin.BusAdmin;
 import busexplorer.Application;
@@ -55,27 +54,28 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    Task<Object> task =
+    BusExplorerTask<Object> task =
       new BusExplorerTask<Object>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
-        @Override
-        protected void performTask() throws Exception {
-          if (editingCategory == null) {
-            admin.createCategory(getCategoryID(), getCategoryName());
-          } else {
-            EntityCategory ref = editingCategory.getDescriptor().ref;
-            ref.setName(getCategoryName());
-          }
+      @Override
+      protected void performTask() throws Exception {
+        if (editingCategory == null) {
+          admin.createCategory(getCategoryID(), getCategoryName());
+        } else {
+          EntityCategory ref = editingCategory.getDescriptor().ref;
+          ref.setName(getCategoryName());
         }
+      }
 
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            panel.refresh(null);
-          }
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus()) {
+          panel.refresh(null);
         }
-      };
+      }
+    };
+
     task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
       Utils.getString(this.getClass(), "waiting.msg"));
     return task.getStatus();

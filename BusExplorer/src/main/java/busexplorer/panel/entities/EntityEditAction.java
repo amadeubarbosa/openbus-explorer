@@ -6,7 +6,6 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import admin.BusAdmin;
 import busexplorer.Application;
@@ -54,27 +53,28 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    Task<List<EntityCategoryDesc>> task =
-      new BusExplorerTask<List<EntityCategoryDesc>>(Application
-        .exceptionHandler(), ExceptionContext.BusCore) {
+    BusExplorerTask<List<EntityCategoryDesc>> task =
+      new BusExplorerTask<List<EntityCategoryDesc>>(
+        Application.exceptionHandler(), ExceptionContext.BusCore) {
 
-        @Override
-        protected void performTask() throws Exception {
-          setResult(admin.getCategories());
-        }
+      @Override
+      protected void performTask() throws Exception {
+        setResult(admin.getCategories());
+      }
 
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            EntityInputDialog dialog =
-              new EntityInputDialog(EntityEditAction.this.parentWindow,
-                getPanelComponent(), admin, getResult());
-            dialog.showDialog();
-            EntityWrapper entity = getPanelComponent().getSelectedElement();
-            dialog.setEditionMode(entity);
-          }
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus()) {
+          EntityInputDialog dialog =
+            new EntityInputDialog(EntityEditAction.this.parentWindow,
+              getPanelComponent(), admin, getResult());
+          dialog.showDialog();
+          EntityWrapper entity = getPanelComponent().getSelectedElement();
+          dialog.setEditionMode(entity);
         }
-      };
+      }
+    };
+
     task.execute(parentWindow, getString("waiting.title"),
       getString("waiting.msg"));
   }

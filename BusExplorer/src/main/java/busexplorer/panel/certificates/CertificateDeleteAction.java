@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.Task;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
@@ -63,12 +62,14 @@ public class CertificateDeleteAction extends OpenBusAction<CertificateWrapper> {
       return;
     }
 
-    Task<Object> task =
+    BusExplorerTask<Object> task =
       new BusExplorerTask<Object>(Application.exceptionHandler(),
-      ExceptionContext.BusCore) {
+        ExceptionContext.BusCore) {
+
       @Override
       protected void performTask() throws Exception {
-        CertificateWrapper certificate = getPanelComponent().getSelectedElement();
+        CertificateWrapper certificate =
+          getPanelComponent().getSelectedElement();
         String entityId = certificate.getEntity();
         admin.removeCertificate(entityId);
       }
@@ -81,6 +82,7 @@ public class CertificateDeleteAction extends OpenBusAction<CertificateWrapper> {
       }
     };
 
-    task.execute(parentWindow, getString("waiting.title"), getString("waiting.msg"));
+    task.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"));
   }
 }

@@ -213,7 +213,7 @@ public class LoginDialog extends JDialog {
       String host = fieldHost.getText();
       int port = Integer.valueOf(fieldPort.getText());
 
-      final BusExplorerLogin loginInstance = new BusExplorerLogin(admin, entity, host,
+      final BusExplorerLogin theLogin = new BusExplorerLogin(admin, entity, host,
         port);
 
       BusExplorerTask<Object> task =
@@ -222,28 +222,18 @@ public class LoginDialog extends JDialog {
         @Override
         protected void performTask() throws Exception {
           String password = new String(fieldPassword.getPassword());
-          BusExplorerLogin.doLogin(loginInstance, password);
-
-        }
-
-        @Override
-        protected void cancelTask() {
-          super.cancelTask();
-          login.getAssistant().shutdown();
+          BusExplorerLogin.doLogin(theLogin, password);
         }
 
         @Override
         protected void afterTaskUI() {
-          if (getError() == null) {
+          if (getStatus()) {
             LoginDialog.this.dispose();
-            login = loginInstance;
+            login = theLogin;
+          } else {
+            theLogin.getAssistant().shutdown();
+            fieldHost.requestFocus();
           }
-        }
-
-        @Override
-        protected void handleError(Exception exception) {
-          super.handleError(exception);
-          fieldHost.requestFocus();
         }
       };
 

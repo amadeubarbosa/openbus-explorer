@@ -101,14 +101,12 @@ public class BusExplorerLogin {
    * @param login Informações de login.
    * @param password Senha.
    */
-  public static synchronized void doLogin(BusExplorerLogin login, String
-    password) throws Exception {
+  public static void doLogin(BusExplorerLogin login, String password) throws
+    Exception {
     /** Intervalo de tempo para verificar se o login já foi efetuado */
     final int LOGIN_CHECK_INTERVAL = 250;
     /** Número máximo de tentativas de login */
     final int MAX_LOGIN_FAILS = 3;
-
-    final BusExplorerLogin theLogin = login;
 
     OnFailureCallbackWithException callback =
      new OnFailureCallbackWithException() {
@@ -155,11 +153,12 @@ public class BusExplorerLogin {
 
     OpenBusMonitor monitor =
       new OpenBusMonitor("openbus", (OpenBusContext)
-      login.getAssistant().orb().
-      resolve_initial_references("OpenBusContext"));
+        login.assistant.orb().resolve_initial_references("OpenBusContext"));
 
     while (true) {
       if (monitor.checkResource().code == StatusCode.OK) {
+        login.connectToAdmin();
+        login.checkAdminRights();
         break;
       }
       if (callback.getException() != null) {
@@ -173,9 +172,6 @@ public class BusExplorerLogin {
       catch (InterruptedException e) {
       }
     }
-
-    login.connectToAdmin();
-    login.checkAdminRights();
   }
   
   /**

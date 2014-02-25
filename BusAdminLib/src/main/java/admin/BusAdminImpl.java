@@ -100,46 +100,48 @@ public class BusAdminImpl implements BusAdmin {
    * Obtém as facetas dos registros do barramento.
    */
   private void obtainRegistries() {
-    try {
-      IComponent iComponent =
-        Util.getIComponent(this.host, this.port, this.orb);
-
-      org.omg.CORBA.Object entityRegistryObj =
-        iComponent.getFacet(EntityRegistryHelper.id());
-      this.entityRegistry = EntityRegistryHelper.narrow(entityRegistryObj);
-
-      org.omg.CORBA.Object certificateRegistryObj =
-        iComponent.getFacet(CertificateRegistryHelper.id());
-      this.certificateRegistry =
-        CertificateRegistryHelper.narrow(certificateRegistryObj);
-
-      org.omg.CORBA.Object interfaceRegistryObj =
-        iComponent.getFacet(InterfaceRegistryHelper.id());
-      this.interfaceRegistry =
-        InterfaceRegistryHelper.narrow(interfaceRegistryObj);
-
-      org.omg.CORBA.Object offerRegistryObj =
-        iComponent.getFacet(OfferRegistryHelper.id());
-      this.offerRegistry = OfferRegistryHelper.narrow(offerRegistryObj);
-
-      org.omg.CORBA.Object loginRegistryObj =
-        iComponent.getFacet(LoginRegistryHelper.id());
-      this.loginRegistry = LoginRegistryHelper.narrow(loginRegistryObj);
+    IComponent iComponent =
+      Util.getIComponent(this.host, this.port, this.orb);
+    if (iComponent == null) {
+      throw new IncompatibleBus();
     }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
+
+    org.omg.CORBA.Object entityRegistryObj =
+      iComponent.getFacet(EntityRegistryHelper.id());
+    if (entityRegistryObj == null) {
+      throw new IncompatibleBus();
     }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
+    this.entityRegistry = EntityRegistryHelper.narrow(entityRegistryObj);
+
+    org.omg.CORBA.Object certificateRegistryObj =
+      iComponent.getFacet(CertificateRegistryHelper.id());
+    if (certificateRegistryObj == null) {
+      throw new IncompatibleBus();
     }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
+    this.certificateRegistry =
+      CertificateRegistryHelper.narrow(certificateRegistryObj);
+
+    org.omg.CORBA.Object interfaceRegistryObj =
+      iComponent.getFacet(InterfaceRegistryHelper.id());
+    if (interfaceRegistryObj == null) {
+      throw new IncompatibleBus();
     }
+    this.interfaceRegistry =
+      InterfaceRegistryHelper.narrow(interfaceRegistryObj);
+
+    org.omg.CORBA.Object offerRegistryObj =
+      iComponent.getFacet(OfferRegistryHelper.id());
+    if (interfaceRegistryObj == null) {
+      throw new IncompatibleBus();
+    }
+    this.offerRegistry = OfferRegistryHelper.narrow(offerRegistryObj);
+
+    org.omg.CORBA.Object loginRegistryObj =
+      iComponent.getFacet(LoginRegistryHelper.id());
+    if (loginRegistryObj == null) {
+      throw new IncompatibleBus();
+    }
+    this.loginRegistry = LoginRegistryHelper.narrow(loginRegistryObj);
   }
 
   /**

@@ -30,6 +30,7 @@ public enum ExceptionType {
   TRANSIENT,
   OBJECT_NOT_EXIST,
   // Outros
+  IncompatibleBus,
   /** Exceções não categorizadas */
   Unspecified;
 

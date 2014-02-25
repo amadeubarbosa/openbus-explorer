@@ -247,6 +247,20 @@ public class BusExplorerExceptionHandler extends
         System.exit(1);
         break;
 
+      case IncompatibleBus:
+        switch (context) {
+          case LoginByPassword:
+          case LoginByCertificate:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "incompatible.bus.login", theException.getMessage()));
+            break;
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "incompatible.bus", theException.getMessage()));
+            break;
+        }
+        break;
+
       case Unspecified:
       default:
         exception.setErrorMessage(Utils.getString(this.getClass(),

@@ -2,10 +2,15 @@ package busexplorer.utils;
 
 import java.awt.Dialog.ModalityType;
 
+import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.StandardDialogs;
+
+import busexplorer.desktop.dialog.ExceptionDialog;
 import busexplorer.exception.BusExplorerHandlingException;
 import exception.handling.ExceptionContext;
 import exception.handling.ExceptionHandler;
+import exception.handling.ExceptionType;
+
 
 /**
  * A classe abstrata BusExplorerTask permite a realização das tarefas do
@@ -59,8 +64,15 @@ public abstract class BusExplorerTask<T> extends tecgraf.javautils.gui.Task<T> {
     BusExplorerHandlingException handlingException =
       handler.process(exception, context);
     if (exception != null) {
-      StandardDialogs.showErrorDialog(parentWindow, taskTitle,
-        handlingException.getErrorMessage());
+      Exception e = handlingException.getException();
+
+      if (ExceptionType.getType(e) == ExceptionType.Unspecified) {
+        ExceptionDialog.createDialog(parentWindow, taskTitle,
+          handlingException.getException(), "").setVisible(true);
+      } else {
+        StandardDialogs.showErrorDialog(parentWindow, taskTitle,
+          handlingException.getErrorMessage());
+      }
     }
   }
 }

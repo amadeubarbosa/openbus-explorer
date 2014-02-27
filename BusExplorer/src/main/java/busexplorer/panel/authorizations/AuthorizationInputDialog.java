@@ -2,15 +2,19 @@ package busexplorer.panel.authorizations;
 
 import java.awt.GridBagLayout;
 import java.awt.Window;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
+
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
@@ -28,8 +32,8 @@ import exception.handling.ExceptionContext;
 public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel entityIDLabel;
   private JComboBox entityIDCombo;
-  private JLabel interfaceNameLabel;
-  private JComboBox interfaceNameCombo;
+  private JLabel interfacesLabel;
+  private JList interfacesScrollList;
 
   private List<String> entitiesIDList;
   private List<String> interfacesList;
@@ -65,13 +69,22 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected boolean accept() {
+    if (!hasValidFields()) {
+      return false;
+    }
+
     BusExplorerTask<Object> task =
       new BusExplorerTask<Object>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
       @Override
       protected void performTask() throws Exception {
-        admin.setAuthorization(getEntityID(), getInterfaceName());
+        String entityID = getEntityID();
+        String[] selectedInterfaces = getSelectedInterfaces();
+
+        for (String selectedInterface : selectedInterfaces) {
+          admin.setAuthorization(entityID, selectedInterface);
+        }
       }
 
       @Override
@@ -102,12 +115,13 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
     entityIDCombo = new JComboBox(entitiesIDList.toArray());
     panel.add(entityIDCombo, new GBC(0, 1).insets(5).horizontal().west());
 
-    interfaceNameLabel =
-      new JLabel(Utils.getString(this.getClass(), "interfaceName.label"));
-    panel.add(interfaceNameLabel, new GBC(0, 2).insets(5).none().west());
+    interfacesLabel =
+      new JLabel(Utils.getString(this.getClass(), "interfaces.label"));
+    panel.add(interfacesLabel, new GBC(0, 2).insets(5).none().west());
 
-    interfaceNameCombo = new JComboBox(interfacesList.toArray());
-    panel.add(interfaceNameCombo, new GBC(0, 3).insets(5).horizontal().west());
+    interfacesScrollList = new JList(interfacesList.toArray());
+    panel.add(new JScrollPane(interfacesScrollList),
+      new GBC(0, 3).insets(5).horizontal().west());
 
     return panel;
   }
@@ -117,6 +131,13 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
+    if (interfacesScrollList.isSelectionEmpty()) {
+      setErrorMessage(Utils.getString(this.getClass(),
+        "error.validation.emptyInterfaces"));
+      return false;
+    }
+
+    clearErrorMessage();
     return true;
   }
 
@@ -130,11 +151,14 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
   }
 
   /**
-   * Obtém o nome da interface da autorização a ser adicionada.
+   * Obtém o nome das interfaces selecionadas para autorização.
    *
-   * @return o nome da interface da autorização a ser adicionada.
+   * @return array com o nome das interfaces selecionadas para autorização.
    */
-  private String getInterfaceName() {
-    return (String) this.interfaceNameCombo.getSelectedItem();
+  private String[] getSelectedInterfaces() {
+    Object[] selectedInterfaces = this.interfacesScrollList.getSelectedValues();
+
+    return Arrays.copyOf(selectedInterfaces, selectedInterfaces.length,
+      String[].class);
   }
 }

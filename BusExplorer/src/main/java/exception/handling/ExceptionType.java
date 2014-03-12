@@ -31,6 +31,7 @@ public enum ExceptionType {
   OBJECT_NOT_EXIST,
   // Outros
   IncompatibleBus,
+  IllegalArgumentException,
   /** Exceções não categorizadas */
   Unspecified;
 

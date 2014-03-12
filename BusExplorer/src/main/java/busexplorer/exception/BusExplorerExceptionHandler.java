@@ -261,6 +261,19 @@ public class BusExplorerExceptionHandler extends
         }
         break;
 
+      case IllegalArgumentException:
+        switch (context) {
+          case LoginByPassword:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "illegal.argument.login", theException.getMessage()));
+            break;
+          default:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "illegal.argument", theException.getMessage()));
+            break;
+        }
+        break;
+
       case Unspecified:
       default:
         exception.setErrorMessage(Utils.getString(this.getClass(),

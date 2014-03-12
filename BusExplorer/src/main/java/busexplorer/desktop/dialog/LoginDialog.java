@@ -15,18 +15,16 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.DocumentEvent;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_0.services.ServiceFailure;
-import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
-import tecgraf.openbus.core.v2_0.services.access_control.AccessDenied;
 
 import admin.BusAdmin;
 import busexplorer.Application;
@@ -53,6 +51,8 @@ public class LoginDialog extends JDialog {
   private JTextField fieldUser;
   /** Campo de texto onde é digitada a senha do usuário. */
   private JPasswordField fieldPassword;
+  /** Botão que executa a ação de login. */
+  private JButton buttonLogin;
   /** Informações de login */
   private BusExplorerLogin login;
   /** Referência para a biblioteca de administração */
@@ -120,6 +120,9 @@ public class LoginDialog extends JDialog {
 
     final Font FONT_LABEL = new Font("Dialog", Font.PLAIN, 12);
 
+    EnableLoginListener enableLoginListener = new EnableLoginListener();
+    SelectAllTextListener selectAllTextListener = new SelectAllTextListener();
+
     labelHost = new JLabel(LNG.get("LoginDialog.host.label"));
     labelHost.setFont(FONT_LABEL);
     configPanel.add(labelHost, new GBC(0, 3).west().insets(6, 6, 3, 6));
@@ -127,7 +130,8 @@ public class LoginDialog extends JDialog {
     fieldHost = new JTextField();
     fieldHost.setFocusable(true);
     fieldHost.setToolTipText(LNG.get("LoginDialog.host.help"));
-    fieldHost.addFocusListener(new SelectAllTextListener());
+    fieldHost.addFocusListener(selectAllTextListener);
+    fieldHost.getDocument().addDocumentListener(enableLoginListener);
     configPanel.add(fieldHost, new GBC(0, 4).horizontal().insets(0, 6, 6, 9));
 
     labelPort = new JLabel(LNG.get("LoginDialog.port.label"));
@@ -138,7 +142,8 @@ public class LoginDialog extends JDialog {
     fieldPort.setToolTipText(LNG.get("LoginDialog.port.help"));
     configPanel.add(fieldPort, new GBC(1, 4).horizontal().insets(0, 0, 6, 6));
     fieldPort.setFocusable(true);
-    fieldPort.addFocusListener(new SelectAllTextListener());
+    fieldPort.addFocusListener(selectAllTextListener);
+    fieldPort.getDocument().addDocumentListener(enableLoginListener);
 
     JLabel labelUser = new JLabel(LNG.get("LoginDialog.user.label"));
     labelUser.setFont(FONT_LABEL);
@@ -148,7 +153,8 @@ public class LoginDialog extends JDialog {
     fieldUser.setToolTipText(LNG.get("LoginDialog.user.help"));
     configPanel.add(fieldUser, new GBC(0, 6).horizontal().insets(0, 6, 6, 9));
     fieldUser.setFocusable(true);
-    fieldUser.addFocusListener(new SelectAllTextListener());
+    fieldUser.addFocusListener(selectAllTextListener);
+    fieldUser.getDocument().addDocumentListener(enableLoginListener);
 
     JLabel labelPassword = new JLabel(LNG.get("LoginDialog.password.label"));
     labelPassword.setFont(FONT_LABEL);
@@ -159,12 +165,13 @@ public class LoginDialog extends JDialog {
     configPanel.add(fieldPassword, new GBC(1, 6).horizontal()
       .insets(0, 0, 6, 6));
     fieldPassword.setFocusable(true);
-    fieldPassword.addFocusListener(new SelectAllTextListener());
+    fieldPassword.addFocusListener(selectAllTextListener);
 
     loginPanel.add(configPanel, BorderLayout.CENTER);
 
-    JButton buttonLogin = new JButton(LNG.get("LoginDialog.confirm.button"));
+    buttonLogin = new JButton(LNG.get("LoginDialog.confirm.button"));
     buttonLogin.setToolTipText(LNG.get("LoginDialog.confirm.help"));
+    buttonLogin.setEnabled(false);
     buttonLogin.addActionListener(new LoginAction());
 
     JButton buttonQuit = new JButton(LNG.get("LoginDialog.quit.button"));
@@ -207,21 +214,26 @@ public class LoginDialog extends JDialog {
    * @author Tecgraf
    */
   private class LoginAction implements ActionListener {
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void actionPerformed(ActionEvent event) {
-      String entity = fieldUser.getText();
-      String host = fieldHost.getText();
-      int port = Integer.valueOf(fieldPort.getText());
-
-      final BusExplorerLogin theLogin = new BusExplorerLogin(admin, entity, host,
-        port);
 
       BusExplorerTask<Object> task =
          new BusExplorerTask<Object>(Application.exceptionHandler(),
            ExceptionContext.LoginByPassword) {
+
+        BusExplorerLogin theLogin;
+
         @Override
         protected void performTask() throws Exception {
+          String host = fieldHost.getText().trim();
+          int port = Integer.parseInt(fieldPort.getText().trim());
+          String entity = fieldUser.getText().trim();
           String password = new String(fieldPassword.getPassword());
+
+          theLogin = new BusExplorerLogin(admin, entity, host, port);
           BusExplorerLogin.doLogin(theLogin, password);
         }
 
@@ -231,8 +243,10 @@ public class LoginDialog extends JDialog {
             LoginDialog.this.dispose();
             login = theLogin;
           } else {
-            theLogin.getAssistant().shutdown();
-            fieldHost.requestFocus();
+            if (theLogin != null && theLogin.getAssistant() != null) {
+              theLogin.getAssistant().shutdown();
+            }
+            fieldUser.requestFocus();
           }
         }
       };
@@ -250,11 +264,66 @@ public class LoginDialog extends JDialog {
   private class QuitAction implements ActionListener {
     /**
      * Termina a aplicação.
+     *
+     * @param event Evento.
      */
     @Override
     public void actionPerformed(ActionEvent event) {
       getOwner().dispose();
       System.exit(0);
+    }
+  }
+
+  /**
+   * Listener que ajusta a habilitação do botão de login de acordo com uma
+   * validação inicial.
+   *
+   * @author Tecgraf
+   */
+  private class EnableLoginListener implements DocumentListener {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void changedUpdate(DocumentEvent e) {
+      validate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeUpdate(DocumentEvent e) {
+      validate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void insertUpdate(DocumentEvent e) {
+      validate();
+    }
+
+    /**
+     * Realiza a validação.
+     */
+    private void validate() {
+      try {
+        Integer.parseInt(fieldPort.getText().trim());
+      } catch (NumberFormatException e) {
+        buttonLogin.setEnabled(false);
+        return;
+      }
+
+      if (fieldHost.getText().trim().length() > 0 &&
+        fieldPort.getText().trim().length() > 0 &&
+        fieldUser.getText().trim().length() > 0) {
+          buttonLogin.setEnabled(true);
+      }
+      else {
+          buttonLogin.setEnabled(false);
+      }
     }
   }
 }

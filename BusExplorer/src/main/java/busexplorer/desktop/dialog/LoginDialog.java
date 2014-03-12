@@ -8,11 +8,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Vector;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,6 +34,7 @@ import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.BusExplorerLogin;
 import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.ConfigurationProperties;
 import exception.handling.ExceptionContext;
 
 /**
@@ -43,6 +48,8 @@ public class LoginDialog extends JDialog {
   JLabel labelHost = null;
   /** Label de porta do barramento */
   JLabel labelPort = null;
+  /** Combo box de barramentos pré-configurados */
+  private JComboBox comboBus;
   /** Campo de texto para o endereço do barramento */
   private JTextField fieldHost;
   /** Campo de texto para a porta do barramento */
@@ -85,7 +92,6 @@ public class LoginDialog extends JDialog {
     });
 
     buildLoginPane();
-    pack();
     setLocationRelativeTo(getOwner());
   }
 
@@ -115,19 +121,50 @@ public class LoginDialog extends JDialog {
       new TitledBorder(null, LNG.get("LoginDialog.config.label"));
     configPanel.setBorder(configBorder);
 
-    // TODO ComboBox de barramentos pré-configurados; foi por isso que as
-    // GridBagConstraints "pularam" para a linha 3. --tmartins
-
     final Font FONT_LABEL = new Font("Dialog", Font.PLAIN, 12);
 
     EnableLoginListener enableLoginListener = new EnableLoginListener();
     SelectAllTextListener selectAllTextListener = new SelectAllTextListener();
 
+    ConfigurationProperties configProps = new ConfigurationProperties();
+
+    final Vector<BusComboItem> busVector = new Vector<BusComboItem>();
+
+    for (int i = 1; ; i++) {
+      String busPrefix = "bus" + i + ".";
+      String description = configProps.getProperty(busPrefix + "description");
+      String address = configProps.getProperty(busPrefix + "address");
+      if (description == null || address == null) {
+        break;
+      }
+      busVector.add(new BusComboItem(description, address));
+    }
+
+    if (busVector.size() > 0) {
+      busVector.add(new BusComboItem("Outro...", null));
+
+      JLabel labelBus = new JLabel(LNG.get("LoginDialog.bus.label"));
+      labelBus.setFont(FONT_LABEL);
+      configPanel.add(labelBus,
+        new GBC(0, 1).gridwidth(2).horizontal().insets(6, 6, 3, 6));
+
+      comboBus = new JComboBox(busVector);
+      comboBus.addItemListener(new ItemListener() {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+          updateHostPort();
+        }
+      });
+      configPanel.add(comboBus,
+        new GBC(0, 2).gridwidth(2).horizontal().insets(0, 6, 6, 9));
+    }
+
     labelHost = new JLabel(LNG.get("LoginDialog.host.label"));
     labelHost.setFont(FONT_LABEL);
     configPanel.add(labelHost, new GBC(0, 3).west().insets(6, 6, 3, 6));
 
-    fieldHost = new JTextField();
+    fieldHost = new JTextField(System.getProperty("host") != null ?
+      System.getProperty("host") : "");
     fieldHost.setFocusable(true);
     fieldHost.setToolTipText(LNG.get("LoginDialog.host.help"));
     fieldHost.addFocusListener(selectAllTextListener);
@@ -138,7 +175,8 @@ public class LoginDialog extends JDialog {
     labelPort.setFont(FONT_LABEL);
     configPanel.add(labelPort, new GBC(1, 3).west().insets(6, 0, 3, 6));
 
-    fieldPort = new JTextField();
+    fieldPort = new JTextField(System.getProperty("port") != null ?
+      System.getProperty("port") : "");
     fieldPort.setToolTipText(LNG.get("LoginDialog.port.help"));
     configPanel.add(fieldPort, new GBC(1, 4).horizontal().insets(0, 0, 6, 6));
     fieldPort.setFocusable(true);
@@ -186,11 +224,106 @@ public class LoginDialog extends JDialog {
     buttonsBox.add(buttonQuit);
     loginPanel.add(buttonsBox, BorderLayout.SOUTH);
 
+    setContentPane(loginPanel);
     getRootPane().setDefaultButton(buttonLogin);
 
-    setContentPane(loginPanel);
+    pack();
 
-    fieldHost.requestFocusInWindow();
+    if (busVector.size() > 0) {
+      updateHostPort();
+    }
+    else {
+      fieldHost.requestFocus();
+    }
+
+  }
+
+  /**
+   * Atualiza os campos de host e porta de acordo com a manipulação da combo box
+   * de barramentos.
+   */
+  public void updateHostPort() {
+    BusComboItem selectedBus = (BusComboItem) comboBus.getSelectedItem();
+    boolean isCustomBus = selectedBus.getHost().equals("");
+
+    fieldHost.setText(selectedBus.getHost());
+    fieldPort.setText(
+     isCustomBus ? "" : Integer.toString(selectedBus.getPort()));
+
+    if (isCustomBus) {
+      fieldHost.requestFocus();
+    }
+    else {
+      fieldUser.requestFocus();
+    }
+  }
+
+  /**
+   * Define um item da combo box de barramentos.
+   * 
+   * @author Tecgraf
+   */
+  private class BusComboItem {
+    /** Descrição do barramento. */
+    String description;
+    /** Host do barramento. */
+    String host = "";
+    /** Porta do barramento. */
+    int port = 2089;
+
+    /**
+     * Construtor.
+     *
+     * @param description Descrição do barramento.
+     * @param address Endereço do barramento, no formato "host:porta".
+     */
+    public BusComboItem(String description, String address) {
+      this.description = description;
+
+      if (address != null) {
+        String[] addressContents = address.split(":");
+        this.host = addressContents[0];
+        try {
+          this.port = Integer.parseInt(addressContents[1]);
+        } catch (Exception e) {
+        }
+      }
+    }
+
+    /**
+     * Obtém a string a ser exibida na combo box.
+     *
+     * @return String a ser exibida na combo box.
+     */
+    public String toString() {
+      String address = host + ":" + port;
+      if (host.equals("")) {
+        return description;
+      }
+      if (description.equals("")) {
+        return address;
+      }
+      return description + " (" + address + ")";
+
+    }
+
+    /**
+     * Obtém o host especificado no item.
+     *
+     * @return O host especificado no item.
+     */
+    public String getHost() {
+      return host;
+    }
+
+    /**
+     * Obtém a porta especificada no item.
+     *
+     * @return A porta especificada no item.
+     */
+    public int getPort() {
+      return port;
+    }
   }
 
   /**

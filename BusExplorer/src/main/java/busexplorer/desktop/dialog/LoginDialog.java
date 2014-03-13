@@ -127,6 +127,14 @@ public class LoginDialog extends JDialog {
     SelectAllTextListener selectAllTextListener = new SelectAllTextListener();
 
     ConfigurationProperties configProps = new ConfigurationProperties();
+    String propertyHost = System.getProperty("host");
+    String propertyPort = System.getProperty("port");
+    try {
+      Integer.parseInt(propertyPort);
+    }
+    catch (NumberFormatException e) {
+      propertyPort = null;
+    }
 
     final Vector<BusComboItem> busVector = new Vector<BusComboItem>();
 
@@ -140,8 +148,13 @@ public class LoginDialog extends JDialog {
       busVector.add(new BusComboItem(description, address));
     }
 
+    BusComboItem anotherBus = new BusComboItem(LNG.get("LoginDialog.bus.other"),
+      null);
+    fieldHost = new JTextField();
+    fieldPort = new JTextField();
+
     if (busVector.size() > 0) {
-      busVector.add(new BusComboItem("Outro...", null));
+      busVector.add(anotherBus);
 
       JLabel labelBus = new JLabel(LNG.get("LoginDialog.bus.label"));
       labelBus.setFont(FONT_LABEL);
@@ -153,6 +166,15 @@ public class LoginDialog extends JDialog {
         @Override
         public void itemStateChanged(ItemEvent e) {
           updateHostPort();
+
+          BusComboItem selectedBus = (BusComboItem) comboBus.getSelectedItem();
+
+          if (selectedBus.isCustomBus()) {
+            fieldHost.requestFocus();
+          }
+          else {
+            fieldUser.requestFocus();
+          }
         }
       });
       configPanel.add(comboBus,
@@ -163,25 +185,21 @@ public class LoginDialog extends JDialog {
     labelHost.setFont(FONT_LABEL);
     configPanel.add(labelHost, new GBC(0, 3).west().insets(6, 6, 3, 6));
 
-    fieldHost = new JTextField(System.getProperty("host") != null ?
-      System.getProperty("host") : "");
-    fieldHost.setFocusable(true);
     fieldHost.setToolTipText(LNG.get("LoginDialog.host.help"));
     fieldHost.addFocusListener(selectAllTextListener);
     fieldHost.getDocument().addDocumentListener(enableLoginListener);
+    fieldHost.setFocusable(true);
     configPanel.add(fieldHost, new GBC(0, 4).horizontal().insets(0, 6, 6, 9));
 
     labelPort = new JLabel(LNG.get("LoginDialog.port.label"));
     labelPort.setFont(FONT_LABEL);
     configPanel.add(labelPort, new GBC(1, 3).west().insets(6, 0, 3, 6));
 
-    fieldPort = new JTextField(System.getProperty("port") != null ?
-      System.getProperty("port") : "");
     fieldPort.setToolTipText(LNG.get("LoginDialog.port.help"));
-    configPanel.add(fieldPort, new GBC(1, 4).horizontal().insets(0, 0, 6, 6));
-    fieldPort.setFocusable(true);
     fieldPort.addFocusListener(selectAllTextListener);
     fieldPort.getDocument().addDocumentListener(enableLoginListener);
+    fieldPort.setFocusable(true);
+    configPanel.add(fieldPort, new GBC(1, 4).horizontal().insets(0, 0, 6, 6));
 
     JLabel labelUser = new JLabel(LNG.get("LoginDialog.user.label"));
     labelUser.setFont(FONT_LABEL);
@@ -189,10 +207,10 @@ public class LoginDialog extends JDialog {
 
     fieldUser = new JTextField();
     fieldUser.setToolTipText(LNG.get("LoginDialog.user.help"));
-    configPanel.add(fieldUser, new GBC(0, 6).horizontal().insets(0, 6, 6, 9));
-    fieldUser.setFocusable(true);
     fieldUser.addFocusListener(selectAllTextListener);
     fieldUser.getDocument().addDocumentListener(enableLoginListener);
+    fieldUser.setFocusable(true);
+    configPanel.add(fieldUser, new GBC(0, 6).horizontal().insets(0, 6, 6, 9));
 
     JLabel labelPassword = new JLabel(LNG.get("LoginDialog.password.label"));
     labelPassword.setFont(FONT_LABEL);
@@ -200,17 +218,17 @@ public class LoginDialog extends JDialog {
 
     fieldPassword = new JPasswordField();
     fieldPassword.setToolTipText(LNG.get("LoginDialog.password.help"));
-    configPanel.add(fieldPassword, new GBC(1, 6).horizontal()
-      .insets(0, 0, 6, 6));
-    fieldPassword.setFocusable(true);
     fieldPassword.addFocusListener(selectAllTextListener);
+    fieldPassword.setFocusable(true);
+    configPanel.add(fieldPassword,
+      new GBC(1, 6).horizontal().insets(0, 0, 6, 6));
 
     loginPanel.add(configPanel, BorderLayout.CENTER);
 
     buttonLogin = new JButton(LNG.get("LoginDialog.confirm.button"));
     buttonLogin.setToolTipText(LNG.get("LoginDialog.confirm.help"));
-    buttonLogin.setEnabled(false);
     buttonLogin.addActionListener(new LoginAction());
+    buttonLogin.setEnabled(false);
 
     JButton buttonQuit = new JButton(LNG.get("LoginDialog.quit.button"));
     buttonQuit.setToolTipText(LNG.get("LoginDialog.quit.help"));
@@ -229,32 +247,51 @@ public class LoginDialog extends JDialog {
 
     pack();
 
-    if (busVector.size() > 0) {
-      updateHostPort();
+    // Preenchendo os campos do formulário e ajustando o foco adequadamente.
+
+    if (propertyHost == null && propertyPort == null) {
+      if (busVector.size() > 0) {
+        updateHostPort();
+        fieldUser.requestFocus();
+      }
+      else {
+        fieldHost.requestFocus();
+      }
     }
     else {
-      fieldHost.requestFocus();
-    }
+      if (busVector.size() > 0) {
+        comboBus.setSelectedItem(anotherBus);
+      }
 
+      fieldHost.setText(propertyHost);
+      fieldPort.setText(propertyPort);
+
+      if (propertyHost == null) {
+        fieldHost.requestFocus();
+      }
+      else if (propertyPort == null) {
+        fieldPort.requestFocus();
+      }
+      else {
+        fieldUser.requestFocus();
+      }
+    }
   }
 
   /**
    * Atualiza os campos de host e porta de acordo com a manipulação da combo box
    * de barramentos.
    */
-  public void updateHostPort() {
+  private void updateHostPort() {
     BusComboItem selectedBus = (BusComboItem) comboBus.getSelectedItem();
-    boolean isCustomBus = selectedBus.getHost().equals("");
 
-    fieldHost.setText(selectedBus.getHost());
-    fieldPort.setText(
-     isCustomBus ? "" : Integer.toString(selectedBus.getPort()));
-
-    if (isCustomBus) {
-      fieldHost.requestFocus();
+    if (selectedBus.isCustomBus()) {
+      fieldHost.setText("");
+      fieldPort.setText("");
     }
     else {
-      fieldUser.requestFocus();
+      fieldHost.setText(selectedBus.getHost());
+      fieldPort.setText(Integer.toString(selectedBus.getPort()));
     }
   }
 
@@ -285,7 +322,8 @@ public class LoginDialog extends JDialog {
         this.host = addressContents[0];
         try {
           this.port = Integer.parseInt(addressContents[1]);
-        } catch (Exception e) {
+        }
+        catch (NumberFormatException e) {
         }
       }
     }
@@ -305,6 +343,16 @@ public class LoginDialog extends JDialog {
       }
       return description + " (" + address + ")";
 
+    }
+
+    /**
+     * Verifica se o item é customizável, i.e., permite que o usuário
+     * especifique manualmente host e porta.
+     *
+     * @return Indicador de customizabilidade.
+     */
+    public boolean isCustomBus() {
+      return host.equals("");
     }
 
     /**
@@ -444,7 +492,8 @@ public class LoginDialog extends JDialog {
     private void validate() {
       try {
         Integer.parseInt(fieldPort.getText().trim());
-      } catch (NumberFormatException e) {
+      }
+      catch (NumberFormatException e) {
         buttonLogin.setEnabled(false);
         return;
       }

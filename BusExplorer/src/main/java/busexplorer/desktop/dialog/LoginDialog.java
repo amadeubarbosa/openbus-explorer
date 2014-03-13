@@ -64,6 +64,9 @@ public class LoginDialog extends JDialog {
   private BusExplorerLogin login;
   /** Referência para a biblioteca de administração */
   private BusAdmin admin;
+  /** Representação de um barramento customizável na combo box */
+  private final BusComboItem anotherBus =
+    new BusComboItem(LNG.get("LoginDialog.bus.other"), null);
 
   /**
    * Construtor do diálogo.
@@ -127,15 +130,6 @@ public class LoginDialog extends JDialog {
     SelectAllTextListener selectAllTextListener = new SelectAllTextListener();
 
     ConfigurationProperties configProps = new ConfigurationProperties();
-    String propertyHost = System.getProperty("host");
-    String propertyPort = System.getProperty("port");
-    try {
-      Integer.parseInt(propertyPort);
-    }
-    catch (NumberFormatException e) {
-      propertyPort = null;
-    }
-
     final Vector<BusComboItem> busVector = new Vector<BusComboItem>();
 
     for (int i = 1; ; i++) {
@@ -148,8 +142,6 @@ public class LoginDialog extends JDialog {
       busVector.add(new BusComboItem(description, address));
     }
 
-    BusComboItem anotherBus = new BusComboItem(LNG.get("LoginDialog.bus.other"),
-      null);
     fieldHost = new JTextField();
     fieldPort = new JTextField();
 
@@ -247,10 +239,25 @@ public class LoginDialog extends JDialog {
 
     pack();
 
-    // Preenchendo os campos do formulário e ajustando o foco adequadamente.
+    fillLoginForm();
+  }
+
+  /**
+   * Preenche os campos do formulário de login e ajusta o foco adequadamente.
+   */
+  private void fillLoginForm() {
+    String propertyHost = System.getProperty("host");
+    String propertyPort = System.getProperty("port");
+
+    try {
+      Integer.parseInt(propertyPort);
+    }
+    catch (NumberFormatException e) {
+      propertyPort = null;
+    }
 
     if (propertyHost == null && propertyPort == null) {
-      if (busVector.size() > 0) {
+      if (comboBus != null) {
         updateHostPort();
         fieldUser.requestFocus();
       }
@@ -259,7 +266,7 @@ public class LoginDialog extends JDialog {
       }
     }
     else {
-      if (busVector.size() > 0) {
+      if (comboBus != null) {
         comboBus.setSelectedItem(anotherBus);
       }
 

@@ -35,6 +35,7 @@ import busexplorer.Application;
 import busexplorer.BusExplorerLogin;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;
+import busexplorer.utils.BusAddress;
 import exception.handling.ExceptionContext;
 
 /**
@@ -64,9 +65,6 @@ public class LoginDialog extends JDialog {
   private BusExplorerLogin login;
   /** Referência para a biblioteca de administração */
   private BusAdmin admin;
-  /** Representação de um barramento customizável na combo box */
-  private final BusComboItem anotherBus =
-    new BusComboItem(LNG.get("LoginDialog.bus.other"), null);
 
   /**
    * Construtor do diálogo.
@@ -130,7 +128,7 @@ public class LoginDialog extends JDialog {
     SelectAllTextListener selectAllTextListener = new SelectAllTextListener();
 
     ConfigurationProperties configProps = new ConfigurationProperties();
-    final Vector<BusComboItem> busVector = new Vector<BusComboItem>();
+    final Vector<BusAddress> busVector = new Vector<BusAddress>();
 
     for (int i = 1; ; i++) {
       String busPrefix = "bus" + i + ".";
@@ -139,14 +137,14 @@ public class LoginDialog extends JDialog {
       if (description == null || address == null) {
         break;
       }
-      busVector.add(new BusComboItem(description, address));
+      busVector.add(new BusAddress(description, address));
     }
 
     fieldHost = new JTextField();
     fieldPort = new JTextField();
 
     if (busVector.size() > 0) {
-      busVector.add(anotherBus);
+      busVector.add(BusAddress.UNSPECIFIED_ADDRESS);
 
       JLabel labelBus = new JLabel(LNG.get("LoginDialog.bus.label"));
       labelBus.setFont(FONT_LABEL);
@@ -159,9 +157,9 @@ public class LoginDialog extends JDialog {
         public void itemStateChanged(ItemEvent e) {
           updateHostPort();
 
-          BusComboItem selectedBus = (BusComboItem) comboBus.getSelectedItem();
+          BusAddress selectedBus = (BusAddress) comboBus.getSelectedItem();
 
-          if (selectedBus.isCustomBus()) {
+          if (selectedBus == BusAddress.UNSPECIFIED_ADDRESS) {
             fieldHost.requestFocus();
           }
           else {
@@ -267,7 +265,7 @@ public class LoginDialog extends JDialog {
     }
     else {
       if (comboBus != null) {
-        comboBus.setSelectedItem(anotherBus);
+        comboBus.setSelectedItem(BusAddress.UNSPECIFIED_ADDRESS);
       }
 
       fieldHost.setText(propertyHost);
@@ -290,9 +288,9 @@ public class LoginDialog extends JDialog {
    * de barramentos.
    */
   private void updateHostPort() {
-    BusComboItem selectedBus = (BusComboItem) comboBus.getSelectedItem();
+    BusAddress selectedBus = (BusAddress) comboBus.getSelectedItem();
 
-    if (selectedBus.isCustomBus()) {
+    if (selectedBus == BusAddress.UNSPECIFIED_ADDRESS) {
       fieldHost.setText("");
       fieldPort.setText("");
     }
@@ -302,84 +300,6 @@ public class LoginDialog extends JDialog {
     }
   }
 
-  /**
-   * Define um item da combo box de barramentos.
-   * 
-   * @author Tecgraf
-   */
-  private class BusComboItem {
-    /** Descrição do barramento. */
-    String description;
-    /** Host do barramento. */
-    String host = "";
-    /** Porta do barramento. */
-    int port = 2089;
-
-    /**
-     * Construtor.
-     *
-     * @param description Descrição do barramento.
-     * @param address Endereço do barramento, no formato "host:porta".
-     */
-    public BusComboItem(String description, String address) {
-      this.description = description;
-
-      if (address != null) {
-        String[] addressContents = address.split(":");
-        this.host = addressContents[0];
-        try {
-          this.port = Integer.parseInt(addressContents[1]);
-        }
-        catch (NumberFormatException e) {
-        }
-      }
-    }
-
-    /**
-     * Obtém a string a ser exibida na combo box.
-     *
-     * @return String a ser exibida na combo box.
-     */
-    public String toString() {
-      String address = host + ":" + port;
-      if (host.equals("")) {
-        return description;
-      }
-      if (description.equals("")) {
-        return address;
-      }
-      return description + " (" + address + ")";
-
-    }
-
-    /**
-     * Verifica se o item é customizável, i.e., permite que o usuário
-     * especifique manualmente host e porta.
-     *
-     * @return Indicador de customizabilidade.
-     */
-    public boolean isCustomBus() {
-      return host.equals("");
-    }
-
-    /**
-     * Obtém o host especificado no item.
-     *
-     * @return O host especificado no item.
-     */
-    public String getHost() {
-      return host;
-    }
-
-    /**
-     * Obtém a porta especificada no item.
-     *
-     * @return A porta especificada no item.
-     */
-    public int getPort() {
-      return port;
-    }
-  }
 
   /**
    * Listener de seleção de texto em um JTextField.

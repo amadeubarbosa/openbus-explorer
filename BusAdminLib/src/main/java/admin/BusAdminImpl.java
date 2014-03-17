@@ -6,18 +6,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.omg.CORBA.COMM_FAILURE;
-import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.ORB;
-import org.omg.CORBA.TRANSIENT;
 
 import scs.core.IComponent;
+import scs.core.IComponentHelper;
+import tecgraf.openbus.core.v2_0.BusObjectKey;
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginRegistry;
 import tecgraf.openbus.core.v2_0.services.access_control.LoginRegistryHelper;
-import tecgraf.openbus.core.v2_0.services.access_control.NoLoginCode;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateRegistry;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateRegistryHelper;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.InvalidCertificate;
@@ -96,12 +94,283 @@ public class BusAdminImpl implements BusAdmin {
     obtainRegistries();
   }
 
+
+
+  /*
+   *                               CATEGORIAS
+   */
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<EntityCategoryDesc> getCategories() throws ServiceFailure {
+    EntityCategoryDesc[] array = this.entityRegistry.getEntityCategories();
+    return new ArrayList<EntityCategoryDesc>(Arrays.asList(array));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void createCategory(String categoryID, String categoryName)
+    throws ServiceFailure, UnauthorizedOperation, EntityCategoryAlreadyExists {
+    this.entityRegistry.createEntityCategory(categoryID, categoryName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeCategory(String categoryID) throws ServiceFailure,
+    UnauthorizedOperation, EntityCategoryInUse {
+    EntityCategory category =
+      this.entityRegistry.getEntityCategory(categoryID);
+    category.remove();
+  }
+
+
+
+  /*
+   *                               ENTIDADES
+   */
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<RegisteredEntityDesc> getEntities() throws ServiceFailure {
+    RegisteredEntityDesc[] array = this.entityRegistry.getEntities();
+    return new ArrayList<RegisteredEntityDesc>(Arrays.asList(array));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public RegisteredEntity createEntity(String entityID, String entityName,
+    String categoryID) throws ServiceFailure, UnauthorizedOperation,
+    EntityAlreadyRegistered {
+    EntityCategory category =
+      this.entityRegistry.getEntityCategory(categoryID);
+    return category.registerEntity(entityID, entityName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean removeEntity(String entityID) throws ServiceFailure,
+    UnauthorizedOperation {
+    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    if (entity != null) {
+      entity.remove();
+      return true;
+    }
+    return false;
+  }
+
+
+
+  /*
+   *                              CERTIFICADOS
+   */
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<String> getEntitiesWithCertificate() throws ServiceFailure,
+    UnauthorizedOperation {
+    String[] array = this.certificateRegistry.getEntitiesWithCertificate();
+    return new ArrayList<String>(Arrays.asList(array));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void registerCertificate(String entityID, byte[] certificate)
+    throws ServiceFailure, UnauthorizedOperation, InvalidCertificate {
+    this.certificateRegistry.registerCertificate(entityID, certificate);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeCertificate(String entityID) throws ServiceFailure,
+    UnauthorizedOperation {
+    this.certificateRegistry.removeCertificate(entityID);
+  }
+
+
+
+  /*
+   *                               INTERFACES
+   */
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<String> getInterfaces() throws ServiceFailure {
+    String[] array = this.interfaceRegistry.getInterfaces();
+    return new ArrayList<String>(Arrays.asList(array));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void createInterface(String interfaceName) throws ServiceFailure,
+    UnauthorizedOperation, InvalidInterface {
+    this.interfaceRegistry.registerInterface(interfaceName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeInterface(String interfaceName) throws ServiceFailure,
+    UnauthorizedOperation, InterfaceInUse {
+    this.interfaceRegistry.removeInterface(interfaceName);
+  }
+
+
+
+  /*
+   *                              AUTORIZAÇÕES
+   */
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Map<RegisteredEntityDesc, List<String>> getAuthorizations()
+    throws ServiceFailure {
+    Map<RegisteredEntityDesc, List<String>> map =
+      new LinkedHashMap<RegisteredEntityDesc, List<String>>();
+    RegisteredEntityDesc[] entitiesDesc =
+      this.entityRegistry.getAuthorizedEntities();
+    for (RegisteredEntityDesc entityDesc : entitiesDesc) {
+      map.put(entityDesc, Arrays
+        .asList(entityDesc.ref.getGrantedInterfaces()));
+    }
+    return map;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean setAuthorization(String entityID, String interfaceName)
+    throws ServiceFailure, UnauthorizedOperation, InvalidInterface {
+    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    return entity.grantInterface(interfaceName);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void revokeAuthorization(String entityID, String interfaceName)
+    throws ServiceFailure, UnauthorizedOperation, InvalidInterface,
+    AuthorizationInUse {
+    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    entity.revokeInterface(interfaceName);
+  }
+
+
+
+  /*
+   *                                OFERTAS
+   */
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<ServiceOfferDesc> getOffers() throws ServiceFailure {
+    ServiceOfferDesc[] array = this.offerRegistry.getAllServices();
+    return new ArrayList<ServiceOfferDesc>(Arrays.asList(array));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
+    UnauthorizedOperation {
+    desc.ref.remove();
+  }
+
+
+
+  /*
+   *                                 LOGINS
+   */
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<LoginInfo> getLogins() throws ServiceFailure,
+    UnauthorizedOperation {
+    LoginInfo[] array = this.loginRegistry.getAllLogins();
+    return new ArrayList<LoginInfo>(Arrays.asList(array));
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
+    UnauthorizedOperation {
+    this.loginRegistry.invalidateLogin(loginInfo.id);
+  }
+
+
+
+  /*
+   *                           Métodos auxiliares
+   */
+
+  /**
+   * Constrói a URL corbaloc
+   * 
+   * @param host endereço do barramento
+   * @param port porta do barramento
+   * @param orb instância do orb do barramento
+   * @return a corbaloc criada
+   */
+  private static org.omg.CORBA.Object buildCorbaLoc(String host, int port,
+    ORB orb) {
+    String str =
+      String.format("corbaloc::1.0@%s:%d/%s", host, port, BusObjectKey.value);
+
+    return orb.string_to_object(str);
+  }
+
+  /**
+   * Obtém a faceta IComponent do barramento
+   * 
+   * @param host endereço do barramento
+   * @param port porta do barramento
+   * @param orb instância do orb do barramento
+   * @return a faceta IComponent
+   */
+  private static IComponent getIComponent(String host, int port, ORB orb) {
+    org.omg.CORBA.Object obj = buildCorbaLoc(host, port, orb);
+    return IComponentHelper.narrow(obj);
+  }
+
   /**
    * Obtém as facetas dos registros do barramento.
    */
   private void obtainRegistries() {
     IComponent iComponent =
-      Util.getIComponent(this.host, this.port, this.orb);
+      getIComponent(this.host, this.port, this.orb);
     if (iComponent == null) {
       throw new IncompatibleBus();
     }
@@ -142,601 +411,5 @@ public class BusAdminImpl implements BusAdmin {
       throw new IncompatibleBus();
     }
     this.loginRegistry = LoginRegistryHelper.narrow(loginRegistryObj);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<EntityCategoryDesc> getCategories() throws ServiceFailure {
-    try {
-      EntityCategoryDesc[] array = this.entityRegistry.getEntityCategories();
-      return new ArrayList<EntityCategoryDesc>(Arrays.asList(array));
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<ServiceOfferDesc> getOffers() throws ServiceFailure {
-    try {
-      ServiceOfferDesc[] array = this.offerRegistry.getAllServices();
-      return new ArrayList<ServiceOfferDesc>(Arrays.asList(array));
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<String> getInterfaces() throws ServiceFailure {
-    try {
-      String[] array = this.interfaceRegistry.getInterfaces();
-      return new ArrayList<String>(Arrays.asList(array));
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<RegisteredEntityDesc> getEntities() throws ServiceFailure {
-    try {
-      RegisteredEntityDesc[] array = this.entityRegistry.getEntities();
-      return new ArrayList<RegisteredEntityDesc>(Arrays.asList(array));
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<String> getEntitiesWithCertificate() throws ServiceFailure,
-    UnauthorizedOperation {
-    try {
-      String[] array = this.certificateRegistry.getEntitiesWithCertificate();
-      return new ArrayList<String>(Arrays.asList(array));
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public Map<RegisteredEntityDesc, List<String>> getAuthorizations()
-    throws ServiceFailure {
-    Map<RegisteredEntityDesc, List<String>> map =
-      new LinkedHashMap<RegisteredEntityDesc, List<String>>();
-    try {
-      RegisteredEntityDesc[] entitiesDesc =
-        this.entityRegistry.getAuthorizedEntities();
-      for (RegisteredEntityDesc entityDesc : entitiesDesc) {
-        map.put(entityDesc, Arrays
-          .asList(entityDesc.ref.getGrantedInterfaces()));
-      }
-      return map;
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<LoginInfo> getLogins() throws ServiceFailure,
-    UnauthorizedOperation {
-    try {
-      LoginInfo[] array = this.loginRegistry.getAllLogins();
-      return new ArrayList<LoginInfo>(Arrays.asList(array));
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
-    UnauthorizedOperation {
-    try {
-      desc.ref.remove();
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
-    UnauthorizedOperation {
-    try {
-      this.loginRegistry.invalidateLogin(loginInfo.id);
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void createCategory(String categoryID, String categoryName)
-    throws ServiceFailure, UnauthorizedOperation, EntityCategoryAlreadyExists {
-
-    try {
-      this.entityRegistry.createEntityCategory(categoryID, categoryName);
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-    catch (EntityCategoryAlreadyExists e) {
-      throw new EntityCategoryAlreadyExists(
-        Util.ENTITY_CATEGORY_ALREADY_EXISTS_EXCEPTION_MESSAGE, e.existing);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void createInterface(String interfaceName) throws ServiceFailure,
-    UnauthorizedOperation, InvalidInterface {
-    try {
-      this.interfaceRegistry.registerInterface(interfaceName);
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-    catch (InvalidInterface e) {
-      throw new InvalidInterface(Util.INVALID_INTERFACE_EXCEPTION_MESSAGE,
-        e.ifaceId);
-    }
-
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public RegisteredEntity createEntity(String entityID, String entityName,
-    String categoryID) throws ServiceFailure, UnauthorizedOperation,
-    EntityAlreadyRegistered {
-    try {
-      EntityCategory category =
-        this.entityRegistry.getEntityCategory(categoryID);
-      return category.registerEntity(entityID, entityName);
-
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-    catch (EntityAlreadyRegistered e) {
-      throw new EntityAlreadyRegistered(
-        Util.ENTITY_ALREADY_REGISTERED_EXCEPTION_MESSAGE, e.existing);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void registerCertificate(String entityID, byte[] certificate)
-    throws ServiceFailure, UnauthorizedOperation, InvalidCertificate {
-    try {
-      this.certificateRegistry.registerCertificate(entityID, certificate);
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-    catch (InvalidCertificate e) {
-      throw new InvalidCertificate(Util.INVALID_CERTIFICATE_EXCEPTION_MESSAGE,
-        e.message);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeCategory(String categoryID) throws ServiceFailure,
-    UnauthorizedOperation, EntityCategoryInUse {
-    try {
-      EntityCategory category =
-        this.entityRegistry.getEntityCategory(categoryID);
-      category.remove();
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-    catch (EntityCategoryInUse e) {
-      throw new EntityCategoryInUse(
-        Util.ENTITY_CATEGORY_IN_USE_EXCEPTION_MESSAGE, e.entities);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean removeEntity(String entityID) throws ServiceFailure,
-    UnauthorizedOperation {
-    try {
-      RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
-      if (entity != null) {
-        entity.remove();
-        return true;
-      }
-      return false;
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeCertificate(String entityID) throws ServiceFailure,
-    UnauthorizedOperation {
-    try {
-      this.certificateRegistry.removeCertificate(entityID);
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void removeInterface(String interfaceName) throws ServiceFailure,
-    UnauthorizedOperation, InterfaceInUse {
-    try {
-      this.interfaceRegistry.removeInterface(interfaceName);
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-    catch (InterfaceInUse e) {
-      throw new InterfaceInUse(Util.INTERFACE_IN_USE_EXCEPTION_MESSAGE,
-        e.entities);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean setAuthorization(String entityID, String interfaceName)
-    throws ServiceFailure, UnauthorizedOperation, InvalidInterface {
-    try {
-      RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
-      return entity.grantInterface(interfaceName);
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-    catch (InvalidInterface e) {
-      throw new InvalidInterface(Util.INVALID_INTERFACE_EXCEPTION_MESSAGE,
-        e.ifaceId);
-    }
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void revokeAuthorization(String entityID, String interfaceName)
-    throws ServiceFailure, UnauthorizedOperation, InvalidInterface,
-    AuthorizationInUse {
-    try {
-      RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
-      entity.revokeInterface(interfaceName);
-    }
-    catch (TRANSIENT e) {
-      throw new TRANSIENT(String.format(Util.TRANSIENT_EXCEPTION_MESSAGE, host,
-        port), e.minor, e.completed);
-    }
-    catch (COMM_FAILURE e) {
-      throw new COMM_FAILURE(Util.COMM_FAILURE_EXCEPTION_MESSAGE, e.minor,
-        e.completed);
-    }
-    catch (NO_PERMISSION e) {
-      if (e.minor == NoLoginCode.value) {
-        throw new NO_PERMISSION(Util.NO_LOGIN_EXCEPTION_MESSAGE);
-      }
-      throw e;
-    }
-    catch (UnauthorizedOperation e) {
-      throw new UnauthorizedOperation(
-        Util.UNAUTHORIZED_OPERATION_EXCEPTION_MESSAGE);
-    }
-    catch (InvalidInterface e) {
-      throw new InvalidInterface(Util.INVALID_INTERFACE_EXCEPTION_MESSAGE,
-        e.ifaceId);
-    }
-    catch (AuthorizationInUse e) {
-      throw new AuthorizationInUse(Util.AUTHORIZATION_IN_USE_EXCEPTION_MESSAGE,
-        e.offers);
-    }
   }
 }

@@ -15,6 +15,8 @@ import javax.swing.JScrollPane;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
 
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
@@ -90,7 +92,14 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
+          RegisteredEntityDesc desc = new RegisteredEntityDesc();
+          desc.id = getEntityID();
+
+          AuthorizationWrapper wrapper = new AuthorizationWrapper(desc,
+            getSelectedInterfaces()[0]);
+
           panel.refresh(null);
+          panel.selectElement(wrapper, true);
         }
       }
     };

@@ -21,7 +21,6 @@ public class AuthorizationWrapper {
   /** Interface */
   private final String interfaceName;
 
-
   /**
    * Construtor.
    * 
@@ -34,6 +33,23 @@ public class AuthorizationWrapper {
     this.interfaceName = interfaceName;
   }
 
+  /**
+   * Compara um objeto à instância de {@link AuthorizationWrapper}.
+   *
+   * O método não leva em consideração o objeto descritor da autorização.
+   * 
+   * @param o Objeto a ser comparado.
+   */
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof AuthorizationWrapper)) {
+      return false;
+    }
+    AuthorizationWrapper other = (AuthorizationWrapper) o;
+    return id.equals(other.id) && interfaceName.equals(other.interfaceName);
+  }
 
   /**
    * Recupera a interface.

@@ -32,6 +32,24 @@ public class CategoryWrapper {
   }
 
   /**
+   * Compara um objeto à instância de {@link CategoryWrapper}.
+   *
+   * O método não leva em consideração o objeto descritor da categoria.
+   * 
+   * @param o Objeto a ser comparado.
+   */
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof CategoryWrapper)) {
+      return false;
+    }
+    CategoryWrapper other = (CategoryWrapper) o;
+    return id.equals(other.id) && name.equals(other.name);
+  }
+
+  /**
    * Recupera o identificador da categoria.
    * 
    * @return o identificador.

@@ -58,13 +58,15 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
       new BusExplorerTask<Object>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
+      EntityCategory category;
+
       @Override
       protected void performTask() throws Exception {
         if (editingCategory == null) {
-          admin.createCategory(getCategoryID(), getCategoryName());
+          category = admin.createCategory(getCategoryID(), getCategoryName());
         } else {
-          EntityCategory ref = editingCategory.getDescriptor().ref;
-          ref.setName(getCategoryName());
+          category = editingCategory.getDescriptor().ref;
+          category.setName(getCategoryName());
         }
       }
 
@@ -72,6 +74,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
       protected void afterTaskUI() {
         if (getStatus()) {
           panel.refresh(null);
+          panel.selectElement(new CategoryWrapper(category.describe()), true);
         }
       }
     };

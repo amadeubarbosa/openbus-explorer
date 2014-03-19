@@ -64,7 +64,10 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
+          InterfaceWrapper wrapper = new InterfaceWrapper(getInterfaceName());
+
           panel.refresh(null);
+          panel.selectElement(wrapper, true);
         }
       }
     };

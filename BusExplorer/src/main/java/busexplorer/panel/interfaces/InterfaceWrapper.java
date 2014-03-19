@@ -23,6 +23,22 @@ public class InterfaceWrapper {
   }
 
   /**
+   * Compara um objeto à instância de {@link InterfaceWrapper}.
+   * 
+   * @param o Objeto a ser comparado.
+   */
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof InterfaceWrapper)) {
+      return false;
+    }
+    InterfaceWrapper other = (InterfaceWrapper) o;
+    return name.equals(other.name);
+  }
+
+  /**
    * Recupera o nome da interface.
    * 
    * @return o nome da interface.

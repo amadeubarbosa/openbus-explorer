@@ -2,6 +2,8 @@ package busexplorer.panel;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -17,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
+
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,6 +29,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.SortOrder;
@@ -568,6 +572,28 @@ public class PanelComponent<T> extends JPanel {
     }
     removed.addAll(getTableModel().removeAll(modelRows));
     return removed;
+  }
+
+  /**
+   * Seleciona elemento especificado pelo objeto, e, opcionalmente, o exibe.
+   *
+   * @param object Objeto a ser selecionado.
+   * @param show Indica se o elemento selecionado deve ser exibido.
+   */
+  public void selectElement(T object, boolean show) {
+    int index = this.getTableModel().getRows().indexOf(object);
+    if (index != -1) {
+      int vIndex = table.convertRowIndexToView(index);
+      this.table.getSelectionModel().setSelectionInterval(vIndex, vIndex);
+      if (!show) {
+        return;
+      }
+      JViewport viewport = (JViewport)table.getParent();
+      Rectangle rectangle = table.getCellRect(vIndex, vIndex, true);
+      Point point = viewport.getViewPosition();
+      rectangle.setLocation(rectangle.x - point.x, rectangle.y - point.y);
+      viewport.scrollRectToVisible(rectangle);
+    }
   }
 
   /**

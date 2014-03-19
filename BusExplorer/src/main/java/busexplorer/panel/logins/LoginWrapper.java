@@ -31,6 +31,25 @@ public class LoginWrapper {
   }
 
   /**
+   * Compara um objeto à instância de {@link LoginWrapper}.
+   *
+   * O método não leva em consideração o objeto que contém as informações de
+   * login.
+   * 
+   * @param o Objeto a ser comparado.
+   */
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof LoginWrapper)) {
+      return false;
+    }
+    LoginWrapper other = (LoginWrapper) o;
+    return id.equals(other.id) && entity.equals(other.entity);
+  }
+
+  /**
    * Recupera o identificador do login.
    * 
    * @return o nome.

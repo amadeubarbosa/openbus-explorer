@@ -49,6 +49,25 @@ public class OfferWrapper {
   }
 
   /**
+   * Compara um objeto à instância de {@link OfferWrapper}.
+   *
+   * O método não leva em consideração o objeto descritor da oferta.
+   * 
+   * @param o Objeto a ser comparado.
+   */
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof OfferWrapper)) {
+      return false;
+    }
+    OfferWrapper other = (OfferWrapper) o;
+    return entity.equals(other.entity) && interfaces.equals(other.interfaces) &&
+      date.equals(other.date);
+  }
+
+  /**
    * Recupera o identificador da oferta.
    * 
    * @return o identificador.

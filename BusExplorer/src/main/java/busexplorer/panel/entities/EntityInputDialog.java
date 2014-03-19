@@ -75,13 +75,15 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
       new BusExplorerTask<Object>(Application.exceptionHandler(),
         ExceptionContext.BusCore) {
 
+      RegisteredEntity entity;
+
       @Override
       protected void performTask() throws Exception {
         if (editingEntity == null) {
           EntityCategory category = getCategory().ref;
-          category.registerEntity(getEntityId(), getEntityName());
+          entity = category.registerEntity(getEntityId(), getEntityName());
         } else {
-          RegisteredEntity entity = editingEntity.getDescriptor().ref;
+          entity = editingEntity.getDescriptor().ref;
           entity.setName(getEntityName());
         }
       }
@@ -90,6 +92,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
       protected void afterTaskUI() {
         if (getStatus()) {
           panel.refresh(null);
+          panel.selectElement(new EntityWrapper(entity.describe()), true);
         }
       }
     };

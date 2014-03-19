@@ -36,6 +36,25 @@ public class EntityWrapper {
   }
 
   /**
+   * Compara um objeto à instância de {@link EntityWrapper}.
+   *
+   * O método não leva em consideração o objeto descritor da entidade.
+   * 
+   * @param o Objeto a ser comparado.
+   */
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof EntityWrapper)) {
+      return false;
+    }
+    EntityWrapper other = (EntityWrapper) o;
+    return id.equals(other.id) && name.equals(other.name) &&
+      category.equals(other.category);
+  }
+
+  /**
    * Recupera o identificador da entidade.
    * 
    * @return o identificador.

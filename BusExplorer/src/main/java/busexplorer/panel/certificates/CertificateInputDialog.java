@@ -77,6 +77,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
       protected void afterTaskUI() {
         if (getStatus()) {
           panel.refresh(null);
+          panel.selectElement(new CertificateWrapper(getIdentifier()), true);
         }
       }
     };

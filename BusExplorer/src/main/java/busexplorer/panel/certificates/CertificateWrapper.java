@@ -23,6 +23,22 @@ public class CertificateWrapper {
   }
 
   /**
+   * Compara um objeto à instância de {@link CertificateWrapper}.
+   *
+   * @param o Objeto a ser comparado.
+   */
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof CertificateWrapper)) {
+      return false;
+    }
+    CertificateWrapper other = (CertificateWrapper) o;
+    return entity.equals(other.entity);
+  }
+
+  /**
    * Recupera a entidade vinculada ao certificado.
    * 
    * @return a entidade vinculada ao certificado.

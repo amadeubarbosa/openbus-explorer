@@ -113,9 +113,9 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void createCategory(String categoryID, String categoryName)
+  public EntityCategory createCategory(String categoryID, String categoryName)
     throws ServiceFailure, UnauthorizedOperation, EntityCategoryAlreadyExists {
-    this.entityRegistry.createEntityCategory(categoryID, categoryName);
+    return this.entityRegistry.createEntityCategory(categoryID, categoryName);
   }
 
   /**
@@ -223,9 +223,9 @@ public class BusAdminImpl implements BusAdmin {
    * {@inheritDoc}
    */
   @Override
-  public void createInterface(String interfaceName) throws ServiceFailure,
+  public boolean createInterface(String interfaceName) throws ServiceFailure,
     UnauthorizedOperation, InvalidInterface {
-    this.interfaceRegistry.registerInterface(interfaceName);
+    return this.interfaceRegistry.registerInterface(interfaceName);
   }
 
   /**

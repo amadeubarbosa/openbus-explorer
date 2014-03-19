@@ -15,6 +15,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.AuthorizationInUse;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityAlreadyRegistered;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryAlreadyExists;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryInUse;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.InterfaceInUse;
@@ -37,8 +38,9 @@ public interface BusAdmin {
   /**
    * Retorna uma lista que contém descrições de todas as categorias das
    * entidades do barramento.
+   *
+   * @return Lista com as descrições das categorias das entidades.
    * 
-   * @return lista de descrições de categoria
    * @throws ServiceFailure
    * @throws TRANSIENT
    * @throws COMM_FAILURE
@@ -48,21 +50,25 @@ public interface BusAdmin {
     TRANSIENT, COMM_FAILURE, NO_PERMISSION;
 
   /**
-   * Cadastra uma nova categoria no barramento
+   * Cadastra uma nova categoria no barramento.
+   *
+   * @return Categoria cadastrada.
    * 
-   * @param categoryID ID da nova categoria
-   * @param categoryName Nome da nova categoria
+   * @param categoryID ID da nova categoria.
+   * @param categoryName Nome da nova categoria.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    * @throws EntityCategoryAlreadyExists
    */
-  public void createCategory(String categoryID, String categoryName)
+  public EntityCategory createCategory(String categoryID, String categoryName)
     throws ServiceFailure, UnauthorizedOperation, EntityCategoryAlreadyExists;
 
   /**
-   * Remove uma categoria do barramento
+   * Remove uma categoria do barramento.
    * 
-   * @param categoryID ID da categoria a ser removida
+   * @param categoryID ID da categoria a ser removida.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    * @throws EntityCategoryInUse
@@ -77,10 +83,11 @@ public interface BusAdmin {
    */
 
   /**
-   * Retorna uma lista que contém descrições de todas entidades registradas no
-   * barramento.
+   * Retorna uma lista que contém descrições de todas as entidades registradas
+   * no barramento.
+   *
+   * @return Lista com as descrições de todas as entidades.
    * 
-   * @return descrição da entidade
    * @throws ServiceFailure
    * @throws TRANSIENT
    * @throws COMM_FAILURE
@@ -90,12 +97,14 @@ public interface BusAdmin {
     TRANSIENT, COMM_FAILURE, NO_PERMISSION;
 
   /**
-   * Cadastra uma nova entidade no barramento
+   * Cadastra uma nova entidade no barramento.
+   *
+   * @return Entidade cadastrada.
    * 
-   * @param entityID ID da nova entidade
-   * @param entityName Nome da nova entidade
-   * @param categoryID ID de alguma categoria já cadastrada
-   * @return A entidade criada.
+   * @param entityID ID da nova entidade.
+   * @param entityName Nome da nova entidade.
+   * @param categoryID ID de alguma categoria já cadastrada.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    * @throws EntityAlreadyRegistered
@@ -105,11 +114,13 @@ public interface BusAdmin {
     EntityAlreadyRegistered;
 
   /**
-   * Remove o registro de uma entidade do barramento
+   * Remove o registro de uma entidade do barramento.
    * 
-   * @param entityID ID da entidade a ser removida
    * @return <code>true</code> caso a entidade foi removida, e
    *         <code>false</code> caso contrário.
+   *
+   * @param entityID ID da entidade a ser removida.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
@@ -125,8 +136,9 @@ public interface BusAdmin {
   /**
    * Retorna uma lista que contém IDs de todas as etidades com certificado
    * registrado no barramento.
+   *
+   * @return Lista com as IDs de todas as entidades com certificado registrado.
    * 
-   * @return lista de IDs das entidades com certificado
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
@@ -134,10 +146,11 @@ public interface BusAdmin {
     UnauthorizedOperation;
 
   /**
-   * Registra um certificado no barramento
+   * Registra um certificado no barramento.
    * 
-   * @param entityID ID da entidade
-   * @param certificate Certificado
+   * @param entityID ID da entidade.
+   * @param certificate Certificado.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    * @throws InvalidCertificate
@@ -146,9 +159,10 @@ public interface BusAdmin {
     throws ServiceFailure, UnauthorizedOperation, InvalidCertificate;
 
   /**
-   * Remove o certificado vinculado a uma entidade do barramento
+   * Remove o certificado vinculado a uma entidade do barramento.
    * 
-   * @param entityID ID da entidade a ser removida
+   * @param entityID ID da entidade a ser removida.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
@@ -164,8 +178,9 @@ public interface BusAdmin {
   /**
    * Retorna uma lista que contém as IDs de todas as interfaces registradas no
    * barramento.
+   *
+   * @return Lista com as IDs de todas as interfaces registradas.
    * 
-   * @return lista de IDs das interfaces
    * @throws ServiceFailure
    * @throws TRANSIENT
    * @throws COMM_FAILURE
@@ -175,20 +190,25 @@ public interface BusAdmin {
     COMM_FAILURE, NO_PERMISSION;
 
   /**
-   * Cadastra uma nova interface no barramento
+   * Cadastra uma nova interface no barramento.
+   *
+   * @return {@code true} se a interface cadastrada inexistia no barramento;
+   * {@code false} em caso contrário.
    * 
-   * @param interfaceName nome da nova interface
+   * @param interfaceName Nome da nova interface.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    * @throws InvalidInterface
    */
-  public void createInterface(String interfaceName) throws ServiceFailure,
+  public boolean createInterface(String interfaceName) throws ServiceFailure,
     UnauthorizedOperation, InvalidInterface;
 
   /**
-   * Remove uma interface do barramento
+   * Remove uma interface do barramento.
    * 
-   * @param interfaceName Nome da interface a ser removida
+   * @param interfaceName Nome da interface a ser removida.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    * @throws InterfaceInUse
@@ -203,25 +223,27 @@ public interface BusAdmin {
    */
 
   /**
-   * Retorna um map que contém as descrições de todas as entidades registradas
+   * Retorna um mapa que contém as descrições de todas as entidades registradas
    * no barramento, associadas às suas respectivas autorizações.
    * 
-   * @return map com par chave-valor: descrição da entidade registrada no
+   * @return mapa com par chave-valor: descrição da entidade registrada no
    *         barramento e lista de autorizações associadas a essa entidade,
    *         respectivamente.
+   *
    * @throws ServiceFailure
    */
   public Map<RegisteredEntityDesc, List<String>> getAuthorizations()
     throws ServiceFailure;
 
   /**
-   * Concede autorização para uma interface a uma entidade
+   * Concede autorização para uma interface a uma entidade.
    * 
-   * @param entityID ID da entidade que vai receber a autorização
-   * @param interfaceName interface que vai ser autorizada
-   * @return <code>true</code> caso a interface não estava registrada e foi
-   *         registrada, e <code>false</code> caso a interface já estava
-   *         registrada.
+   * @return {@code true} se a autorização cadastrada inexistia no barramento;
+   *         {@code false} em caso contrário.
+   *
+   * @param entityID ID da entidade a receber autorização.
+   * @param interfaceName Interface a ser autorizada.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    * @throws InvalidInterface
@@ -230,10 +252,11 @@ public interface BusAdmin {
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface;
 
   /**
-   * Remove autorização para uma interface de uma entidade
+   * Remove autorização para uma interface de uma entidade.
    * 
-   * @param entityID ID da entidade que vai ter a autorização removida
-   * @param interfaceName interface que vai ser autorizada
+   * @param entityID ID da entidade a ter autorização removida.
+   * @param interfaceName Interface a ser autorizada.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    * @throws InvalidInterface
@@ -253,7 +276,8 @@ public interface BusAdmin {
    * Retorna uma lista que contém todas as descrições de ofertas de serviços do
    * barramento.
    * 
-   * @return lista de descrições de ofertas de serviços
+   * @return Lista de descrições de ofertas de serviços.
+   *
    * @throws ServiceFailure
    * @throws TRANSIENT
    * @throws COMM_FAILURE
@@ -263,9 +287,10 @@ public interface BusAdmin {
     COMM_FAILURE, NO_PERMISSION;
 
   /**
-   * Remove uma oferta de serviço
+   * Remove uma oferta de serviço.
    * 
-   * @param desc Descrição da oferta
+   * @param desc Descrição da oferta.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
@@ -280,9 +305,10 @@ public interface BusAdmin {
 
   /**
    * Retorna lista que contém as informações de todos os logins ativos no
-   * barramento
+   * barramento.
    * 
-   * @return Lista contendo informações de login das entidades
+   * @return Lista contendo informações de login das entidades.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
@@ -290,9 +316,10 @@ public interface BusAdmin {
     UnauthorizedOperation;
 
   /**
-   * Invalida um login ativo no barramento
+   * Invalida um login ativo no barramento.
    * 
-   * @param loginInfo Informação de login
+   * @param loginInfo Informação de login.
+   *
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */

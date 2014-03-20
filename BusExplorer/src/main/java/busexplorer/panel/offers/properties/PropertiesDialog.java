@@ -59,7 +59,7 @@ public class PropertiesDialog extends JDialog {
     PropertiesTableProvider provider = new PropertiesTableProvider();
     PanelComponent<ServiceProperty> propertiesPanel = new
       PanelComponent<ServiceProperty>(props, provider, actions);
-    panel.add(propertiesPanel, new GBC(0, 0).none());
+    panel.add(propertiesPanel, new GBC(0, 0).both());
 
     JButton closeButton = new JButton(Utils.getString(PropertiesDialog.class,
       "button.close"));

@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.StandardDialogs;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import admin.BusAdmin;
 import busexplorer.Application;
@@ -75,9 +76,21 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          new AuthorizationInputDialog(AuthorizationAddAction.this.parentWindow,
-            getPanelComponent(), admin, entitiesIDList,
-            interfacesList).showDialog();
+          if (entitiesIDList.size() == 0) {
+              StandardDialogs.showErrorDialog(parentWindow,
+                getString("error.title"),
+                getString("error.noEntities.msg"));
+          }
+          else if (interfacesList.size() == 0) {
+              StandardDialogs.showErrorDialog(parentWindow,
+                getString("error.title"),
+                getString("error.noInterfaces.msg"));
+          }
+          else {
+            new AuthorizationInputDialog(AuthorizationAddAction.this.parentWindow,
+              getPanelComponent(), admin, entitiesIDList,
+              interfacesList).showDialog();
+          }
         }
       }
     };

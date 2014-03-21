@@ -6,6 +6,7 @@ import java.util.List;
 import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.StandardDialogs;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import admin.BusAdmin;
 import busexplorer.Application;
@@ -65,8 +66,17 @@ public class EntityAddAction extends OpenBusAction<EntityWrapper> {
         @Override
         protected void afterTaskUI() {
           if (getStatus()) {
-            new EntityInputDialog(EntityAddAction.this.parentWindow,
-              getPanelComponent(), admin, getResult()).showDialog();
+            List<EntityCategoryDesc> result = getResult();
+            
+            if (result.size() == 0) {
+              StandardDialogs.showErrorDialog(parentWindow,
+                getString("error.title"),
+                getString("error.noCategories.msg"));
+            }
+            else {
+              new EntityInputDialog(EntityAddAction.this.parentWindow,
+                getPanelComponent(), admin, getResult()).showDialog();
+            }
           }
         }
       };

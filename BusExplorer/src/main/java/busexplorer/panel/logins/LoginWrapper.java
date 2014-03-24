@@ -50,6 +50,15 @@ public class LoginWrapper {
   }
 
   /**
+   * Código hash do objeto.
+   *
+   * @return Código hash do objeto.
+   */
+  public int hashCode() {
+    return id.hashCode() ^ entity.hashCode();
+  }
+
+  /**
    * Recupera o identificador do login.
    * 
    * @return o nome.

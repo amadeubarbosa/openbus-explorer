@@ -55,6 +55,15 @@ public class EntityWrapper {
   }
 
   /**
+   * Código hash do objeto.
+   *
+   * @return Código hash do objeto.
+   */
+  public int hashCode() {
+    return id.hashCode() ^ name.hashCode() ^ category.hashCode();
+  }
+
+  /**
    * Recupera o identificador da entidade.
    * 
    * @return o identificador.

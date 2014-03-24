@@ -68,6 +68,15 @@ public class OfferWrapper {
   }
 
   /**
+   * Código hash do objeto.
+   *
+   * @return Código hash do objeto.
+   */
+  public int hashCode() {
+    return entity.hashCode() ^ interfaces.hashCode() ^ date.hashCode();
+  }
+
+  /**
    * Recupera o identificador da oferta.
    * 
    * @return o identificador.

@@ -39,6 +39,15 @@ public class CertificateWrapper {
   }
 
   /**
+   * Código hash do objeto.
+   *
+   * @return Código hash do objeto.
+   */
+  public int hashCode() {
+    return entity.hashCode();
+  }
+
+  /**
    * Recupera a entidade vinculada ao certificado.
    * 
    * @return a entidade vinculada ao certificado.

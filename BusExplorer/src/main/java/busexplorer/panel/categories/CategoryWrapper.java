@@ -50,6 +50,15 @@ public class CategoryWrapper {
   }
 
   /**
+   * Código hash do objeto.
+   *
+   * @return Código hash do objeto.
+   */
+  public int hashCode() {
+    return id.hashCode() ^ name.hashCode();
+  }
+
+  /**
    * Recupera o identificador da categoria.
    * 
    * @return o identificador.

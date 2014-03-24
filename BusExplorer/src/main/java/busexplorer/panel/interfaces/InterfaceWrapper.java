@@ -39,6 +39,15 @@ public class InterfaceWrapper {
   }
 
   /**
+   * Código hash do objeto.
+   *
+   * @return Código hash do objeto.
+   */
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  /**
    * Recupera o nome da interface.
    * 
    * @return o nome da interface.

@@ -38,6 +38,7 @@ public class CategoryWrapper {
    * 
    * @param o Objeto a ser comparado.
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -54,6 +55,7 @@ public class CategoryWrapper {
    *
    * @return Código hash do objeto.
    */
+  @Override
   public int hashCode() {
     return id.hashCode() ^ name.hashCode();
   }

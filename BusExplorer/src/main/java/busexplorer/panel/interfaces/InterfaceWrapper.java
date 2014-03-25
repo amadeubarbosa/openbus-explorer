@@ -27,6 +27,7 @@ public class InterfaceWrapper {
    * 
    * @param o Objeto a ser comparado.
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -43,6 +44,7 @@ public class InterfaceWrapper {
    *
    * @return Código hash do objeto.
    */
+  @Override
   public int hashCode() {
     return name.hashCode();
   }

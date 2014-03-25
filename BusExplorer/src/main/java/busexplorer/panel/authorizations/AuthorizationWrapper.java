@@ -40,6 +40,7 @@ public class AuthorizationWrapper {
    * 
    * @param o Objeto a ser comparado.
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -56,6 +57,7 @@ public class AuthorizationWrapper {
    *
    * @return Código hash do objeto.
    */
+  @Override
   public int hashCode() {
     return id.hashCode() ^ interfaceName.hashCode();
   }

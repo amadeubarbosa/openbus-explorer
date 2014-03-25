@@ -27,6 +27,7 @@ public class CertificateWrapper {
    *
    * @param o Objeto a ser comparado.
    */
+  @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
@@ -43,6 +44,7 @@ public class CertificateWrapper {
    *
    * @return Código hash do objeto.
    */
+  @Override
   public int hashCode() {
     return entity.hashCode();
   }

@@ -71,6 +71,18 @@ public class BusExplorerLogin {
   }
 
   /**
+   * Realiza o shutdown do ORB e do assistente, terminando o login.
+   */
+  public void logout() {
+    if (assistant == null) {
+      return;
+    }
+    org.omg.CORBA.ORB orb = assistant.orb();
+    assistant.shutdown();
+    orb.shutdown(true);
+  }
+
+  /**
    * Realiza uma verificação sobre a permissão de administração deste login e
    * armazena o resultado em uma membro auxiliar.
    *
@@ -162,7 +174,7 @@ public class BusExplorerLogin {
         break;
       }
       if (callback.getException() != null) {
-        login.assistant.shutdown();
+        login.logout();
         throw callback.getException();
       }
 

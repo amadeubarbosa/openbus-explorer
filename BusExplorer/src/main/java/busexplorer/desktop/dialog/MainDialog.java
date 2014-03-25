@@ -118,8 +118,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    */
   @Override
   public void dispose() {
-    if (Application.login() != null && Application.login().getAssistant() != null) {
-      Application.login().getAssistant().shutdown();
+    if (Application.login() != null) {
+      Application.login().logout();
     }
     super.dispose();
   }
@@ -178,9 +178,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
             ExceptionContext.Service) {
           @Override
           protected void performTask() throws Exception {
-            if (Application.login().getAssistant() != null) {
-              Application.login().getAssistant().shutdown();
-            }
+            Application.login().logout();
             setDialogTitle(LNG.get("MainDialog.title.disconnected"));
           }
 

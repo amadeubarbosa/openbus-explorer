@@ -351,8 +351,8 @@ public class LoginDialog extends JDialog {
             LoginDialog.this.dispose();
             login = theLogin;
           } else {
-            if (theLogin != null && theLogin.getAssistant() != null) {
-              theLogin.getAssistant().shutdown();
+            if (theLogin != null) {
+              theLogin.logout();
             }
             fieldUser.requestFocus();
           }

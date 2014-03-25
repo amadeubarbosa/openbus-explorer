@@ -77,6 +77,7 @@ public class Application {
   }
 
   public static void loginProcess(MainDialog mainDialog) {
+    login = null;
     LoginDialog loginDialog = new LoginDialog(mainDialog, admin);
     loginDialog.show();
     login = loginDialog.getLogin();

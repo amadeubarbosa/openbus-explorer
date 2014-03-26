@@ -130,8 +130,8 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
 
     interfacesScrollList = new JList(interfacesList.toArray());
     panel.add(new JScrollPane(interfacesScrollList),
-      new GBC(0, 3).insets(5).horizontal().west());
-
+      new GBC(0, 3).insets(5).both().west());
+      
     return panel;
   }
 

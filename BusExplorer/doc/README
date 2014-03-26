@@ -1,0 +1,83 @@
+O QUE É O BUSEXPLORER?
+
+  O BusExplorer é uma ferramenta gráfica para inspeção e configuração do
+  barramento, compatível com barramentos de versão 2.0.0.1 ou superior.
+
+
+COMO INICIAR O BUSEXPLORER
+
+  O JAR presente no pacote da distribuição é autoexecutável. Em
+  ambientes Windows com a Oracle JRE 1.6 instalada, basta clicar neste
+  arquivo. Em ambientes Unix, também com a JRE presente, basta executar,
+  no diretório da distribuição, o comando
+
+    java [-Dpropriedade=valor] -jar \
+      busexplorer-1-SNAPSHOT-jar-with-dependencies.java
+
+  A sintaxe do comando pode depender da shell utilizada e da adequada
+  configuração da variável de sistema $PATH (ou equivalente).
+
+  As propriedades disponíveis são a seguintes:
+
+    configPath  Caminho do arquivo de configurações; por default, é
+                "./busexplorer.conf".
+    host        Host do barramento a se conectar.
+    port        Porta do barramento a se conectar.
+
+
+ARQUIVO DE CONFIGURAÇÕES
+
+  * Barramentos pré-configurados
+
+  O usuário pode especificar barramentos no arquivo de configurações.
+  Caso haja ao menos um, uma lista de opções, contendo tais barramentos,
+  será exibida no diálogo de login. Deve-se especificar uma descrição e
+  um endereço do barramento.
+
+  A propriedade "bus[n].description" descreve o n-ésimo barramento
+  presente nessa lista.
+
+  A propriedade "bus[n].address" especifica o endereço do n-ésimo
+  barramento.  Sua sintaxe é da forma
+
+    host[:porta]
+
+  Onde, em caso de ausência da porta, será utilizada a porta padrão dos
+  barramentos OpenBus, 2089.
+
+  Deve-se, para um dado barramento, especificar ambas as propriedades.
+
+  Exemplos:
+
+    bus1.description "Barramento local, porta default (2089)"
+    bus1.address localhost
+
+    bus2.description "Barramento remoto"
+    bus2.address outrohost.example.org:20000
+
+
+FUNCIONALIDADES
+
+  As funcionalidades presentes no BusExplorer são:
+
+    - Login por senha
+    - Consulta a informações do barramento (sem permissão de
+      administração)
+      - Listagem de categorias
+      - Listagem de entidades
+      - Listagem de inferfaces
+      - Listagem de autorizações
+      - Listagem de ofertas
+      - Listagem de propriedades de uma oferta
+    - Consulta a informações do barramento (dependentes de permissão de
+      administração)
+      - Listagem de certificados
+      - Listagem de logins
+    - Configuração do barramento (com permissão de administração)
+      - Adição, remoção e edição de categorias
+      - Adição, remoção e edição de entidades
+      - Adição e remoção de certificados
+      - Adição e remoção de interfaces
+      - Adição e remoção de autorizações
+      - Remoção de ofertas
+      - Remoção de logins

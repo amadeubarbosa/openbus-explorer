@@ -12,7 +12,7 @@ COMO INICIAR O BUSEXPLORER
   no diretório da distribuição, o comando
 
     java [-Dpropriedade=valor] -jar \
-      busexplorer-1-SNAPSHOT-jar-with-dependencies.java
+      busexplorer-1.1.0-jar-with-dependencies.java
 
   A sintaxe do comando pode depender da shell utilizada e da adequada
   configuração da variável de sistema $PATH (ou equivalente).

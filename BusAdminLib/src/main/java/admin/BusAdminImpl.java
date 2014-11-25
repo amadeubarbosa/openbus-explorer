@@ -94,10 +94,8 @@ public class BusAdminImpl implements BusAdmin {
     obtainRegistries();
   }
 
-
-
   /*
-   *                               CATEGORIAS
+   * CATEGORIAS
    */
 
   /**
@@ -124,15 +122,12 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public void removeCategory(String categoryID) throws ServiceFailure,
     UnauthorizedOperation, EntityCategoryInUse {
-    EntityCategory category =
-      this.entityRegistry.getEntityCategory(categoryID);
+    EntityCategory category = this.entityRegistry.getEntityCategory(categoryID);
     category.remove();
   }
 
-
-
   /*
-   *                               ENTIDADES
+   * ENTIDADES
    */
 
   /**
@@ -151,8 +146,7 @@ public class BusAdminImpl implements BusAdmin {
   public RegisteredEntity createEntity(String entityID, String entityName,
     String categoryID) throws ServiceFailure, UnauthorizedOperation,
     EntityAlreadyRegistered {
-    EntityCategory category =
-      this.entityRegistry.getEntityCategory(categoryID);
+    EntityCategory category = this.entityRegistry.getEntityCategory(categoryID);
     return category.registerEntity(entityID, entityName);
   }
 
@@ -170,10 +164,8 @@ public class BusAdminImpl implements BusAdmin {
     return false;
   }
 
-
-
   /*
-   *                              CERTIFICADOS
+   * CERTIFICADOS
    */
 
   /**
@@ -204,10 +196,8 @@ public class BusAdminImpl implements BusAdmin {
     this.certificateRegistry.removeCertificate(entityID);
   }
 
-
-
   /*
-   *                               INTERFACES
+   * INTERFACES
    */
 
   /**
@@ -237,10 +227,8 @@ public class BusAdminImpl implements BusAdmin {
     this.interfaceRegistry.removeInterface(interfaceName);
   }
 
-
-
   /*
-   *                              AUTORIZAÇÕES
+   * AUTORIZAÇÕES
    */
 
   /**
@@ -254,8 +242,7 @@ public class BusAdminImpl implements BusAdmin {
     RegisteredEntityDesc[] entitiesDesc =
       this.entityRegistry.getAuthorizedEntities();
     for (RegisteredEntityDesc entityDesc : entitiesDesc) {
-      map.put(entityDesc, Arrays
-        .asList(entityDesc.ref.getGrantedInterfaces()));
+      map.put(entityDesc, Arrays.asList(entityDesc.ref.getGrantedInterfaces()));
     }
     return map;
   }
@@ -281,10 +268,8 @@ public class BusAdminImpl implements BusAdmin {
     entity.revokeInterface(interfaceName);
   }
 
-
-
   /*
-   *                                OFERTAS
+   * OFERTAS
    */
 
   /**
@@ -305,10 +290,8 @@ public class BusAdminImpl implements BusAdmin {
     desc.ref.remove();
   }
 
-
-
   /*
-   *                                 LOGINS
+   * LOGINS
    */
 
   /**
@@ -330,10 +313,8 @@ public class BusAdminImpl implements BusAdmin {
     this.loginRegistry.invalidateLogin(loginInfo.id);
   }
 
-
-
   /*
-   *                           Métodos auxiliares
+   * Métodos auxiliares
    */
 
   /**
@@ -369,23 +350,25 @@ public class BusAdminImpl implements BusAdmin {
    * Obtém as facetas dos registros do barramento.
    */
   private void obtainRegistries() {
-    IComponent iComponent =
-      getIComponent(this.host, this.port, this.orb);
+    IComponent iComponent = getIComponent(this.host, this.port, this.orb);
     if (iComponent == null) {
-      throw new IncompatibleBus();
+      throw new IncompatibleBus(
+        "Não foi possível recuperar referência para barramento");
     }
 
+    String error = "Referência para '%' não encontrada.";
     org.omg.CORBA.Object entityRegistryObj =
       iComponent.getFacet(EntityRegistryHelper.id());
     if (entityRegistryObj == null) {
-      throw new IncompatibleBus();
+      throw new IncompatibleBus(String.format(error, "registro de entidades"));
     }
     this.entityRegistry = EntityRegistryHelper.narrow(entityRegistryObj);
 
     org.omg.CORBA.Object certificateRegistryObj =
       iComponent.getFacet(CertificateRegistryHelper.id());
     if (certificateRegistryObj == null) {
-      throw new IncompatibleBus();
+      throw new IncompatibleBus(String
+        .format(error, "registro de certificados"));
     }
     this.certificateRegistry =
       CertificateRegistryHelper.narrow(certificateRegistryObj);
@@ -393,22 +376,22 @@ public class BusAdminImpl implements BusAdmin {
     org.omg.CORBA.Object interfaceRegistryObj =
       iComponent.getFacet(InterfaceRegistryHelper.id());
     if (interfaceRegistryObj == null) {
-      throw new IncompatibleBus();
+      throw new IncompatibleBus(String.format(error, "registro de interfaces"));
     }
     this.interfaceRegistry =
       InterfaceRegistryHelper.narrow(interfaceRegistryObj);
 
     org.omg.CORBA.Object offerRegistryObj =
       iComponent.getFacet(OfferRegistryHelper.id());
-    if (interfaceRegistryObj == null) {
-      throw new IncompatibleBus();
+    if (offerRegistryObj == null) {
+      throw new IncompatibleBus(String.format(error, "registro de ofertas"));
     }
     this.offerRegistry = OfferRegistryHelper.narrow(offerRegistryObj);
 
     org.omg.CORBA.Object loginRegistryObj =
       iComponent.getFacet(LoginRegistryHelper.id());
     if (loginRegistryObj == null) {
-      throw new IncompatibleBus();
+      throw new IncompatibleBus(String.format(error, "registro de logins"));
     }
     this.loginRegistry = LoginRegistryHelper.narrow(loginRegistryObj);
   }

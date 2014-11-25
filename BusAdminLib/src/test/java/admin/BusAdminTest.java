@@ -1,3 +1,5 @@
+package admin;
+
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -6,13 +8,16 @@ import junit.framework.Assert;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.omg.CORBA.ORB;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
 
 import scs.core.ComponentContext;
-import tecgraf.openbus.assistant.Assistant;
-import tecgraf.openbus.assistant.AssistantParams;
+import tecgraf.openbus.Connection;
+import tecgraf.openbus.OpenBusContext;
+import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
-import admin.BusAdminImpl;
 
 public class BusAdminTest {
 
@@ -33,36 +38,33 @@ public class BusAdminTest {
   }
 
   @Test
-  public void listOfferTest() throws Throwable {
-    AssistantParams params = new AssistantParams();
-    params.interval = 1;
-    Assistant assist =
-      Assistant.createWithPassword(host, port, entity, password, params);
-
-    try {
-      Thread.sleep(1500);
-    }
-    catch (InterruptedException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    BusAdminImpl admin = new BusAdminImpl(host, port, assist.orb());
+  public void listOfferTest() throws Exception {
+    ORB orb = ORBInitializer.initORB();
+    OpenBusContext context =
+      (OpenBusContext) orb.resolve_initial_references("OpenBusContext");
+    Connection conn = context.createConnection(host, port);
+    conn.loginByPassword(entity, password);
+    context.setDefaultConnection(conn);
+    POA poa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
+    poa.the_POAManager().activate();
+    
+    BusAdminImpl admin = new BusAdminImpl(host, port, orb);
 
     int index;
     for (index = 0; index < 5; index++) {
-      ComponentContext context = Utils.buildComponent(assist.orb());
+      ComponentContext component = Utils.buildComponent(orb);
       ServiceProperty[] props =
         new ServiceProperty[] {
-            new ServiceProperty("offer.domain", "Assistant Test"),
+            new ServiceProperty("offer.domain", "BusAdminLib Test"),
             new ServiceProperty("loop.index", Integer.toString(index)) };
-      assist.registerService(context.getIComponent(), props);
+      context.getOfferRegistry().registerService(component.getIComponent(),
+        props);
     }
-    Thread.sleep(params.interval * 3 * 1000);
     List<ServiceOfferDesc> found = admin.getOffers();
     Assert.assertTrue(found.size() >= index);
-    assist.shutdown();
-
+    conn.logout();
+    orb.shutdown(true);
+    orb.destroy();
   }
 
 }

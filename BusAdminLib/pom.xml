@@ -19,40 +19,18 @@
 
   <dependencies>
     <dependency>
-      <groupId>tecgraf.openbus</groupId>
+      <groupId>br.puc-rio.tecgraf.openbus</groupId>
       <artifactId>openbus-sdk-core</artifactId>
-      <version>${openbus-sdk.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.openbus</groupId>
-      <artifactId>openbus-sdk-legacy</artifactId>
-      <version>${openbus-sdk.version}</version>
     </dependency>
 
     <dependency>
       <groupId>tecgraf.openbus</groupId>
       <artifactId>openbus-core-admin</artifactId>
-      <version>${openbus-core.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.scs</groupId>
-      <artifactId>scs-core</artifactId>
-      <version>${scs.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jacorb</groupId>
-      <artifactId>jacorb</artifactId>
-      <version>${jacorb.version}</version>
-      <scope>runtime</scope>
     </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

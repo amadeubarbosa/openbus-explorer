@@ -1,3 +1,5 @@
+package admin;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +23,7 @@ import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
 
 /**
- * Classe utilitária para os demos Java.
+ * Classe utilitária para os testes.
  * 
  * @author Tecgraf
  */

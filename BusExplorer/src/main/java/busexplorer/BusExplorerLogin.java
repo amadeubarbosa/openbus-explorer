@@ -127,18 +127,18 @@ public class BusExplorerLogin {
       volatile Exception exception = null;
 
       @Override
-      public void onStartSharedAuthFailure(Assistant arg0, Throwable arg1) {
+      public void onStartSharedAuthFailure(Assistant arg0, Exception arg1) {
         // não iremos utilizar este recurso
       }
 
       @Override
       public void onRegisterFailure(Assistant arg0, IComponent arg1,
-        ServiceProperty[] arg2, Throwable arg3) {
+        ServiceProperty[] arg2, Exception arg3) {
         // não iremos utilizar este recurso
       }
 
       @Override
-      public void onLoginFailure(Assistant arg0, Throwable arg1) {
+      public void onLoginFailure(Assistant arg0, Exception arg1) {
         if (++failedAttempts == MAX_LOGIN_FAILS ||
           arg1 instanceof AccessDenied) {
           exception = (Exception) arg1;
@@ -146,7 +146,7 @@ public class BusExplorerLogin {
       }
 
       @Override
-      public void onFindFailure(Assistant arg0, Throwable arg1) {
+      public void onFindFailure(Assistant arg0, Exception arg1) {
         // TODO precisamos realizar algum tratamento aqui?
       }
 

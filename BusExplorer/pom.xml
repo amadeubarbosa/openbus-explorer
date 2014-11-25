@@ -5,7 +5,7 @@
   <parent>
     <groupId>tecgraf.openbus</groupId>
     <artifactId>all-busexplorer</artifactId>
-    <version>1-SNAPSHOT</version>
+    <version>1.1.1</version>
   </parent>
 
   <artifactId>busexplorer</artifactId>
@@ -43,9 +43,13 @@
 
   <dependencies>
     <dependency>
+      <groupId>br.puc-rio.tecgraf.openbus</groupId>
+      <artifactId>openbus-sdk-assistant-core</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>tecgraf.javautils</groupId>
       <artifactId>javautils-core</artifactId>
-      <version>${javautils.version}</version>
     </dependency>
 
     <dependency>
@@ -57,19 +61,16 @@
     <dependency>
       <groupId>tecgraf.diaglib</groupId>
       <artifactId>diaglib-core</artifactId>
-      <version>${diaglib.version}</version>
     </dependency>
 
     <dependency>
       <groupId>tecgraf.diaglib</groupId>
       <artifactId>diaglib-addons</artifactId>
-      <version>${diaglib.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-io</artifactId>
-      <version>${commons-io.version}</version>
     </dependency>
   </dependencies>
 </project>

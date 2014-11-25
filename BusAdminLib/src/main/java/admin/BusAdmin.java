@@ -32,7 +32,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEn
 public interface BusAdmin {
 
   /*
-   *                               CATEGORIAS
+   * CATEGORIAS
    */
 
   /**
@@ -76,10 +76,8 @@ public interface BusAdmin {
   public void removeCategory(String categoryID) throws ServiceFailure,
     UnauthorizedOperation, EntityCategoryInUse;
 
-
-
   /*
-   *                               ENTIDADES
+   * ENTIDADES
    */
 
   /**
@@ -127,10 +125,8 @@ public interface BusAdmin {
   public boolean removeEntity(String entityID) throws ServiceFailure,
     UnauthorizedOperation;
 
-
-
   /*
-   *                              CERTIFICADOS
+   * CERTIFICADOS
    */
 
   /**
@@ -169,10 +165,8 @@ public interface BusAdmin {
   public void removeCertificate(String entityID) throws ServiceFailure,
     UnauthorizedOperation;
 
-
-
   /*
-   *                               INTERFACES
+   * INTERFACES
    */
 
   /**
@@ -193,7 +187,7 @@ public interface BusAdmin {
    * Cadastra uma nova interface no barramento.
    *
    * @return {@code true} se a interface cadastrada inexistia no barramento;
-   * {@code false} em caso contrário.
+   *         {@code false} em caso contrário.
    * 
    * @param interfaceName Nome da nova interface.
    *
@@ -216,10 +210,8 @@ public interface BusAdmin {
   public void removeInterface(String interfaceName) throws ServiceFailure,
     UnauthorizedOperation, InterfaceInUse;
 
-
-
   /*
-   *                              AUTORIZAÇÕES
+   * AUTORIZAÇÕES
    */
 
   /**
@@ -266,10 +258,8 @@ public interface BusAdmin {
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface,
     AuthorizationInUse;
 
-
-
   /*
-   *                                OFERTAS
+   * OFERTAS
    */
 
   /**
@@ -297,10 +287,8 @@ public interface BusAdmin {
   public void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
     UnauthorizedOperation;
 
-
-
   /*
-   *                                 LOGINS
+   * LOGINS
    */
 
   /**

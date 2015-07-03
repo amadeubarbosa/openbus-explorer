@@ -1,11 +1,11 @@
 package busexplorer.exception;
 
 import org.omg.CORBA.NO_PERMISSION; 
-import tecgraf.openbus.core.v2_0.services.ServiceFailure;
-import tecgraf.openbus.core.v2_0.services.access_control.InvalidRemoteCode;
-import tecgraf.openbus.core.v2_0.services.access_control.NoLoginCode;
-import tecgraf.openbus.core.v2_0.services.access_control.UnknownBusCode;
-import tecgraf.openbus.core.v2_0.services.access_control.UnverifiedLoginCode;
+import tecgraf.openbus.core.v2_1.services.ServiceFailure;
+import tecgraf.openbus.core.v2_1.services.access_control.InvalidRemoteCode;
+import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
+import tecgraf.openbus.core.v2_1.services.access_control.UnknownBusCode;
+import tecgraf.openbus.core.v2_1.services.access_control.UnverifiedLoginCode;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
 import exception.handling.ExceptionHandler;

@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.StandardDialogs;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;

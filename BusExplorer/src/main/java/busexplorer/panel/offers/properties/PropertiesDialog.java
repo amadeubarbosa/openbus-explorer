@@ -14,7 +14,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 import busexplorer.panel.PanelActionInterface;
 import busexplorer.panel.PanelComponent;
 import busexplorer.panel.offers.OfferWrapper;

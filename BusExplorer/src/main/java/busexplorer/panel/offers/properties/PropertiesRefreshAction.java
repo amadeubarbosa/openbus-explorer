@@ -5,8 +5,8 @@ import java.awt.event.ActionEvent;
 import java.util.Arrays;
 import java.util.List;
 
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOffer;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOffer;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;

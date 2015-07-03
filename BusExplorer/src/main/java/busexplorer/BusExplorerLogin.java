@@ -1,16 +1,19 @@
 package busexplorer;
 
+import org.omg.CORBA.COMM_FAILURE;
+import org.omg.CORBA.NO_PERMISSION;
+import org.omg.CORBA.TRANSIENT;
+
 import scs.core.IComponent;
-import tecgraf.diagnostic.addons.openbus.v20.OpenBusMonitor;
-import tecgraf.diagnostic.commom.StatusCode;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.assistant.Assistant;
 import tecgraf.openbus.assistant.AssistantParams;
 import tecgraf.openbus.assistant.OnFailureCallback;
-import tecgraf.openbus.core.v2_0.services.ServiceFailure;
-import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
-import tecgraf.openbus.core.v2_0.services.access_control.AccessDenied;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+import tecgraf.openbus.core.v2_1.services.ServiceFailure;
+import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
+import tecgraf.openbus.core.v2_1.services.access_control.AccessDenied;
+import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 import admin.BusAdmin;
 import admin.BusAdminImpl;
 
@@ -41,8 +44,7 @@ public class BusExplorerLogin {
    * @param host Host.
    * @param port Porta.
    */
-  public BusExplorerLogin(BusAdmin admin, String entity, String host, int port)
-  {
+  public BusExplorerLogin(BusAdmin admin, String entity, String host, int port) {
     this.admin = admin;
     this.entity = entity;
     this.host = host;
@@ -113,66 +115,83 @@ public class BusExplorerLogin {
    * @param login Informações de login.
    * @param password Senha.
    */
-  public static void doLogin(BusExplorerLogin login, String password) throws
-    Exception {
+  public static void doLogin(BusExplorerLogin login, String password,
+    String domain) throws Exception {
     /** Intervalo de tempo para verificar se o login já foi efetuado */
     final int LOGIN_CHECK_INTERVAL = 250;
     /** Número máximo de tentativas de login */
     final int MAX_LOGIN_FAILS = 3;
 
     OnFailureCallbackWithException callback =
-     new OnFailureCallbackWithException() {
-      volatile int failedAttempts = 0;
+      new OnFailureCallbackWithException() {
+        volatile int failedAttempts = 0;
 
-      volatile Exception exception = null;
+        volatile Exception exception = null;
 
-      @Override
-      public void onStartSharedAuthFailure(Assistant arg0, Exception arg1) {
-        // não iremos utilizar este recurso
-      }
-
-      @Override
-      public void onRegisterFailure(Assistant arg0, IComponent arg1,
-        ServiceProperty[] arg2, Exception arg3) {
-        // não iremos utilizar este recurso
-      }
-
-      @Override
-      public void onLoginFailure(Assistant arg0, Exception arg1) {
-        if (++failedAttempts == MAX_LOGIN_FAILS ||
-          arg1 instanceof AccessDenied) {
-          exception = (Exception) arg1;
+        @Override
+        public void onStartSharedAuthFailure(Assistant arg0, Exception arg1) {
+          // não iremos utilizar este recurso
         }
-      }
 
-      @Override
-      public void onFindFailure(Assistant arg0, Exception arg1) {
-        // TODO precisamos realizar algum tratamento aqui?
-      }
+        @Override
+        public void onRegisterFailure(Assistant arg0, IComponent arg1,
+          ServiceProperty[] arg2, Exception arg3) {
+          // não iremos utilizar este recurso
+        }
 
-      @Override
-      public Exception getException() {
-        return exception;
-      }
-    };
+        @Override
+        public void onLoginFailure(Assistant arg0, Exception arg1) {
+          if (++failedAttempts == MAX_LOGIN_FAILS
+            || arg1 instanceof AccessDenied) {
+            exception = arg1;
+          }
+        }
 
-    AssistantParams params = new AssistantParams();
+        @Override
+        public void onFindFailure(Assistant arg0, Exception arg1) {
+          // TODO precisamos realizar algum tratamento aqui?
+          exception = arg1;
+        }
+
+        @Override
+        public Exception getException() {
+          return exception;
+        }
+      };
+
+    AssistantParams params = new AssistantParams(login.host, login.port);
     params.callback = callback;
 
     login.assistant =
-      Assistant.createWithPassword(login.host, login.port, login.entity,
-        password.getBytes(), params);
+      Assistant.createWithPassword(params, login.entity, password.getBytes(),
+        domain);
 
-    OpenBusMonitor monitor =
-      new OpenBusMonitor("openbus", (OpenBusContext)
-        login.assistant.orb().resolve_initial_references("OpenBusContext"));
-
+    OpenBusContext context =
+      (OpenBusContext) login.assistant.orb().resolve_initial_references(
+        "OpenBusContext");
     while (true) {
-      if (monitor.checkResource().code == StatusCode.OK) {
-        login.connectToAdmin();
-        login.checkAdminRights();
-        break;
+      try {
+        if (!context.getOfferRegistry()._non_existent()) {
+          login.connectToAdmin();
+          login.checkAdminRights();
+          break;
+        }
       }
+      catch (TRANSIENT e) {
+        // retentar
+      }
+      catch (COMM_FAILURE e) {
+        // retentar
+      }
+      catch (NO_PERMISSION e) {
+        if (e.minor == NoLoginCode.value) {
+          // retentar
+        }
+        else {
+          throw e;
+        }
+      }
+
       if (callback.getException() != null) {
         login.logout();
         throw callback.getException();
@@ -185,7 +204,7 @@ public class BusExplorerLogin {
       }
     }
   }
-  
+
   /**
    * Extensão da callback de notificação de falhas do Assistente OpenBus.
    * Permite a recuperação de possíveis exceções.
@@ -196,7 +215,7 @@ public class BusExplorerLogin {
      * assistente.
      *
      * @return Uma exceção durante a execução de uma tarefa. Nulo, se não houve
-     * disparo de exceção.
+     *         disparo de exceção.
      */
     public Exception getException();
   }

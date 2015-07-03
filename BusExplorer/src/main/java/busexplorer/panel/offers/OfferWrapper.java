@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
 import busexplorer.utils.Utils;
 
 /**

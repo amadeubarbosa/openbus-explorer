@@ -7,21 +7,21 @@ import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.TRANSIENT;
 
-import tecgraf.openbus.core.v2_0.services.ServiceFailure;
-import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
-import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
-import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.InvalidCertificate;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.AuthorizationInUse;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityAlreadyRegistered;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryAlreadyExists;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryInUse;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.InterfaceInUse;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.InvalidInterface;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import tecgraf.openbus.core.v2_1.services.ServiceFailure;
+import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
+import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
+import tecgraf.openbus.core.v2_1.services.access_control.admin.v1_0.InvalidCertificate;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.AuthorizationInUse;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityAlreadyRegistered;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryAlreadyExists;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryInUse;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.InterfaceInUse;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.InvalidInterface;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 /**
  * Essa interface representa os comandos básicos utilizados para acessar os

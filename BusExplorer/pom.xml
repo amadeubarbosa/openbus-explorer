@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>tecgraf.openbus</groupId>
-    <artifactId>all-busexplorer</artifactId>
-    <version>1-SNAPSHOT</version>
+    <groupId>br.puc-rio.tecgraf.busexplorer</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>busexplorer</artifactId>
@@ -53,19 +53,9 @@
     </dependency>
 
     <dependency>
-      <groupId>tecgraf.openbus</groupId>
+      <groupId>br.puc-rio.tecgraf.busexplorer</groupId>
       <artifactId>busadminlib</artifactId>
       <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.diaglib</groupId>
-      <artifactId>diaglib-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>tecgraf.diaglib</groupId>
-      <artifactId>diaglib-addons</artifactId>
     </dependency>
 
     <dependency>

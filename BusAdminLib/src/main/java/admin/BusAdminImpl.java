@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.Object;
 
 import scs.core.IComponent;
 import scs.core.IComponentHelper;
@@ -44,10 +45,6 @@ import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEn
  * @author Tecgraf
  */
 public class BusAdminImpl implements BusAdmin {
-  /** Host do barramento. */
-  private String host;
-  /** Porta do barramento. */
-  private int port;
   /** {@link ORB} do barramento. */
   private ORB orb;
 
@@ -69,17 +66,6 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   /**
-   * Construtor da classe.
-   * 
-   * @param host Host do barramento
-   * @param port Porta do barramento
-   * @param orb ORB do barramento
-   */
-  public BusAdminImpl(String host, int port, ORB orb) {
-    connect(host, port, orb);
-  }
-
-  /**
    * Conecta a instância do objeto a um barramento. Como efeito colateral,
    * atualiza as referências aos registros do barramento.
    * 
@@ -88,10 +74,20 @@ public class BusAdminImpl implements BusAdmin {
    * @param orb ORB do barramento
    */
   public void connect(String host, int port, ORB orb) {
-    this.host = host;
-    this.port = port;
+    org.omg.CORBA.Object ref = buildCorbaLoc(host, port, orb);
+    connect(ref, orb);
+  }
+
+  /**
+   * Conecta a instância do objeto a um barramento. Como efeito colateral,
+   * atualiza as referências aos registros do barramento.
+   * 
+   * @param ref Referência de um barramento
+   * @param orb ORB do barramento
+   */
+  public void connect(Object ref, ORB orb) {
     this.orb = orb;
-    obtainRegistries();
+    obtainRegistries(ref);
   }
 
   /*
@@ -329,28 +325,16 @@ public class BusAdminImpl implements BusAdmin {
     ORB orb) {
     String str =
       String.format("corbaloc::1.0@%s:%d/%s", host, port, BusObjectKey.value);
-
     return orb.string_to_object(str);
   }
 
   /**
-   * Obtém a faceta IComponent do barramento
-   * 
-   * @param host endereço do barramento
-   * @param port porta do barramento
-   * @param orb instância do orb do barramento
-   * @return a faceta IComponent
-   */
-  private static IComponent getIComponent(String host, int port, ORB orb) {
-    org.omg.CORBA.Object obj = buildCorbaLoc(host, port, orb);
-    return IComponentHelper.narrow(obj);
-  }
-
-  /**
    * Obtém as facetas dos registros do barramento.
+   * 
+   * @param obj referência para o barramento
    */
-  private void obtainRegistries() {
-    IComponent iComponent = getIComponent(this.host, this.port, this.orb);
+  private void obtainRegistries(Object obj) {
+    IComponent iComponent = IComponentHelper.narrow(obj);
     if (iComponent == null) {
       throw new IncompatibleBus(
         "Não foi possível recuperar referência para barramento");

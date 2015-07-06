@@ -2,6 +2,8 @@ package busexplorer;
 
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
+import org.omg.CORBA.ORB;
+import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
 
 import scs.core.IComponent;
@@ -9,13 +11,17 @@ import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.assistant.Assistant;
 import tecgraf.openbus.assistant.AssistantParams;
 import tecgraf.openbus.assistant.OnFailureCallback;
+import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_1.services.access_control.AccessDenied;
 import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
+import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
+import tecgraf.openbus.core.v2_1.services.access_control.UnknownDomain;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 import admin.BusAdmin;
 import admin.BusAdminImpl;
+import busexplorer.utils.BusAddress;
 
 /**
  * Trata, analisa e armazena dados de login no barramento.
@@ -25,10 +31,8 @@ import admin.BusAdminImpl;
 public class BusExplorerLogin {
   /** Entidade. */
   public final String entity;
-  /** Host. */
-  public final String host;
-  /** Porta. */
-  public final int port;
+  /** Endereço. */
+  public final BusAddress address;
   /** Instância de administração do baramento. */
   private final BusAdmin admin;
   /** Indica se o login possui permissões administrativas. */
@@ -41,14 +45,12 @@ public class BusExplorerLogin {
    *
    * @param admin Instância de administração do barramento.
    * @param entity Entidade.
-   * @param host Host.
-   * @param port Porta.
+   * @param address endereço do barramento.
    */
-  public BusExplorerLogin(BusAdmin admin, String entity, String host, int port) {
+  public BusExplorerLogin(BusAdmin admin, String entity, BusAddress address) {
     this.admin = admin;
     this.entity = entity;
-    this.host = host;
-    this.port = port;
+    this.address = address;
   }
 
   /**
@@ -104,8 +106,19 @@ public class BusExplorerLogin {
    * Conecta-se a uma instância de administração do barramento.
    */
   private void connectToAdmin() {
-    if (admin instanceof BusAdminImpl) {
-      ((BusAdminImpl) admin).connect(host, port, assistant.orb());
+    BusAdminImpl admin = (BusAdminImpl) this.admin;
+    ORB orb = assistant.orb();
+    switch (address.getType()) {
+      case Address:
+        admin.connect(address.getHost(), address.getPort(), orb);
+        break;
+      case Reference:
+        Object ref = orb.string_to_object(address.getIOR());
+        admin.connect(ref, orb);
+        break;
+      default:
+        throw new IllegalStateException(
+          "Informações sobre barramento inválidas");
     }
   }
 
@@ -114,6 +127,8 @@ public class BusExplorerLogin {
    *
    * @param login Informações de login.
    * @param password Senha.
+   * @param domain Domínio
+   * @throws Exception
    */
   public static void doLogin(BusExplorerLogin login, String password,
     String domain) throws Exception {
@@ -142,7 +157,8 @@ public class BusExplorerLogin {
         @Override
         public void onLoginFailure(Assistant arg0, Exception arg1) {
           if (++failedAttempts == MAX_LOGIN_FAILS
-            || arg1 instanceof AccessDenied) {
+            || arg1 instanceof AccessDenied || arg1 instanceof TooManyAttempts
+            || arg1 instanceof UnknownDomain) {
             exception = arg1;
           }
         }
@@ -159,8 +175,23 @@ public class BusExplorerLogin {
         }
       };
 
-    AssistantParams params = new AssistantParams(login.host, login.port);
+    AssistantParams params;
+    ORB orb = ORBInitializer.initORB();
+    switch (login.address.getType()) {
+      case Address:
+        params =
+          new AssistantParams(login.address.getHost(), login.address.getPort());
+        break;
+      case Reference:
+        Object ref = orb.string_to_object(login.address.getIOR());
+        params = new AssistantParams(ref);
+        break;
+      default:
+        throw new IllegalStateException(
+          "Informações sobre barramento inválidas");
+    }
     params.callback = callback;
+    params.orb = orb;
 
     login.assistant =
       Assistant.createWithPassword(params, login.entity, password.getBytes(),

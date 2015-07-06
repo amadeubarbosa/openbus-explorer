@@ -34,41 +34,42 @@ import busexplorer.panel.PanelActionInterface;
 import busexplorer.panel.PanelComponent;
 import busexplorer.panel.authorizations.AuthorizationAddAction;
 import busexplorer.panel.authorizations.AuthorizationDeleteAction;
-import busexplorer.panel.authorizations.AuthorizationWrapper;
 import busexplorer.panel.authorizations.AuthorizationRefreshAction;
 import busexplorer.panel.authorizations.AuthorizationTableProvider;
+import busexplorer.panel.authorizations.AuthorizationWrapper;
 import busexplorer.panel.categories.CategoryAddAction;
-import busexplorer.panel.categories.CategoryEditAction;
 import busexplorer.panel.categories.CategoryDeleteAction;
-import busexplorer.panel.categories.CategoryWrapper;
+import busexplorer.panel.categories.CategoryEditAction;
 import busexplorer.panel.categories.CategoryRefreshAction;
 import busexplorer.panel.categories.CategoryTableProvider;
+import busexplorer.panel.categories.CategoryWrapper;
 import busexplorer.panel.certificates.CertificateAddAction;
-import busexplorer.panel.certificates.CertificateEditAction;
 import busexplorer.panel.certificates.CertificateDeleteAction;
-import busexplorer.panel.certificates.CertificateWrapper;
+import busexplorer.panel.certificates.CertificateEditAction;
 import busexplorer.panel.certificates.CertificateRefreshAction;
 import busexplorer.panel.certificates.CertificateTableProvider;
+import busexplorer.panel.certificates.CertificateWrapper;
 import busexplorer.panel.entities.EntityAddAction;
 import busexplorer.panel.entities.EntityDeleteAction;
 import busexplorer.panel.entities.EntityEditAction;
-import busexplorer.panel.entities.EntityWrapper;
 import busexplorer.panel.entities.EntityRefreshAction;
 import busexplorer.panel.entities.EntityTableProvider;
+import busexplorer.panel.entities.EntityWrapper;
 import busexplorer.panel.interfaces.InterfaceAddAction;
 import busexplorer.panel.interfaces.InterfaceDeleteAction;
-import busexplorer.panel.interfaces.InterfaceWrapper;
 import busexplorer.panel.interfaces.InterfaceRefreshAction;
 import busexplorer.panel.interfaces.InterfaceTableProvider;
+import busexplorer.panel.interfaces.InterfaceWrapper;
 import busexplorer.panel.logins.LoginDeleteAction;
-import busexplorer.panel.logins.LoginWrapper;
 import busexplorer.panel.logins.LoginRefreshAction;
 import busexplorer.panel.logins.LoginTableProvider;
+import busexplorer.panel.logins.LoginWrapper;
 import busexplorer.panel.offers.OfferDeleteAction;
-import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
+import busexplorer.panel.offers.OfferWrapper;
+import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
@@ -131,8 +132,15 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   public void propertyChange(PropertyChangeEvent e) {
     String propertyName = e.getPropertyName();
     if ("Application.login".equals(propertyName)) {
-      setDialogTitle(Application.login().entity + "@" + Application.login().host +
-        ":" + Application.login().port);
+      String bus;
+      BusAddress address = Application.login().address;
+      if (address.getDescription() != null) {
+        bus = address.getDescription();
+      }
+      else {
+        bus = address.toString();
+      }
+      setDialogTitle(Application.login().entity + "@" + bus);
       updateAdminFeatures(Application.login().hasAdminRights());
     }
   }
@@ -176,28 +184,28 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
         BusExplorerTask<Object> task =
           new BusExplorerTask<Object>(Application.exceptionHandler(),
             ExceptionContext.Service) {
-          @Override
-          protected void performTask() throws Exception {
-            Application.login().logout();
-            setDialogTitle(LNG.get("MainDialog.title.disconnected"));
-          }
+            @Override
+            protected void performTask() throws Exception {
+              Application.login().logout();
+              setDialogTitle(LNG.get("MainDialog.title.disconnected"));
+            }
 
-          @Override
-          protected void afterTaskUI() {
-            Application.loginProcess(MainDialog.this);
-          }
-        };
+            @Override
+            protected void afterTaskUI() {
+              Application.loginProcess(MainDialog.this);
+            }
+          };
 
         int option =
-          JOptionPane.showConfirmDialog(MainDialog.this,
-            Utils.getString(MainDialog.class, "disconnect.confirm.msg"),
-            Utils.getString(MainDialog.class, "disconnect.confirm.title"),
+          JOptionPane.showConfirmDialog(MainDialog.this, Utils.getString(
+            MainDialog.class, "disconnect.confirm.msg"), Utils.getString(
+            MainDialog.class, "disconnect.confirm.title"),
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (option == JOptionPane.YES_OPTION) {
-          task.execute(MainDialog.this,
-            Utils.getString(MainDialog.class, "logout.waiting.title"),
-            Utils.getString(MainDialog.class, "logout.waiting.msg"));
+          task.execute(MainDialog.this, Utils.getString(MainDialog.class,
+            "logout.waiting.title"), Utils.getString(MainDialog.class,
+            "logout.waiting.msg"));
         }
       }
     });
@@ -211,10 +219,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       @Override
       public void actionPerformed(ActionEvent e) {
         int option =
-          JOptionPane.showConfirmDialog(MainDialog.this,
-            Utils.getString(MainDialog.class, "quit.confirm.msg"),
-            Utils.getString(MainDialog.class, "quit.confirm.title"),
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+          JOptionPane.showConfirmDialog(MainDialog.this, Utils.getString(
+            MainDialog.class, "quit.confirm.msg"), Utils.getString(
+            MainDialog.class, "quit.confirm.title"), JOptionPane.YES_NO_OPTION,
+            JOptionPane.QUESTION_MESSAGE);
 
         if (option == JOptionPane.YES_OPTION) {
           dispose();
@@ -307,8 +315,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    */
   private void initPanelCertificate() {
     ObjectTableModel<CertificateWrapper> model =
-      new ObjectTableModel<CertificateWrapper>(new LinkedList<CertificateWrapper>(),
-        new CertificateTableProvider());
+      new ObjectTableModel<CertificateWrapper>(
+        new LinkedList<CertificateWrapper>(), new CertificateTableProvider());
 
     List<PanelActionInterface<CertificateWrapper>> actionsVector =
       new Vector<PanelActionInterface<CertificateWrapper>>(3);
@@ -330,8 +338,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    */
   private void initPanelInterface() {
     ObjectTableModel<InterfaceWrapper> model =
-      new ObjectTableModel<InterfaceWrapper>(new LinkedList<InterfaceWrapper>(),
-        new InterfaceTableProvider());
+      new ObjectTableModel<InterfaceWrapper>(
+        new LinkedList<InterfaceWrapper>(), new InterfaceTableProvider());
 
     List<PanelActionInterface<InterfaceWrapper>> actionsVector =
       new Vector<PanelActionInterface<InterfaceWrapper>>(3);
@@ -352,7 +360,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   private void initPanelAuthorization() {
     ObjectTableModel<AuthorizationWrapper> model =
       new ObjectTableModel<AuthorizationWrapper>(
-        new LinkedList<AuthorizationWrapper>(), new AuthorizationTableProvider());
+        new LinkedList<AuthorizationWrapper>(),
+        new AuthorizationTableProvider());
 
     List<PanelActionInterface<AuthorizationWrapper>> actionsVector =
       new Vector<PanelActionInterface<AuthorizationWrapper>>(3);
@@ -462,7 +471,6 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * @param title Título do diálogo.
    */
   private void setDialogTitle(String title) {
-    setTitle(Utils.getString(Application.class, "title") + " - " +
-      title);
+    setTitle(Utils.getString(Application.class, "title") + " - " + title);
   }
 }

@@ -1,7 +1,5 @@
 package busexplorer.utils;
 
-import java.text.MessageFormat;
-
 /**
  * Reprecentação do endereço de um barramento.
  * 
@@ -14,32 +12,46 @@ public class BusAddress {
   private String host;
   /** Porta do barramento. */
   private int port;
+  /** IOR */
+  private String ior;
+  /** Tipo de endereço */
+  private AddressType type;
 
   /** Representação de um endereço não especificado. */
-  public static final BusAddress UNSPECIFIED_ADDRESS =
-    new BusAddress(Utils.getString(BusAddress.class, "unspecified"), null);
+  public static final BusAddress UNSPECIFIED_ADDRESS = new BusAddress();
 
   /**
    * Construtor.
    *
    * @param description Descrição do barramento.
-   * @param authority Endereço do barramento, no formato "host:porta".
+   * @param host host.
+   * @param port porta.
    */
-  public BusAddress(String description, String authority) {
-    this(BusAddress.toAddress(authority));
+  private BusAddress(String description, String host, int port) {
     this.description = description;
+    this.host = host;
+    this.port = port;
+    this.type = AddressType.Address;
   }
 
   /**
    * Construtor.
+   * 
+   * @param description Descrição do barramento.
+   * @param ior ior.
    */
-  private BusAddress() {
+  private BusAddress(String description, String ior) {
+    this.description = description;
+    this.ior = ior;
+    this.type = AddressType.Reference;
   }
 
-  private BusAddress(BusAddress address) {
-    this.description = address.description;
-    this.host = address.host;
-    this.port = address.port;
+  /**
+   * Representação de endereço não especificado.
+   */
+  private BusAddress() {
+    this.description = Utils.getString(BusAddress.class, "unspecified");
+    this.type = AddressType.Unspecified;
   }
 
   /**
@@ -48,15 +60,21 @@ public class BusAddress {
    * @return String descritiva do endereço, no formato "Descrição (host:porta)".
    */
   public String toString() {
-    String address = host + ":" + port;
-    if (host.equals("")) {
-      return description;
+    String text = null;
+    switch (type) {
+      case Address:
+        text = host + ":" + port;
+        break;
+      case Reference:
+        text = ior;
+        break;
+      case Unspecified:
+        return description;
     }
-    if (description.equals("")) {
-      return address;
+    if (description != null) {
+      text = description + " (" + text + ")";
     }
-    return description + " (" + address + ")";
-
+    return text;
   }
 
   /**
@@ -78,30 +96,66 @@ public class BusAddress {
   }
 
   /**
+   * Obtém o ior especificado.
+   *
+   * @return O ior especificado.
+   */
+  public String getIOR() {
+    return ior;
+  }
+
+  /**
+   * Recupera o nome descritivo do endereço
+   * 
+   * @return a descrição
+   */
+  public String getDescription() {
+    return description;
+  }
+
+  /**
+   * Recupera o tipo de endereço
+   * 
+   * @return o tipo de endereço
+   */
+  public AddressType getType() {
+    return type;
+  }
+
+  /**
    * Converte uma string que representa o endereço do barramento para um objeto
    * BusAddress.
-   *
+   * 
+   * @param description descrição do barramento
    * @param addressStr String que representa o endereço do barramento.
+   * @return
    */
-  public static BusAddress toAddress(String addressStr) {
-    BusAddress address = new BusAddress(); 
-
-    address.description = "";
-    address.host = "";
-    address.port = 2089;
-
+  public static BusAddress toAddress(String description, String addressStr) {
+    BusAddress address;
     try {
-      String[] addressContents = addressStr.split(":");
-      address.host = addressContents[0];
-      address.port = Integer.parseInt(addressContents[1]);
+      if (addressStr.matches("^IOR:.+")) {
+        address = new BusAddress(description, addressStr);
+      }
+      else {
+        String[] addressContents = addressStr.split(":");
+        address =
+          new BusAddress(description, addressContents[0], Integer
+            .parseInt(addressContents[1]));
+      }
     }
+    // TODO
     catch (Exception e) {
-      MessageFormat messageFormat = new MessageFormat(
-        Utils.getString(BusAddress.class, "warning.unreadableAddress"));
-
-      messageFormat.format(new Object[]{ addressStr });
+      String msg =
+        String.format(Utils.getString(BusAddress.class,
+          "warning.unreadableAddress"), new Object[] { addressStr });
+      address = new BusAddress();
     }
-
     return address;
+  }
+
+  public static enum AddressType {
+    Address,
+    Reference,
+    Unspecified;
   }
 }

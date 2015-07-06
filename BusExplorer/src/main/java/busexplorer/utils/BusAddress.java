@@ -66,7 +66,7 @@ public class BusAddress {
         text = host + ":" + port;
         break;
       case Reference:
-        text = ior;
+        text = "Hash(IOR)=" + ior.hashCode();
         break;
       case Unspecified:
         return description;

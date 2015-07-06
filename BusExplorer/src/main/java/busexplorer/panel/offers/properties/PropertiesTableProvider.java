@@ -1,7 +1,7 @@
 package busexplorer.panel.offers.properties;
 
 import tecgraf.javautils.gui.table.ObjectTableProvider;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 import busexplorer.utils.Utils;
 
 /**

@@ -16,8 +16,8 @@ import scs.core.ComponentContext;
 import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.core.ORBInitializer;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
 public class BusAdminTest {
 
@@ -25,6 +25,7 @@ public class BusAdminTest {
   private static short port;
   private static String entity;
   private static byte[] password;
+  private static String domain;
 
   @BeforeClass
   public static void oneTimeSetUp() throws Exception {
@@ -33,6 +34,7 @@ public class BusAdminTest {
     port = Short.valueOf(properties.getProperty("openbus.host.port"));
     entity = properties.getProperty("entity.name");
     password = properties.getProperty("entity.password").getBytes();
+    domain = properties.getProperty("entity.domain");
 
     Utils.setLogLevel(Level.FINE);
   }
@@ -42,13 +44,14 @@ public class BusAdminTest {
     ORB orb = ORBInitializer.initORB();
     OpenBusContext context =
       (OpenBusContext) orb.resolve_initial_references("OpenBusContext");
-    Connection conn = context.createConnection(host, port);
-    conn.loginByPassword(entity, password);
+    Connection conn = context.connectByAddress(host, port);
+    conn.loginByPassword(entity, password, domain);
     context.setDefaultConnection(conn);
     POA poa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
     poa.the_POAManager().activate();
-    
-    BusAdminImpl admin = new BusAdminImpl(host, port, orb);
+
+    BusAdminImpl admin = new BusAdminImpl();
+    admin.connect(host, port, orb);
 
     int index;
     for (index = 0; index < 5; index++) {

@@ -3,9 +3,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>tecgraf.openbus</groupId>
-    <artifactId>all-busexplorer</artifactId>
-    <version>1-SNAPSHOT</version>
+    <groupId>br.puc-rio.tecgraf.busexplorer</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.2.0-RC1</version>
   </parent>
 
   <artifactId>busadminlib</artifactId>
@@ -24,7 +24,7 @@
     </dependency>
 
     <dependency>
-      <groupId>tecgraf.openbus</groupId>
+      <groupId>br.puc-rio.tecgraf.openbus</groupId>
       <artifactId>openbus-core-admin</artifactId>
     </dependency>
 

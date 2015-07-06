@@ -1,11 +1,14 @@
 package busexplorer.exception;
 
-import org.omg.CORBA.NO_PERMISSION; 
-import tecgraf.openbus.core.v2_0.services.ServiceFailure;
-import tecgraf.openbus.core.v2_0.services.access_control.InvalidRemoteCode;
-import tecgraf.openbus.core.v2_0.services.access_control.NoLoginCode;
-import tecgraf.openbus.core.v2_0.services.access_control.UnknownBusCode;
-import tecgraf.openbus.core.v2_0.services.access_control.UnverifiedLoginCode;
+import org.omg.CORBA.NO_PERMISSION;
+
+import tecgraf.openbus.core.v2_1.services.ServiceFailure;
+import tecgraf.openbus.core.v2_1.services.access_control.FailedLoginAttemptDomain;
+import tecgraf.openbus.core.v2_1.services.access_control.InvalidRemoteCode;
+import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
+import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
+import tecgraf.openbus.core.v2_1.services.access_control.UnknownBusCode;
+import tecgraf.openbus.core.v2_1.services.access_control.UnverifiedLoginCode;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
 import exception.handling.ExceptionHandler;
@@ -45,6 +48,29 @@ public class BusExplorerExceptionHandler extends
               "access.denied"));
             break;
         }
+        break;
+
+      case TooManyAttempts:
+        TooManyAttempts tooMany = (TooManyAttempts) theException;
+        switch (tooMany.domain.value()) {
+          case FailedLoginAttemptDomain._ADDRESS:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "too.many.attempts.address", tooMany.penaltyTime));
+            break;
+          case FailedLoginAttemptDomain._ENTITY:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "too.many.attempts.entity", tooMany.penaltyTime));
+            break;
+          case FailedLoginAttemptDomain._VALIDATOR:
+            exception.setErrorMessage(Utils.getString(this.getClass(),
+              "too.many.attempts.validator", tooMany.penaltyTime));
+            break;
+        }
+        break;
+
+      case UnknownDomain:
+        exception.setErrorMessage(Utils.getString(this.getClass(),
+          "unknown.domain"));
         break;
 
       case ServiceFailure:

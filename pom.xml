@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>tecgraf.openbus</groupId>
-  <artifactId>all-busexplorer</artifactId>
+  <groupId>br.puc-rio.tecgraf.busexplorer</groupId>
+  <artifactId>parent</artifactId>
   <packaging>pom</packaging>
-  <version>1-SNAPSHOT</version>
+  <version>1.2.0-RC1</version>
 
   <name>OpenBus - BusAdminLib e BusExplorer</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
@@ -16,9 +16,10 @@
     <diaglib.version>1.0.0</diaglib.version>
     <javautils.version>1.14.0</javautils.version>
     <junit.version>4.6</junit.version>
-    <openbus-core.version>2.0.0.3</openbus-core.version>
-    <openbus-sdk.version>2.0.2.0</openbus-sdk.version>
-    <openbus-assistant.version>2.0.1.0</openbus-assistant.version>
+    <idlj.version>1.2.1</idlj.version>
+    <jacorb.version>3.5</jacorb.version>
+    <openbus-sdk.version>2.1.0.0-SNAPSHOT</openbus-sdk.version>
+    <openbus-assistant.version>2.1.0.0-RC1</openbus-assistant.version>
     <commons-io.version>1.3.2</commons-io.version>
   </properties>
 
@@ -36,64 +37,8 @@
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
-          <compilerArgument>-Xlint:all</compilerArgument>
-          <showWarnings>true</showWarnings>
-          <showDeprecation>true</showDeprecation>
+          <compilerArgument>-Xbootclasspath/p:${settings.localRepository}/org/jacorb/jacorb-omgapi/${jacorb.version}/jacorb-omgapi-${jacorb.version}.jar</compilerArgument>
         </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <version>2.5</version>
-        <inherited>false</inherited>
-        <executions>
-          <execution>
-            <id>install-openbus-core-admin</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>lib/openbus-core-admin-${openbus-core.version}.jar</file>
-              <groupId>tecgraf.openbus</groupId>
-              <artifactId>openbus-core-admin</artifactId>
-              <version>${openbus-core.version}</version>
-              <packaging>jar</packaging>
-              <generatePom>true</generatePom>
-            </configuration>
-          </execution>
-          <execution>
-            <id>install-diaglib-core</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>lib/diaglib-core-${diaglib.version}.jar</file>
-              <groupId>tecgraf.diaglib</groupId>
-              <artifactId>diaglib-core</artifactId>
-              <version>${diaglib.version}</version>
-              <packaging>jar</packaging>
-              <generatePom>true</generatePom>
-            </configuration>
-          </execution>
-          <execution>
-            <id>install-diaglib-addons</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>lib/diaglib-addons-${diaglib.version}.jar</file>
-              <groupId>tecgraf.diaglib</groupId>
-              <artifactId>diaglib-addons</artifactId>
-              <version>${diaglib.version}</version>
-              <packaging>jar</packaging>
-              <generatePom>true</generatePom>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -103,24 +48,18 @@
         <groupId>br.puc-rio.tecgraf.openbus</groupId>
         <artifactId>openbus-sdk-core</artifactId>
         <version>${openbus-sdk.version}</version>
-        <exclusions>
-          <exclusion> 
-            <groupId>org.jacorb</groupId>
-            <artifactId>jacorb-idl-compiler</artifactId>
-          </exclusion>
-        </exclusions> 
       </dependency>
 
       <dependency>
         <groupId>br.puc-rio.tecgraf.openbus</groupId>
+        <artifactId>openbus-core-admin</artifactId>
+        <version>${openbus-sdk.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>br.puc-rio.tecgraf.openbus</groupId>
         <artifactId>openbus-sdk-assistant-core</artifactId>
         <version>${openbus-assistant.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>tecgraf.openbus</groupId>
-        <artifactId>openbus-core-admin</artifactId>
-        <version>${openbus-core.version}</version>
       </dependency>
 
       <dependency>
@@ -130,21 +69,21 @@
       </dependency>
 
       <dependency>
-        <groupId>tecgraf.diaglib</groupId>
-        <artifactId>diaglib-core</artifactId>
-        <version>${diaglib.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>tecgraf.diaglib</groupId>
-        <artifactId>diaglib-addons</artifactId>
-        <version>${diaglib.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jacorb</groupId>
+        <artifactId>jacorb</artifactId>
+        <version>${jacorb.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jacorb</groupId>
+        <artifactId>jacorb-omgapi</artifactId>
+        <version>${jacorb.version}</version>
       </dependency>
 
       <dependency>

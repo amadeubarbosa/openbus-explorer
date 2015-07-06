@@ -12,6 +12,8 @@ public enum ExceptionType {
   // Contexto de Login (LoginBy* + BusCore)
   AccessDenied,
   AlreadyLoggedIn,
+  UnknownDomain,
+  TooManyAttempts,
   // Contexto BusCore
   ServiceFailure,
   UnauthorizedOperation,

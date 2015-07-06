@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOffer;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOffer;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;

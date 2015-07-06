@@ -12,9 +12,9 @@ import javax.swing.JTextField;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntity;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;

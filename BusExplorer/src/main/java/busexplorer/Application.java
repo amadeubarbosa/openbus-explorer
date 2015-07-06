@@ -1,6 +1,5 @@
 package busexplorer;
 
-import java.awt.EventQueue;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,14 +7,15 @@ import java.util.Locale;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import tecgraf.javautils.LNG;
-import busexplorer.desktop.dialog.MainDialog;
-import busexplorer.desktop.dialog.LoginDialog;
-import busexplorer.exception.BusExplorerExceptionHandler;
-import busexplorer.utils.Utils;
 import admin.BusAdmin;
 import admin.BusAdminImpl;
+import busexplorer.desktop.dialog.LoginDialog;
+import busexplorer.desktop.dialog.MainDialog;
+import busexplorer.exception.BusExplorerExceptionHandler;
+import busexplorer.utils.Utils;
 
 /**
  * Classe principal da aplicação.
@@ -63,11 +63,11 @@ public class Application {
         "error.properties.title"), JOptionPane.ERROR_MESSAGE);
     }
 
-    EventQueue.invokeLater(new Runnable() {
+    SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
         MainDialog mainDialog = new MainDialog(properties, admin);
-        mainDialog.show();
+        mainDialog.setVisible(true);
 
         loginPcs = new PropertyChangeSupport(this);
         loginPcs.addPropertyChangeListener(mainDialog);
@@ -79,7 +79,7 @@ public class Application {
   public static void loginProcess(MainDialog mainDialog) {
     login = null;
     LoginDialog loginDialog = new LoginDialog(mainDialog, admin);
-    loginDialog.show();
+    loginDialog.setVisible(true);
     login = loginDialog.getLogin();
     loginPcs.firePropertyChange("Application.login", null, login);
   }

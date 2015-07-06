@@ -12,7 +12,7 @@ COMO INICIAR O BUSEXPLORER
   no diretório da distribuição, o comando
 
     java [-Dpropriedade=valor] -jar \
-      busexplorer-1-SNAPSHOT-jar-with-dependencies.java
+      busexplorer-1.2.0-RC1-jar-with-dependencies.java
 
   A sintaxe do comando pode depender da shell utilizada e da adequada
   configuração da variável de sistema $PATH (ou equivalente).
@@ -42,6 +42,10 @@ ARQUIVO DE CONFIGURAÇÕES
 
     host[:porta]
 
+    ou 
+
+    IOR:...
+
   Onde, em caso de ausência da porta, será utilizada a porta padrão dos
   barramentos OpenBus, 2089.
 
@@ -55,6 +59,8 @@ ARQUIVO DE CONFIGURAÇÕES
     bus2.description "Barramento remoto"
     bus2.address outrohost.example.org:20000
 
+    bus3.description "Barramento remoto 2"
+    bus3.address IOR:...
 
 FUNCIONALIDADES
 

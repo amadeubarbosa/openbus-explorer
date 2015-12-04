@@ -15,10 +15,14 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
 
   /** Índice da coluna ID da entidade */
   private static final int ENTITY_ID = 0;
+  /** Índice da coluna Nome */
+  private static final int NAME = 1;
+  /** Índice da coluna Versão */
+  private static final int VERSION = 2;
   /** Índice da coluna Interface */
-  private static final int INTERFACE = 1;
+  private static final int INTERFACE = 3;
   /** Índice da coluna Data */
-  private static final int DATE = 2;
+  private static final int DATE = 4;
 
   /**
    * {@inheritDoc}
@@ -27,6 +31,8 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
   public String[] getColumnNames() {
     String[] colNames =
       { Utils.getString(this.getClass(), "entity"),
+          Utils.getString(this.getClass(), "name"),
+          Utils.getString(this.getClass(), "version"),
           Utils.getString(this.getClass(), "interface"),
           Utils.getString(this.getClass(), "date") };
     return colNames;
@@ -37,7 +43,7 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, Vector.class, Date.class };
+    Class<?>[] colClasses = { String.class, String.class, String.class, Vector.class, Date.class };
     return colClasses;
   }
 
@@ -56,6 +62,12 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
 
       case DATE:
         return offer.getDate();
+      
+      case NAME:
+    	return offer.getName();
+    	
+      case VERSION:
+      	return offer.getVersion();
 
       default:
         break;

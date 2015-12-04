@@ -25,6 +25,10 @@ public class OfferWrapper {
   private final Vector<String> interfaces;
   /** Data da oferta */
   private final Date date;
+  /** Nome do componente */
+  private final String name;
+  /** Versão do componente */
+  private final String version;
 
   /**
    * /** Construtor.
@@ -46,6 +50,11 @@ public class OfferWrapper {
     Calendar calendar = Calendar.getInstance();
     calendar.set(year, month, day, hour, min, sec);
     this.date = calendar.getTime();
+    this.name = Utils.getProperty(desc, "openbus.component.name");
+    String version = Utils.getProperty(desc, "openbus.component.version.major");
+    version += "." + Utils.getProperty(desc, "openbus.component.version.minor");
+    version += "." + Utils.getProperty(desc, "openbus.component.version.patch");
+    this.version = version;
   }
 
   /**
@@ -112,6 +121,24 @@ public class OfferWrapper {
    */
   public ServiceOfferDesc getDescriptor() {
     return desc;
+  }
+  
+  /**
+   * Recupera o nome do componente da oferta.
+   * 
+   * @return o nome do componente.
+   */
+  public String getName() {
+    return name;
+  }
+  
+  /**
+   * Recupera a versão do componente da oferta.
+   * 
+   * @return a string da versão do componente.
+   */
+  public String getVersion() {
+    return version;
   }
 
   /**

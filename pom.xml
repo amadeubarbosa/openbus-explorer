@@ -5,7 +5,7 @@
   <groupId>tecgraf.openbus</groupId>
   <artifactId>all-busexplorer</artifactId>
   <packaging>pom</packaging>
-  <version>1.1.1</version>
+  <version>1.1-SNAPSHOT</version>
 
   <name>OpenBus - BusAdminLib e BusExplorer</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>

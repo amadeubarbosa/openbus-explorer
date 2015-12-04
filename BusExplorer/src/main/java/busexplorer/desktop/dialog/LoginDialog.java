@@ -335,11 +335,18 @@ public class LoginDialog extends JDialog {
 
           @Override
           protected void performTask() throws Exception {
-            BusAddress address = (BusAddress) comboBus.getSelectedItem();
-            if (address.getType().equals(AddressType.Unspecified)) {
+            BusAddress address;
+            if (comboBus == null) {
               address =
-                BusAddress.toAddress(null, fieldAddress.getText().trim());
+                      BusAddress.toAddress(null, fieldAddress.getText().trim());
+            } else {
+              address = (BusAddress) comboBus.getSelectedItem();
+              if (address.getType().equals(AddressType.Unspecified)) {
+                address =
+                        BusAddress.toAddress(null, fieldAddress.getText().trim());
+              }
             }
+
             String entity = fieldUser.getText().trim();
             String password = new String(fieldPassword.getPassword());
             String domain = fieldDomain.getText().trim();

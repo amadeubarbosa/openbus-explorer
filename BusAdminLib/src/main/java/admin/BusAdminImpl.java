@@ -2,6 +2,7 @@ package admin;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import tecgraf.openbus.core.v2_0.services.access_control.LoginRegistryHelper;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateRegistry;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.CertificateRegistryHelper;
 import tecgraf.openbus.core.v2_0.services.access_control.admin.v1_0.InvalidCertificate;
+import tecgraf.openbus.core.v2_0.services.admin.v1_0.ConfigurationHelper;
 import tecgraf.openbus.core.v2_0.services.offer_registry.OfferRegistry;
 import tecgraf.openbus.core.v2_0.services.offer_registry.OfferRegistryHelper;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
@@ -61,6 +63,9 @@ public class BusAdminImpl implements BusAdmin {
   private OfferRegistry offerRegistry;
   /** Registro de logins do barramento. */
   private LoginRegistry loginRegistry;
+  /** Configuração dinâmica do barramento. */
+  private tecgraf.openbus.core.v2_0.services.admin.v1_0.Configuration
+    configuration;
 
   /**
    * Construtor da classe.
@@ -313,6 +318,81 @@ public class BusAdminImpl implements BusAdmin {
     this.loginRegistry.invalidateLogin(loginInfo.id);
   }
 
+  /**
+   * CONFIGURATION
+   */
+
+  @Override
+  public void reloadConfigsFile() throws ServiceFailure {
+    configuration.reloadConfigsFile();
+  }
+
+  @Override
+  public void grantAdminTo(List<String> users) throws ServiceFailure {
+    configuration.grantAdminTo(users.toArray(new String[users.size()]));
+  }
+
+  @Override
+  public void revokeAdminFrom(List<String> users) throws ServiceFailure {
+    configuration.revokeAdminFrom(users.toArray(new String[users.size()]));
+  }
+
+  @Override
+  public List<String> getAdmins() throws ServiceFailure {
+    String[] admins = configuration.getAdmins();
+    List<String> ret = new ArrayList<String>();
+    Collections.addAll(ret, admins);
+    return ret;
+  }
+
+  @Override
+  public void reloadValidator(String validator) throws ServiceFailure {
+    configuration.reloadValidator(validator);
+  }
+
+  @Override
+  public void delValidator(String validator) throws ServiceFailure {
+    configuration.delValidator(validator);
+  }
+
+  @Override
+  public List<String> getValidators() throws ServiceFailure {
+    String[] validators = configuration.getValidators();
+    List<String> ret = new ArrayList<String>();
+    Collections.addAll(ret, validators);
+    return ret;
+  }
+
+  @Override
+  public void setMaxChannels(int maxchannels) throws ServiceFailure {
+    configuration.setMaxChannels(maxchannels);
+  }
+
+  @Override
+  public int getMaxChannels() throws ServiceFailure {
+    return configuration.getMaxChannels();
+  }
+
+  @Override
+  public void setLogLevel(short loglevel) throws ServiceFailure {
+    configuration.setLogLevel(loglevel);
+  }
+
+  @Override
+  public short getLogLevel() throws ServiceFailure {
+    return configuration.getLogLevel();
+  }
+
+  @Override
+  public void setOilLogLevel(short oilLoglevel) throws ServiceFailure {
+    configuration.setOilLogLevel(oilLoglevel);
+  }
+
+  @Override
+  public short getOilLogLevel() throws ServiceFailure {
+    return configuration.getOilLogLevel();
+  }
+
   /*
    * Métodos auxiliares
    */
@@ -394,5 +474,12 @@ public class BusAdminImpl implements BusAdmin {
       throw new IncompatibleBus(String.format(error, "registro de logins"));
     }
     this.loginRegistry = LoginRegistryHelper.narrow(loginRegistryObj);
+
+    org.omg.CORBA.Object configurationObj =
+      iComponent.getFacet(ConfigurationHelper.id());
+    if (configurationObj == null) {
+      throw new IncompatibleBus(String.format(error, "configuração"));
+    }
+    this.configuration = ConfigurationHelper.narrow(configurationObj);
   }
 }

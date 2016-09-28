@@ -1,6 +1,6 @@
 package busexplorer.panel;
 
-/** Constantes que definem os tipos de botões que porderão ser utilizados */
+/** Constantes que definem os tipos de botões que poderão ser utilizados */
 public enum ActionType {
   /** Adição */
   ADD,
@@ -10,6 +10,8 @@ public enum ActionType {
   REMOVE,
   /** Atualizar */
   REFRESH,
+  /** Recarregar */
+  RELOAD,
   /** Outros tipos de ações */
   OTHER,
   /** Ação generica que requer um item selecionado */

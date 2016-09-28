@@ -26,6 +26,17 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import busexplorer.panel.configuration.admins.AdminAddAction;
+import busexplorer.panel.configuration.admins.AdminDeleteAction;
+import busexplorer.panel.configuration.admins.AdminEditAction;
+import busexplorer.panel.configuration.admins.AdminRefreshAction;
+import busexplorer.panel.configuration.admins.AdminTableProvider;
+import busexplorer.panel.configuration.admins.AdminWrapper;
+import busexplorer.panel.configuration.validators.ValidatorDeleteAction;
+import busexplorer.panel.configuration.validators.ValidatorRefreshAction;
+import busexplorer.panel.configuration.validators.ValidatorReloadAction;
+import busexplorer.panel.configuration.validators.ValidatorTableProvider;
+import busexplorer.panel.configuration.validators.ValidatorWrapper;
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import admin.BusAdmin;
@@ -239,7 +250,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     // método updateAdminFeatures().
     String[] featureNames =
       { "category", "entity", "certificate", "interface", "authorization",
-          "offer", "login" };
+          "offer", "login", "admins", "validators" };
     for (String featureName : featureNames) {
       featuresPane.addTab(LNG.get("MainDialog." + featureName + ".title"),
         null, null, LNG.get("MainDialog." + featureName + ".toolTip"));
@@ -424,6 +435,49 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   }
 
   /**
+   * Inicializa o painel de CRUD de administradores.
+   */
+  private void initPanelAdmins() {
+    ObjectTableModel<AdminWrapper> model =
+      new ObjectTableModel<AdminWrapper>(new LinkedList<AdminWrapper>(),
+        new AdminTableProvider());
+
+    List<PanelActionInterface<AdminWrapper>> actionsVector =
+      new Vector<PanelActionInterface<AdminWrapper>>(3);
+    actionsVector.add(new AdminRefreshAction(this, admin));
+    actionsVector.add(new AdminAddAction(this, admin));
+    actionsVector.add(new AdminEditAction(this, admin));
+    actionsVector.add(new AdminDeleteAction(this, admin));
+
+    PanelComponent<AdminWrapper> panelAdmin =
+      new PanelComponent<AdminWrapper>(model, actionsVector);
+
+    int index = featuresPane.indexOfTab(LNG.get("MainDialog.admins.title"));
+    featuresPane.setComponentAt(index, panelAdmin);
+  }
+
+  /**
+   * Inicializa o painel de CRUD de validadores.
+   */
+  private void initPanelValidators() {
+    ObjectTableModel<ValidatorWrapper> model =
+      new ObjectTableModel<ValidatorWrapper>(new LinkedList<ValidatorWrapper>(),
+        new ValidatorTableProvider());
+
+    List<PanelActionInterface<ValidatorWrapper>> actionsVector =
+      new Vector<PanelActionInterface<ValidatorWrapper>>(3);
+    actionsVector.add(new ValidatorRefreshAction(this, admin));
+    actionsVector.add(new ValidatorReloadAction(this, admin));
+    actionsVector.add(new ValidatorDeleteAction(this, admin));
+
+    PanelComponent<ValidatorWrapper> panelValidators =
+      new PanelComponent<ValidatorWrapper>(model, actionsVector);
+
+    int index = featuresPane.indexOfTab(LNG.get("MainDialog.validators.title"));
+    featuresPane.setComponentAt(index, panelValidators);
+  }
+
+  /**
    * Inicializa os painéis das funcionalidades.
    */
   private void initFeaturePanels() {
@@ -434,6 +488,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     initPanelAuthorization();
     initPanelLogin();
     initPanelOffer();
+    initPanelAdmins();
+    initPanelValidators();
   }
 
   /**
@@ -442,7 +498,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * @param isAdmin indicador se o usuário possui permissão de administração.
    */
   private void updateAdminFeatures(boolean isAdmin) {
-    String[] featureNames = { "certificate", "login" };
+    String[] featureNames = { "certificate", "login", "admins", "validators" };
     for (String featureName : featureNames) {
       int index =
         featuresPane

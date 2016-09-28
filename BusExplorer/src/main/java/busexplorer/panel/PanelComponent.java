@@ -71,6 +71,8 @@ public class PanelComponent<T> extends JPanel {
   private JButton editBtn;
   /** Botão de remoção */
   private JButton removeBtn;
+  /** Botão de recarga */
+  private JButton reloadBtn;
   /** Botão outros */
   private JButton othersBtn;
   /** Ação de adição */
@@ -79,6 +81,8 @@ public class PanelComponent<T> extends JPanel {
   private PanelActionInterface<T> editAction;
   /** Ação de remoção */
   private PanelActionInterface<T> removeAction;
+  /** Ação de recarga */
+  private PanelActionInterface<T> reloadAction;
   /** Conjunto de ações a serem incluídas no botão "outros" */
   private List<PanelActionInterface<T>> othersActions =
     new ArrayList<PanelActionInterface<T>>();
@@ -166,6 +170,17 @@ public class PanelComponent<T> extends JPanel {
           removeBtn.setToolTipText(Utils.getString(this.getClass(),
             "remove.tooltip"));
           removeBtn.setIcon(RegistrationImages.ICON_DELETE_16);
+          hasBtns = true;
+          break;
+
+        case RELOAD:
+          reloadAction = action;
+          reloadAction.setEnabled(false);
+
+          reloadBtn = new JButton(action);
+          reloadBtn.setToolTipText(Utils.getString(this.getClass(),
+            "reload.tooltip"));
+          reloadBtn.setIcon(RegistrationImages.ICON_REFRESH_16);
           hasBtns = true;
           break;
 
@@ -371,6 +386,12 @@ public class PanelComponent<T> extends JPanel {
       idx++;
       toMatch.add(removeBtn);
     }
+    if (reloadBtn != null) {
+      buttonsPanel.add(reloadBtn, new GBC(idx, 0).center().none().insets(2));
+      //reloadBtn.setText(null);
+      idx++;
+      toMatch.add(reloadBtn);
+    }
     if (!othersActions.isEmpty()) {
       buttonsPanel.add(othersBtn, new GBC(idx, 0).center().none().insets(2));
       idx++;
@@ -424,6 +445,9 @@ public class PanelComponent<T> extends JPanel {
         if (removeAction != null) {
           removeAction.setEnabled(false);
         }
+        if (reloadAction != null) {
+          reloadAction.setEnabled(false);
+        }
         if (editAction != null) {
           editAction.setEnabled(false);
         }
@@ -441,6 +465,9 @@ public class PanelComponent<T> extends JPanel {
       case 1:
         if (removeAction != null) {
           removeAction.setEnabled(removeAction.abilityConditions());
+        }
+        if (reloadAction != null) {
+          reloadAction.setEnabled(reloadAction.abilityConditions());
         }
         if (editBtn != null) {
           editAction.setEnabled(editAction.abilityConditions());
@@ -467,6 +494,9 @@ public class PanelComponent<T> extends JPanel {
         // length > 1
         if (removeAction != null) {
           removeAction.setEnabled(false);
+        }
+        if (reloadAction != null) {
+          reloadAction.setEnabled(false);
         }
         if (editAction != null) {
           editAction.setEnabled(false);

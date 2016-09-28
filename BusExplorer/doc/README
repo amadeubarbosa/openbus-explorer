@@ -74,10 +74,14 @@ FUNCIONALIDADES
       - Listagem de certificados
       - Listagem de logins
     - Configuração do barramento (com permissão de administração)
+      - Adição, remoção e edição de administradores
       - Adição, remoção e edição de categorias
       - Adição, remoção e edição de entidades
       - Adição e remoção de certificados
       - Adição e remoção de interfaces
       - Adição e remoção de autorizações
+      - Configuração de propriedades
+      - Recarga de arquivo de propriedades
       - Remoção de ofertas
       - Remoção de logins
+      - Remoção e recarga de validadores

@@ -10,8 +10,6 @@ public enum ActionType {
   REMOVE,
   /** Atualizar */
   REFRESH,
-  /** Recarregar */
-  RELOAD,
   /** Outros tipos de ações */
   OTHER,
   /** Ação generica que requer um item selecionado */

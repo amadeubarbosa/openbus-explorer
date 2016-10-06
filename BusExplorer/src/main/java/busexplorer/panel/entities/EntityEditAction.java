@@ -67,9 +67,9 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
         if (getStatus()) {
           EntityInputDialog dialog =
             new EntityInputDialog(EntityEditAction.this.parentWindow,
-              getPanelComponent(), admin, getResult());
+              getTablePanelComponent(), admin, getResult());
           dialog.showDialog();
-          EntityWrapper entity = getPanelComponent().getSelectedElement();
+          EntityWrapper entity = getTablePanelComponent().getSelectedElement();
           dialog.setEditionMode(entity);
         }
       }

@@ -49,7 +49,7 @@ public class AdminAddAction extends OpenBusAction<AdminWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    new AdminInputDialog(parentWindow, getPanelComponent(),
+    new AdminInputDialog(parentWindow, getTablePanelComponent(),
       admin).showDialog();
   }
 

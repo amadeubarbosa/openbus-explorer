@@ -10,8 +10,6 @@ import tecgraf.javautils.LNG;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Classe de ação para a remoção de um validador.
@@ -67,14 +65,14 @@ public class ValidatorDeleteAction extends OpenBusAction<ValidatorWrapper> {
 
       @Override
       protected void performTask() throws Exception {
-        admin.delValidator(getPanelComponent().getSelectedElement()
+        admin.delValidator(getTablePanelComponent().getSelectedElement()
           .getValidator());
       }
 
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().removeSelectedElements();
+          getTablePanelComponent().removeSelectedElements();
         }
       }
     };

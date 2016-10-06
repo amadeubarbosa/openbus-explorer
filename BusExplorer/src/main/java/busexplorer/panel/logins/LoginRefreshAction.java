@@ -57,7 +57,7 @@ public class LoginRefreshAction extends OpenBusAction<LoginWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().setElements(getResult());
+          getTablePanelComponent().setElements(getResult());
         }
       }
     };

@@ -4,6 +4,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 
 import admin.BusAdmin;
+import busexplorer.ApplicationIcons;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.offers.properties.PropertiesDialog;
@@ -28,6 +29,7 @@ public class OfferPropertiesAction extends OpenBusAction<OfferWrapper> {
       "name"));
     putValue(SHORT_DESCRIPTION, Utils.getString(OfferPropertiesAction.class,
       "tooltip"));
+    putValue(SMALL_ICON, ApplicationIcons.ICON_PROPS_16);
   }
 
   /**
@@ -43,7 +45,7 @@ public class OfferPropertiesAction extends OpenBusAction<OfferWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    OfferWrapper offer = getPanelComponent().getSelectedElement();
+    OfferWrapper offer = getTablePanelComponent().getSelectedElement();
     PropertiesDialog dialog = new PropertiesDialog(parentWindow, offer);
     dialog.setVisible(true);
   }

@@ -19,7 +19,7 @@ import tecgraf.javautils.gui.GBC;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.panel.PanelComponent;
+import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
@@ -37,7 +37,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
   private JTextField certificateField;
   private JButton certificateButton;
 
-  private PanelComponent<CertificateWrapper> panel;
+  private TablePanelComponent<CertificateWrapper> panel;
 
   /**
    * Construtor.
@@ -47,7 +47,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public CertificateInputDialog(Window parentWindow,
-    PanelComponent<CertificateWrapper> panel, BusAdmin admin) {
+                                TablePanelComponent<CertificateWrapper> panel, BusAdmin admin) {
     super(parentWindow, LNG.get(CertificateInputDialog.class.getSimpleName() +
       ".title"), admin);
     this.panel = panel;

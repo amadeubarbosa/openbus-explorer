@@ -1,13 +1,11 @@
 package busexplorer.panel.logins;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
-import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
@@ -70,14 +68,14 @@ public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
 
       @Override
       protected void performTask() throws Exception {
-        LoginWrapper login = getPanelComponent().getSelectedElement();
+        LoginWrapper login = getTablePanelComponent().getSelectedElement();
         admin.invalidateLogin(login.getInfo());
       }
 
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().removeSelectedElements();
+          getTablePanelComponent().removeSelectedElements();
         }
       }
     };

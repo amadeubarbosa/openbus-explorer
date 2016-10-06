@@ -56,7 +56,7 @@ public class ValidatorRefreshAction extends OpenBusAction<ValidatorWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().setElements(getResult());
+          getTablePanelComponent().setElements(getResult());
         }
       }
     };

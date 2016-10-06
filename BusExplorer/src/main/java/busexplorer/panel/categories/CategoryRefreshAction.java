@@ -57,7 +57,7 @@ public class CategoryRefreshAction extends OpenBusAction<CategoryWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().setElements(getResult());
+          getTablePanelComponent().setElements(getResult());
         }
       }
     };

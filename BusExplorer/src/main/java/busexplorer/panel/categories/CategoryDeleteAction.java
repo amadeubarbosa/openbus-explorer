@@ -1,7 +1,6 @@
 package busexplorer.panel.categories;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -69,7 +68,7 @@ public class CategoryDeleteAction extends OpenBusAction<CategoryWrapper> {
 
       @Override
       protected void performTask() throws Exception {
-        CategoryWrapper category = getPanelComponent().getSelectedElement();
+        CategoryWrapper category = getTablePanelComponent().getSelectedElement();
         EntityCategory ref = category.getDescriptor().ref;
         ref.remove();
       }
@@ -77,7 +76,7 @@ public class CategoryDeleteAction extends OpenBusAction<CategoryWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().removeSelectedElements();
+          getTablePanelComponent().removeSelectedElements();
         }
       }
     };

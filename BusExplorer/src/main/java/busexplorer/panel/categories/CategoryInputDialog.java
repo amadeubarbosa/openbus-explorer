@@ -13,7 +13,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCatego
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.panel.PanelComponent;
+import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
@@ -30,7 +30,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel categoryNameLabel;
   private JTextField categoryNameField;
 
-  private PanelComponent<CategoryWrapper> panel;
+  private TablePanelComponent<CategoryWrapper> panel;
 
   private CategoryWrapper editingCategory = null;
 
@@ -41,7 +41,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
    * @param panel Painel a ser atualizado após a adição/edição.
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
-  public CategoryInputDialog(Window parentWindow, PanelComponent<CategoryWrapper>
+  public CategoryInputDialog(Window parentWindow, TablePanelComponent<CategoryWrapper>
     panel, BusAdmin admin) {
     super(parentWindow, LNG.get(CategoryInputDialog.class.getSimpleName() +
       ".title"), admin);

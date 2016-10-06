@@ -7,7 +7,6 @@ import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
 import exception.handling.ExceptionContext;
 import tecgraf.javautils.LNG;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -69,14 +68,14 @@ public class AdminDeleteAction extends OpenBusAction<AdminWrapper> {
       @Override
       protected void performTask() throws Exception {
         List<String> revoke = new ArrayList<String>();
-        revoke.add(getPanelComponent().getSelectedElement().getAdmin());
+        revoke.add(getTablePanelComponent().getSelectedElement().getAdmin());
         admin.revokeAdminFrom(revoke);
       }
 
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().removeSelectedElements();
+          getTablePanelComponent().removeSelectedElements();
         }
       }
     };

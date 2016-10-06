@@ -12,7 +12,7 @@ import tecgraf.javautils.gui.GBC;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.panel.PanelComponent;
+import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
@@ -27,7 +27,7 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel interfaceNameLabel;
   private JTextField interfaceNameField;
 
-  private PanelComponent<InterfaceWrapper> panel;
+  private TablePanelComponent<InterfaceWrapper> panel;
 
   /**
    * Construtor.
@@ -36,7 +36,7 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
    * @param panel Painel a ser atualizado após a adição.
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
-  public InterfaceInputDialog(Window parentWindow, PanelComponent<InterfaceWrapper>
+  public InterfaceInputDialog(Window parentWindow, TablePanelComponent<InterfaceWrapper>
     panel, BusAdmin admin) {
     super(parentWindow, LNG.get(InterfaceInputDialog.class.getSimpleName() +
       ".title"), admin);

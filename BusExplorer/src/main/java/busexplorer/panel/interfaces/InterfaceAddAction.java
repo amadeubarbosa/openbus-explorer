@@ -50,7 +50,7 @@ public class InterfaceAddAction extends OpenBusAction<InterfaceWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    new InterfaceInputDialog(parentWindow, getPanelComponent(),
+    new InterfaceInputDialog(parentWindow, getTablePanelComponent(),
       admin).showDialog();
   }
 

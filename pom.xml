@@ -16,7 +16,8 @@
     <diaglib.version>1.0.0</diaglib.version>
     <javautils.version>1.14.0</javautils.version>
     <junit.version>4.6</junit.version>
-    <openbus-core.version>2.0.0.3</openbus-core.version>
+    <openbus-core-admin.version>1.0-SNAPSHOT</openbus-core-admin.version>
+    <miglayout.version>4.2</miglayout.version>
     <openbus-sdk.version>2.0.2.0</openbus-sdk.version>
     <openbus-assistant.version>2.0.1.0</openbus-assistant.version>
     <commons-io.version>1.3.2</commons-io.version>
@@ -112,9 +113,9 @@
       </dependency>
 
       <dependency>
-        <groupId>tecgraf.openbus</groupId>
-        <artifactId>openbus-core-admin</artifactId>
-        <version>${openbus-core.version}</version>
+        <groupId>br.puc-rio.tecgraf.openbus</groupId>
+        <artifactId>openbus-core-admin-2.0</artifactId>
+        <version>${openbus-core-admin.version}</version>
       </dependency>
 
       <dependency>
@@ -139,6 +140,12 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.miglayout</groupId>
+        <artifactId>miglayout-swing</artifactId>
+        <version>${miglayout.version}</version>
       </dependency>
 
       <dependency>

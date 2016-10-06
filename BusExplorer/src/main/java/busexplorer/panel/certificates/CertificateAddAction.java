@@ -50,7 +50,7 @@ public class CertificateAddAction extends OpenBusAction<CertificateWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    new CertificateInputDialog(parentWindow, getPanelComponent(),
+    new CertificateInputDialog(parentWindow, getTablePanelComponent(),
       admin).showDialog();
   }
 

@@ -58,7 +58,7 @@ public class CertificateRefreshAction extends OpenBusAction<CertificateWrapper> 
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().setElements(getResult());
+          getTablePanelComponent().setElements(getResult());
         }
       }
     };

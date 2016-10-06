@@ -1,18 +1,15 @@
 package busexplorer.desktop.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Vector;
+import admin.BusAdmin;
+import busexplorer.Application;
+import busexplorer.BusExplorerLogin;
+import busexplorer.ApplicationIcons;
+import busexplorer.utils.BusAddress;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.ConfigurationProperties;
+import exception.handling.ExceptionContext;
+import tecgraf.javautils.LNG;
+import tecgraf.javautils.gui.GBC;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -24,19 +21,21 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.DocumentEvent;
-
-import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.GBC;
-
-import admin.BusAdmin;
-import busexplorer.Application;
-import busexplorer.BusExplorerLogin;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.ConfigurationProperties;
-import busexplorer.utils.BusAddress;
-import exception.handling.ExceptionContext;
+import javax.swing.event.DocumentListener;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import java.awt.GridBagLayout;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Vector;
 
 /**
  * Diálogo que obtém os dados do usuário e do barramento para efetuar login.
@@ -218,18 +217,14 @@ public class LoginDialog extends JDialog {
     buttonLogin = new JButton(LNG.get("LoginDialog.confirm.button"));
     buttonLogin.setToolTipText(LNG.get("LoginDialog.confirm.help"));
     buttonLogin.addActionListener(new LoginAction());
-    buttonLogin.setEnabled(false);
 
-    JButton buttonQuit = new JButton(LNG.get("LoginDialog.quit.button"));
-    buttonQuit.setToolTipText(LNG.get("LoginDialog.quit.help"));
-    buttonQuit.addActionListener(new QuitAction());
+    buttonLogin.setIcon(ApplicationIcons.ICON_LOGIN_16);
+    buttonLogin.setEnabled(false);
 
     Box buttonsBox = Box.createHorizontalBox();
     buttonsBox.setBorder(new EmptyBorder(9, 3, 3, 3));
     buttonsBox.add(Box.createHorizontalGlue());
     buttonsBox.add(buttonLogin);
-    buttonsBox.add(Box.createHorizontalStrut(9));
-    buttonsBox.add(buttonQuit);
     loginPanel.add(buttonsBox, BorderLayout.SOUTH);
 
     setContentPane(loginPanel);
@@ -361,24 +356,6 @@ public class LoginDialog extends JDialog {
 
       task.execute(LoginDialog.this, LNG.get("LoginDialog.waiting.title"), LNG
         .get("LoginDialog.waiting.msg"));
-    }
-  }
-
-  /**
-   * Ação que termina a aplicação.
-   * 
-   * @author Tecgraf
-   */
-  private class QuitAction implements ActionListener {
-    /**
-     * Termina a aplicação.
-     *
-     * @param event Evento.
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-      getOwner().dispose();
-      System.exit(0);
     }
   }
 

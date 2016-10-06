@@ -51,9 +51,9 @@ public class CategoryEditAction extends OpenBusAction<CategoryWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     CategoryInputDialog dialog = new CategoryInputDialog(parentWindow,
-      getPanelComponent(), admin);
+      getTablePanelComponent(), admin);
     dialog.showDialog();
-    CategoryWrapper category = getPanelComponent().getSelectedElement();
+    CategoryWrapper category = getTablePanelComponent().getSelectedElement();
     dialog.setEditionMode(category);
   }
 

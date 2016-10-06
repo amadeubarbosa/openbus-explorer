@@ -24,8 +24,13 @@
     </dependency>
 
     <dependency>
-      <groupId>tecgraf.openbus</groupId>
-      <artifactId>openbus-core-admin</artifactId>
+      <groupId>br.puc-rio.tecgraf.openbus</groupId>
+      <artifactId>openbus-core-admin-2.0</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>tecgraf.javautils</groupId>
+      <artifactId>javautils-core</artifactId>
     </dependency>
 
     <dependency>

@@ -56,7 +56,7 @@ public class AdminRefreshAction extends OpenBusAction<AdminWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().setElements(getResult());
+          getTablePanelComponent().setElements(getResult());
         }
       }
     };

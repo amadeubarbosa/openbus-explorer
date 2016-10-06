@@ -1,7 +1,6 @@
 package busexplorer.panel.interfaces;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -68,7 +67,7 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
 
       @Override
       protected void performTask() throws Exception {
-        InterfaceWrapper interfaceInfo = getPanelComponent().getSelectedElement();
+        InterfaceWrapper interfaceInfo = getTablePanelComponent().getSelectedElement();
         String interfaceName = interfaceInfo.getName();
         admin.removeInterface(interfaceName);
       }
@@ -76,7 +75,7 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().removeSelectedElements();
+          getTablePanelComponent().removeSelectedElements();
         }
       }
     };

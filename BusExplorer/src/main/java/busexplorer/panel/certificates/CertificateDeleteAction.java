@@ -1,7 +1,6 @@
 package busexplorer.panel.certificates;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -69,7 +68,7 @@ public class CertificateDeleteAction extends OpenBusAction<CertificateWrapper> {
       @Override
       protected void performTask() throws Exception {
         CertificateWrapper certificate =
-          getPanelComponent().getSelectedElement();
+          getTablePanelComponent().getSelectedElement();
         String entityId = certificate.getEntity();
         admin.removeCertificate(entityId);
       }
@@ -77,7 +76,7 @@ public class CertificateDeleteAction extends OpenBusAction<CertificateWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().removeSelectedElements();
+          getTablePanelComponent().removeSelectedElements();
         }
       }
     };

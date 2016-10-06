@@ -50,9 +50,9 @@ public class AdminEditAction extends OpenBusAction<AdminWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     AdminInputDialog dialog = new AdminInputDialog(parentWindow,
-      getPanelComponent(), admin);
+      getTablePanelComponent(), admin);
     dialog.showDialog();
-    AdminWrapper adminWrapper = getPanelComponent().getSelectedElement();
+    AdminWrapper adminWrapper = getTablePanelComponent().getSelectedElement();
     dialog.setEditionMode(adminWrapper);
   }
 

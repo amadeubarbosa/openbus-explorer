@@ -57,7 +57,7 @@ public class InterfaceRefreshAction extends OpenBusAction<InterfaceWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().setElements(getResult());
+          getTablePanelComponent().setElements(getResult());
         }
       }
     };

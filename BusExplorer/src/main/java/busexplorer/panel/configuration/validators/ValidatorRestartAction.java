@@ -2,6 +2,7 @@ package busexplorer.panel.configuration.validators;
 
 import admin.BusAdmin;
 import busexplorer.Application;
+import busexplorer.ApplicationIcons;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
@@ -16,7 +17,7 @@ import java.awt.event.ActionEvent;
  * 
  * @author Tecgraf
  */
-public class ValidatorReloadAction extends OpenBusAction<ValidatorWrapper> {
+public class ValidatorRestartAction extends OpenBusAction<ValidatorWrapper> {
 
   /**
    * Construtor da ação.
@@ -24,9 +25,11 @@ public class ValidatorReloadAction extends OpenBusAction<ValidatorWrapper> {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param admin
    */
-  public ValidatorReloadAction(JFrame parentWindow, BusAdmin admin) {
+  public ValidatorRestartAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin,
-      LNG.get(ValidatorReloadAction.class.getSimpleName() + ".name"));
+      LNG.get(ValidatorRestartAction.class.getSimpleName() + ".name"));
+    putValue(SHORT_DESCRIPTION, LNG.get(ValidatorRestartAction.class.getSimpleName() + ".tooltip"));
+    putValue(SMALL_ICON, ApplicationIcons.ICON_RESTART_16);
   }
 
   /**
@@ -34,7 +37,7 @@ public class ValidatorReloadAction extends OpenBusAction<ValidatorWrapper> {
    */
   @Override
   public ActionType getActionType() {
-    return ActionType.RELOAD;
+    return ActionType.OTHER_SINGLE_SELECTION;
   }
 
   /**
@@ -51,7 +54,8 @@ public class ValidatorReloadAction extends OpenBusAction<ValidatorWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     int option =
-      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
+      JOptionPane.showConfirmDialog(parentWindow,
+        getString("confirm.explanation") + "\n" + getString("confirm.msg"),
         getString("confirm.title"), JOptionPane.YES_NO_OPTION,
         JOptionPane.QUESTION_MESSAGE);
 
@@ -65,8 +69,10 @@ public class ValidatorReloadAction extends OpenBusAction<ValidatorWrapper> {
 
       @Override
       protected void performTask() throws Exception {
-        admin.reloadValidator(getPanelComponent().getSelectedElement()
-          .getValidator());
+        String validator = getTablePanelComponent().getSelectedElement()
+                .getValidator();
+        admin.delValidator(validator);
+        admin.addValidator(validator);
       }
 
       @Override

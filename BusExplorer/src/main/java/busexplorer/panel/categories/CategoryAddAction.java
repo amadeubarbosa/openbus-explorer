@@ -50,7 +50,7 @@ public class CategoryAddAction extends OpenBusAction<CategoryWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    new CategoryInputDialog(parentWindow, getPanelComponent(),
+    new CategoryInputDialog(parentWindow, getTablePanelComponent(),
       admin).showDialog();
   }
 

@@ -314,9 +314,17 @@ public interface BusAdmin {
   void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
     UnauthorizedOperation;
 
-  /**
-   * CONFIGURATION
+  /*
+   * CONFIGURAÇÃO DINÂMICA
    */
+
+  /**
+   * Indica se o barramento disponibiliza a interface de reconfiguração dinâmica.
+   *
+   * @return <code>true</code> caso o barramento forneça a interface de reconfiguração
+   * dinâmica e <code>false</code> caso contrário.
+   */
+  boolean isReconfigurationCapable();
 
   /**
    * Recarrega o arquivo de configurações no barramento.
@@ -350,12 +358,12 @@ public interface BusAdmin {
   List<String> getAdmins() throws ServiceFailure;
 
   /**
-   * Recarrega no barramento um validador.
+   * Adiciona um validador no barramento.
    *
    * @param validator Identificação do validador.
    * @throws ServiceFailure
    */
-  void reloadValidator(String validator) throws ServiceFailure;
+  void addValidator(String validator) throws ServiceFailure;
 
   /**
    * Remove um validador do barramento.

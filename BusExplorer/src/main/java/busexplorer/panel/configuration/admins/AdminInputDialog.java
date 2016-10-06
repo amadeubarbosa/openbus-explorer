@@ -3,7 +3,7 @@ package busexplorer.panel.configuration.admins;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.panel.PanelComponent;
+import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
@@ -25,7 +25,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel adminNameLabel;
   private JTextField adminNameField;
 
-  private PanelComponent<AdminWrapper> panel;
+  private TablePanelComponent<AdminWrapper> panel;
 
   private AdminWrapper editingAdministrator = null;
 
@@ -36,7 +36,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    * @param panel Painel a ser atualizado após a adição/edição.
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
-  public AdminInputDialog(Window parentWindow, PanelComponent<AdminWrapper>
+  public AdminInputDialog(Window parentWindow, TablePanelComponent<AdminWrapper>
     panel, BusAdmin admin) {
     super(parentWindow, LNG.get(AdminInputDialog.class.getSimpleName() +
       ".title"), admin);

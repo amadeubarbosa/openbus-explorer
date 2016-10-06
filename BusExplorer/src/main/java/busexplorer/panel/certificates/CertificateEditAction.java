@@ -51,9 +51,9 @@ public class CertificateEditAction extends OpenBusAction<CertificateWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     CertificateInputDialog dialog = new CertificateInputDialog(parentWindow,
-      getPanelComponent(), admin);
+      getTablePanelComponent(), admin);
     dialog.showDialog();
-    CertificateWrapper certificate = getPanelComponent().getSelectedElement();
+    CertificateWrapper certificate = getTablePanelComponent().getSelectedElement();
     dialog.setEditionMode(certificate);
   }
 

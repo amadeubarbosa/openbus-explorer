@@ -20,7 +20,7 @@ import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEn
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.panel.PanelComponent;
+import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
@@ -40,7 +40,7 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
   private List<String> entitiesIDList;
   private List<String> interfacesList;
 
-  private PanelComponent<AuthorizationWrapper> panel;
+  private TablePanelComponent<AuthorizationWrapper> panel;
 
   /**
    * Construtor.
@@ -52,7 +52,7 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    * @param interfacesList Lista de interfaces.
    */
   public AuthorizationInputDialog(Window parentWindow,
-    PanelComponent<AuthorizationWrapper> panel, BusAdmin admin, List<String>
+                                  TablePanelComponent<AuthorizationWrapper> panel, BusAdmin admin, List<String>
     entitiesIDList, List<String> interfacesList) {
     super(parentWindow, LNG.get(AuthorizationInputDialog.class.getSimpleName() +
       ".title") , admin);

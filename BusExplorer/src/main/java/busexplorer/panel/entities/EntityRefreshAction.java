@@ -58,7 +58,7 @@ public class EntityRefreshAction extends OpenBusAction<EntityWrapper> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().setElements(getResult());
+          getTablePanelComponent().setElements(getResult());
         }
       }
     };

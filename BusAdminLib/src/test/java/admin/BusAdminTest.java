@@ -48,7 +48,8 @@ public class BusAdminTest {
     POA poa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
     poa.the_POAManager().activate();
     
-    BusAdminImpl admin = new BusAdminImpl(host, port, orb);
+    BusAdminImpl admin = new BusAdminImpl();
+    admin.connect(host, port, orb);
 
     int index;
     for (index = 0; index < 5; index++) {

@@ -88,7 +88,7 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
           }
           else {
             new AuthorizationInputDialog(AuthorizationAddAction.this.parentWindow,
-              getPanelComponent(), admin, entitiesIDList,
+              getTablePanelComponent(), admin, entitiesIDList,
               interfacesList).showDialog();
           }
         }

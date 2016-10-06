@@ -1,7 +1,6 @@
 package busexplorer.panel.authorizations;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -71,7 +70,7 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrappe
       @Override
       protected void performTask() throws Exception {
         AuthorizationWrapper authorization =
-          getPanelComponent().getSelectedElement();
+          getTablePanelComponent().getSelectedElement();
 
         RegisteredEntity ref = authorization.getEntityDescriptor().ref;
         String interfaceName = authorization.getInterface();
@@ -82,7 +81,7 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrappe
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().removeSelectedElements();
+          getTablePanelComponent().removeSelectedElements();
         }
       }
     };

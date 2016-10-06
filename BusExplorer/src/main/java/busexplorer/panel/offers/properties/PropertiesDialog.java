@@ -8,15 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
-import busexplorer.panel.PanelActionInterface;
-import busexplorer.panel.PanelComponent;
+import busexplorer.panel.TablePanelActionInterface;
+import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.Utils;
 
@@ -51,14 +50,14 @@ public class PropertiesDialog extends JDialog {
   private void initPanel() {
     JPanel panel = new JPanel(new GridBagLayout());
 
-    List<PanelActionInterface<ServiceProperty>> actions =
-      new ArrayList<PanelActionInterface<ServiceProperty>>();
+    List<TablePanelActionInterface<ServiceProperty>> actions =
+      new ArrayList<TablePanelActionInterface<ServiceProperty>>();
     actions.add(new PropertiesRefreshAction(this, offer));
     List<ServiceProperty> props =
       Arrays.asList(offer.getDescriptor().properties);
     PropertiesTableProvider provider = new PropertiesTableProvider();
-    PanelComponent<ServiceProperty> propertiesPanel = new
-      PanelComponent<ServiceProperty>(props, provider, actions);
+    TablePanelComponent<ServiceProperty> propertiesPanel = new
+            TablePanelComponent<ServiceProperty>(props, provider, actions);
     panel.add(propertiesPanel, new GBC(0, 0).both());
 
     JButton closeButton = new JButton(Utils.getString(PropertiesDialog.class,

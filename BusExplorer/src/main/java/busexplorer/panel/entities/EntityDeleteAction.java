@@ -68,7 +68,7 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
 
         @Override
         protected void performTask() throws Exception {
-          EntityWrapper entity = getPanelComponent().getSelectedElement();
+          EntityWrapper entity = getTablePanelComponent().getSelectedElement();
           RegisteredEntity ref = entity.getDescriptor().ref;
           ref.remove();
         }
@@ -76,7 +76,7 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
         @Override
         protected void afterTaskUI() {
           if (getStatus()) {
-            getPanelComponent().removeSelectedElements();
+            getTablePanelComponent().removeSelectedElements();
           }
         }
       };

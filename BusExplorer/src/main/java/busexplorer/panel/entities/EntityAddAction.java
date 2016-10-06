@@ -75,7 +75,7 @@ public class EntityAddAction extends OpenBusAction<EntityWrapper> {
             }
             else {
               new EntityInputDialog(EntityAddAction.this.parentWindow,
-                getPanelComponent(), admin, getResult()).showDialog();
+                getTablePanelComponent(), admin, getResult()).showDialog();
             }
           }
         }

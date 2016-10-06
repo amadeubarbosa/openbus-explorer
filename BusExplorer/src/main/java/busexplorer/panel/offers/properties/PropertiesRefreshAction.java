@@ -63,7 +63,7 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
-          getPanelComponent().setElements(getResult());
+          getTablePanelComponent().setElements(getResult());
         }
       }
     };

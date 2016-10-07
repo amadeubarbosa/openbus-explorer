@@ -64,8 +64,8 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
         } else {
           List<String> revokeFrom = new ArrayList<String>();
           revokeFrom.add(editingAdministrator.getAdmin());
-          admin.revokeAdminFrom(revokeFrom);
           admin.grantAdminTo(grantTo);
+          admin.revokeAdminFrom(revokeFrom);
         }
       }
 

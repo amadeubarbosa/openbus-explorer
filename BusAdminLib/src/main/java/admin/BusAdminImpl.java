@@ -320,17 +320,17 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   @Override
-  public void reloadConfigsFile() throws ServiceFailure {
+  public void reloadConfigsFile() throws ServiceFailure, UnauthorizedOperation {
     configuration.reloadConfigsFile();
   }
 
   @Override
-  public void grantAdminTo(List<String> users) throws ServiceFailure {
+  public void grantAdminTo(List<String> users) throws ServiceFailure, UnauthorizedOperation {
     configuration.grantAdminTo(users.toArray(new String[users.size()]));
   }
 
   @Override
-  public void revokeAdminFrom(List<String> users) throws ServiceFailure {
+  public void revokeAdminFrom(List<String> users) throws ServiceFailure, UnauthorizedOperation {
     configuration.revokeAdminFrom(users.toArray(new String[users.size()]));
   }
 
@@ -343,12 +343,12 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   @Override
-  public void addValidator(String validator) throws ServiceFailure {
+  public void addValidator(String validator) throws ServiceFailure, UnauthorizedOperation {
     configuration.addValidator(validator);
   }
 
   @Override
-  public void delValidator(String validator) throws ServiceFailure {
+  public void delValidator(String validator) throws ServiceFailure, UnauthorizedOperation {
     configuration.delValidator(validator);
   }
 
@@ -361,7 +361,7 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   @Override
-  public void setMaxChannels(int maxchannels) throws ServiceFailure {
+  public void setMaxChannels(int maxchannels) throws ServiceFailure, UnauthorizedOperation {
     configuration.setMaxChannels(maxchannels);
   }
 
@@ -371,7 +371,7 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   @Override
-  public void setLogLevel(short loglevel) throws ServiceFailure {
+  public void setLogLevel(short loglevel) throws ServiceFailure, UnauthorizedOperation {
     configuration.setLogLevel(loglevel);
   }
 
@@ -381,7 +381,7 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   @Override
-  public void setOilLogLevel(short oilLoglevel) throws ServiceFailure {
+  public void setOilLogLevel(short oilLoglevel) throws ServiceFailure, UnauthorizedOperation {
     configuration.setOilLogLevel(oilLoglevel);
   }
 

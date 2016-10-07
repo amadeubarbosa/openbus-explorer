@@ -330,24 +330,27 @@ public interface BusAdmin {
    * Recarrega o arquivo de configurações no barramento.
    *
    * @throws ServiceFailure
+   * @throws UnauthorizedOperation
    */
-  void reloadConfigsFile() throws ServiceFailure;
+  void reloadConfigsFile() throws ServiceFailure, UnauthorizedOperation;
 
   /**
    * Confere direitos de administração a uma lista de entidades.
    *
    * @param users Lista de entidades que receberá direitos de administração.
    * @throws ServiceFailure
+   * @throws UnauthorizedOperation
    */
-  void grantAdminTo(List<String> users) throws ServiceFailure;
+  void grantAdminTo(List<String> users) throws ServiceFailure, UnauthorizedOperation;
 
   /**
    * Revoga direitos de administração de uma lista de entidades.
    *
    * @param users Lista de entidades que perderá direitos de administração.
    * @throws ServiceFailure
+   * @throws UnauthorizedOperation
    */
-  void revokeAdminFrom(List<String> users) throws ServiceFailure;
+  void revokeAdminFrom(List<String> users) throws ServiceFailure, UnauthorizedOperation;
 
   /**
    * Retorna uma lista das entidades administradoras atuais.
@@ -362,16 +365,18 @@ public interface BusAdmin {
    *
    * @param validator Identificação do validador.
    * @throws ServiceFailure
+   * @throws UnauthorizedOperation
    */
-  void addValidator(String validator) throws ServiceFailure;
+  void addValidator(String validator) throws ServiceFailure, UnauthorizedOperation;
 
   /**
    * Remove um validador do barramento.
    *
    * @param validator Identificação do validador.
    * @throws ServiceFailure
+   * @throws UnauthorizedOperation
    */
-  void delValidator(String validator) throws ServiceFailure;
+  void delValidator(String validator) throws ServiceFailure, UnauthorizedOperation;
 
   /**
    * Retorna uma lista dos validadores atualmente disponíveis no barramento.
@@ -387,8 +392,9 @@ public interface BusAdmin {
    * @param maxchannels Número máximo de canais a serem utilizados.
    *
    * @throws ServiceFailure
+   * @throws UnauthorizedOperation
    */
-  void setMaxChannels(int maxchannels) throws ServiceFailure;
+  void setMaxChannels(int maxchannels) throws ServiceFailure, UnauthorizedOperation;
 
   /**
    * Retorna o valor atual da propriedade maxchannels do barramento.
@@ -405,8 +411,9 @@ public interface BusAdmin {
    * @param loglevel Nível de log do barramento.
    *
    * @throws ServiceFailure
+   * @throws UnauthorizedOperation
    */
-  void setLogLevel(short loglevel) throws ServiceFailure;
+  void setLogLevel(short loglevel) throws ServiceFailure, UnauthorizedOperation;
 
   /**
    * Retorna o valor atual da propriedade loglevel do barramento.
@@ -423,8 +430,9 @@ public interface BusAdmin {
    * @param oilLoglevel Nível de log do middleware OiL no barramento.
    *
    * @throws ServiceFailure
+   * @throws UnauthorizedOperation
    */
-  void setOilLogLevel(short oilLoglevel) throws ServiceFailure;
+  void setOilLogLevel(short oilLoglevel) throws ServiceFailure, UnauthorizedOperation;
 
   /**
    * Retorna o valor atual da propriedade oilloglevel do barramento.

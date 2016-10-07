@@ -541,7 +541,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ChangeListener activateButtons = new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent changeEvent) {
-        applyButton.setEnabled(true);
+        if (Application.login().hasAdminRights()) {
+          applyButton.setEnabled(true);
+        }
         cancelButton.setEnabled(true);
       }
     };
@@ -549,9 +551,18 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     busLogLevelSpinner.addChangeListener(activateButtons);
     oilLogLevelSpinner.addChangeListener(activateButtons);
 
+    JPanel restoreDefaultsPanel = new JPanel(new MigLayout("align center"));
+    final JButton restoreDefaultsButton = new JButton(LNG.get("MainDialog.conf.restoredefaults.label"));
+    restoreDefaultsPanel.add(restoreDefaultsButton);
+
     final RefreshablePanel customPanel = new RefreshablePanel() {
       @Override
       public void refresh(ActionEvent event) {
+      if (Application.login().hasAdminRights()) {
+        restoreDefaultsButton.setEnabled(true);
+      } else {
+        restoreDefaultsButton.setEnabled(false);
+      }
       adminsPanel.refresh(event);
       validatorsPanel.refresh(event);
       getBasicConfFromBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.waiting.title"),
@@ -559,8 +570,6 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       }
     };
 
-    JPanel restoreDefaultsPanel = new JPanel(new MigLayout("align center"));
-    JButton restoreDefaultsButton = new JButton(LNG.get("MainDialog.conf.restoredefaults.label"));
     restoreDefaultsButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent actionEvent) {
@@ -585,7 +594,6 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
           LNG.get("MainDialog.conf.waiting.msg"));
       }
     });
-    restoreDefaultsPanel.add(restoreDefaultsButton);
 
     Border loweredBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
     settingsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder, LNG.get("MainDialog.conf.settings.label")));
@@ -634,7 +642,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     // diferenciada para suportar busservices < 2.0.0.9
     featuresPane.setEnabledAt(featuresPane
             .indexOfTab(LNG.get("MainDialog.conf.title")),
-            isAdmin && admin.isReconfigurationCapable());
+            admin.isReconfigurationCapable());
 
     // Seleciona a primeira aba do pane de funcionalidades.
     featuresPane.setSelectedIndex(0);

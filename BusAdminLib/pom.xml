@@ -25,7 +25,7 @@
 
     <dependency>
       <groupId>br.puc-rio.tecgraf.openbus</groupId>
-      <artifactId>openbus-core-admin-2.0</artifactId>
+      <artifactId>openbus-core-admin</artifactId>
     </dependency>
 
     <dependency>

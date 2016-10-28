@@ -1,13 +1,11 @@
 package busexplorer.panel.logins;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import tecgraf.javautils.LNG;
-import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
@@ -27,7 +25,7 @@ public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin
+   * @param admin instância do busadmin
    */
   public LoginDeleteAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin, LNG.get(LoginDeleteAction.class.getSimpleName() +

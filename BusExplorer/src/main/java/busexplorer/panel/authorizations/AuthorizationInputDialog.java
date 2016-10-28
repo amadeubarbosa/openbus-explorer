@@ -2,7 +2,6 @@ package busexplorer.panel.authorizations;
 
 import java.awt.GridBagLayout;
 import java.awt.Window;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -121,14 +120,14 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
       new JLabel(Utils.getString(this.getClass(), "entityID.label"));
     panel.add(entityIDLabel, new GBC(0, 0).insets(5).none().west());
 
-    entityIDCombo = new JComboBox(entitiesIDList.toArray());
+    entityIDCombo = new JComboBox<>(entitiesIDList.toArray());
     panel.add(entityIDCombo, new GBC(0, 1).insets(5).horizontal().west());
 
     interfacesLabel =
       new JLabel(Utils.getString(this.getClass(), "interfaces.label"));
     panel.add(interfacesLabel, new GBC(0, 2).insets(5).none().west());
 
-    interfacesScrollList = new JList(interfacesList.toArray());
+    interfacesScrollList = new JList<>(interfacesList.toArray());
     panel.add(new JScrollPane(interfacesScrollList),
       new GBC(0, 3).insets(5).both().west());
       
@@ -165,9 +164,9 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    * @return array com o nome das interfaces selecionadas para autorização.
    */
   private String[] getSelectedInterfaces() {
-    Object[] selectedInterfaces = this.interfacesScrollList.getSelectedValues();
+    List selectedInterfaces = this.interfacesScrollList.getSelectedValuesList();
 
-    return Arrays.copyOf(selectedInterfaces, selectedInterfaces.length,
-      String[].class);
+    return (String[]) selectedInterfaces.toArray(new
+      String[selectedInterfaces.size()]);
   }
 }

@@ -38,7 +38,7 @@ public class BusExplorerExceptionHandler extends
               "access.denied.password"));
             break;
 
-          case LoginByCertificate:
+          case LoginByPrivateKey:
             exception.setErrorMessage(Utils.getString(this.getClass(),
               "access.denied.key"));
             break;
@@ -276,7 +276,7 @@ public class BusExplorerExceptionHandler extends
       case IncompatibleBus:
         switch (context) {
           case LoginByPassword:
-          case LoginByCertificate:
+          case LoginByPrivateKey:
             exception.setErrorMessage(Utils.getString(this.getClass(),
               "incompatible.bus.login", theException.getMessage()));
             break;

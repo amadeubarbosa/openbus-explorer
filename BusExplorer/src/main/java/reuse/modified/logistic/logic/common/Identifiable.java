@@ -20,5 +20,5 @@ public interface Identifiable<T> {
    * 
    * @return o identificador desse objeto
    */
-  public Code<T> getId();
+  Code<T> getId();
 }

@@ -70,7 +70,7 @@ public class Code<T> implements Serializable, Comparable<Code<T>> {
    */
   public static <T extends Identifiable<T>> List<Code<T>> getCodeList(
     List<T> originalList) {
-    List<Code<T>> codeList = new ArrayList<Code<T>>();
+    List<Code<T>> codeList = new ArrayList<>();
     for (T t : originalList) {
       codeList.add(t.getId());
     }

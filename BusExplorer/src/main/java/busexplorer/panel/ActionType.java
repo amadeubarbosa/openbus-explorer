@@ -17,5 +17,5 @@ public enum ActionType {
   /** Ação generica que requer pelo menos um item selecionado */
   OTHER_MULTI_SELECTION,
   /** Ação generica que requer multiplos itens selecionados */
-  OTHER_ONLY_MULTI_SELECTION;
+  OTHER_ONLY_MULTI_SELECTION,
 }

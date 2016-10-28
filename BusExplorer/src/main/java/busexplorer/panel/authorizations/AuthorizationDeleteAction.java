@@ -1,7 +1,6 @@
 package busexplorer.panel.authorizations;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -27,7 +26,7 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrappe
    * Construtor da ação
    * 
    * @param parentWindow janela mãe do diálogo a ser criado pela ação
-   * @param admin
+   * @param admin instância do busadmin
    */
   public AuthorizationDeleteAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin,

@@ -382,13 +382,13 @@ public class UI extends PrintableUI {
     c.insets = new Insets(0, 0, 0, 0);
     buttonPanel.add(new JLabel(), c);
 
-    for (int i = 0; i < buttons.length; i++) {
+    for (JButton button : buttons) {
       c.gridx = x++;
       c.weightx = 0;
       c.weighty = 0;
       c.fill = GridBagConstraints.NONE;
       c.insets = new Insets(0, 0, 5, 5);
-      buttonPanel.add(buttons[i], c);
+      buttonPanel.add(button, c);
     }
     return buttonPanel;
   }
@@ -530,10 +530,7 @@ public class UI extends PrintableUI {
    * @return true se o nome estiver de acordo com as especificações do sistema
    */
   public static boolean isValidFileName(String name) {
-    if (name.equals("") || !name.matches("^[\\w_\\.\\-]+$")) {
-      return false;
-    }
-    return true;
+    return !(name.equals("") || !name.matches("^[\\w_\\.\\-]+$"));
   }
 
   /**
@@ -634,7 +631,7 @@ public class UI extends PrintableUI {
     DefaultTableColumnModel colModel =
       (DefaultTableColumnModel) table.getColumnModel();
     TableColumn col = colModel.getColumn(vColIndex);
-    int width = 0;
+    int width;
 
     // Obtém a largura do header da coluna
     TableCellRenderer renderer = col.getHeaderRenderer();
@@ -713,9 +710,9 @@ public class UI extends PrintableUI {
           return;
         }
         isAdjusting = true;
-        for (int i = 0; i < scrollBars.length; i++) {
-          if (ev.getSource() != scrollBars[i]) {
-            scrollBars[i].setValue(ev.getValue());
+        for (JScrollBar scrollBar : scrollBars) {
+          if (ev.getSource() != scrollBar) {
+            scrollBar.setValue(ev.getValue());
           }
         }
         isAdjusting = false;

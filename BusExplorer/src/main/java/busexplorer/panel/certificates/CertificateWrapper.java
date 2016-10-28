@@ -67,7 +67,7 @@ public class CertificateWrapper {
    * @return a lista de {@link CertificateWrapper}
    */
   public static List<CertificateWrapper> convertToInfo(List<String> entities) {
-    List<CertificateWrapper> list = new ArrayList<CertificateWrapper>();
+    List<CertificateWrapper> list = new ArrayList<>();
     for (String entity : entities) {
       list.add(new CertificateWrapper(entity));
     }

@@ -65,7 +65,7 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
 
       @Override
       protected void performTask() throws Exception {
-        entitiesIDList = new LinkedList<String>();
+        entitiesIDList = new LinkedList<>();
         List<RegisteredEntityDesc> entitiesDescList = admin.getEntities();
         interfacesList = admin.getInterfaces();
         for (RegisteredEntityDesc entityDesc : entitiesDescList) {

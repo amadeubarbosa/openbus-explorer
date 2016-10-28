@@ -2,8 +2,6 @@ package busexplorer.desktop.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -23,8 +21,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JSeparator;
 import javax.swing.JTabbedPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import tecgraf.javautils.LNG;
 import tecgraf.javautils.gui.table.ObjectTableModel;
@@ -85,7 +81,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    */
   private BusAdmin admin;
   /**
-   * Pane de recursos de gerência do barramento.
+   * Painel de recursos de gerência do barramento.
    */
   private JTabbedPane featuresPane;
   /**
@@ -178,35 +174,32 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     JMenuItem itemDisconnect =
       new JMenuItem(LNG.get("MainDialog.menuBar.connection.disconnect"));
-    itemDisconnect.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        BusExplorerTask<Object> task =
-          new BusExplorerTask<Object>(Application.exceptionHandler(),
-            ExceptionContext.Service) {
-            @Override
-            protected void performTask() throws Exception {
-              Application.login().logout();
-              setDialogTitle(LNG.get("MainDialog.title.disconnected"));
-            }
+    itemDisconnect.addActionListener(e -> {
+      BusExplorerTask<Object> task =
+        new BusExplorerTask<Object>(Application.exceptionHandler(),
+          ExceptionContext.Service) {
+          @Override
+          protected void performTask() throws Exception {
+            Application.login().logout();
+            setDialogTitle(LNG.get("MainDialog.title.disconnected"));
+          }
 
-            @Override
-            protected void afterTaskUI() {
-              Application.loginProcess(MainDialog.this);
-            }
-          };
+          @Override
+          protected void afterTaskUI() {
+            Application.loginProcess(MainDialog.this);
+          }
+        };
 
-        int option =
-          JOptionPane.showConfirmDialog(MainDialog.this, Utils.getString(
-            MainDialog.class, "disconnect.confirm.msg"), Utils.getString(
-            MainDialog.class, "disconnect.confirm.title"),
-            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+      int option =
+        JOptionPane.showConfirmDialog(MainDialog.this, Utils.getString(
+          MainDialog.class, "disconnect.confirm.msg"), Utils.getString(
+          MainDialog.class, "disconnect.confirm.title"),
+          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
-        if (option == JOptionPane.YES_OPTION) {
-          task.execute(MainDialog.this, Utils.getString(MainDialog.class,
-            "logout.waiting.title"), Utils.getString(MainDialog.class,
-            "logout.waiting.msg"));
-        }
+      if (option == JOptionPane.YES_OPTION) {
+        task.execute(MainDialog.this, Utils.getString(MainDialog.class,
+          "logout.waiting.title"), Utils.getString(MainDialog.class,
+          "logout.waiting.msg"));
       }
     });
     menuConnection.add(itemDisconnect);
@@ -215,19 +208,16 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     JMenuItem itemQuit =
       new JMenuItem(LNG.get("MainDialog.menuBar.connection.quit"));
-    itemQuit.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        int option =
-          JOptionPane.showConfirmDialog(MainDialog.this, Utils.getString(
-            MainDialog.class, "quit.confirm.msg"), Utils.getString(
-            MainDialog.class, "quit.confirm.title"), JOptionPane.YES_NO_OPTION,
-            JOptionPane.QUESTION_MESSAGE);
+    itemQuit.addActionListener(e -> {
+      int option =
+        JOptionPane.showConfirmDialog(MainDialog.this, Utils.getString(
+          MainDialog.class, "quit.confirm.msg"), Utils.getString(
+          MainDialog.class, "quit.confirm.title"), JOptionPane.YES_NO_OPTION,
+          JOptionPane.QUESTION_MESSAGE);
 
-        if (option == JOptionPane.YES_OPTION) {
-          dispose();
-          System.exit(0);
-        }
+      if (option == JOptionPane.YES_OPTION) {
+        dispose();
+        System.exit(0);
       }
     });
     menuConnection.add(itemQuit);
@@ -254,13 +244,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     }
     initFeaturePanels();
 
-    featuresPane.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent event) {
-        PanelComponent<?> component =
-          (PanelComponent<?>) featuresPane.getSelectedComponent();
-        component.refresh(null);
-      }
+    featuresPane.addChangeListener(event -> {
+      PanelComponent<?> component1 =
+        (PanelComponent<?>) featuresPane.getSelectedComponent();
+      component1.refresh(null);
     });
 
     add(featuresPane, BorderLayout.CENTER);
@@ -271,18 +258,16 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    */
   private void initPanelCategory() {
     ObjectTableModel<CategoryWrapper> model =
-      new ObjectTableModel<CategoryWrapper>(new LinkedList<CategoryWrapper>(),
-        new CategoryTableProvider());
+      new ObjectTableModel<>(new LinkedList<>(), new CategoryTableProvider());
 
-    List<PanelActionInterface<CategoryWrapper>> actionsVector =
-      new Vector<PanelActionInterface<CategoryWrapper>>(3);
+    List<PanelActionInterface<CategoryWrapper>> actionsVector = new Vector<>(3);
     actionsVector.add(new CategoryRefreshAction(this, admin));
     actionsVector.add(new CategoryAddAction(this, admin));
     actionsVector.add(new CategoryEditAction(this, admin));
     actionsVector.add(new CategoryDeleteAction(this, admin));
 
-    PanelComponent<CategoryWrapper> panelCategory =
-      new PanelComponent<CategoryWrapper>(model, actionsVector);
+    PanelComponent<CategoryWrapper> panelCategory = new PanelComponent<>
+      (model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.category.title"));
     featuresPane.setComponentAt(index, panelCategory);
@@ -292,19 +277,17 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * Inicializa o painel de CRUD de entidades.
    */
   private void initPanelEntity() {
-    ObjectTableModel<EntityWrapper> model =
-      new ObjectTableModel<EntityWrapper>(new ArrayList<EntityWrapper>(),
-        new EntityTableProvider());
+    ObjectTableModel<EntityWrapper> model = new ObjectTableModel<>(new
+      ArrayList<>(), new EntityTableProvider());
 
-    List<PanelActionInterface<EntityWrapper>> actionsVector =
-      new Vector<PanelActionInterface<EntityWrapper>>(3);
+    List<PanelActionInterface<EntityWrapper>> actionsVector = new Vector<>(3);
     actionsVector.add(new EntityRefreshAction(this, admin));
     actionsVector.add(new EntityAddAction(this, admin));
     actionsVector.add(new EntityEditAction(this, admin));
     actionsVector.add(new EntityDeleteAction(this, admin));
 
-    PanelComponent<EntityWrapper> panelEntity =
-      new PanelComponent<EntityWrapper>(model, actionsVector);
+    PanelComponent<EntityWrapper> panelEntity = new PanelComponent<>(model,
+      actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.entity.title"));
     featuresPane.setComponentAt(index, panelEntity);
@@ -314,19 +297,18 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * Inicializa o painel de CRUD de certificados.
    */
   private void initPanelCertificate() {
-    ObjectTableModel<CertificateWrapper> model =
-      new ObjectTableModel<CertificateWrapper>(
-        new LinkedList<CertificateWrapper>(), new CertificateTableProvider());
+    ObjectTableModel<CertificateWrapper> model = new ObjectTableModel<> (new
+      LinkedList<>(), new CertificateTableProvider());
 
-    List<PanelActionInterface<CertificateWrapper>> actionsVector =
-      new Vector<PanelActionInterface<CertificateWrapper>>(3);
+    List<PanelActionInterface<CertificateWrapper>> actionsVector = new
+      Vector<>(3);
     actionsVector.add(new CertificateRefreshAction(this, admin));
     actionsVector.add(new CertificateAddAction(this, admin));
     actionsVector.add(new CertificateEditAction(this, admin));
     actionsVector.add(new CertificateDeleteAction(this, admin));
 
-    PanelComponent<CertificateWrapper> panelCertificate =
-      new PanelComponent<CertificateWrapper>(model, actionsVector);
+    PanelComponent<CertificateWrapper> panelCertificate = new
+      PanelComponent<>(model, actionsVector);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.certificate.title"));
@@ -337,18 +319,17 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * Inicializa o painel de CRUD de interfaces.
    */
   private void initPanelInterface() {
-    ObjectTableModel<InterfaceWrapper> model =
-      new ObjectTableModel<InterfaceWrapper>(
-        new LinkedList<InterfaceWrapper>(), new InterfaceTableProvider());
+    ObjectTableModel<InterfaceWrapper> model = new ObjectTableModel<>(new
+      LinkedList<>(), new InterfaceTableProvider());
 
-    List<PanelActionInterface<InterfaceWrapper>> actionsVector =
-      new Vector<PanelActionInterface<InterfaceWrapper>>(3);
+    List<PanelActionInterface<InterfaceWrapper>> actionsVector = new Vector<>
+      (3);
     actionsVector.add(new InterfaceRefreshAction(this, admin));
     actionsVector.add(new InterfaceAddAction(this, admin));
     actionsVector.add(new InterfaceDeleteAction(this, admin));
 
-    PanelComponent<InterfaceWrapper> panelInterface =
-      new PanelComponent<InterfaceWrapper>(model, actionsVector);
+    PanelComponent<InterfaceWrapper> panelInterface = new PanelComponent<>
+      (model, actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.interface.title"));
     featuresPane.setComponentAt(index, panelInterface);
@@ -358,19 +339,17 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * Inicializa o painel de CRUD de autorizações.
    */
   private void initPanelAuthorization() {
-    ObjectTableModel<AuthorizationWrapper> model =
-      new ObjectTableModel<AuthorizationWrapper>(
-        new LinkedList<AuthorizationWrapper>(),
-        new AuthorizationTableProvider());
+    ObjectTableModel<AuthorizationWrapper> model = new ObjectTableModel<>(new
+      LinkedList<>(), new AuthorizationTableProvider());
 
-    List<PanelActionInterface<AuthorizationWrapper>> actionsVector =
-      new Vector<PanelActionInterface<AuthorizationWrapper>>(3);
+    List<PanelActionInterface<AuthorizationWrapper>> actionsVector = new
+      Vector<>(3);
     actionsVector.add(new AuthorizationRefreshAction(this, admin));
     actionsVector.add(new AuthorizationAddAction(this, admin));
     actionsVector.add(new AuthorizationDeleteAction(this, admin));
 
-    PanelComponent<AuthorizationWrapper> panelAuthorization =
-      new PanelComponent<AuthorizationWrapper>(model, actionsVector);
+    PanelComponent<AuthorizationWrapper> panelAuthorization = new
+      PanelComponent<>(model, actionsVector);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.authorization.title"));
@@ -381,20 +360,18 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * Inicializa o painel de CRUD de ofertas.
    */
   private void initPanelOffer() {
-    ObjectTableModel<OfferWrapper> model =
-      new ObjectTableModel<OfferWrapper>(new LinkedList<OfferWrapper>(),
-        new OfferTableProvider());
+    ObjectTableModel<OfferWrapper> model = new ObjectTableModel<>(new
+      LinkedList<>(), new OfferTableProvider());
 
-    List<PanelActionInterface<OfferWrapper>> actionsVector =
-      new Vector<PanelActionInterface<OfferWrapper>>(2);
+    List<PanelActionInterface<OfferWrapper>> actionsVector = new Vector<>(2);
     actionsVector.add(new OfferRefreshAction(this, admin));
     actionsVector.add(new OfferDeleteAction(this, admin));
     final OfferPropertiesAction propertiesAction =
       new OfferPropertiesAction(this, admin);
     actionsVector.add(propertiesAction);
 
-    PanelComponent<OfferWrapper> panelOffer =
-      new PanelComponent<OfferWrapper>(model, actionsVector);
+    PanelComponent<OfferWrapper> panelOffer = new PanelComponent<>(model,
+      actionsVector);
     /*
      * Inclui listener de duplo clique para disparar ação de visualizar
      * propriedades da oferta, dado que não temos ação de edição neste painel.
@@ -416,17 +393,15 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * Inicializa o painel CRUD de logins.
    */
   private void initPanelLogin() {
-    ObjectTableModel<LoginWrapper> model =
-      new ObjectTableModel<LoginWrapper>(new LinkedList<LoginWrapper>(),
-        new LoginTableProvider());
+    ObjectTableModel<LoginWrapper> model = new ObjectTableModel<>(new
+      LinkedList<>(), new LoginTableProvider());
 
-    List<PanelActionInterface<LoginWrapper>> actionsVector =
-      new Vector<PanelActionInterface<LoginWrapper>>(2);
+    List<PanelActionInterface<LoginWrapper>> actionsVector = new Vector<>(2);
     actionsVector.add(new LoginRefreshAction(this, admin));
     actionsVector.add(new LoginDeleteAction(this, admin));
 
-    PanelComponent<LoginWrapper> panelLogin =
-      new PanelComponent<LoginWrapper>(model, actionsVector);
+    PanelComponent<LoginWrapper> panelLogin = new PanelComponent<>(model,
+      actionsVector);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.login.title"));
     featuresPane.setComponentAt(index, panelLogin);

@@ -25,7 +25,7 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin
+   * @param admin instância do busadmin
    */
   public EntityDeleteAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin, LNG.get(EntityDeleteAction.class.getSimpleName()

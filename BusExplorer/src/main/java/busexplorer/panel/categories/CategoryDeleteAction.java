@@ -1,7 +1,6 @@
 package busexplorer.panel.categories;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -26,7 +25,7 @@ public class CategoryDeleteAction extends OpenBusAction<CategoryWrapper> {
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin
+   * @param admin instância do busadmin
    */
   public CategoryDeleteAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin,

@@ -20,8 +20,7 @@ public class CertificateTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { Utils.getString(this.getClass(), "entity") };
-    return colNames;
+    return new String[] { Utils.getString(this.getClass(), "entity") };
   }
 
   /**
@@ -29,8 +28,7 @@ public class CertificateTableProvider implements
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class };
-    return colClasses;
+    return new Class<?>[] { String.class };
   }
 
   /**
@@ -38,12 +36,9 @@ public class CertificateTableProvider implements
    */
   @Override
   public Object getCellValue(CertificateWrapper row, int col) {
-    final CertificateWrapper certificate = row;
-
     switch (col) {
       case ENTITY_ID:
-        return certificate.getEntity();
-
+        return row.getEntity();
       default:
         break;
     }

@@ -1,7 +1,6 @@
 package busexplorer.panel.offers;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;

@@ -22,10 +22,9 @@ public class PropertiesTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames =
+    return new String[]
       { Utils.getString(this.getClass(), "name"),
           Utils.getString(this.getClass(), "value") };
-    return colNames;
   }
 
   /**
@@ -33,8 +32,7 @@ public class PropertiesTableProvider implements
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class };
-    return colClasses;
+    return new Class<?>[] { String.class, String.class };
   }
 
   /**
@@ -45,14 +43,11 @@ public class PropertiesTableProvider implements
     switch (col) {
       case NAME:
         return row.name;
-
       case VALUE:
         return row.value;
-
       default:
         break;
     }
     return null;
-
   }
 }

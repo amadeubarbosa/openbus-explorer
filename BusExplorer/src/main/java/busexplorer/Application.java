@@ -41,8 +41,6 @@ public class Application {
 
   /**
    * Inicializa a aplicação, criando o diálogo de login.
-   * 
-   * @param args
    */
   public static void main(String[] args) {
     LNG.load("busexplorer.resources.language.idiom", new Locale("pt", "BR"));

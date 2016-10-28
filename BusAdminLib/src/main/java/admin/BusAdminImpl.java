@@ -45,9 +45,6 @@ import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEn
  * @author Tecgraf
  */
 public class BusAdminImpl implements BusAdmin {
-  /** {@link ORB} do barramento. */
-  private ORB orb;
-
   /** Registro de entidades do barramento. */
   private EntityRegistry entityRegistry;
   /** Registro de certificados do barramento. */
@@ -66,27 +63,23 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   /**
-   * Conecta a instância do objeto a um barramento. Como efeito colateral,
-   * atualiza as referências aos registros do barramento.
+   * Obtém as referências para facetas de administração do barramento.
    * 
    * @param host Host do barramento
    * @param port Porta do barramento
    * @param orb ORB do barramento
    */
-  public void connect(String host, int port, ORB orb) {
+  public void getAdminFacets(String host, int port, ORB orb) {
     org.omg.CORBA.Object ref = buildCorbaLoc(host, port, orb);
-    connect(ref, orb);
+    getAdminFacets(ref);
   }
 
   /**
-   * Conecta a instância do objeto a um barramento. Como efeito colateral,
-   * atualiza as referências aos registros do barramento.
+   * Obtém as referências para facetas de administração do barramento.
    * 
    * @param ref Referência de um barramento
-   * @param orb ORB do barramento
    */
-  public void connect(Object ref, ORB orb) {
-    this.orb = orb;
+  public void getAdminFacets(Object ref) {
     obtainRegistries(ref);
   }
 
@@ -100,7 +93,7 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public List<EntityCategoryDesc> getCategories() throws ServiceFailure {
     EntityCategoryDesc[] array = this.entityRegistry.getEntityCategories();
-    return new ArrayList<EntityCategoryDesc>(Arrays.asList(array));
+    return new ArrayList<>(Arrays.asList(array));
   }
 
   /**
@@ -132,7 +125,7 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public List<RegisteredEntityDesc> getEntities() throws ServiceFailure {
     RegisteredEntityDesc[] array = this.entityRegistry.getEntities();
-    return new ArrayList<RegisteredEntityDesc>(Arrays.asList(array));
+    return new ArrayList<>(Arrays.asList(array));
   }
 
   /**
@@ -171,7 +164,7 @@ public class BusAdminImpl implements BusAdmin {
   public List<String> getEntitiesWithCertificate() throws ServiceFailure,
     UnauthorizedOperation {
     String[] array = this.certificateRegistry.getEntitiesWithCertificate();
-    return new ArrayList<String>(Arrays.asList(array));
+    return new ArrayList<>(Arrays.asList(array));
   }
 
   /**
@@ -202,7 +195,7 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public List<String> getInterfaces() throws ServiceFailure {
     String[] array = this.interfaceRegistry.getInterfaces();
-    return new ArrayList<String>(Arrays.asList(array));
+    return new ArrayList<>(Arrays.asList(array));
   }
 
   /**
@@ -234,7 +227,7 @@ public class BusAdminImpl implements BusAdmin {
   public Map<RegisteredEntityDesc, List<String>> getAuthorizations()
     throws ServiceFailure {
     Map<RegisteredEntityDesc, List<String>> map =
-      new LinkedHashMap<RegisteredEntityDesc, List<String>>();
+      new LinkedHashMap<>();
     RegisteredEntityDesc[] entitiesDesc =
       this.entityRegistry.getAuthorizedEntities();
     for (RegisteredEntityDesc entityDesc : entitiesDesc) {
@@ -274,7 +267,7 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public List<ServiceOfferDesc> getOffers() throws ServiceFailure {
     ServiceOfferDesc[] array = this.offerRegistry.getAllServices();
-    return new ArrayList<ServiceOfferDesc>(Arrays.asList(array));
+    return new ArrayList<>(Arrays.asList(array));
   }
 
   /**
@@ -297,7 +290,7 @@ public class BusAdminImpl implements BusAdmin {
   public List<LoginInfo> getLogins() throws ServiceFailure,
     UnauthorizedOperation {
     LoginInfo[] array = this.loginRegistry.getAllLogins();
-    return new ArrayList<LoginInfo>(Arrays.asList(array));
+    return new ArrayList<>(Arrays.asList(array));
   }
 
   /**
@@ -329,7 +322,7 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   /**
-   * Obtém as facetas dos registros do barramento.
+   * Obtém as facetas de administração do barramento.
    * 
    * @param obj referência para o barramento
    */

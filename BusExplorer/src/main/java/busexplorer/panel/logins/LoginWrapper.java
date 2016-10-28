@@ -95,7 +95,7 @@ public class LoginWrapper {
    * @return a lista de {@link LoginWrapper}
    */
   public static List<LoginWrapper> convertToInfo(List<LoginInfo> logins) {
-    List<LoginWrapper> list = new ArrayList<LoginWrapper>();
+    List<LoginWrapper> list = new ArrayList<>();
     for (LoginInfo login : logins) {
       list.add(new LoginWrapper(login));
     }

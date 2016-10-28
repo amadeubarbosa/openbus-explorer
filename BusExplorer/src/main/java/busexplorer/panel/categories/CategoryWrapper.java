@@ -105,7 +105,7 @@ public class CategoryWrapper {
    */
   public static List<CategoryWrapper> convertToInfo(
     List<EntityCategoryDesc> categories) {
-    List<CategoryWrapper> list = new ArrayList<CategoryWrapper>();
+    List<CategoryWrapper> list = new ArrayList<>();
     for (EntityCategoryDesc category : categories) {
       list.add(new CategoryWrapper(category));
     }

@@ -46,7 +46,7 @@ public interface BusAdmin {
    * @throws COMM_FAILURE
    * @throws NO_PERMISSION
    */
-  public List<EntityCategoryDesc> getCategories() throws ServiceFailure,
+  List<EntityCategoryDesc> getCategories() throws ServiceFailure,
     TRANSIENT, COMM_FAILURE, NO_PERMISSION;
 
   /**
@@ -61,7 +61,7 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws EntityCategoryAlreadyExists
    */
-  public EntityCategory createCategory(String categoryID, String categoryName)
+  EntityCategory createCategory(String categoryID, String categoryName)
     throws ServiceFailure, UnauthorizedOperation, EntityCategoryAlreadyExists;
 
   /**
@@ -73,7 +73,7 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws EntityCategoryInUse
    */
-  public void removeCategory(String categoryID) throws ServiceFailure,
+  void removeCategory(String categoryID) throws ServiceFailure,
     UnauthorizedOperation, EntityCategoryInUse;
 
   /*
@@ -91,7 +91,7 @@ public interface BusAdmin {
    * @throws COMM_FAILURE
    * @throws NO_PERMISSION
    */
-  public List<RegisteredEntityDesc> getEntities() throws ServiceFailure,
+  List<RegisteredEntityDesc> getEntities() throws ServiceFailure,
     TRANSIENT, COMM_FAILURE, NO_PERMISSION;
 
   /**
@@ -107,7 +107,7 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws EntityAlreadyRegistered
    */
-  public RegisteredEntity createEntity(String entityID, String entityName,
+  RegisteredEntity createEntity(String entityID, String entityName,
     String categoryID) throws ServiceFailure, UnauthorizedOperation,
     EntityAlreadyRegistered;
 
@@ -122,7 +122,7 @@ public interface BusAdmin {
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
-  public boolean removeEntity(String entityID) throws ServiceFailure,
+  boolean removeEntity(String entityID) throws ServiceFailure,
     UnauthorizedOperation;
 
   /*
@@ -138,7 +138,7 @@ public interface BusAdmin {
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
-  public List<String> getEntitiesWithCertificate() throws ServiceFailure,
+  List<String> getEntitiesWithCertificate() throws ServiceFailure,
     UnauthorizedOperation;
 
   /**
@@ -151,7 +151,7 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws InvalidCertificate
    */
-  public void registerCertificate(String entityID, byte[] certificate)
+  void registerCertificate(String entityID, byte[] certificate)
     throws ServiceFailure, UnauthorizedOperation, InvalidCertificate;
 
   /**
@@ -162,7 +162,7 @@ public interface BusAdmin {
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
-  public void removeCertificate(String entityID) throws ServiceFailure,
+  void removeCertificate(String entityID) throws ServiceFailure,
     UnauthorizedOperation;
 
   /*
@@ -180,7 +180,7 @@ public interface BusAdmin {
    * @throws COMM_FAILURE
    * @throws NO_PERMISSION
    */
-  public List<String> getInterfaces() throws ServiceFailure, TRANSIENT,
+  List<String> getInterfaces() throws ServiceFailure, TRANSIENT,
     COMM_FAILURE, NO_PERMISSION;
 
   /**
@@ -195,7 +195,7 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws InvalidInterface
    */
-  public boolean createInterface(String interfaceName) throws ServiceFailure,
+  boolean createInterface(String interfaceName) throws ServiceFailure,
     UnauthorizedOperation, InvalidInterface;
 
   /**
@@ -207,7 +207,7 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws InterfaceInUse
    */
-  public void removeInterface(String interfaceName) throws ServiceFailure,
+  void removeInterface(String interfaceName) throws ServiceFailure,
     UnauthorizedOperation, InterfaceInUse;
 
   /*
@@ -224,7 +224,7 @@ public interface BusAdmin {
    *
    * @throws ServiceFailure
    */
-  public Map<RegisteredEntityDesc, List<String>> getAuthorizations()
+  Map<RegisteredEntityDesc, List<String>> getAuthorizations()
     throws ServiceFailure;
 
   /**
@@ -240,7 +240,7 @@ public interface BusAdmin {
    * @throws UnauthorizedOperation
    * @throws InvalidInterface
    */
-  public boolean setAuthorization(String entityID, String interfaceName)
+  boolean setAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface;
 
   /**
@@ -254,7 +254,7 @@ public interface BusAdmin {
    * @throws InvalidInterface
    * @throws AuthorizationInUse
    */
-  public void revokeAuthorization(String entityID, String interfaceName)
+  void revokeAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface,
     AuthorizationInUse;
 
@@ -273,7 +273,7 @@ public interface BusAdmin {
    * @throws COMM_FAILURE
    * @throws NO_PERMISSION
    */
-  public List<ServiceOfferDesc> getOffers() throws ServiceFailure, TRANSIENT,
+  List<ServiceOfferDesc> getOffers() throws ServiceFailure, TRANSIENT,
     COMM_FAILURE, NO_PERMISSION;
 
   /**
@@ -284,7 +284,7 @@ public interface BusAdmin {
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
-  public void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
+  void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
     UnauthorizedOperation;
 
   /*
@@ -300,7 +300,7 @@ public interface BusAdmin {
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
-  public List<LoginInfo> getLogins() throws ServiceFailure,
+  List<LoginInfo> getLogins() throws ServiceFailure,
     UnauthorizedOperation;
 
   /**
@@ -311,7 +311,6 @@ public interface BusAdmin {
    * @throws ServiceFailure
    * @throws UnauthorizedOperation
    */
-  public void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
+  void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
     UnauthorizedOperation;
-
 }

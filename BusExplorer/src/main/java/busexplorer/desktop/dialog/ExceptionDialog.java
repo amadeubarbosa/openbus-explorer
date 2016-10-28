@@ -24,8 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.UIManager;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeSelectionModel;
 
 import tecgraf.javautils.LNG;
@@ -172,14 +170,14 @@ public abstract class ExceptionDialog extends JDialog {
    */
   public static void adjustEqualSizes(JComponent... comps) {
     final Dimension dim = new Dimension(0, 0);
-    for (int i = 0; i < comps.length; i++) {
-      final Dimension pref = comps[i].getPreferredSize();
+    for (JComponent comp : comps) {
+      final Dimension pref = comp.getPreferredSize();
       final double h = Math.max(dim.getHeight(), pref.getHeight());
       final double w = Math.max(dim.getWidth(), pref.getWidth());
       dim.setSize(w, h);
     }
-    for (int i = 0; i < comps.length; i++) {
-      comps[i].setPreferredSize(dim);
+    for (JComponent comp : comps) {
+      comp.setPreferredSize(dim);
     }
   }
 
@@ -301,12 +299,7 @@ public abstract class ExceptionDialog extends JDialog {
       final JLabel troubleTreeLabel = new
         JLabel(Utils.getString(this.getClass(), "exceptionTree"));
       this._throwableTree = new JTree(new ThrowableTreeNode(this._throwable));
-      this._throwableTree.addTreeSelectionListener(new TreeSelectionListener() {
-        @Override
-        public void valueChanged(TreeSelectionEvent e) {
-          updateFields();
-        }
-      });
+      this._throwableTree.addTreeSelectionListener(e -> updateFields());
       this._throwableTree.getSelectionModel().setSelectionMode(
         TreeSelectionModel.SINGLE_TREE_SELECTION);
       final JScrollPane scrollTroubleTree =
@@ -403,8 +396,8 @@ public abstract class ExceptionDialog extends JDialog {
      */
     private String getStackTraceText(final StackTraceElement[] stackTrace) {
       String text = "";
-      for (int i = 0; i < stackTrace.length; i++) {
-        text += stackTrace[i] + "\n";
+      for (StackTraceElement aStackTrace : stackTrace) {
+        text += aStackTrace + "\n";
       }
       return text;
     }

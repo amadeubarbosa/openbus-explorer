@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -81,7 +80,7 @@ public class PanelComponent<T> extends JPanel {
   private PanelActionInterface<T> removeAction;
   /** Conjunto de ações a serem incluídas no botão "outros" */
   private List<PanelActionInterface<T>> othersActions =
-    new ArrayList<PanelActionInterface<T>>();
+    new ArrayList<>();
   /** Indicador se possui algum botão a ser incluído na GUI */
   private boolean hasBtns = false;
   /** Ação de Refresh */
@@ -100,7 +99,7 @@ public class PanelComponent<T> extends JPanel {
    */
   public PanelComponent(List<T> pInfo, ObjectTableProvider<T> pTableProvider,
     List<? extends PanelActionInterface<T>> actions) {
-    this(new ObjectTableModel<T>(pInfo, pTableProvider), actions);
+    this(new ObjectTableModel<>(pInfo, pTableProvider), actions);
   }
 
   /**
@@ -140,7 +139,6 @@ public class PanelComponent<T> extends JPanel {
   /**
    * Processa o conjunto de ações associadas ao componente.
    * 
-   * @param actions
    */
   private void processActions(List<? extends PanelActionInterface<T>> actions) {
     boolean hasActiveOthers = false;
@@ -287,7 +285,7 @@ public class PanelComponent<T> extends JPanel {
       }
     });
 
-    // Queremos que o conteúdo do filtro seja todo selecionado quando o campo
+    // Queremos que o conteúdo do filtro seja selecionado inteiro quando o campo
     // ganhar o foco
     filterText.addFocusListener(new FocusListener() {
       @Override
@@ -346,7 +344,7 @@ public class PanelComponent<T> extends JPanel {
    * @return o painel.
    */
   private JPanel getButtonsPanel() {
-    List<JButton> toMatch = new ArrayList<JButton>();
+    List<JButton> toMatch = new ArrayList<>();
     int idx = 0;
     buttonsPanel = new JPanel();
     buttonsPanel.setLayout(new GridBagLayout());
@@ -387,23 +385,20 @@ public class PanelComponent<T> extends JPanel {
     othersBtn.setText(Utils.getString(this.getClass(), "button.others"));
     othersBtn.setIcon(RegistrationImages.ICON_DOWN_4);
     othersBtn.setHorizontalTextPosition(SwingConstants.RIGHT);
-    othersBtn.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        final T selectedObject = getSelectedElement();
-        if (selectedObject == null) {
-          return;
-        }
-        if (othersActions.isEmpty()) {
-          return;
-        }
-        final JPopupMenu menu = new JPopupMenu();
-        for (PanelActionInterface<T> action : othersActions) {
-          menu.add(action);
-        }
-        final int y = othersBtn.getHeight();
-        menu.show(othersBtn, 0, y);
+    othersBtn.addActionListener(e -> {
+      final T selectedObject = getSelectedElement();
+      if (selectedObject == null) {
+        return;
       }
+      if (othersActions.isEmpty()) {
+        return;
+      }
+      final JPopupMenu menu = new JPopupMenu();
+      for (PanelActionInterface<T> action : othersActions) {
+        menu.add(action);
+      }
+      final int y1 = othersBtn.getHeight();
+      menu.show(othersBtn, 0, y1);
     });
   }
 
@@ -531,7 +526,7 @@ public class PanelComponent<T> extends JPanel {
    * @return o conjunto de elementos.
    */
   public List<T> getSelectedElements() {
-    List<T> selections = new ArrayList<T>();
+    List<T> selections = new ArrayList<>();
     for (int row : table.getSelectedRows()) {
       int modelRow = table.convertRowIndexToModel(row);
       T object = getTableModel().getRow(modelRow);
@@ -551,8 +546,7 @@ public class PanelComponent<T> extends JPanel {
       return null;
     }
     int modelRow = table.convertRowIndexToModel(row);
-    T object = getTableModel().remove(modelRow);
-    return object;
+    return getTableModel().remove(modelRow);
   }
 
   /**
@@ -561,10 +555,10 @@ public class PanelComponent<T> extends JPanel {
    * @return os elementos removidos.
    */
   public List<T> removeSelectedElements() {
-    List<T> removed = new ArrayList<T>();
+    List<T> removed = new ArrayList<>();
     int[] rows = table.getSelectedRows();
     if (rows.length <= 0) {
-      return new ArrayList<T>();
+      return new ArrayList<>();
     }
     int[] modelRows = new int[rows.length];
     for (int i = 0; i < rows.length; i++) {

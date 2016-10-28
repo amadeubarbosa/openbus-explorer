@@ -21,9 +21,8 @@ public class LoginTableProvider implements ObjectTableProvider<LoginWrapper> {
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { Utils.getString(this.getClass(), "login"),
+    return new String[] { Utils.getString(this.getClass(), "login"),
       Utils.getString(this.getClass(), "entity") };
-    return colNames;
   }
 
   /**
@@ -31,8 +30,7 @@ public class LoginTableProvider implements ObjectTableProvider<LoginWrapper> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class };
-    return colClasses;
+    return new Class<?>[] { String.class, String.class };
   }
 
   /**
@@ -40,14 +38,12 @@ public class LoginTableProvider implements ObjectTableProvider<LoginWrapper> {
    */
   @Override
   public Object getCellValue(LoginWrapper row, int col) {
-    final LoginWrapper login = row;
     switch (col) {
     case LOGIN_ID:
-      return login.getId();
+      return row.getId();
 
     case ENTITY_ID:
-      return login.getEntityId();
-
+      return row.getEntityId();
     default:
       break;
     }

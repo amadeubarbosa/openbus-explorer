@@ -8,8 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Vector;
@@ -44,11 +42,6 @@ import exception.handling.ExceptionContext;
  * @author Tecgraf
  */
 public class LoginDialog extends JDialog {
-
-  /** Label de endereço do barramento */
-  private JLabel labelHost = null;
-  /** Label de porta do barramento */
-  private JLabel labelPort = null;
   /** Combo box de barramentos pré-configurados */
   private JComboBox comboBus;
   /** Campo de texto para o endereço do barramento */
@@ -128,7 +121,7 @@ public class LoginDialog extends JDialog {
     SelectAllTextListener selectAllTextListener = new SelectAllTextListener();
 
     ConfigurationProperties configProps = new ConfigurationProperties();
-    final Vector<BusAddress> busVector = new Vector<BusAddress>();
+    final Vector<BusAddress> busVector = new Vector<>();
 
     for (int i = 1;; i++) {
       String busPrefix = "bus" + i + ".";
@@ -149,26 +142,23 @@ public class LoginDialog extends JDialog {
       labelBus.setFont(FONT_LABEL);
       configPanel.add(labelBus, new GBC(0, 0).horizontal().insets(6, 6, 3, 6));
 
-      comboBus = new JComboBox(busVector);
-      comboBus.addItemListener(new ItemListener() {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-          BusAddress selectedBus = (BusAddress) comboBus.getSelectedItem();
-          updateAddress(selectedBus);
-          if (selectedBus.getType().equals(AddressType.Unspecified)) {
-            fieldAddress.setEnabled(true);
-            fieldAddress.requestFocus();
-          }
-          else {
-            fieldAddress.setEnabled(false);
-            fieldUser.requestFocus();
-          }
+      comboBus = new JComboBox<>(busVector);
+      comboBus.addItemListener(e -> {
+        BusAddress selectedBus = (BusAddress) comboBus.getSelectedItem();
+        updateAddress(selectedBus);
+        if (selectedBus.getType().equals(AddressType.Unspecified)) {
+          fieldAddress.setEnabled(true);
+          fieldAddress.requestFocus();
+        }
+        else {
+          fieldAddress.setEnabled(false);
+          fieldUser.requestFocus();
         }
       });
       configPanel.add(comboBus, new GBC(0, 1).horizontal().insets(0, 6, 6, 9));
     }
 
-    labelHost = new JLabel(LNG.get("LoginDialog.host.label"));
+    JLabel labelHost = new JLabel(LNG.get("LoginDialog.host.label"));
     labelHost.setFont(FONT_LABEL);
     configPanel.add(labelHost, new GBC(0, 2).west().insets(6, 6, 3, 6));
 

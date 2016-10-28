@@ -20,8 +20,7 @@ public class InterfaceTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { Utils.getString(this.getClass(), "interface") };
-    return colNames;
+    return new String[] { Utils.getString(this.getClass(), "interface") };
   }
 
   /**
@@ -29,8 +28,7 @@ public class InterfaceTableProvider implements
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class };
-    return colClasses;
+    return new Class<?>[] { String.class };
   }
 
   /**
@@ -38,12 +36,9 @@ public class InterfaceTableProvider implements
    */
   @Override
   public Object getCellValue(InterfaceWrapper row, int col) {
-    final InterfaceWrapper interfaceInfo = row;
-
     switch (col) {
       case INTERFACE_NAME:
-        return interfaceInfo.getName();
-
+        return row.getName();
       default:
         break;
     }

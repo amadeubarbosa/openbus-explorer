@@ -247,7 +247,7 @@ public class JMultilineLabel extends JComponent {
     }
 
     float max = 0;
-    float last_y = 0;
+    float last_y;
     for (String line : split(text, '\n')) {
       line = line.isEmpty() ? " " : line;
 
@@ -319,7 +319,7 @@ public class JMultilineLabel extends JComponent {
    * @return texto dividido.
    */
   public static List<String> split(String text, char delimiter) {
-    List<String> splitted = new ArrayList<String>();
+    List<String> splitted = new ArrayList<>();
     int begin = 0, cursor = text.indexOf(delimiter, begin);
     while (cursor > 0) {
       splitted.add(text.substring(begin, cursor));

@@ -128,7 +128,7 @@ public class BusAddress {
    * 
    * @param description descrição do barramento
    * @param addressStr String que representa o endereço do barramento.
-   * @return
+   * @return instância de busaddress
    */
   public static BusAddress toAddress(String description, String addressStr) {
     BusAddress address;
@@ -147,15 +147,15 @@ public class BusAddress {
     catch (Exception e) {
       String msg =
         String.format(Utils.getString(BusAddress.class,
-          "warning.unreadableAddress"), new Object[] { addressStr });
+          "warning.unreadableAddress"), addressStr);
       address = new BusAddress();
     }
     return address;
   }
 
-  public static enum AddressType {
+  public enum AddressType {
     Address,
     Reference,
-    Unspecified;
+    Unspecified,
   }
 }

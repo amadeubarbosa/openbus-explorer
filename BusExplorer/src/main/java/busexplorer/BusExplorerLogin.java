@@ -1,25 +1,18 @@
 package busexplorer;
 
+import admin.BusAdmin;
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
 
-import scs.core.IComponent;
+import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
-import tecgraf.openbus.assistant.Assistant;
-import tecgraf.openbus.assistant.AssistantParams;
-import tecgraf.openbus.assistant.OnFailureCallback;
 import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
-import tecgraf.openbus.core.v2_1.services.access_control.AccessDenied;
 import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
-import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
-import tecgraf.openbus.core.v2_1.services.access_control.UnknownDomain;
-import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
-import admin.BusAdmin;
 import admin.BusAdminImpl;
 import busexplorer.utils.BusAddress;
 
@@ -34,11 +27,13 @@ public class BusExplorerLogin {
   /** Endereço. */
   public final BusAddress address;
   /** Instância de administração do baramento. */
-  private final BusAdmin admin;
+  private final BusAdminImpl admin;
   /** Indica se o login possui permissões administrativas. */
   private boolean adminRights = false;
-  /** Assistente de conexão ao barramento. */
-  private Assistant assistant;
+  /** Contexto de conexões OpenBus */
+  private OpenBusContext context;
+  /** Conexão com o barramento */
+  private Connection conn;
 
   /**
    * Construtor
@@ -47,8 +42,9 @@ public class BusExplorerLogin {
    * @param entity Entidade.
    * @param address endereço do barramento.
    */
-  public BusExplorerLogin(BusAdmin admin, String entity, BusAddress address) {
-    this.admin = admin;
+  public BusExplorerLogin(BusAdmin admin, String entity, BusAddress
+    address) {
+    this.admin = (BusAdminImpl)admin;
     this.entity = entity;
     this.address = address;
   }
@@ -66,24 +62,16 @@ public class BusExplorerLogin {
   }
 
   /**
-   * Obtém o assistente utilizado para o login.
-   *
-   * @return o assistente utilizado para o login.
-   */
-  public Assistant getAssistant() {
-    return assistant;
-  }
-
-  /**
    * Realiza o shutdown do ORB e do assistente, terminando o login.
    */
   public void logout() {
-    if (assistant == null) {
-      return;
-    }
-    org.omg.CORBA.ORB orb = assistant.orb();
-    assistant.shutdown();
-    orb.shutdown(true);
+    try {
+      if (conn != null) {
+        org.omg.CORBA.ORB orb = conn.ORB();
+        conn.logout();
+        orb.shutdown(true);
+      }
+    } catch (Exception ignored) {}
   }
 
   /**
@@ -103,18 +91,17 @@ public class BusExplorerLogin {
   }
 
   /**
-   * Conecta-se a uma instância de administração do barramento.
+   * Obtém as facetas de administração do barramento.
    */
-  private void connectToAdmin() {
-    BusAdminImpl admin = (BusAdminImpl) this.admin;
-    ORB orb = assistant.orb();
+  private void getAdminFacets() {
+    ORB orb = conn.ORB();
     switch (address.getType()) {
       case Address:
-        admin.connect(address.getHost(), address.getPort(), orb);
+        admin.getAdminFacets(address.getHost(), address.getPort(), orb);
         break;
       case Reference:
         Object ref = orb.string_to_object(address.getIOR());
-        admin.connect(ref, orb);
+        admin.getAdminFacets(ref);
         break;
       default:
         throw new IllegalStateException(
@@ -132,123 +119,49 @@ public class BusExplorerLogin {
    */
   public static void doLogin(BusExplorerLogin login, String password,
     String domain) throws Exception {
-    /** Intervalo de tempo para verificar se o login já foi efetuado */
-    final int LOGIN_CHECK_INTERVAL = 250;
-    /** Número máximo de tentativas de login */
-    final int MAX_LOGIN_FAILS = 3;
-
-    OnFailureCallbackWithException callback =
-      new OnFailureCallbackWithException() {
-        volatile int failedAttempts = 0;
-
-        volatile Exception exception = null;
-
-        @Override
-        public void onStartSharedAuthFailure(Assistant arg0, Exception arg1) {
-          // não iremos utilizar este recurso
-        }
-
-        @Override
-        public void onRegisterFailure(Assistant arg0, IComponent arg1,
-          ServiceProperty[] arg2, Exception arg3) {
-          // não iremos utilizar este recurso
-        }
-
-        @Override
-        public void onLoginFailure(Assistant arg0, Exception arg1) {
-          if (++failedAttempts == MAX_LOGIN_FAILS
-            || arg1 instanceof AccessDenied || arg1 instanceof TooManyAttempts
-            || arg1 instanceof UnknownDomain) {
-            exception = arg1;
-          }
-        }
-
-        @Override
-        public void onFindFailure(Assistant arg0, Exception arg1) {
-          // TODO precisamos realizar algum tratamento aqui?
-          exception = arg1;
-        }
-
-        @Override
-        public Exception getException() {
-          return exception;
-        }
-      };
-
-    AssistantParams params;
     ORB orb = ORBInitializer.initORB();
+    login.context = (OpenBusContext) orb.resolve_initial_references
+      ("OpenBusContext");
     switch (login.address.getType()) {
       case Address:
-        params =
-          new AssistantParams(login.address.getHost(), login.address.getPort());
+        login.conn = login.context.connectByAddress(login.address.getHost(),
+          login.address.getPort());
         break;
       case Reference:
         Object ref = orb.string_to_object(login.address.getIOR());
-        params = new AssistantParams(ref);
+        login.conn = login.context.connectByReference(ref);
         break;
       default:
         throw new IllegalStateException(
-          "Informações sobre barramento inválidas");
+          "Informações inválidas sobre o barramento.");
     }
-    params.callback = callback;
-    params.orb = orb;
+    login.context.defaultConnection(login.conn);
 
-    login.assistant =
-      Assistant.createWithPassword(params, login.entity, password.getBytes(),
-        domain);
-
-    OpenBusContext context =
-      (OpenBusContext) login.assistant.orb().resolve_initial_references(
-        "OpenBusContext");
-    while (true) {
+    for (int i = 0; i < 3; i++) {
       try {
-        if (!context.getOfferRegistry()._non_existent()) {
-          login.connectToAdmin();
-          login.checkAdminRights();
-          break;
-        }
+        login.conn.loginByPassword(login.entity, password.getBytes(), domain);
+        login.getAdminFacets();
+        login.checkAdminRights();
+        break;
       }
-      catch (TRANSIENT e) {
-        // retentar
-      }
-      catch (COMM_FAILURE e) {
+      catch (TRANSIENT | COMM_FAILURE e) {
         // retentar
       }
       catch (NO_PERMISSION e) {
-        if (e.minor == NoLoginCode.value) {
-          // retentar
-        }
-        else {
+        if (e.minor != NoLoginCode.value) {
           throw e;
         }
+        // retentar
       }
-
-      if (callback.getException() != null) {
+      catch (Exception e) {
         login.logout();
-        throw callback.getException();
+        throw e;
       }
 
       try {
-        Thread.sleep(LOGIN_CHECK_INTERVAL);
+        Thread.sleep(250);
       }
-      catch (InterruptedException e) {
-      }
+      catch (InterruptedException ignored) {}
     }
   }
-
-  /**
-   * Extensão da callback de notificação de falhas do Assistente OpenBus.
-   * Permite a recuperação de possíveis exceções.
-   */
-  private interface OnFailureCallbackWithException extends OnFailureCallback {
-    /**
-     * Recupera uma possível exceção durante a execução de uma das tarefas do
-     * assistente.
-     *
-     * @return Uma exceção durante a execução de uma tarefa. Nulo, se não houve
-     *         disparo de exceção.
-     */
-    public Exception getException();
-  }
-
 }

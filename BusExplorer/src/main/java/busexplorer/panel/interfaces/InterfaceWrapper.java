@@ -66,7 +66,7 @@ public class InterfaceWrapper {
    * @return a lista de {@link InterfaceWrapper}
    */
   public static List<InterfaceWrapper> convertToInfo(List<String> interfaces) {
-    List<InterfaceWrapper> list = new ArrayList<InterfaceWrapper>();
+    List<InterfaceWrapper> list = new ArrayList<>();
     for (String interfaceName : interfaces) {
       list.add(new InterfaceWrapper(interfaceName));
     }

@@ -23,9 +23,9 @@ public class Utils {
    */
   static public String getProperty(ServiceOfferDesc offer, String prop) {
     ServiceProperty[] properties = offer.properties;
-    for (int i = 0; i < properties.length; i++) {
-      if (properties[i].name.equals(prop)) {
-        return properties[i].value;
+    for (ServiceProperty property : properties) {
+      if (property.name.equals(prop)) {
+        return property.value;
       }
     }
     return null;
@@ -39,11 +39,11 @@ public class Utils {
    * @return a lista de valores na propriedade na oferta.
    */
   static public Vector<String> getProperties(ServiceOfferDesc offer, String prop) {
-    Vector<String> list = new Vector<String>();
+    Vector<String> list = new Vector<>();
     ServiceProperty[] properties = offer.properties;
-    for (int i = 0; i < properties.length; i++) {
-      if (properties[i].name.equals(prop)) {
-        list.add(properties[i].value);
+    for (ServiceProperty property : properties) {
+      if (property.name.equals(prop)) {
+        list.add(property.value);
       }
     }
     return list;

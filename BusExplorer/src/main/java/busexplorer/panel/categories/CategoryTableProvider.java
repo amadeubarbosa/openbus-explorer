@@ -21,9 +21,8 @@ public class CategoryTableProvider implements ObjectTableProvider<CategoryWrappe
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { Utils.getString(this.getClass(), "category"),
+    return new String[] { Utils.getString(this.getClass(), "category"),
       Utils.getString(this.getClass(), "description") };
-    return colNames;
   }
 
   /**
@@ -31,8 +30,7 @@ public class CategoryTableProvider implements ObjectTableProvider<CategoryWrappe
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class };
-    return colClasses;
+    return new Class<?>[] { String.class, String.class };
   }
 
   /**
@@ -40,14 +38,12 @@ public class CategoryTableProvider implements ObjectTableProvider<CategoryWrappe
    */
   @Override
   public Object getCellValue(CategoryWrapper row, int col) {
-    final CategoryWrapper category = row;
-     
     switch (col) {
       case CATEGORY_ID:
-        return category.getId();
+        return row.getId();
 
       case CATEGORY_NAME:
-        return category.getName();
+        return row.getName();
 
       default:
         break;

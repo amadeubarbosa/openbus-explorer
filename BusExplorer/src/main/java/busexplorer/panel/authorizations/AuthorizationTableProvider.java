@@ -22,9 +22,8 @@ public class AuthorizationTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { Utils.getString(this.getClass(), "entity"),
+    return new String[] { Utils.getString(this.getClass(), "entity"),
       Utils.getString(this.getClass(), "interface") };
-    return colNames;
   }
 
   /**
@@ -32,8 +31,7 @@ public class AuthorizationTableProvider implements
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class };
-    return colClasses;
+    return new Class<?>[] { String.class, String.class };
   }
 
   /**
@@ -41,13 +39,12 @@ public class AuthorizationTableProvider implements
    */
   @Override
   public Object getCellValue(AuthorizationWrapper row, int col) {
-    final AuthorizationWrapper authorization = row;
     switch (col) {
       case ENTITY_ID:
-        return authorization.getEntityId();
+        return row.getEntityId();
 
       case INTERFACE:
-        return authorization.getInterface();
+        return row.getInterface();
 
       default:
         break;

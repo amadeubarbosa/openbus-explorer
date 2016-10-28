@@ -119,7 +119,7 @@ public class EntityWrapper {
    */
   public static List<EntityWrapper> convertToInfo(
     List<RegisteredEntityDesc> entities) {
-    List<EntityWrapper> list = new ArrayList<EntityWrapper>();
+    List<EntityWrapper> list = new ArrayList<>();
     for (RegisteredEntityDesc entity : entities) {
       list.add(new EntityWrapper(entity));
     }

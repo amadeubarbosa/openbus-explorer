@@ -2,8 +2,6 @@ package busexplorer.panel.certificates;
 
 import java.awt.GridBagLayout;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JButton;
@@ -114,12 +112,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
 
     certificateButton =
       new JButton(LNG.get("CertificateInputDialog.certificate.search"));
-    certificateButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        chooseCertificateFile();
-      }
-    });
+    certificateButton.addActionListener(e -> chooseCertificateFile());
     certificatePane.add(certificateButton, new GBC(1, 0).east());
 
     panel.add(certificatePane, new GBC(baseGBC).gridy(3).horizontal());

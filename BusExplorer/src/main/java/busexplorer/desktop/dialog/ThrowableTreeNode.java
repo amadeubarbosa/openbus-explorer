@@ -158,8 +158,8 @@ public final class ThrowableTreeNode implements TreeNode {
     String[] tokens = text.split("[\b\n\t\f\r]");
     String newText = "";
     String separator = "";
-    for (int i = 0; i < tokens.length; i++) {
-      String token = tokens[i].trim();
+    for (String token1 : tokens) {
+      String token = token1.trim();
       if (token.length() != 0) {
         newText += separator + token;
         separator = " ";

@@ -149,7 +149,7 @@ public class OfferWrapper {
    * @return a lista de {@link OfferWrapper}
    */
   public static List<OfferWrapper> convertToInfo(List<ServiceOfferDesc> offers) {
-    List<OfferWrapper> list = new ArrayList<OfferWrapper>();
+    List<OfferWrapper> list = new ArrayList<>();
     for (ServiceOfferDesc offer : offers) {
       list.add(new OfferWrapper(offer));
     }

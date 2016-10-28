@@ -39,7 +39,7 @@ public class FrameCancelAction extends AbstractAction {
   public FrameCancelAction(JFrame owner) {
     super(NAME);
     putValue(Action.NAME, LNG.get(NAME));
-    putValue(Action.MNEMONIC_KEY, new Integer(LNG.get(MNEMONIC_KEY).charAt(0)));
+    putValue(Action.MNEMONIC_KEY, (int) LNG.get(MNEMONIC_KEY).charAt(0));
     this.owner = owner;
 
     KeyStroke escapeKeyStroke =
@@ -56,7 +56,7 @@ public class FrameCancelAction extends AbstractAction {
   public FrameCancelAction() {
     super(NAME);
     putValue(Action.NAME, LNG.get(NAME));
-    putValue(Action.MNEMONIC_KEY, new Integer(LNG.get(MNEMONIC_KEY).charAt(0)));
+    putValue(Action.MNEMONIC_KEY, (int) LNG.get(MNEMONIC_KEY).charAt(0));
   }
 
   /**

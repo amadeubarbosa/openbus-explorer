@@ -23,10 +23,9 @@ public class EntityTableProvider implements ObjectTableProvider<EntityWrapper> {
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames = { Utils.getString(this.getClass(), "entity"),
+    return new String[] { Utils.getString(this.getClass(), "entity"),
       Utils.getString(this.getClass(), "category"),
       Utils.getString(this.getClass(), "description") };
-    return colNames;
   }
 
   /**
@@ -34,8 +33,7 @@ public class EntityTableProvider implements ObjectTableProvider<EntityWrapper> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class, String.class };
-    return colClasses;
+    return new Class<?>[] { String.class, String.class, String.class };
   }
 
   /**
@@ -43,17 +41,15 @@ public class EntityTableProvider implements ObjectTableProvider<EntityWrapper> {
    */
   @Override
   public Object getCellValue(EntityWrapper row, int col) {
-    final EntityWrapper entity = row;
     switch (col) {
       case ENTITY_ID:
-        return entity.getId();
+        return row.getId();
 
       case CATEGORY_ID:
-        return entity.getCategory();
+        return row.getCategory();
 
       case ENTITY_NAME:
-        return entity.getName();
-
+        return row.getName();
       default:
         break;
     }

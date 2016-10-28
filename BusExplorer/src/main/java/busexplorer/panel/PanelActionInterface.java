@@ -18,26 +18,26 @@ public interface PanelActionInterface<T> extends Action {
    *         ações de remoção; OTHER para outros tipos de ações que não as 3
    *         acima;
    */
-  public ActionType getActionType();
+  ActionType getActionType();
 
   /**
    * Recupera o componente {@link PanelComponent}
    * 
    * @return o componente associado a ação.
    */
-  public PanelComponent<T> getPanelComponent();
+  PanelComponent<T> getPanelComponent();
 
   /**
    * Recupera o painel associado à ação.
    * 
    * @param panel o componente.
    */
-  public void setPanelComponent(PanelComponent<T> panel);
+  void setPanelComponent(PanelComponent<T> panel);
 
   /**
    * Indica condições de habilitação da ação.
    *
    * @return condições de habilitação da ação. 
    */
-  public boolean abilityConditions();
+  boolean abilityConditions();
 }

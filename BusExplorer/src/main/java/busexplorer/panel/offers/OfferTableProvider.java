@@ -29,13 +29,12 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
    */
   @Override
   public String[] getColumnNames() {
-    String[] colNames =
+    return new String[]
       { Utils.getString(this.getClass(), "entity"),
           Utils.getString(this.getClass(), "name"),
           Utils.getString(this.getClass(), "version"),
           Utils.getString(this.getClass(), "interface"),
           Utils.getString(this.getClass(), "date") };
-    return colNames;
   }
 
   /**
@@ -43,8 +42,8 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class, String.class, Vector.class, Date.class };
-    return colClasses;
+    return new Class<?>[] { String.class, String.class, String.class, Vector
+      .class, Date.class };
   }
 
   /**
@@ -52,27 +51,20 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
    */
   @Override
   public Object getCellValue(OfferWrapper row, int col) {
-    final OfferWrapper offer = row;
     switch (col) {
       case ENTITY_ID:
-        return offer.getEntityId();
-
+        return row.getEntityId();
       case INTERFACE:
-        return offer.getInterfaces();
-
+        return row.getInterfaces();
       case DATE:
-        return offer.getDate();
-      
+        return row.getDate();
       case NAME:
-    	return offer.getName();
-    	
+    	return row.getName();
       case VERSION:
-      	return offer.getVersion();
-
+      	return row.getVersion();
       default:
         break;
     }
     return null;
-
   }
 }

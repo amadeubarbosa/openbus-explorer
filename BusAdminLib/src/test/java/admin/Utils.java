@@ -69,7 +69,7 @@ public class Utils {
    */
   public static ComponentContext buildTestCallerChainComponent(
     final OpenBusContext context) throws Exception {
-    ComponentContext component = buildComponent(context.orb());
+    ComponentContext component = buildComponent(context.ORB());
     component.updateFacet("IComponent", new IComponentServant(component) {
       /**
        * Método vai lançar uma exceção caso não consiga recuperar uma cadeia
@@ -78,7 +78,7 @@ public class Utils {
        */
       @Override
       public Object getFacetByName(String arg0) {
-        if (context.getCallerChain() == null) {
+        if (context.callerChain() == null) {
           throw new IllegalStateException(
             "CallerChain nunca deveria ser nulo dentro de um método de despacho.");
         }
@@ -98,7 +98,7 @@ public class Utils {
    */
   public static ComponentContext buildTestConnectionComponent(
     final OpenBusContext context) throws Exception {
-    ComponentContext component = buildComponent(context.orb());
+    ComponentContext component = buildComponent(context.ORB());
     component.updateFacet("IComponent", new IComponentServant(component) {
       /**
        * Método vai lançar uma exceção caso não consiga recuperar uma conexão. O
@@ -107,7 +107,7 @@ public class Utils {
        */
       @Override
       public Object getFacetByName(String arg0) {
-        Connection connection = context.getCurrentConnection();
+        Connection connection = context.currentConnection();
         if (connection == null) {
           throw new IllegalStateException(
             "CurrentConnection nunca deveria ser nulo dentro de um método de despacho.");

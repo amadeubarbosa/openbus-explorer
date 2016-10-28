@@ -1,7 +1,6 @@
 package busexplorer.panel.interfaces;
 
 import java.awt.event.ActionEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -25,7 +24,7 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin
+   * @param admin instância do busadmin
    */
   public InterfaceDeleteAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin,

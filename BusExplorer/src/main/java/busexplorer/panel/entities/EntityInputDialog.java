@@ -37,7 +37,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   private JTextField entityNameField;
 
   private TreeMap<String, EntityCategoryDesc> categories =
-    new TreeMap<String, EntityCategoryDesc>(String.CASE_INSENSITIVE_ORDER);
+    new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
   private PanelComponent<EntityWrapper> panel;
 
@@ -115,7 +115,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     panel.add(categoryIDLabel, new GBC(baseGBC).gridy(0).none());
 
     categoryIDCombo =
-      new JComboBox(categories.keySet().toArray(new String[categories.size()]));
+      new JComboBox<>(categories.keySet().toArray(new String[categories.size()
+        ]));
     panel.add(categoryIDCombo, new GBC(baseGBC).gridy(1).horizontal());
 
     entityIDLabel =

@@ -33,7 +33,7 @@ public abstract class HandlingException<T extends Enum<?>> {
   /**
    * Recuper o tipo enum da exceção.
    * 
-   * @param exception
+   * @param exception exceção
    * @return o tipo Enum da exceção.
    */
   protected abstract T getTypeFromException(Exception exception);

@@ -98,7 +98,7 @@ public class AuthorizationWrapper {
    */
   public static List<AuthorizationWrapper> convertToInfo(Map<RegisteredEntityDesc,
     List<String>> authorizationsMap) {
-    List<AuthorizationWrapper> list = new ArrayList<AuthorizationWrapper>();
+    List<AuthorizationWrapper> list = new ArrayList<>();
     for (Map.Entry<RegisteredEntityDesc, List<String>> authorizations :
       authorizationsMap.entrySet()) {
       RegisteredEntityDesc entity = authorizations.getKey();

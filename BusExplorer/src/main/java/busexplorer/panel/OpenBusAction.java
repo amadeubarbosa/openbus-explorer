@@ -25,8 +25,8 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
   /**
    * Construtor.
    * 
-   * @param parentWindow
-   * @param admin
+   * @param parentWindow janela
+   * @param admin instância do busadmin
    * @param actionName nome da ação
    */
   public OpenBusAction(Window parentWindow, BusAdmin admin, String actionName) {

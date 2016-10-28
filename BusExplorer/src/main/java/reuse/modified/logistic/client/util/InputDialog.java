@@ -7,7 +7,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -74,11 +73,9 @@ public abstract class InputDialog extends JFrame {
   /**
    * Construtor.
    * 
-   * @param owner janela pai.
+   * @param parentWindow janela pai.
    * @param title título da janela.
-   * @param suffix texto a ser apresentado após o título da janela.
-   * @param tooltip dica no botão aceitar.
-   * @param blockType modo de bloqueio da janela.
+   * @param admin instância do busadmin
    */
   public InputDialog(Window parentWindow, String title, BusAdmin admin) {
     super(title);
@@ -220,13 +217,10 @@ public abstract class InputDialog extends JFrame {
   private JPanel buildButtons() {
     accept = new JButton(LNG.get("InputDialog.confirm.button"));
     accept.setToolTipText(LNG.get("InputDialog.confirm.tooltip"));
-    accept.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent ev) {
-        if (accept()) {
-          cancelled = false;
-          dispose();
-        }
+    accept.addActionListener(ev -> {
+      if (accept()) {
+        cancelled = false;
+        dispose();
       }
     });
 
@@ -241,7 +235,7 @@ public abstract class InputDialog extends JFrame {
     });
     cancel.setToolTipText(LNG.get("InputDialog.cancel.tooltip"));
 
-    return UI.buildButtonPanel(new JButton[] { accept, cancel });
+    return UI.buildButtonPanel(accept, cancel);
   }
 
   /**

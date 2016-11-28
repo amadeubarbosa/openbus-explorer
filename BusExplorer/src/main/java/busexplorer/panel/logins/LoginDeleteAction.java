@@ -1,6 +1,7 @@
 package busexplorer.panel.logins;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -68,8 +69,10 @@ public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
 
       @Override
       protected void performTask() throws Exception {
-        LoginWrapper login = getTablePanelComponent().getSelectedElement();
-        admin.invalidateLogin(login.getInfo());
+        List<LoginWrapper> logins = getTablePanelComponent().getSelectedElements();
+        for (LoginWrapper login : logins) {
+          admin.invalidateLogin(login.getInfo());
+        }
       }
 
       @Override

@@ -68,7 +68,10 @@ public class AdminDeleteAction extends OpenBusAction<AdminWrapper> {
       @Override
       protected void performTask() throws Exception {
         List<String> revoke = new ArrayList<String>();
-        revoke.add(getTablePanelComponent().getSelectedElement().getAdmin());
+        List<AdminWrapper> admins = getTablePanelComponent().getSelectedElements();
+        for (AdminWrapper admin : admins) {
+          revoke.add(admin.getAdmin());
+        }
         admin.revokeAdminFrom(revoke);
       }
 
@@ -76,6 +79,7 @@ public class AdminDeleteAction extends OpenBusAction<AdminWrapper> {
       protected void afterTaskUI() {
         if (getStatus()) {
           getTablePanelComponent().removeSelectedElements();
+          getTablePanelComponent().refresh(null);
         }
       }
     };

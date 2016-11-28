@@ -1,6 +1,7 @@
 package busexplorer.panel.offers;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -57,9 +58,11 @@ public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
 
       @Override
       protected void performTask() throws Exception {
-        OfferWrapper offer = getTablePanelComponent().getSelectedElement();
-        ServiceOffer ref = offer.getDescriptor().ref;
-        ref.remove();
+        List<OfferWrapper> offers = getTablePanelComponent().getSelectedElements();
+        for (OfferWrapper offer : offers) {
+          ServiceOffer ref = offer.getDescriptor().ref;
+          ref.remove();
+        }
       }
 
       @Override

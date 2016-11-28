@@ -434,7 +434,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
       default:
         // length > 1
         if (removeAction != null) {
-          removeAction.setEnabled(false);
+          removeAction.setEnabled(removeAction.abilityConditions());
         }
         if (editAction != null) {
           editAction.setEnabled(false);

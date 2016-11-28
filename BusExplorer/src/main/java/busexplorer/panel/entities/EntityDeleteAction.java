@@ -1,6 +1,7 @@
 package busexplorer.panel.entities;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -68,9 +69,11 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
 
         @Override
         protected void performTask() throws Exception {
-          EntityWrapper entity = getTablePanelComponent().getSelectedElement();
-          RegisteredEntity ref = entity.getDescriptor().ref;
-          ref.remove();
+          List<EntityWrapper> entities = getTablePanelComponent().getSelectedElements();
+          for (EntityWrapper entity : entities) {
+            RegisteredEntity ref = entity.getDescriptor().ref;
+            ref.remove();
+          }
         }
 
         @Override

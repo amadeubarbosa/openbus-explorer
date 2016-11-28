@@ -45,7 +45,8 @@ public class CategoryDeleteAction extends OpenBusAction<CategoryWrapper> {
    */
   @Override
   public boolean abilityConditions() {
-    return Application.login() != null && Application.login().hasAdminRights();
+    return Application.login() != null && Application.login().hasAdminRights()
+            && (getTablePanelComponent().getSelectedElements().size() == 1);
   }
 
   /**

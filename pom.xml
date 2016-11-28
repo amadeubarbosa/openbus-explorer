@@ -14,7 +14,7 @@
     <java.version>1.6</java.version>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
     <diaglib.version>1.0.0</diaglib.version>
-    <javautils.version>1.14.0</javautils.version>
+    <javautils.version>1.20.0</javautils.version>
     <junit.version>4.6</junit.version>
     <miglayout.version>4.2</miglayout.version>
     <openbus-sdk.version>2.0.2-SNAPSHOT</openbus-sdk.version>
@@ -118,9 +118,15 @@
       </dependency>
 
       <dependency>
-        <groupId>tecgraf.javautils</groupId>
+        <groupId>br.puc-rio.tecgraf.javautils</groupId>
         <artifactId>javautils-core</artifactId>
         <version>${javautils.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>br.puc-rio.tecgraf.javautils</groupId>
+        <artifactId>javautils-gui</artifactId>
+        <version>1.0.6</version>
       </dependency>
 
       <dependency>

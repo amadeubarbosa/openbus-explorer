@@ -59,7 +59,7 @@ import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 

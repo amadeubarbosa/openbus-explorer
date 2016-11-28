@@ -7,7 +7,7 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 
 import java.awt.*;

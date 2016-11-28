@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.desktop.dialog.LoginDialog;
 import busexplorer.exception.BusExplorerExceptionHandler;

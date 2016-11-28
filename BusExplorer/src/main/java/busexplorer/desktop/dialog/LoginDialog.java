@@ -8,7 +8,7 @@ import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;
 import exception.handling.ExceptionContext;
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 
 import javax.swing.Box;

@@ -20,7 +20,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import reuse.modified.logistic.client.action.FrameCancelAction;
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import admin.BusAdmin;
 
 /**
@@ -74,11 +74,9 @@ public abstract class InputDialog extends JFrame {
   /**
    * Construtor.
    * 
-   * @param owner janela pai.
+   * @param parentWindow janela pai.
    * @param title título da janela.
-   * @param suffix texto a ser apresentado após o título da janela.
-   * @param tooltip dica no botão aceitar.
-   * @param blockType modo de bloqueio da janela.
+   * @param admin referência para biblioteca do BusAdmin.
    */
   public InputDialog(Window parentWindow, String title, BusAdmin admin) {
     super(title);

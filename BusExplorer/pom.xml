@@ -48,8 +48,13 @@
     </dependency>
 
     <dependency>
-      <groupId>tecgraf.javautils</groupId>
+      <groupId>br.puc-rio.tecgraf.javautils</groupId>
       <artifactId>javautils-core</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>br.puc-rio.tecgraf.javautils</groupId>
+      <artifactId>javautils-gui</artifactId>
     </dependency>
 
     <dependency>

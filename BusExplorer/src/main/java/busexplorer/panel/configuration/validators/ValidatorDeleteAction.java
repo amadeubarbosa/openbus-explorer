@@ -6,7 +6,7 @@ import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
 import exception.handling.ExceptionContext;
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

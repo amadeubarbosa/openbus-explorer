@@ -29,7 +29,7 @@
     </dependency>
 
     <dependency>
-      <groupId>tecgraf.javautils</groupId>
+      <groupId>br.puc-rio.tecgraf.javautils</groupId>
       <artifactId>javautils-core</artifactId>
     </dependency>
 

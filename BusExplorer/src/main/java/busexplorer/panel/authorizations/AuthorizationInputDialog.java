@@ -12,7 +12,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;

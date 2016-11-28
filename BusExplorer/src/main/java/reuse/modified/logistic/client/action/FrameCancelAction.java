@@ -12,7 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 
 /**
  * Ação de cancelar uma janela

@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;

@@ -4,7 +4,7 @@ import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

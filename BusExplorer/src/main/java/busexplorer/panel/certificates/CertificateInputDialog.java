@@ -14,7 +14,7 @@ import javax.swing.JTextField;
 
 import org.apache.commons.io.FileUtils;
 
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 import admin.BusAdmin;
 import busexplorer.Application;

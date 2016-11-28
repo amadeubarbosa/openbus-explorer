@@ -3,7 +3,7 @@ package admin;
 import org.omg.CORBA.ORB;
 import scs.core.IComponent;
 import scs.core.IComponentHelper;
-import tecgraf.javautils.LNG;
+import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.core.v2_0.BusObjectKey;
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.UnauthorizedOperation;
@@ -64,7 +64,7 @@ public class BusAdminImpl implements BusAdmin {
   private OfferRegistry offerRegistry;
   /** Registro de logins do barramento. */
   private LoginRegistry loginRegistry;
-  /** Configuração dinâmica do barramento. */
+  /** Configuraï¿½ï¿½o dinï¿½mica do barramento. */
   private Configuration configuration = null;
 
   /**
@@ -74,8 +74,8 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   /**
-   * Conecta a instância do objeto a um barramento. Como efeito colateral,
-   * atualiza as referências aos registros do barramento.
+   * Conecta a instï¿½ncia do objeto a um barramento. Como efeito colateral,
+   * atualiza as referï¿½ncias aos registros do barramento.
    *
    * @param host Host do barramento
    * @param port Porta do barramento
@@ -222,7 +222,7 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   /*
-   * AUTORIZAÇÕES
+   * AUTORIZAï¿½ï¿½ES
    */
 
   /**
@@ -308,7 +308,7 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   /*
-   * CONFIGURAÇÕES DINÂMICAS
+   * CONFIGURAï¿½ï¿½ES DINï¿½MICAS
    */
 
   /**
@@ -391,11 +391,11 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   /*
-   * Métodos auxiliares
+   * Mï¿½todos auxiliares
    */
 
   /**
-   * Obtém as facetas dos registros do barramento.
+   * Obtï¿½m as facetas dos registros do barramento.
    */
   private void obtainFacetReferences() {
     String corbaLocStr =
@@ -446,9 +446,9 @@ public class BusAdminImpl implements BusAdmin {
     }
     this.loginRegistry = LoginRegistryHelper.narrow(loginRegistryObj);
 
-    //TODO: Esta versão do BusExplorer ainda tolera que o barramento não possua a interface
-    //TODO: para reconfiguração dinâmica. Para mudar isso basta alterar o teste abaixo e
-    //TODO: lançar a exceção: throw new IncompatibleBus(LNG.get("IncompatibleBus.error.configuration"));
+    //TODO: Esta versï¿½o do BusExplorer ainda tolera que o barramento nï¿½o possua a interface
+    //TODO: para reconfiguraï¿½ï¿½o dinï¿½mica. Para mudar isso basta alterar o teste abaixo e
+    //TODO: lanï¿½ar a exceï¿½ï¿½o: throw new IncompatibleBus(LNG.get("IncompatibleBus.error.configuration"));
     org.omg.CORBA.Object configurationObj =
       iComponent.getFacet(ConfigurationHelper.id());
     if (configurationObj != null) {

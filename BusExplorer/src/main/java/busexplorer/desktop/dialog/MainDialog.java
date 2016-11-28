@@ -1,8 +1,8 @@
 package busexplorer.desktop.dialog;
 
-import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.ApplicationIcons;
+import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.RefreshDelegate;
 import busexplorer.panel.RefreshablePanel;
 import busexplorer.panel.TablePanelActionInterface;
@@ -57,11 +57,11 @@ import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
 import net.miginfocom.swing.MigLayout;
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;

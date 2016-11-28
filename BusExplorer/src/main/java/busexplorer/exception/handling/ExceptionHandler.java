@@ -1,4 +1,4 @@
-package exception.handling;
+package busexplorer.exception.handling;
 
 /**
  * Classe utilitária para reusar os códigos de tratamento de exceções.

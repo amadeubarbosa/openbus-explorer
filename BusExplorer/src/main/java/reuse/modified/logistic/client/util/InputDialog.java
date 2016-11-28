@@ -1,8 +1,8 @@
 package reuse.modified.logistic.client.util;
 
-import admin.BusAdmin;
 import reuse.modified.logistic.client.action.FrameCancelAction;
 import tecgraf.javautils.core.lng.LNG;
+import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;

@@ -1,4 +1,4 @@
-package exception.handling;
+package busexplorer.exception.handling;
 
 /**
  * Esta classe atua como um wrapper sobre as exceções específicas que desejamos

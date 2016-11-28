@@ -1,4 +1,4 @@
-package admin;
+package tecgraf.openbus.admin;
 
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;

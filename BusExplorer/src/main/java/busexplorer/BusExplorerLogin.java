@@ -1,11 +1,11 @@
 package busexplorer;
 
-import admin.BusAdmin;
-import admin.BusAdminImpl;
 import scs.core.IComponent;
 import tecgraf.diagnostic.addons.openbus.v20.OpenBusMonitor;
 import tecgraf.diagnostic.commom.StatusCode;
 import tecgraf.openbus.OpenBusContext;
+import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminImpl;
 import tecgraf.openbus.assistant.Assistant;
 import tecgraf.openbus.assistant.AssistantParams;
 import tecgraf.openbus.assistant.OnFailureCallback;

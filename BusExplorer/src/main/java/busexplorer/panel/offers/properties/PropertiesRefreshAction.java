@@ -1,12 +1,12 @@
 package busexplorer.panel.offers.properties;
 
 import busexplorer.Application;
+import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOffer;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
 

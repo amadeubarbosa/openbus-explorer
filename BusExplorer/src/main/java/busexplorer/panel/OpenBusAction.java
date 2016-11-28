@@ -1,7 +1,7 @@
 package busexplorer.panel;
 
-import admin.BusAdmin;
 import busexplorer.utils.Utils;
+import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.AbstractAction;
 import java.awt.Window;

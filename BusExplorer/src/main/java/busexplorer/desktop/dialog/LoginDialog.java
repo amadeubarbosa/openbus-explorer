@@ -1,15 +1,15 @@
 package busexplorer.desktop.dialog;
 
-import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.ApplicationIcons;
 import busexplorer.BusExplorerLogin;
+import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;
-import exception.handling.ExceptionContext;
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
+import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.Box;
 import javax.swing.JButton;

@@ -1,4 +1,4 @@
-package admin;
+package tecgraf.openbus.admin;
 
 import junit.framework.Assert;
 import org.junit.BeforeClass;

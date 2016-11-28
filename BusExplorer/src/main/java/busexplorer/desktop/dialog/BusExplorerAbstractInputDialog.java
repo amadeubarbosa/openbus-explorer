@@ -1,7 +1,7 @@
 package busexplorer.desktop.dialog;
 
-import admin.BusAdmin;
 import reuse.modified.logistic.client.util.InputDialog;
+import tecgraf.openbus.admin.BusAdmin;
 
 import java.awt.Window;
 

@@ -1,12 +1,12 @@
 package busexplorer;
 
-import admin.BusAdmin;
-import admin.BusAdminImpl;
 import busexplorer.desktop.dialog.LoginDialog;
 import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.BusExplorerExceptionHandler;
 import busexplorer.utils.Utils;
 import tecgraf.javautils.core.lng.LNG;
+import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminImpl;
 
 import javax.swing.JOptionPane;
 import java.awt.EventQueue;

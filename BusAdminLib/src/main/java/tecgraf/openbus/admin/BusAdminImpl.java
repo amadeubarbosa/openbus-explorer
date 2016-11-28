@@ -1,4 +1,4 @@
-package admin;
+package tecgraf.openbus.admin;
 
 import org.omg.CORBA.ORB;
 import scs.core.IComponent;
@@ -42,7 +42,7 @@ import java.util.Map;
 
 /**
  * A classe implementa os comandos especificados na interface
- * {@link admin.BusAdmin}.
+ * {@link BusAdmin}.
  *
  * @author Tecgraf
  */

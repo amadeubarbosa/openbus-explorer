@@ -1,13 +1,13 @@
 package busexplorer.panel.entities;
 
-import admin.BusAdmin;
 import busexplorer.Application;
+import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import exception.handling.ExceptionContext;
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.StandardDialogs;
+import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 
 import javax.swing.JFrame;

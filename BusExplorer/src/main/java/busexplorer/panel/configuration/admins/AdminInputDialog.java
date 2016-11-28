@@ -1,14 +1,14 @@
 package busexplorer.panel.configuration.admins;
 
-import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
+import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

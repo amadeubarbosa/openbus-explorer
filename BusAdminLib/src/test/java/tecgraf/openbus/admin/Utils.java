@@ -1,4 +1,4 @@
-package admin;
+package tecgraf.openbus.admin;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.ORBPackage.InvalidName;

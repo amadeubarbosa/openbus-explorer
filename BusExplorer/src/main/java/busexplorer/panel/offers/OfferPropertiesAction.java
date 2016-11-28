@@ -1,11 +1,11 @@
 package busexplorer.panel.offers;
 
-import admin.BusAdmin;
 import busexplorer.ApplicationIcons;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.offers.properties.PropertiesDialog;
 import busexplorer.utils.Utils;
+import tecgraf.openbus.admin.BusAdmin;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;

@@ -1,9 +1,9 @@
 package busexplorer.exception;
 
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.exception.handling.ExceptionHandler;
+import busexplorer.exception.handling.ExceptionType;
 import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
-import exception.handling.ExceptionHandler;
-import exception.handling.ExceptionType;
 import org.omg.CORBA.NO_PERMISSION;
 import tecgraf.openbus.core.v2_0.services.ServiceFailure;
 import tecgraf.openbus.core.v2_0.services.access_control.InvalidRemoteCode;

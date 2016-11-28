@@ -1,11 +1,36 @@
 package busexplorer.panel;
 
+import busexplorer.ApplicationIcons;
+import busexplorer.utils.DateTimeRenderer;
+import busexplorer.utils.StringVectorRenderer;
+import busexplorer.utils.Utils;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.GUIUtils;
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+import tecgraf.javautils.gui.table.SortableTable;
+
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SortOrder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -17,36 +42,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
-
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SortOrder;
-import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.text.Document;
-
-import busexplorer.ApplicationIcons;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.GUIUtils;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.javautils.gui.table.ObjectTableProvider;
-import tecgraf.javautils.gui.table.SortableTable;
-import busexplorer.utils.DateTimeRenderer;
-import busexplorer.utils.StringVectorRenderer;
-import busexplorer.utils.Utils;
 
 /**
  * Componente que define um painel com uma {@link SortableTable} e modulariza o

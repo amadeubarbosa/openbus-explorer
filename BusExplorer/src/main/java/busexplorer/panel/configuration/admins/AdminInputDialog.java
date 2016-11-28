@@ -10,10 +10,13 @@ import exception.handling.ExceptionContext;
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 
-import java.awt.*;
-import java.util.List;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.GridBagLayout;
+import java.awt.Window;
 import java.util.ArrayList;
-import javax.swing.*;
+import java.util.List;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de

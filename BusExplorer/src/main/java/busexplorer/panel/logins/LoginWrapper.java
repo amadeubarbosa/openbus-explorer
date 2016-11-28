@@ -1,9 +1,9 @@
 package busexplorer.panel.logins;
 
+import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import tecgraf.openbus.core.v2_0.services.access_control.LoginInfo;
 
 /**
  * Classe que detém as informações locais de login para apresentação em tabelas.

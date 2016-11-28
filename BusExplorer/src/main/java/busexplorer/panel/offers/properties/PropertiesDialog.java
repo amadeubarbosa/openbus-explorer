@@ -1,5 +1,15 @@
 package busexplorer.panel.offers.properties;
 
+import busexplorer.panel.TablePanelActionInterface;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.panel.offers.OfferWrapper;
+import busexplorer.utils.Utils;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -7,17 +17,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JPanel;
-
-import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
-import busexplorer.panel.TablePanelActionInterface;
-import busexplorer.panel.TablePanelComponent;
-import busexplorer.panel.offers.OfferWrapper;
-import busexplorer.utils.Utils;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de Entidades

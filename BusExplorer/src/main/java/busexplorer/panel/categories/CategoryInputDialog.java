@@ -1,15 +1,5 @@
 package busexplorer.panel.categories;
 
-import java.awt.GridBagLayout;
-import java.awt.Window;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
@@ -17,6 +7,15 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
 import exception.handling.ExceptionContext;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.GridBagLayout;
+import java.awt.Window;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de

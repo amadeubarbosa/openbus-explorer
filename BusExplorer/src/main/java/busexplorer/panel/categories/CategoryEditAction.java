@@ -1,14 +1,13 @@
 package busexplorer.panel.categories;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.JFrame;
-
-import tecgraf.javautils.core.lng.LNG;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import tecgraf.javautils.core.lng.LNG;
+
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
 
 /**
  * Classe de ação para criar uma categoria. Esta dispara um diálogo.

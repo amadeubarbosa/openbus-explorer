@@ -1,6 +1,5 @@
 package busexplorer;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import java.net.URL;
 

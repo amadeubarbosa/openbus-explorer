@@ -1,15 +1,13 @@
 package busexplorer.utils;
 
-import java.awt.Dialog.ModalityType;
-
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.javautils.gui.StandardDialogs;
-
 import busexplorer.desktop.dialog.ExceptionDialog;
 import busexplorer.exception.BusExplorerHandlingException;
 import exception.handling.ExceptionContext;
 import exception.handling.ExceptionHandler;
 import exception.handling.ExceptionType;
+import tecgraf.javautils.gui.StandardDialogs;
+
+import java.awt.Dialog.ModalityType;
 
 
 /**

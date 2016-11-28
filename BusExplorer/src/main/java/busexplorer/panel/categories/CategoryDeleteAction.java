@@ -1,18 +1,17 @@
 package busexplorer.panel.categories;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
 import exception.handling.ExceptionContext;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.EntityCategory;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.awt.event.ActionEvent;
 
 /**
  * Classe de ação para a remoção de uma categoria.

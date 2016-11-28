@@ -6,7 +6,7 @@ import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import tecgraf.javautils.core.lng.LNG;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
 
 /**

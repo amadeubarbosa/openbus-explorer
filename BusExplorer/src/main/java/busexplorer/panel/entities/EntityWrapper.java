@@ -1,9 +1,9 @@
 package busexplorer.panel.entities;
 
+import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import tecgraf.openbus.core.v2_0.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 /**
  * Classe que detém as informações locais da entidade para apresentação em

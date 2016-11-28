@@ -2,9 +2,9 @@ package busexplorer.desktop.dialog;
 
 import admin.BusAdmin;
 import busexplorer.Application;
+import busexplorer.ApplicationIcons;
 import busexplorer.panel.RefreshDelegate;
 import busexplorer.panel.RefreshablePanel;
-import busexplorer.ApplicationIcons;
 import busexplorer.panel.TablePanelActionInterface;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.authorizations.AuthorizationAddAction;

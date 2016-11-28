@@ -1,8 +1,8 @@
 package busexplorer.panel.offers.properties;
 
+import busexplorer.utils.Utils;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
-import busexplorer.utils.Utils;
 
 /**
  * Provedor de dados para a tabela de Ofertas

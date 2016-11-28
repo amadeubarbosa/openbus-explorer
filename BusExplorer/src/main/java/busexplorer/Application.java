@@ -1,21 +1,20 @@
 package busexplorer;
 
+import admin.BusAdmin;
+import admin.BusAdminImpl;
+import busexplorer.desktop.dialog.LoginDialog;
+import busexplorer.desktop.dialog.MainDialog;
+import busexplorer.exception.BusExplorerExceptionHandler;
+import busexplorer.utils.Utils;
+import tecgraf.javautils.core.lng.LNG;
+
+import javax.swing.JOptionPane;
 import java.awt.EventQueue;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
-
-import javax.swing.JOptionPane;
-
-import tecgraf.javautils.core.lng.LNG;
-import busexplorer.desktop.dialog.MainDialog;
-import busexplorer.desktop.dialog.LoginDialog;
-import busexplorer.exception.BusExplorerExceptionHandler;
-import busexplorer.utils.Utils;
-import admin.BusAdmin;
-import admin.BusAdminImpl;
 
 /**
  * Classe principal da aplicação.

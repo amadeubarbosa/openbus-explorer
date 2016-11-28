@@ -1,13 +1,13 @@
 package busexplorer.panel.offers;
 
+import busexplorer.utils.Utils;
+import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
-
-import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
-import busexplorer.utils.Utils;
 
 /**
  * Classe que detém as informações locais da oferta para apresentação em

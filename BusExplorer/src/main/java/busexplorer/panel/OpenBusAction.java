@@ -1,11 +1,10 @@
 package busexplorer.panel;
 
-import java.awt.Window;
-
-import javax.swing.AbstractAction;
-
 import admin.BusAdmin;
 import busexplorer.utils.Utils;
+
+import javax.swing.AbstractAction;
+import java.awt.Window;
 
 /**
  * Ação que contém os principais componentes a serem utilizados na janela

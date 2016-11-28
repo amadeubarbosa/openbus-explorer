@@ -1,18 +1,17 @@
 package busexplorer.panel.interfaces;
 
-import java.awt.event.ActionEvent;
-import java.util.List;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import tecgraf.javautils.core.lng.LNG;
 import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
 import exception.handling.ExceptionContext;
+import tecgraf.javautils.core.lng.LNG;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 /**
  * Classe de ação para a remoção de uma interface.

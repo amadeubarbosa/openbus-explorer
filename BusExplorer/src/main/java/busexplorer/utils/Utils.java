@@ -1,10 +1,10 @@
 package busexplorer.utils;
 
-import java.util.Vector;
-
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+
+import java.util.Vector;
 
 /**
  * Classe utilitária com alguns métodos auxiliares.

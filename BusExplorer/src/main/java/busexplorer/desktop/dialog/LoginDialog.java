@@ -2,8 +2,8 @@ package busexplorer.desktop.dialog;
 
 import admin.BusAdmin;
 import busexplorer.Application;
-import busexplorer.BusExplorerLogin;
 import busexplorer.ApplicationIcons;
+import busexplorer.BusExplorerLogin;
 import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;

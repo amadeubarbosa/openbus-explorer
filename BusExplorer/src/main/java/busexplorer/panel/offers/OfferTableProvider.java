@@ -1,10 +1,10 @@
 package busexplorer.panel.offers;
 
+import busexplorer.utils.Utils;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+
 import java.util.Date;
 import java.util.Vector;
-
-import tecgraf.javautils.gui.table.ObjectTableProvider;
-import busexplorer.utils.Utils;
 
 /**
  * Provedor de dados para a tabela de Ofertas

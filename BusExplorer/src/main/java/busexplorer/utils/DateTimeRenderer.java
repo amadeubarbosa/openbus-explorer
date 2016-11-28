@@ -1,9 +1,8 @@
 package busexplorer.utils;
 
+import javax.swing.table.DefaultTableCellRenderer;
 import java.text.DateFormat;
 import java.util.Date;
-
-import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * Renderizador de célula que é uma data ({@link Date}) com hora.

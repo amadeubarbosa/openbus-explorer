@@ -1,14 +1,14 @@
 package busexplorer.panel.offers;
 
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-
 import admin.BusAdmin;
 import busexplorer.ApplicationIcons;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.offers.properties.PropertiesDialog;
 import busexplorer.utils.Utils;
+
+import java.awt.Window;
+import java.awt.event.ActionEvent;
 
 /**
  * Ação que apresenta propriedades da oferta.

@@ -1,5 +1,18 @@
 package admin;
 
+import org.omg.CORBA.ORB;
+import org.omg.CORBA.ORBPackage.InvalidName;
+import org.omg.CORBA.Object;
+import org.omg.PortableServer.POA;
+import org.omg.PortableServer.POAHelper;
+import org.omg.PortableServer.POAManagerPackage.AdapterInactive;
+import scs.core.ComponentContext;
+import scs.core.ComponentId;
+import scs.core.IComponentServant;
+import scs.core.exception.SCSException;
+import tecgraf.openbus.Connection;
+import tecgraf.openbus.OpenBusContext;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,20 +20,6 @@ import java.util.Properties;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.Object;
-import org.omg.CORBA.ORBPackage.InvalidName;
-import org.omg.PortableServer.POA;
-import org.omg.PortableServer.POAHelper;
-import org.omg.PortableServer.POAManagerPackage.AdapterInactive;
-
-import scs.core.ComponentContext;
-import scs.core.ComponentId;
-import scs.core.IComponentServant;
-import scs.core.exception.SCSException;
-import tecgraf.openbus.Connection;
-import tecgraf.openbus.OpenBusContext;
 
 /**
  * Classe utilitária para os testes.

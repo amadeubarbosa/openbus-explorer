@@ -1,23 +1,21 @@
 package admin;
 
-import java.util.List;
-import java.util.Properties;
-import java.util.logging.Level;
-
 import junit.framework.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
-
 import scs.core.ComponentContext;
 import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceOfferDesc;
 import tecgraf.openbus.core.v2_0.services.offer_registry.ServiceProperty;
+
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
 
 public class BusAdminTest {
 

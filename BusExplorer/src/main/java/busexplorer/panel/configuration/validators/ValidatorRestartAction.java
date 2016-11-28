@@ -9,7 +9,8 @@ import busexplorer.utils.BusExplorerTask;
 import exception.handling.ExceptionContext;
 import tecgraf.javautils.core.lng.LNG;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
 
 /**

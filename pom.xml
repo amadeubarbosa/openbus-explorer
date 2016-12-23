@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>br.puc-rio.tecgraf.openbus</groupId>
-  <artifactId>busexplorer-parent</artifactId>
+  <artifactId>busexplorer-2.0-parent</artifactId>
   <packaging>pom</packaging>
   <version>1.1-SNAPSHOT</version>
 
-  <name>OpenBus - BusAdminLib e BusExplorer</name>
+  <name>OpenBus 2.0 - BusAdminLib e BusExplorer</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
   
   <properties>

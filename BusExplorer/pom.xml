@@ -3,15 +3,15 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>br.puc-rio.tecgraf.busexplorer</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>br.puc-rio.tecgraf.openbus</groupId>
+    <artifactId>busexplorer-2.1-parent</artifactId>
     <version>1.2.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>busexplorer</artifactId>
+  <artifactId>busexplorer-2.1</artifactId>
   <packaging>jar</packaging>
 
-  <name>OpenBus - BusExplorer</name>
+  <name>BusExplorer for OpenBus 2.1</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
 
   <build>
@@ -53,8 +53,8 @@
     </dependency>
 
     <dependency>
-      <groupId>br.puc-rio.tecgraf.busexplorer</groupId>
-      <artifactId>busadminlib</artifactId>
+      <groupId>br.puc-rio.tecgraf.openbus</groupId>
+      <artifactId>busadminlib-2.1</artifactId>
       <version>${project.version}</version>
     </dependency>
 

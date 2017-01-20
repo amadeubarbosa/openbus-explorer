@@ -454,7 +454,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     JPanel settingsPanel = new JPanel(new MigLayout("wrap 2","[grow][]", "[][][][]"));
     settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.busloglevel")), "grow");
-    final JSpinner busLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 6, 1));
+    final JSpinner busLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
     busLogLevelSpinner.setToolTipText(LNG.get("MainDialog.conf.busloglevel.tooltip"));
     settingsPanel.add(busLogLevelSpinner,"grow");
 
@@ -467,6 +467,16 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     final JSpinner maxChannelsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1024, 1));
     maxChannelsSpinner.setToolTipText(LNG.get("MainDialog.conf.maxchannels.tooltip"));
     settingsPanel.add(maxChannelsSpinner,"grow");
+
+    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.maxcachesize")), "grow");
+    final JSpinner maxCacheSizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    maxCacheSizeSpinner.setToolTipText(LNG.get("MainDialog.conf.maxcachesize.tooltip"));
+    settingsPanel.add(maxCacheSizeSpinner, "grow");
+
+    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.timeout")), "grow");
+    final JSpinner timeoutSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    timeoutSpinner.setToolTipText(LNG.get("MainDialog.conf.timeout.tooltip"));
+    settingsPanel.add(timeoutSpinner, "grow");
 
     final JButton cancelButton = new JButton(LNG.get("MainDialog.conf.cancel"));
     cancelButton.setToolTipText(LNG.get("MainDialog.conf.cancel.tooltip"));
@@ -486,12 +496,16 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
         ExceptionContext.BusCore) {
 
         int maxChannels = 0;
+        int maxCacheSize = 0;
+        int timeout = 0;
         int busLogLevel = 0;
         int oilLogLevel = 0;
 
         @Override
         protected void performTask() throws Exception {
           maxChannels = admin.getMaxChannels();
+          maxCacheSize = admin.getMaxCacheSize();
+          timeout = admin.getCallsTimeout();
           busLogLevel = admin.getLogLevel();
           oilLogLevel = admin.getOilLogLevel();
         }
@@ -502,6 +516,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
             busLogLevelSpinner.setValue(busLogLevel);
             oilLogLevelSpinner.setValue(oilLogLevel);
             maxChannelsSpinner.setValue(maxChannels);
+            maxCacheSizeSpinner.setValue(maxCacheSize);
+            timeoutSpinner.setValue(timeout);
             applyButton.setEnabled(false);
             cancelButton.setEnabled(false);
           }
@@ -514,6 +530,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
         @Override
         protected void performTask() throws Exception {
           admin.setMaxChannels(((SpinnerNumberModel) maxChannelsSpinner.getModel()).getNumber().intValue());
+          admin.setMaxCacheSize(((SpinnerNumberModel) maxCacheSizeSpinner.getModel()).getNumber().intValue());
+          admin.setCallsTimeout(((SpinnerNumberModel) timeoutSpinner.getModel()).getNumber().intValue());
           admin.setLogLevel(((SpinnerNumberModel) busLogLevelSpinner.getModel()).getNumber().shortValue());
           admin.setOilLogLevel(((SpinnerNumberModel) oilLogLevelSpinner.getModel()).getNumber().shortValue());
         }
@@ -548,6 +566,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       }
     };
     maxChannelsSpinner.addChangeListener(activateButtons);
+    maxCacheSizeSpinner.addChangeListener(activateButtons);
+    timeoutSpinner.addChangeListener(activateButtons);
     busLogLevelSpinner.addChangeListener(activateButtons);
     oilLogLevelSpinner.addChangeListener(activateButtons);
 

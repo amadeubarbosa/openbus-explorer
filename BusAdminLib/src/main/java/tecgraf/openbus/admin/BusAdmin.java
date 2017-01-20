@@ -41,12 +41,8 @@ public interface BusAdmin {
    * @return Lista com as descrições das categorias das entidades.
    * 
    * @throws ServiceFailure
-   * @throws TRANSIENT
-   * @throws COMM_FAILURE
-   * @throws NO_PERMISSION
    */
-  List<EntityCategoryDesc> getCategories() throws ServiceFailure,
-    TRANSIENT, COMM_FAILURE, NO_PERMISSION;
+  List<EntityCategoryDesc> getCategories() throws ServiceFailure;
 
   /**
    * Cadastra uma nova categoria no barramento.
@@ -57,7 +53,7 @@ public interface BusAdmin {
    * @param categoryName Nome da nova categoria.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    * @throws EntityCategoryAlreadyExists
    */
   EntityCategory createCategory(String categoryID, String categoryName)
@@ -69,7 +65,7 @@ public interface BusAdmin {
    * @param categoryID ID da categoria a ser removida.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    * @throws EntityCategoryInUse
    */
   void removeCategory(String categoryID) throws ServiceFailure,
@@ -86,12 +82,8 @@ public interface BusAdmin {
    * @return Lista com as descrições de todas as entidades.
    * 
    * @throws ServiceFailure
-   * @throws TRANSIENT
-   * @throws COMM_FAILURE
-   * @throws NO_PERMISSION
    */
-  List<RegisteredEntityDesc> getEntities() throws ServiceFailure,
-    TRANSIENT, COMM_FAILURE, NO_PERMISSION;
+  List<RegisteredEntityDesc> getEntities() throws ServiceFailure;
 
   /**
    * Cadastra uma nova entidade no barramento.
@@ -103,7 +95,7 @@ public interface BusAdmin {
    * @param categoryID ID de alguma categoria já cadastrada.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    * @throws EntityAlreadyRegistered
    */
   RegisteredEntity createEntity(String entityID, String entityName,
@@ -119,7 +111,7 @@ public interface BusAdmin {
    * @param entityID ID da entidade a ser removida.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   boolean removeEntity(String entityID) throws ServiceFailure,
     UnauthorizedOperation;
@@ -135,7 +127,7 @@ public interface BusAdmin {
    * @return Lista com as IDs de todas as entidades com certificado registrado.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   List<String> getEntitiesWithCertificate() throws ServiceFailure,
     UnauthorizedOperation;
@@ -147,7 +139,7 @@ public interface BusAdmin {
    * @param certificate Certificado.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    * @throws InvalidCertificate
    */
   void registerCertificate(String entityID, byte[] certificate)
@@ -159,7 +151,7 @@ public interface BusAdmin {
    * @param entityID ID da entidade a ser removida.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void removeCertificate(String entityID) throws ServiceFailure,
     UnauthorizedOperation;
@@ -175,12 +167,8 @@ public interface BusAdmin {
    * @return Lista com as IDs de todas as interfaces registradas.
    * 
    * @throws ServiceFailure
-   * @throws TRANSIENT
-   * @throws COMM_FAILURE
-   * @throws NO_PERMISSION
    */
-  List<String> getInterfaces() throws ServiceFailure, TRANSIENT,
-    COMM_FAILURE, NO_PERMISSION;
+  List<String> getInterfaces() throws ServiceFailure;
 
   /**
    * Cadastra uma nova interface no barramento.
@@ -191,7 +179,7 @@ public interface BusAdmin {
    * @param interfaceName Nome da nova interface.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    * @throws InvalidInterface
    */
   boolean createInterface(String interfaceName) throws ServiceFailure,
@@ -203,7 +191,7 @@ public interface BusAdmin {
    * @param interfaceName Nome da interface a ser removida.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    * @throws InterfaceInUse
    */
   void removeInterface(String interfaceName) throws ServiceFailure,
@@ -236,7 +224,7 @@ public interface BusAdmin {
    * @param interfaceName Interface a ser autorizada.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    * @throws InvalidInterface
    */
   boolean setAuthorization(String entityID, String interfaceName)
@@ -249,7 +237,7 @@ public interface BusAdmin {
    * @param interfaceName Interface a ser autorizada.
    *
    * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    * @throws InvalidInterface
    * @throws AuthorizationInUse
    */
@@ -267,21 +255,17 @@ public interface BusAdmin {
    * 
    * @return Lista de descrições de ofertas de serviços.
    *
-   * @throws ServiceFailure
-   * @throws TRANSIENT
-   * @throws COMM_FAILURE
-   * @throws NO_PERMISSION
+   * @throws ServiceFailure caso ocorra um erro ao buscar as ofertas.
    */
-  List<ServiceOfferDesc> getOffers() throws ServiceFailure, TRANSIENT,
-    COMM_FAILURE, NO_PERMISSION;
+  List<ServiceOfferDesc> getOffers() throws ServiceFailure;
 
   /**
    * Remove uma oferta de serviço.
    * 
    * @param desc Descrição da oferta.
    *
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso aconteça uma falha imprevista.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void removeOffer(ServiceOfferDesc desc) throws ServiceFailure,
     UnauthorizedOperation;
@@ -296,8 +280,8 @@ public interface BusAdmin {
    * 
    * @return Lista contendo informações de login das entidades.
    *
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso aconteça uma falha imprevista.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   List<LoginInfo> getLogins() throws ServiceFailure,
     UnauthorizedOperation;
@@ -307,8 +291,8 @@ public interface BusAdmin {
    * 
    * @param loginInfo Informação de login.
    *
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso ocorra um erro durante a invalidação.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void invalidateLogin(LoginInfo loginInfo) throws ServiceFailure,
     UnauthorizedOperation;
@@ -328,8 +312,8 @@ public interface BusAdmin {
   /**
    * Recarrega o arquivo de configurações no barramento.
    *
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso ocorra um erro durante a recarga das configurações originais.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void reloadConfigsFile() throws ServiceFailure, UnauthorizedOperation;
 
@@ -337,8 +321,8 @@ public interface BusAdmin {
    * Confere direitos de administração a uma lista de entidades.
    *
    * @param users Lista de entidades que receberá direitos de administração.
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso ocorra um erro durante a autorização.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void grantAdminTo(List<String> users) throws ServiceFailure, UnauthorizedOperation;
 
@@ -346,8 +330,8 @@ public interface BusAdmin {
    * Revoga direitos de administração de uma lista de entidades.
    *
    * @param users Lista de entidades que perderá direitos de administração.
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso ocorra um erro durante a atualização.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void revokeAdminFrom(List<String> users) throws ServiceFailure, UnauthorizedOperation;
 
@@ -355,7 +339,7 @@ public interface BusAdmin {
    * Retorna uma lista das entidades administradoras atuais.
    *
    * @return Lista contendo os nomes das entidades administradoras.
-   * @throws ServiceFailure
+   * @throws ServiceFailure caso ocorra um erro durante a consulta.
    */
   List<String> getAdmins() throws ServiceFailure;
 
@@ -363,8 +347,8 @@ public interface BusAdmin {
    * Adiciona um validador no barramento.
    *
    * @param validator Identificação do validador.
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso ocorra um erro ao carregar o validador.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void addValidator(String validator) throws ServiceFailure, UnauthorizedOperation;
 
@@ -372,8 +356,8 @@ public interface BusAdmin {
    * Remove um validador do barramento.
    *
    * @param validator Identificação do validador.
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso ocorra um erro ao descarregar o validador.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void delValidator(String validator) throws ServiceFailure, UnauthorizedOperation;
 
@@ -381,7 +365,7 @@ public interface BusAdmin {
    * Retorna uma lista dos validadores atualmente disponíveis no barramento.
    *
    * @return Lista contendo as identificações dos validadores.
-   * @throws ServiceFailure
+   * @throws ServiceFailure caso ocorra um erro durante a consulta.
    */
   List<String> getValidators() throws ServiceFailure;
 
@@ -390,8 +374,8 @@ public interface BusAdmin {
    *
    * @param maxchannels Número máximo de canais a serem utilizados.
    *
-   * @throws ServiceFailure
-   * @throws UnauthorizedOperation
+   * @throws ServiceFailure caso o valor seja menor que 1 ou ocorra um erro durante a atualização.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
    */
   void setMaxChannels(int maxchannels) throws ServiceFailure, UnauthorizedOperation;
 
@@ -403,6 +387,45 @@ public interface BusAdmin {
    * @throws ServiceFailure
    */
   int getMaxChannels() throws ServiceFailure;
+
+  /**
+   * Configura o tamanho máximo das caches LRU de profiles IOR, sessões de entrada e de saída.
+   *
+   * @param maxcachesize Tamanho máximo das caches LRU.
+   *
+   * @throws ServiceFailure caso o valor seja negativo ou ocorra um erro durante a atualização.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
+   */
+  void setMaxCacheSize(int maxcachesize) throws ServiceFailure, UnauthorizedOperation;
+
+  /**
+   * Retorna o tamanho máximo das caches LRU de profiles IOR, sessões de entrada e de saída.
+   *
+   * @return Tamanho máximo das caches LRU configurado atualmente.
+   *
+   * @throws ServiceFailure
+   */
+  int getMaxCacheSize() throws ServiceFailure;
+
+  /**
+   * Configura o tempo de espera por respostas nas chamadas do barramento.
+   *
+   * @param timeout Tempo de espera em segundos.
+   *
+   * @throws ServiceFailure caso o valor seja negativo ou ocorra um erro durante a atualização.
+   * @throws UnauthorizedOperation caso o usuário não seja um administrador.
+   */
+  void setCallsTimeout(int timeout) throws ServiceFailure, UnauthorizedOperation;
+
+  /**
+   * Retorna o tamanho de espera por respostas nas chamadas do barramento.
+   *
+   * @return Tamanho de espera atual. Tempo 0 significa que o barramento espera
+   *         indefinidamente por respostas.
+   *
+   * @throws ServiceFailure
+   */
+  int getCallsTimeout() throws ServiceFailure;
 
   /**
    * Configura a propriedade loglevel do barramento.

@@ -371,6 +371,26 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   @Override
+  public void setMaxCacheSize(int maxcachesize) throws ServiceFailure, UnauthorizedOperation {
+    configuration.setMaxCacheSize(maxcachesize);
+  }
+
+  @Override
+  public int getMaxCacheSize() throws ServiceFailure {
+    return configuration.getMaxCacheSize();
+  }
+
+  @Override
+  public void setCallsTimeout(int timeout) throws ServiceFailure, UnauthorizedOperation {
+    configuration.setCallsTimeout(timeout);
+  }
+
+  @Override
+  public int getCallsTimeout() throws ServiceFailure {
+    return configuration.getCallsTimeout();
+  }
+
+  @Override
   public void setLogLevel(short loglevel) throws ServiceFailure, UnauthorizedOperation {
     configuration.setLogLevel(loglevel);
   }

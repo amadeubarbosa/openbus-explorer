@@ -4,7 +4,7 @@
   <parent>
     <groupId>br.puc-rio.tecgraf.openbus</groupId>
     <artifactId>busexplorer-2.1-parent</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.2.0</version>
   </parent>
 
   <artifactId>busadminlib-2.1</artifactId>

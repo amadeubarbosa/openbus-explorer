@@ -1,20 +1,21 @@
 package busexplorer;
 
-import admin.BusAdmin;
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
 
+import busexplorer.utils.BusAddress;
+
 import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.core.ORBInitializer;
+import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminImpl;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
-import admin.BusAdminImpl;
-import busexplorer.utils.BusAddress;
 
 /**
  * Trata, analisa e armazena dados de login no barramento.

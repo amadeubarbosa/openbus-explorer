@@ -1,5 +1,16 @@
 package reuse.modified.logistic.client.util;
 
+import reuse.modified.logistic.client.action.FrameCancelAction;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.openbus.admin.BusAdmin;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JRootPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -9,18 +20,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JRootPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
-
-import reuse.modified.logistic.client.action.FrameCancelAction;
-import tecgraf.javautils.LNG;
-import admin.BusAdmin;
 
 /**
  * Interface para entrada de dados.
@@ -75,7 +74,7 @@ public abstract class InputDialog extends JFrame {
    * 
    * @param parentWindow janela pai.
    * @param title título da janela.
-   * @param admin instância do busadmin
+   * @param admin referência para biblioteca do BusAdmin.
    */
   public InputDialog(Window parentWindow, String title, BusAdmin admin) {
     super(title);

@@ -1,9 +1,8 @@
 package busexplorer.desktop.dialog;
 
+import javax.swing.tree.TreeNode;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
-
-import javax.swing.tree.TreeNode;
 
 /** Classe que implementa um nó da árvore de exceções */
 public final class ThrowableTreeNode implements TreeNode {

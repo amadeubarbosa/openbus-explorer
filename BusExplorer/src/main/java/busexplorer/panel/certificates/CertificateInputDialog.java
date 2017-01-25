@@ -1,26 +1,26 @@
 package busexplorer.panel.certificates;
 
-import java.awt.GridBagLayout;
-import java.awt.Window;
-import java.io.File;
+import busexplorer.Application;
+import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.Utils;
+import org.apache.commons.io.FileUtils;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import org.apache.commons.io.FileUtils;
-
-import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.GBC;
-import admin.BusAdmin;
-import busexplorer.Application;
-import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.panel.PanelComponent;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
+import java.awt.GridBagLayout;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de
@@ -35,7 +35,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
   private JTextField certificateField;
   private JButton certificateButton;
 
-  private PanelComponent<CertificateWrapper> panel;
+  private TablePanelComponent<CertificateWrapper> panel;
 
   /**
    * Construtor.
@@ -45,7 +45,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public CertificateInputDialog(Window parentWindow,
-    PanelComponent<CertificateWrapper> panel, BusAdmin admin) {
+                                TablePanelComponent<CertificateWrapper> panel, BusAdmin admin) {
     super(parentWindow, LNG.get(CertificateInputDialog.class.getSimpleName() +
       ".title"), admin);
     this.panel = panel;

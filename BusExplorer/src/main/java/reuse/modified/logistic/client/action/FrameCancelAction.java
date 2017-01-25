@@ -3,16 +3,15 @@
  */
 package reuse.modified.logistic.client.action;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
+import tecgraf.javautils.core.lng.LNG;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
-
-import tecgraf.javautils.LNG;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * Ação de cancelar uma janela

@@ -1,33 +1,12 @@
 package busexplorer.desktop.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
-
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JSeparator;
-import javax.swing.JTabbedPane;
-
-import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import admin.BusAdmin;
 import busexplorer.Application;
-import busexplorer.panel.PanelActionInterface;
-import busexplorer.panel.PanelComponent;
+import busexplorer.ApplicationIcons;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.RefreshDelegate;
+import busexplorer.panel.RefreshablePanel;
+import busexplorer.panel.TablePanelActionInterface;
+import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.authorizations.AuthorizationAddAction;
 import busexplorer.panel.authorizations.AuthorizationDeleteAction;
 import busexplorer.panel.authorizations.AuthorizationRefreshAction;
@@ -45,6 +24,17 @@ import busexplorer.panel.certificates.CertificateEditAction;
 import busexplorer.panel.certificates.CertificateRefreshAction;
 import busexplorer.panel.certificates.CertificateTableProvider;
 import busexplorer.panel.certificates.CertificateWrapper;
+import busexplorer.panel.configuration.admins.AdminAddAction;
+import busexplorer.panel.configuration.admins.AdminDeleteAction;
+import busexplorer.panel.configuration.admins.AdminEditAction;
+import busexplorer.panel.configuration.admins.AdminRefreshAction;
+import busexplorer.panel.configuration.admins.AdminTableProvider;
+import busexplorer.panel.configuration.admins.AdminWrapper;
+import busexplorer.panel.configuration.validators.ValidatorDeleteAction;
+import busexplorer.panel.configuration.validators.ValidatorRefreshAction;
+import busexplorer.panel.configuration.validators.ValidatorRestartAction;
+import busexplorer.panel.configuration.validators.ValidatorTableProvider;
+import busexplorer.panel.configuration.validators.ValidatorWrapper;
 import busexplorer.panel.entities.EntityAddAction;
 import busexplorer.panel.entities.EntityDeleteAction;
 import busexplorer.panel.entities.EntityEditAction;
@@ -68,7 +58,42 @@ import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
+import net.miginfocom.swing.MigLayout;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.openbus.admin.BusAdmin;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
 
 /**
  * Diálogo principal da aplicação.
@@ -84,6 +109,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * Painel de recursos de gerência do barramento.
    */
   private JTabbedPane featuresPane;
+  /**
+   * Botão de desconexão.
+   */
+  private JButton disconnect;
   /**
    * Propriedades da aplicação.
    */
@@ -137,6 +166,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
         bus = address.toString();
       }
       setDialogTitle(Application.login().entity + "@" + bus);
+      disconnect.setEnabled(true);
       updateAdminFeatures(Application.login().hasAdminRights());
     }
   }
@@ -156,7 +186,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       }
     });
 
-    buildMenuBar();
+    buildTopPanel();
     buildFeaturesComponent();
     pack();
 
@@ -166,22 +196,23 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   /**
    * Constrói a barra de menu da janela.
    */
-  private void buildMenuBar() {
-    JMenuBar menuBar = new JMenuBar();
+  private void buildTopPanel() {
+    JPanel panel = new JPanel(new GridBagLayout());
 
-    JMenu menuConnection = new JMenu(LNG.get("MainDialog.menuBar.connection"));
-    menuBar.add(menuConnection);
-
-    JMenuItem itemDisconnect =
-      new JMenuItem(LNG.get("MainDialog.menuBar.connection.disconnect"));
-    itemDisconnect.addActionListener(e -> {
-      BusExplorerTask<Object> task =
-        new BusExplorerTask<Object>(Application.exceptionHandler(),
-          ExceptionContext.Service) {
+    disconnect = new JButton(LNG.get("MainDialog.disconnect"));
+    disconnect.setEnabled(false);
+    disconnect.setIcon(ApplicationIcons.ICON_LOGOUT_16);
+    disconnect.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        BusExplorerTask<Object> task =
+          new BusExplorerTask<Object>(Application.exceptionHandler(),
+            ExceptionContext.Service) {
           @Override
           protected void performTask() throws Exception {
             Application.login().logout();
             setDialogTitle(LNG.get("MainDialog.title.disconnected"));
+            disconnect.setEnabled(false);
           }
 
           @Override
@@ -201,28 +232,12 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
           "logout.waiting.title"), Utils.getString(MainDialog.class,
           "logout.waiting.msg"));
       }
-    });
-    menuConnection.add(itemDisconnect);
+    }});
 
-    menuConnection.add(new JSeparator());
+    panel.add(disconnect, new GBC(0,0).insets(5));
+    panel.add(new JLabel(), new GBC(1,0).horizontal());
 
-    JMenuItem itemQuit =
-      new JMenuItem(LNG.get("MainDialog.menuBar.connection.quit"));
-    itemQuit.addActionListener(e -> {
-      int option =
-        JOptionPane.showConfirmDialog(MainDialog.this, Utils.getString(
-          MainDialog.class, "quit.confirm.msg"), Utils.getString(
-          MainDialog.class, "quit.confirm.title"), JOptionPane.YES_NO_OPTION,
-          JOptionPane.QUESTION_MESSAGE);
-
-      if (option == JOptionPane.YES_OPTION) {
-        dispose();
-        System.exit(0);
-      }
-    });
-    menuConnection.add(itemQuit);
-
-    add(menuBar, BorderLayout.NORTH);
+    add(panel, BorderLayout.SOUTH);
   }
 
   /**
@@ -237,17 +252,18 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     // método updateAdminFeatures().
     String[] featureNames =
       { "category", "entity", "certificate", "interface", "authorization",
-          "offer", "login" };
+          "offer", "login", "conf" };
     for (String featureName : featureNames) {
       featuresPane.addTab(LNG.get("MainDialog." + featureName + ".title"),
         null, null, LNG.get("MainDialog." + featureName + ".toolTip"));
     }
     initFeaturePanels();
 
-    featuresPane.addChangeListener(event -> {
-      PanelComponent<?> component1 =
-        (PanelComponent<?>) featuresPane.getSelectedComponent();
-      component1.refresh(null);
+    featuresPane.addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent event) {
+        ((RefreshDelegate) featuresPane.getSelectedComponent()).refresh(null);
+      }
     });
 
     add(featuresPane, BorderLayout.CENTER);
@@ -260,14 +276,15 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ObjectTableModel<CategoryWrapper> model =
       new ObjectTableModel<>(new LinkedList<>(), new CategoryTableProvider());
 
-    List<PanelActionInterface<CategoryWrapper>> actionsVector = new Vector<>(3);
+    List<TablePanelActionInterface<CategoryWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<CategoryWrapper>>(3);
     actionsVector.add(new CategoryRefreshAction(this, admin));
     actionsVector.add(new CategoryAddAction(this, admin));
     actionsVector.add(new CategoryEditAction(this, admin));
     actionsVector.add(new CategoryDeleteAction(this, admin));
 
-    PanelComponent<CategoryWrapper> panelCategory = new PanelComponent<>
-      (model, actionsVector);
+    TablePanelComponent<CategoryWrapper> panelCategory =
+      new TablePanelComponent<CategoryWrapper>(model, actionsVector, true);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.category.title"));
     featuresPane.setComponentAt(index, panelCategory);
@@ -280,14 +297,15 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ObjectTableModel<EntityWrapper> model = new ObjectTableModel<>(new
       ArrayList<>(), new EntityTableProvider());
 
-    List<PanelActionInterface<EntityWrapper>> actionsVector = new Vector<>(3);
+    List<TablePanelActionInterface<EntityWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<EntityWrapper>>(3);
     actionsVector.add(new EntityRefreshAction(this, admin));
     actionsVector.add(new EntityAddAction(this, admin));
     actionsVector.add(new EntityEditAction(this, admin));
     actionsVector.add(new EntityDeleteAction(this, admin));
 
-    PanelComponent<EntityWrapper> panelEntity = new PanelComponent<>(model,
-      actionsVector);
+    TablePanelComponent<EntityWrapper> panelEntity =
+      new TablePanelComponent<EntityWrapper>(model, actionsVector, true);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.entity.title"));
     featuresPane.setComponentAt(index, panelEntity);
@@ -300,15 +318,15 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ObjectTableModel<CertificateWrapper> model = new ObjectTableModel<> (new
       LinkedList<>(), new CertificateTableProvider());
 
-    List<PanelActionInterface<CertificateWrapper>> actionsVector = new
-      Vector<>(3);
+    List<TablePanelActionInterface<CertificateWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<CertificateWrapper>>(3);
     actionsVector.add(new CertificateRefreshAction(this, admin));
     actionsVector.add(new CertificateAddAction(this, admin));
     actionsVector.add(new CertificateEditAction(this, admin));
     actionsVector.add(new CertificateDeleteAction(this, admin));
 
-    PanelComponent<CertificateWrapper> panelCertificate = new
-      PanelComponent<>(model, actionsVector);
+    TablePanelComponent<CertificateWrapper> panelCertificate =
+      new TablePanelComponent<CertificateWrapper>(model, actionsVector, true);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.certificate.title"));
@@ -322,14 +340,14 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ObjectTableModel<InterfaceWrapper> model = new ObjectTableModel<>(new
       LinkedList<>(), new InterfaceTableProvider());
 
-    List<PanelActionInterface<InterfaceWrapper>> actionsVector = new Vector<>
-      (3);
+    List<TablePanelActionInterface<InterfaceWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<InterfaceWrapper>>(3);
     actionsVector.add(new InterfaceRefreshAction(this, admin));
     actionsVector.add(new InterfaceAddAction(this, admin));
     actionsVector.add(new InterfaceDeleteAction(this, admin));
 
-    PanelComponent<InterfaceWrapper> panelInterface = new PanelComponent<>
-      (model, actionsVector);
+    TablePanelComponent<InterfaceWrapper> panelInterface =
+      new TablePanelComponent<InterfaceWrapper>(model, actionsVector, true);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.interface.title"));
     featuresPane.setComponentAt(index, panelInterface);
@@ -342,14 +360,14 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ObjectTableModel<AuthorizationWrapper> model = new ObjectTableModel<>(new
       LinkedList<>(), new AuthorizationTableProvider());
 
-    List<PanelActionInterface<AuthorizationWrapper>> actionsVector = new
-      Vector<>(3);
+    List<TablePanelActionInterface<AuthorizationWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<AuthorizationWrapper>>(3);
     actionsVector.add(new AuthorizationRefreshAction(this, admin));
     actionsVector.add(new AuthorizationAddAction(this, admin));
     actionsVector.add(new AuthorizationDeleteAction(this, admin));
 
-    PanelComponent<AuthorizationWrapper> panelAuthorization = new
-      PanelComponent<>(model, actionsVector);
+    TablePanelComponent<AuthorizationWrapper> panelAuthorization =
+      new TablePanelComponent<AuthorizationWrapper>(model, actionsVector, true);
 
     int index =
       featuresPane.indexOfTab(LNG.get("MainDialog.authorization.title"));
@@ -363,15 +381,16 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ObjectTableModel<OfferWrapper> model = new ObjectTableModel<>(new
       LinkedList<>(), new OfferTableProvider());
 
-    List<PanelActionInterface<OfferWrapper>> actionsVector = new Vector<>(2);
+    List<TablePanelActionInterface<OfferWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<OfferWrapper>>(2);
     actionsVector.add(new OfferRefreshAction(this, admin));
     actionsVector.add(new OfferDeleteAction(this, admin));
     final OfferPropertiesAction propertiesAction =
       new OfferPropertiesAction(this, admin);
     actionsVector.add(propertiesAction);
 
-    PanelComponent<OfferWrapper> panelOffer = new PanelComponent<>(model,
-      actionsVector);
+    TablePanelComponent<OfferWrapper> panelOffer =
+      new TablePanelComponent<OfferWrapper>(model, actionsVector, true);
     /*
      * Inclui listener de duplo clique para disparar ação de visualizar
      * propriedades da oferta, dado que não temos ação de edição neste painel.
@@ -396,15 +415,219 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ObjectTableModel<LoginWrapper> model = new ObjectTableModel<>(new
       LinkedList<>(), new LoginTableProvider());
 
-    List<PanelActionInterface<LoginWrapper>> actionsVector = new Vector<>(2);
+    List<TablePanelActionInterface<LoginWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<LoginWrapper>>(2);
     actionsVector.add(new LoginRefreshAction(this, admin));
     actionsVector.add(new LoginDeleteAction(this, admin));
 
-    PanelComponent<LoginWrapper> panelLogin = new PanelComponent<>(model,
-      actionsVector);
+    TablePanelComponent<LoginWrapper> panelLogin =
+      new TablePanelComponent<LoginWrapper>(model, actionsVector, true);
 
     int index = featuresPane.indexOfTab(LNG.get("MainDialog.login.title"));
     featuresPane.setComponentAt(index, panelLogin);
+  }
+
+  /**
+   * Inicializa o painel de CRUD de administradores.
+   */
+  private void initPanelConfiguration() {
+    List<TablePanelActionInterface<AdminWrapper>> adminActionsVector =
+      new Vector<TablePanelActionInterface<AdminWrapper>>(3);
+    adminActionsVector.add(new AdminRefreshAction(this, admin));
+    adminActionsVector.add(new AdminAddAction(this, admin));
+    adminActionsVector.add(new AdminEditAction(this, admin));
+    adminActionsVector.add(new AdminDeleteAction(this, admin));
+
+    final TablePanelComponent<AdminWrapper> adminsPanel =
+      new TablePanelComponent<AdminWrapper>(new ObjectTableModel<AdminWrapper>(new LinkedList<AdminWrapper>(),
+              new AdminTableProvider()), adminActionsVector, false);
+
+    List<TablePanelActionInterface<ValidatorWrapper>> validatorActionsVector =
+            new Vector<TablePanelActionInterface<ValidatorWrapper>>(3);
+    validatorActionsVector.add(new ValidatorRefreshAction(this, admin));
+    validatorActionsVector.add(new ValidatorRestartAction(this, admin));
+    validatorActionsVector.add(new ValidatorDeleteAction(this, admin));
+
+    final TablePanelComponent<ValidatorWrapper> validatorsPanel =
+            new TablePanelComponent<ValidatorWrapper>(new ObjectTableModel<ValidatorWrapper>(new LinkedList<ValidatorWrapper>(),
+                    new ValidatorTableProvider()), validatorActionsVector, false);
+
+    JPanel settingsPanel = new JPanel(new MigLayout("wrap 2","[grow][]", "[][][][]"));
+    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.busloglevel")), "grow");
+    final JSpinner busLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
+    busLogLevelSpinner.setToolTipText(LNG.get("MainDialog.conf.busloglevel.tooltip"));
+    settingsPanel.add(busLogLevelSpinner,"grow");
+
+    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.oilloglevel")),"grow");
+    final JSpinner oilLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 6, 1));
+    oilLogLevelSpinner.setToolTipText(LNG.get("MainDialog.conf.oilloglevel.tooltip"));
+    settingsPanel.add(oilLogLevelSpinner,"grow");
+
+    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.maxchannels")),"grow");
+    final JSpinner maxChannelsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1024, 1));
+    maxChannelsSpinner.setToolTipText(LNG.get("MainDialog.conf.maxchannels.tooltip"));
+    settingsPanel.add(maxChannelsSpinner,"grow");
+
+    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.maxcachesize")), "grow");
+    final JSpinner maxCacheSizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    maxCacheSizeSpinner.setToolTipText(LNG.get("MainDialog.conf.maxcachesize.tooltip"));
+    settingsPanel.add(maxCacheSizeSpinner, "grow");
+
+    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.timeout")), "grow");
+    final JSpinner timeoutSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    timeoutSpinner.setToolTipText(LNG.get("MainDialog.conf.timeout.tooltip"));
+    settingsPanel.add(timeoutSpinner, "grow");
+
+    final JButton cancelButton = new JButton(LNG.get("MainDialog.conf.cancel"));
+    cancelButton.setToolTipText(LNG.get("MainDialog.conf.cancel.tooltip"));
+    cancelButton.setIcon(ApplicationIcons.ICON_CANCEL_16);
+    cancelButton.setEnabled(false);
+
+    final JButton applyButton = new JButton(LNG.get("MainDialog.conf.apply"));
+    applyButton.setIcon(ApplicationIcons.ICON_VALIDATE_16);
+    applyButton.setEnabled(false);
+    applyButton.setToolTipText(LNG.get("MainDialog.conf.apply.tooltip"));
+
+    settingsPanel.add(cancelButton,"gapleft push");
+    settingsPanel.add(applyButton,"gapleft push");
+
+    final BusExplorerTask<Object> getBasicConfFromBusTask =
+      new BusExplorerTask<Object>(Application.exceptionHandler(),
+        ExceptionContext.BusCore) {
+
+        int maxChannels = 0;
+        int maxCacheSize = 0;
+        int timeout = 0;
+        int busLogLevel = 0;
+        int oilLogLevel = 0;
+
+        @Override
+        protected void performTask() throws Exception {
+          maxChannels = admin.getMaxChannels();
+          maxCacheSize = admin.getMaxCacheSize();
+          timeout = admin.getCallsTimeout();
+          busLogLevel = admin.getLogLevel();
+          oilLogLevel = admin.getOilLogLevel();
+        }
+
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            busLogLevelSpinner.setValue(busLogLevel);
+            oilLogLevelSpinner.setValue(oilLogLevel);
+            maxChannelsSpinner.setValue(maxChannels);
+            maxCacheSizeSpinner.setValue(maxCacheSize);
+            timeoutSpinner.setValue(timeout);
+            applyButton.setEnabled(false);
+            cancelButton.setEnabled(false);
+          }
+        }
+      };
+    final BusExplorerTask<Object> sendBasicConfToBusTask =
+      new BusExplorerTask<Object>(Application.exceptionHandler(),
+        ExceptionContext.BusCore) {
+
+        @Override
+        protected void performTask() throws Exception {
+          admin.setMaxChannels(((SpinnerNumberModel) maxChannelsSpinner.getModel()).getNumber().intValue());
+          admin.setMaxCacheSize(((SpinnerNumberModel) maxCacheSizeSpinner.getModel()).getNumber().intValue());
+          admin.setCallsTimeout(((SpinnerNumberModel) timeoutSpinner.getModel()).getNumber().intValue());
+          admin.setLogLevel(((SpinnerNumberModel) busLogLevelSpinner.getModel()).getNumber().shortValue());
+          admin.setOilLogLevel(((SpinnerNumberModel) oilLogLevelSpinner.getModel()).getNumber().shortValue());
+        }
+
+        @Override
+        protected void afterTaskUI() {
+          applyButton.setEnabled(false);
+          cancelButton.setEnabled(false);
+        }
+      };
+    applyButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent actionEvent) {
+        sendBasicConfToBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.apply.waiting.title"),
+          LNG.get("MainDialog.conf.apply.waiting.msg"));
+      }
+    });
+    cancelButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent actionEvent) {
+        getBasicConfFromBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.apply.waiting.title"),
+          LNG.get("MainDialog.conf.apply.waiting.msg"));
+      }
+    });
+    ChangeListener activateButtons = new ChangeListener() {
+      @Override
+      public void stateChanged(ChangeEvent changeEvent) {
+        if (Application.login().hasAdminRights()) {
+          applyButton.setEnabled(true);
+        }
+        cancelButton.setEnabled(true);
+      }
+    };
+    maxChannelsSpinner.addChangeListener(activateButtons);
+    maxCacheSizeSpinner.addChangeListener(activateButtons);
+    timeoutSpinner.addChangeListener(activateButtons);
+    busLogLevelSpinner.addChangeListener(activateButtons);
+    oilLogLevelSpinner.addChangeListener(activateButtons);
+
+    JPanel restoreDefaultsPanel = new JPanel(new MigLayout("align center"));
+    final JButton restoreDefaultsButton = new JButton(LNG.get("MainDialog.conf.restoredefaults.label"));
+    restoreDefaultsPanel.add(restoreDefaultsButton);
+
+    final RefreshablePanel customPanel = new RefreshablePanel() {
+      @Override
+      public void refresh(ActionEvent event) {
+      if (Application.login().hasAdminRights()) {
+        restoreDefaultsButton.setEnabled(true);
+      } else {
+        restoreDefaultsButton.setEnabled(false);
+      }
+      adminsPanel.refresh(event);
+      validatorsPanel.refresh(event);
+      getBasicConfFromBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.waiting.title"),
+        LNG.get("MainDialog.conf.waiting.msg"));
+      }
+    };
+
+    restoreDefaultsButton.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent actionEvent) {
+        BusExplorerTask<Object> task =
+          new BusExplorerTask<Object>(Application.exceptionHandler(),
+            ExceptionContext.BusCore) {
+
+            @Override
+            protected void performTask() throws Exception {
+              admin.reloadConfigsFile();
+            }
+
+            @Override
+            protected void afterTaskUI() {
+              if (getStatus()) {
+                customPanel.refresh(null);
+              }
+            }
+          };
+
+        task.execute(MainDialog.this, LNG.get("MainDialog.conf.waiting.title"),
+          LNG.get("MainDialog.conf.waiting.msg"));
+      }
+    });
+
+    Border loweredBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
+    settingsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder, LNG.get("MainDialog.conf.settings.label")));
+    adminsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder, LNG.get("MainDialog.conf.admins.label")));
+    validatorsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder, LNG.get("MainDialog.conf.validators.label")));
+
+    customPanel.setLayout(new MigLayout("wrap 2, fill, insets 10","[]10[]","[][grow][]"));
+    customPanel.add(settingsPanel, "growx");
+    customPanel.add(adminsPanel, "spany 2, grow");
+    customPanel.add(validatorsPanel, "grow");
+    customPanel.add(restoreDefaultsPanel, "spanx 2, grow");
+
+    int index = featuresPane.indexOfTab(LNG.get("MainDialog.conf.title"));
+    featuresPane.setComponentAt(index, customPanel);
   }
 
   /**
@@ -418,6 +641,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     initPanelAuthorization();
     initPanelLogin();
     initPanelOffer();
+    initPanelConfiguration();
   }
 
   /**
@@ -433,11 +657,19 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
           .indexOfTab(LNG.get("MainDialog." + featureName + ".title"));
       featuresPane.setEnabledAt(index, isAdmin);
     }
+
+    // A ativação da aba de configurações segue uma regra
+    // diferenciada para suportar busservices < 2.0.0.9
+    featuresPane.setEnabledAt(featuresPane
+            .indexOfTab(LNG.get("MainDialog.conf.title")),
+            admin.isReconfigurationCapable());
+
     // Seleciona a primeira aba do pane de funcionalidades.
     featuresPane.setSelectedIndex(0);
     // A atualização explícita é necessária porque, como esperado, o
     // ChangeListener da pane só é ativado se a aba corrente for modificada.
-    ((PanelComponent<?>) featuresPane.getSelectedComponent()).refresh(null);
+    Component component = featuresPane.getSelectedComponent();
+    ((RefreshDelegate) component).refresh(null);
   }
 
   /**

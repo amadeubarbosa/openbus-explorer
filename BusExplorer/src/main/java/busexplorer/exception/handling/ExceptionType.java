@@ -1,4 +1,4 @@
-package exception.handling;
+package busexplorer.exception.handling;
 
 /**
  * Esta enumeração deveria manter todas as exceções que se deseja tratar pelo

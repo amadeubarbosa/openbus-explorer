@@ -1,15 +1,7 @@
 package reuse.modified.logistic.client.util;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.print.PrintableUI;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,9 +18,16 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-
-import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.print.PrintableUI;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 
 /**
  * A classe UI possui métodos úteis para a construção das interfaces do Bandeira

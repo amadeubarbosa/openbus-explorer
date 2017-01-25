@@ -1,22 +1,21 @@
 package busexplorer.panel.categories;
 
-import java.awt.GridBagLayout;
-import java.awt.Window;
+import busexplorer.Application;
+import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.Utils;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
-import admin.BusAdmin;
-import busexplorer.Application;
-import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.panel.PanelComponent;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
+import java.awt.GridBagLayout;
+import java.awt.Window;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de
@@ -30,7 +29,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel categoryNameLabel;
   private JTextField categoryNameField;
 
-  private PanelComponent<CategoryWrapper> panel;
+  private TablePanelComponent<CategoryWrapper> panel;
 
   private CategoryWrapper editingCategory = null;
 
@@ -41,7 +40,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
    * @param panel Painel a ser atualizado após a adição/edição.
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
-  public CategoryInputDialog(Window parentWindow, PanelComponent<CategoryWrapper>
+  public CategoryInputDialog(Window parentWindow, TablePanelComponent<CategoryWrapper>
     panel, BusAdmin admin) {
     super(parentWindow, LNG.get(CategoryInputDialog.class.getSimpleName() +
       ".title"), admin);

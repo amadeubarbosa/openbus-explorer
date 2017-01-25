@@ -1,26 +1,23 @@
-package admin;
-
-import java.util.List;
-import java.util.Properties;
-import java.util.logging.Level;
+package tecgraf.openbus.admin;
 
 import com.google.common.collect.ArrayListMultimap;
 import junit.framework.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.omg.CORBA.ORB;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
-
 import scs.core.ComponentContext;
 import tecgraf.openbus.Connection;
-import tecgraf.openbus.LocalOffer;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
-//TODO teste inútil; remover ou modificar.
+import java.util.List;
+import java.util.Properties;
+import java.util.logging.Level;
+
 public class BusAdminTest {
 
   private static String host;
@@ -51,25 +48,23 @@ public class BusAdminTest {
     context.defaultConnection(conn);
     POA poa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
     poa.the_POAManager().activate();
-
+    
     BusAdminImpl admin = new BusAdminImpl();
     admin.getAdminFacets(host, port, orb);
 
     int index;
     for (index = 0; index < 5; index++) {
       ComponentContext component = Utils.buildComponent(orb);
-      ArrayListMultimap<String, String> props = ArrayListMultimap.create();
+      ArrayListMultimap<String,String> props = ArrayListMultimap.create();
       props.put("offer.domain", "BusAdminLib Test");
       props.put("loop.index", Integer.toString(index));
-      LocalOffer local = conn.offerRegistry().registerService(component
-        .getIComponent(), props);
-      Assert.assertNotNull(local.remoteOffer(10000));
+      conn.offerRegistry().registerService(component.getIComponent(), props);
     }
     List<ServiceOfferDesc> found = admin.getOffers();
     Assert.assertTrue(found.size() >= index);
-
     conn.logout();
     orb.shutdown(true);
     orb.destroy();
   }
+
 }

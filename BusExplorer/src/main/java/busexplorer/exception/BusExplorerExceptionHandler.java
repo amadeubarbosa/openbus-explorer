@@ -1,7 +1,10 @@
 package busexplorer.exception;
 
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.exception.handling.ExceptionHandler;
+import busexplorer.exception.handling.ExceptionType;
+import busexplorer.utils.Utils;
 import org.omg.CORBA.NO_PERMISSION;
-
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.access_control.FailedLoginAttemptDomain;
 import tecgraf.openbus.core.v2_1.services.access_control.InvalidRemoteCode;
@@ -9,10 +12,6 @@ import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
 import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
 import tecgraf.openbus.core.v2_1.services.access_control.UnknownBusCode;
 import tecgraf.openbus.core.v2_1.services.access_control.UnverifiedLoginCode;
-import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
-import exception.handling.ExceptionHandler;
-import exception.handling.ExceptionType;
 
 /**
  * Tratador de exceções padrão para os demos.

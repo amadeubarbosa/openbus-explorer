@@ -1,21 +1,20 @@
 package busexplorer;
 
+import busexplorer.desktop.dialog.LoginDialog;
+import busexplorer.desktop.dialog.MainDialog;
+import busexplorer.exception.BusExplorerExceptionHandler;
+import busexplorer.utils.Utils;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminImpl;
+
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
-
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-
-import tecgraf.javautils.LNG;
-import admin.BusAdmin;
-import admin.BusAdminImpl;
-import busexplorer.desktop.dialog.LoginDialog;
-import busexplorer.desktop.dialog.MainDialog;
-import busexplorer.exception.BusExplorerExceptionHandler;
-import busexplorer.utils.Utils;
 
 /**
  * Classe principal da aplicação.
@@ -43,6 +42,7 @@ public class Application {
    * Inicializa a aplicação, criando o diálogo de login.
    */
   public static void main(String[] args) {
+    LNG.load("busadminlib.resources.language.idiom", new Locale("pt", "BR"));
     LNG.load("busexplorer.resources.language.idiom", new Locale("pt", "BR"));
     LNG.load("reuse.modified.logistic.client.resources.language.idiom",
       new Locale("pt", "BR"));

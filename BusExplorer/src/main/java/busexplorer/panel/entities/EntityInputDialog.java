@@ -1,27 +1,26 @@
 package busexplorer.panel.entities;
 
-import java.awt.GridBagLayout;
-import java.awt.Window;
-import java.util.List;
-import java.util.TreeMap;
+import busexplorer.Application;
+import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.Utils;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
-import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
-import admin.BusAdmin;
-import busexplorer.Application;
-import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.panel.PanelComponent;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import exception.handling.ExceptionContext;
+import java.awt.GridBagLayout;
+import java.awt.Window;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Classe que dá a especialização necessária ao Diálogo de Cadastro de Entidades
@@ -39,7 +38,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   private TreeMap<String, EntityCategoryDesc> categories =
     new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-  private PanelComponent<EntityWrapper> panel;
+  private TablePanelComponent<EntityWrapper> panel;
 
   private EntityWrapper editingEntity = null;
 
@@ -52,8 +51,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
    * @param categoryDescList Lista de categorias.
    */
   public EntityInputDialog(Window parentWindow,
-    PanelComponent<EntityWrapper> panel, BusAdmin admin,
-    List<EntityCategoryDesc> categoryDescList) {
+                           TablePanelComponent<EntityWrapper> panel, BusAdmin admin,
+                           List<EntityCategoryDesc> categoryDescList) {
     super(parentWindow, LNG.get(EntityInputDialog.class.getSimpleName()
       + ".title"), admin);
     this.panel = panel;

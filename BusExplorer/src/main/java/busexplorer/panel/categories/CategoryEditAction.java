@@ -1,14 +1,13 @@
 package busexplorer.panel.categories;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.JFrame;
-
-import tecgraf.javautils.LNG;
-import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.openbus.admin.BusAdmin;
+
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
 
 /**
  * Classe de ação para criar uma categoria. Esta dispara um diálogo.
@@ -51,9 +50,9 @@ public class CategoryEditAction extends OpenBusAction<CategoryWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     CategoryInputDialog dialog = new CategoryInputDialog(parentWindow,
-      getPanelComponent(), admin);
+      getTablePanelComponent(), admin);
     dialog.showDialog();
-    CategoryWrapper category = getPanelComponent().getSelectedElement();
+    CategoryWrapper category = getTablePanelComponent().getSelectedElement();
     dialog.setEditionMode(category);
   }
 

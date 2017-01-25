@@ -1,16 +1,11 @@
-package admin;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+package tecgraf.openbus.admin;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 
 import scs.core.IComponent;
 import scs.core.IComponentHelper;
+import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.core.v2_1.BusObjectKey;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
@@ -20,6 +15,8 @@ import tecgraf.openbus.core.v2_1.services.access_control.LoginRegistryHelper;
 import tecgraf.openbus.core.v2_1.services.access_control.admin.v1_0.CertificateRegistry;
 import tecgraf.openbus.core.v2_1.services.access_control.admin.v1_0.CertificateRegistryHelper;
 import tecgraf.openbus.core.v2_1.services.access_control.admin.v1_0.InvalidCertificate;
+import tecgraf.openbus.core.v2_1.services.admin.v1_0.Configuration;
+import tecgraf.openbus.core.v2_1.services.admin.v1_0.ConfigurationHelper;
 import tecgraf.openbus.core.v2_1.services.offer_registry.OfferRegistry;
 import tecgraf.openbus.core.v2_1.services.offer_registry.OfferRegistryHelper;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
@@ -38,10 +35,17 @@ import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.InvalidInter
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * A classe implementa os comandos especificados na interface
- * {@link admin.BusAdmin}.
- * 
+ * {@link BusAdmin}.
+ *
  * @author Tecgraf
  */
 public class BusAdminImpl implements BusAdmin {
@@ -55,6 +59,8 @@ public class BusAdminImpl implements BusAdmin {
   private OfferRegistry offerRegistry;
   /** Registro de logins do barramento. */
   private LoginRegistry loginRegistry;
+  /** Configuração dinâmica do barramento. */
+  private Configuration configuration = null;
 
   /**
    * Construtor da classe.
@@ -71,7 +77,7 @@ public class BusAdminImpl implements BusAdmin {
    */
   public void getAdminFacets(String host, int port, ORB orb) {
     org.omg.CORBA.Object ref = buildCorbaLoc(host, port, orb);
-    getAdminFacets(ref);
+    obtainRegistries(ref);
   }
 
   /**
@@ -303,16 +309,111 @@ public class BusAdminImpl implements BusAdmin {
   }
 
   /*
+   * Reconfiguração dinâmica
+   */
+
+  @Override
+  public boolean isReconfigurationCapable() {
+    return (configuration != null);
+  }
+
+  @Override
+  public void reloadConfigsFile() throws ServiceFailure, UnauthorizedOperation {
+    configuration.reloadConfigsFile();
+  }
+
+  @Override
+  public void grantAdminTo(List<String> users) throws ServiceFailure, UnauthorizedOperation {
+    configuration.grantAdminTo(users.toArray(new String[users.size()]));
+  }
+
+  @Override
+  public void revokeAdminFrom(List<String> users) throws ServiceFailure, UnauthorizedOperation {
+    configuration.revokeAdminFrom(users.toArray(new String[users.size()]));
+  }
+
+  @Override
+  public List<String> getAdmins() throws ServiceFailure {
+    String[] admins = configuration.getAdmins();
+    List<String> ret = new ArrayList<String>();
+    Collections.addAll(ret, admins);
+    return ret;
+  }
+
+  @Override
+  public void addPasswordValidator(String validator) throws ServiceFailure, UnauthorizedOperation {
+    configuration.addPasswordValidator(validator);
+  }
+
+  @Override
+  public void delPasswordValidator(String validator) throws ServiceFailure, UnauthorizedOperation {
+    configuration.delPasswordValidator(validator);
+  }
+
+  @Override
+  public List<String> getPasswordValidators() throws ServiceFailure {
+    String[] validators = configuration.getPasswordValidators();
+    List<String> ret = new ArrayList<String>();
+    Collections.addAll(ret, validators);
+    return ret;
+  }
+
+  @Override
+  public void setMaxChannels(int maxchannels) throws ServiceFailure, UnauthorizedOperation {
+    configuration.setMaxChannels(maxchannels);
+  }
+
+  @Override
+  public int getMaxChannels() throws ServiceFailure {
+    return configuration.getMaxChannels();
+  }
+
+  @Override
+  public void setMaxCacheSize(int maxcachesize) throws ServiceFailure, UnauthorizedOperation {
+    configuration.setMaxCacheSize(maxcachesize);
+  }
+
+  @Override
+  public int getMaxCacheSize() throws ServiceFailure {
+    return configuration.getMaxCacheSize();
+  }
+
+  @Override
+  public void setCallsTimeout(int timeout) throws ServiceFailure, UnauthorizedOperation {
+    configuration.setCallsTimeout(timeout);
+  }
+
+  @Override
+  public int getCallsTimeout() throws ServiceFailure {
+    return configuration.getCallsTimeout();
+  }
+
+  @Override
+  public void setLogLevel(short loglevel) throws ServiceFailure, UnauthorizedOperation {
+    configuration.setLogLevel(loglevel);
+  }
+
+  @Override
+  public short getLogLevel() throws ServiceFailure {
+    return configuration.getLogLevel();
+  }
+
+  @Override
+  public void setOilLogLevel(short oilLoglevel) throws ServiceFailure, UnauthorizedOperation {
+    configuration.setOilLogLevel(oilLoglevel);
+  }
+
+  @Override
+  public short getOilLogLevel() throws ServiceFailure {
+    return configuration.getOilLogLevel();
+  }
+
+  /*
    * Métodos auxiliares
    */
 
   /**
-   * Constrói a URL corbaloc
-   * 
-   * @param host endereço do barramento
-   * @param port porta do barramento
-   * @param orb instância do orb do barramento
-   * @return a corbaloc criada
+   * {@inheritDoc}
    */
   private static org.omg.CORBA.Object buildCorbaLoc(String host, int port,
     ORB orb) {
@@ -330,22 +431,20 @@ public class BusAdminImpl implements BusAdmin {
     IComponent iComponent = IComponentHelper.narrow(obj);
     if (iComponent == null) {
       throw new IncompatibleBus(
-        "Não foi possível recuperar referência para barramento");
+        LNG.get("IncompatibleBus.missing.icomponent"));
     }
 
-    String error = "Referência para '%' não encontrada.";
     org.omg.CORBA.Object entityRegistryObj =
       iComponent.getFacet(EntityRegistryHelper.id());
     if (entityRegistryObj == null) {
-      throw new IncompatibleBus(String.format(error, "registro de entidades"));
+      throw new IncompatibleBus(LNG.get("IncompatibleBus.error.entityregistry"));
     }
     this.entityRegistry = EntityRegistryHelper.narrow(entityRegistryObj);
 
     org.omg.CORBA.Object certificateRegistryObj =
       iComponent.getFacet(CertificateRegistryHelper.id());
     if (certificateRegistryObj == null) {
-      throw new IncompatibleBus(String
-        .format(error, "registro de certificados"));
+      throw new IncompatibleBus(LNG.get("IncompatibleBus.error.certificateregistry"));
     }
     this.certificateRegistry =
       CertificateRegistryHelper.narrow(certificateRegistryObj);
@@ -353,7 +452,7 @@ public class BusAdminImpl implements BusAdmin {
     org.omg.CORBA.Object interfaceRegistryObj =
       iComponent.getFacet(InterfaceRegistryHelper.id());
     if (interfaceRegistryObj == null) {
-      throw new IncompatibleBus(String.format(error, "registro de interfaces"));
+      throw new IncompatibleBus(LNG.get("IncompatibleBus.error.interfaceregistry"));
     }
     this.interfaceRegistry =
       InterfaceRegistryHelper.narrow(interfaceRegistryObj);
@@ -361,15 +460,25 @@ public class BusAdminImpl implements BusAdmin {
     org.omg.CORBA.Object offerRegistryObj =
       iComponent.getFacet(OfferRegistryHelper.id());
     if (offerRegistryObj == null) {
-      throw new IncompatibleBus(String.format(error, "registro de ofertas"));
+      throw new IncompatibleBus(LNG.get("IncompatibleBus.error.offerregistry"));
     }
     this.offerRegistry = OfferRegistryHelper.narrow(offerRegistryObj);
 
     org.omg.CORBA.Object loginRegistryObj =
       iComponent.getFacet(LoginRegistryHelper.id());
     if (loginRegistryObj == null) {
-      throw new IncompatibleBus(String.format(error, "registro de logins"));
+      throw new IncompatibleBus(LNG.get("IncompatibleBus.error.loginregistry"));
     }
     this.loginRegistry = LoginRegistryHelper.narrow(loginRegistryObj);
+
+    //TODO: Esta versão do BusExplorer ainda tolera que o barramento não possua a interface
+    //TODO: para reconfiguração dinâmica. Para mudar isso basta alterar o teste abaixo e
+    //TODO: lançar a exceção: throw new IncompatibleBus(LNG.get("IncompatibleBus.error.configuration"));
+    org.omg.CORBA.Object configurationObj =
+      iComponent.getFacet(ConfigurationHelper.id());
+    if (configurationObj != null) {
+      this.configuration = ConfigurationHelper.narrow(configurationObj);
+
+    }
   }
 }

@@ -1,5 +1,31 @@
 package busexplorer.panel;
 
+import busexplorer.ApplicationIcons;
+import busexplorer.utils.DateTimeRenderer;
+import busexplorer.utils.StringVectorRenderer;
+import busexplorer.utils.Utils;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.GUIUtils;
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+import tecgraf.javautils.gui.table.SortableTable;
+
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SortOrder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -12,41 +38,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
-
-
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SortOrder;
-import javax.swing.SwingConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.text.Document;
-
-import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.GUIUtils;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.javautils.gui.table.ObjectTableProvider;
-import tecgraf.javautils.gui.table.SortableTable;
-import busexplorer.utils.DateTimeRenderer;
-import busexplorer.utils.StringVectorRenderer;
-import busexplorer.utils.Utils;
 
 /**
  * Componente que define um painel com uma {@link SortableTable} e modulariza o
@@ -56,7 +51,7 @@ import busexplorer.utils.Utils;
  * @author Tecgraf
  * @param <T> Tipo de dado associado a tabela do componente
  */
-public class PanelComponent<T> extends JPanel {
+public class TablePanelComponent<T> extends RefreshablePanel {
 
   /** Table */
   private SortableTable table;
@@ -70,21 +65,23 @@ public class PanelComponent<T> extends JPanel {
   private JButton editBtn;
   /** Botão de remoção */
   private JButton removeBtn;
-  /** Botão outros */
-  private JButton othersBtn;
+  /** Botões personalizados */
+  private List<JButton> othersBtns = new ArrayList<JButton>();
   /** Ação de adição */
-  private PanelActionInterface<T> addAction;
+  private TablePanelActionInterface<T> addAction;
   /** Ação de edição */
-  private PanelActionInterface<T> editAction;
+  private TablePanelActionInterface<T> editAction;
   /** Ação de remoção */
-  private PanelActionInterface<T> removeAction;
-  /** Conjunto de ações a serem incluídas no botão "outros" */
-  private List<PanelActionInterface<T>> othersActions =
-    new ArrayList<>();
+  private TablePanelActionInterface<T> removeAction;
+  /** Conjunto de ações a serem incluídas como "outros" */
+  private List<TablePanelActionInterface<T>> othersActions =
+    new ArrayList<TablePanelActionInterface<T>>();
   /** Indicador se possui algum botão a ser incluído na GUI */
   private boolean hasBtns = false;
+  /** Indicador se é necessário painel de filtro sobre a tabela */
+  private boolean hasFilter = true;
   /** Ação de Refresh */
-  private PanelActionInterface<T> refreshAction;
+  private TablePanelActionInterface<T> refreshAction;
   /** Campo de filtro */
   private JTextField filterText;
   /** Botão de limpar texto de filtro */
@@ -92,26 +89,27 @@ public class PanelComponent<T> extends JPanel {
 
   /**
    * Construtor
-   * 
+   *
    * @param pInfo Lista com os dados da tabela.
    * @param pTableProvider Provedor de dados da tabela.
    * @param actions Conjunto de ações relacionadas ao componente.
    */
-  public PanelComponent(List<T> pInfo, ObjectTableProvider<T> pTableProvider,
-    List<? extends PanelActionInterface<T>> actions) {
-    this(new ObjectTableModel<>(pInfo, pTableProvider), actions);
+  public TablePanelComponent(List<T> pInfo, ObjectTableProvider<T> pTableProvider,
+                             List<? extends TablePanelActionInterface<T>> actions) {
+    this(new ObjectTableModel<T>(pInfo, pTableProvider), actions, true);
   }
 
   /**
    * Construtor.
-   * 
-   * @param pTableModel Modelo da tabela.
+   *  @param pTableModel Modelo da tabela.
    * @param actions Conjunto de ações relacionadas ao componente.
+   * @param hasFilter
    */
-  public PanelComponent(ObjectTableModel<T> pTableModel,
-    List<? extends PanelActionInterface<T>> actions) {
+  public TablePanelComponent(ObjectTableModel<T> pTableModel,
+                             List<? extends TablePanelActionInterface<T>> actions, boolean hasFilter) {
     createTable(pTableModel);
     processActions(actions);
+    this.hasFilter = hasFilter;
     init();
   }
 
@@ -140,10 +138,9 @@ public class PanelComponent<T> extends JPanel {
    * Processa o conjunto de ações associadas ao componente.
    * 
    */
-  private void processActions(List<? extends PanelActionInterface<T>> actions) {
-    boolean hasActiveOthers = false;
-    for (PanelActionInterface<T> action : actions) {
-      action.setPanelComponent(this);
+  private void processActions(List<? extends TablePanelActionInterface<T>> actions) {
+    for (TablePanelActionInterface<T> action : actions) {
+      action.setTablePanelComponent(this);
       switch (action.getActionType()) {
         case ADD:
           addAction = action;
@@ -152,7 +149,7 @@ public class PanelComponent<T> extends JPanel {
           addBtn = new JButton(action);
           addBtn
             .setToolTipText(Utils.getString(this.getClass(), "add.tooltip"));
-          addBtn.setIcon(RegistrationImages.ICON_ADD_16);
+          addBtn.setIcon(ApplicationIcons.ICON_ADD_16);
           hasBtns = true;
           break;
 
@@ -163,7 +160,7 @@ public class PanelComponent<T> extends JPanel {
           removeBtn = new JButton(action);
           removeBtn.setToolTipText(Utils.getString(this.getClass(),
             "remove.tooltip"));
-          removeBtn.setIcon(RegistrationImages.ICON_DELETE_16);
+          removeBtn.setIcon(ApplicationIcons.ICON_DELETE_16);
           hasBtns = true;
           break;
 
@@ -174,7 +171,7 @@ public class PanelComponent<T> extends JPanel {
           editBtn = new JButton(action);
           editBtn.setToolTipText(Utils.getString(this.getClass(),
             "edit.tooltip"));
-          editBtn.setIcon(RegistrationImages.ICON_EDIT_16);
+          editBtn.setIcon(ApplicationIcons.ICON_EDIT_16);
           hasBtns = true;
           break;
 
@@ -188,24 +185,17 @@ public class PanelComponent<T> extends JPanel {
           // informações como tooltip e icones devem ser configurados na ação
           othersActions.add(action);
           action.setEnabled(false);
+          othersBtns.add(new JButton(action));
+          hasBtns = true;
           break;
 
         default:
           // informações como tooltip e icones devem ser configurados na ação
           othersActions.add(action);
-          hasActiveOthers = action.abilityConditions();
+          othersBtns.add(new JButton(action));
+          hasBtns = true;
           break;
       }
-    }
-    if (!othersActions.isEmpty()) {
-      initOthersButton();
-      if (hasActiveOthers) {
-        othersBtn.setEnabled(true);
-      }
-      else {
-        othersBtn.setEnabled(false);
-      }
-      hasBtns = true;
     }
   }
 
@@ -213,7 +203,9 @@ public class PanelComponent<T> extends JPanel {
   private void init() {
     // Define BorderLayout como o gerenciador padrão
     this.setLayout(new BorderLayout());
-    this.add(getFilterPanel(), BorderLayout.NORTH);
+    if (hasFilter) {
+      this.add(getFilterPanel(), BorderLayout.NORTH);
+    }
     this.add(getScrollPane(), BorderLayout.CENTER);
     if (hasBtns) {
       this.add(getButtonsPanel(), BorderLayout.SOUTH);
@@ -244,7 +236,7 @@ public class PanelComponent<T> extends JPanel {
     gbc = new GBC(2, 0).east().insets(10, 0, 10, 10);
     clearButton.setToolTipText(Utils.getString(this.getClass(),
       "filter.clear.tooltip"));
-    clearButton.setIcon(RegistrationImages.ICON_CLEAR_16);
+    clearButton.setIcon(ApplicationIcons.ICON_CLEAR_16);
     panel.add(clearButton, gbc);
 
     JButton refreshButton =
@@ -253,7 +245,7 @@ public class PanelComponent<T> extends JPanel {
     gbc = new GBC(3, 0).east().insets(10, 0, 10, 10);
     refreshButton.setToolTipText(Utils.getString(this.getClass(),
       "refresh.tooltip"));
-    refreshButton.setIcon(RegistrationImages.ICON_REFRESH_16);
+    refreshButton.setIcon(ApplicationIcons.ICON_REFRESH_16);
     panel.add(refreshButton, gbc);
 
     setupFilterControls();
@@ -369,37 +361,16 @@ public class PanelComponent<T> extends JPanel {
       idx++;
       toMatch.add(removeBtn);
     }
-    if (!othersActions.isEmpty()) {
-      buttonsPanel.add(othersBtn, new GBC(idx, 0).center().none().insets(2));
-      idx++;
+    if (!othersBtns.isEmpty()) {
+      for (JButton otherBtn : othersBtns) {
+        buttonsPanel.add(otherBtn, new GBC(idx, 0).center().none().insets(2));
+        idx++;
+        toMatch.add(otherBtn);
+      }
+
     }
     GUIUtils.matchPreferredSizes(toMatch.toArray(new JButton[toMatch.size()]));
     return buttonsPanel;
-  }
-
-  /**
-   * Inicialização do botão: others.
-   */
-  private void initOthersButton() {
-    othersBtn = new JButton();
-    othersBtn.setText(Utils.getString(this.getClass(), "button.others"));
-    othersBtn.setIcon(RegistrationImages.ICON_DOWN_4);
-    othersBtn.setHorizontalTextPosition(SwingConstants.RIGHT);
-    othersBtn.addActionListener(e -> {
-      final T selectedObject = getSelectedElement();
-      if (selectedObject == null) {
-        return;
-      }
-      if (othersActions.isEmpty()) {
-        return;
-      }
-      final JPopupMenu menu = new JPopupMenu();
-      for (PanelActionInterface<T> action : othersActions) {
-        menu.add(action);
-      }
-      final int y1 = othersBtn.getHeight();
-      menu.show(othersBtn, 0, y1);
-    });
   }
 
   /**
@@ -408,7 +379,6 @@ public class PanelComponent<T> extends JPanel {
   private void updateActionsAbilities() {
     int[] selectedRows = table.getSelectedRows();
     int length = selectedRows.length;
-    boolean hasOtherActive = false;
 
     if (addAction != null) {
       addAction.setEnabled(addAction.abilityConditions());
@@ -422,13 +392,12 @@ public class PanelComponent<T> extends JPanel {
         if (editAction != null) {
           editAction.setEnabled(false);
         }
-        for (PanelActionInterface<T> action : othersActions) {
+        for (TablePanelActionInterface<T> action : othersActions) {
           if (!action.getActionType().equals(ActionType.OTHER)) {
             action.setEnabled(false);
           }
           else {
             action.setEnabled(action.abilityConditions());
-            hasOtherActive = true;
           }
         }
         break;
@@ -440,19 +409,17 @@ public class PanelComponent<T> extends JPanel {
         if (editBtn != null) {
           editAction.setEnabled(editAction.abilityConditions());
         }
-        for (PanelActionInterface<T> action : othersActions) {
+        for (TablePanelActionInterface<T> action : othersActions) {
           switch (action.getActionType()) {
             case OTHER_SINGLE_SELECTION:
             case OTHER_MULTI_SELECTION:
               action.setEnabled(action.abilityConditions());
-              hasOtherActive = action.abilityConditions();
               break;
             case OTHER_ONLY_MULTI_SELECTION:
               action.setEnabled(false);
               break;
             default:
               action.setEnabled(action.abilityConditions());
-              hasOtherActive = action.abilityConditions();
               break;
           }
         }
@@ -461,12 +428,12 @@ public class PanelComponent<T> extends JPanel {
       default:
         // length > 1
         if (removeAction != null) {
-          removeAction.setEnabled(false);
+          removeAction.setEnabled(removeAction.abilityConditions());
         }
         if (editAction != null) {
           editAction.setEnabled(false);
         }
-        for (PanelActionInterface<T> action : othersActions) {
+        for (TablePanelActionInterface<T> action : othersActions) {
           switch (action.getActionType()) {
             case OTHER_SINGLE_SELECTION:
               action.setEnabled(false);
@@ -474,24 +441,13 @@ public class PanelComponent<T> extends JPanel {
             case OTHER_MULTI_SELECTION:
             case OTHER_ONLY_MULTI_SELECTION:
               action.setEnabled(action.abilityConditions());
-              hasOtherActive = action.abilityConditions();
               break;
             default:
               action.setEnabled(action.abilityConditions());
-              hasOtherActive = action.abilityConditions();
               break;
           }
         }
         break;
-    }
-
-    if (!othersActions.isEmpty()) {
-      if (hasOtherActive) {
-        othersBtn.setEnabled(true);
-      }
-      else {
-        othersBtn.setEnabled(false);
-      }
     }
   }
 
@@ -593,9 +549,10 @@ public class PanelComponent<T> extends JPanel {
   /**
    * Realiza uma atualização do conteúdo apresentado pelo painel, possivelmente
    * realizando uma chamada remota.
-   * 
+   *
    * @param event o evento que dispara a ação.
    */
+  @Override
   public void refresh(ActionEvent event) {
     if (this.refreshAction != null) {
       this.refreshAction.actionPerformed(event);
@@ -715,63 +672,6 @@ public class PanelComponent<T> extends JPanel {
     public void keyTyped(KeyEvent e) {
     }
 
-  }
-
-  /**
-   * Local para imagens internas.
-   * 
-   * @author Tecgraf
-   */
-  public static class RegistrationImages {
-
-    /**
-     * Adição.
-     */
-    public static final ImageIcon ICON_ADD_16 = createImageIcon("Add16.gif");
-
-    /**
-     * Edição.
-     */
-    public static final ImageIcon ICON_EDIT_16 = createImageIcon("Edit16.gif");
-
-    /**
-     * Remoção.
-     */
-    public static final ImageIcon ICON_DELETE_16 =
-      createImageIcon("Delete16.gif");
-
-    /**
-     * Atualização.
-     */
-    public static final ImageIcon ICON_REFRESH_16 =
-      createImageIcon("Refresh16.gif");
-
-    /**
-     * Limpar.
-     */
-    public static final ImageIcon ICON_CLEAR_16 =
-      createImageIcon("Clear16.gif");
-
-    /**
-     * Setinha da opção mais
-     */
-
-    public static final ImageIcon ICON_DOWN_4 = createImageIcon("Down4.gif");
-
-    /**
-     * Montagem da ícone do diretório-padrão.
-     * 
-     * @param imageIconName nome do arquivo de imagem.
-     * @return uma imagem (ícone)
-     */
-    protected static ImageIcon createImageIcon(String imageIconName) {
-      final String DIR = "/busexplorer/resources/images/";
-      URL res = RegistrationImages.class.getResource(DIR + imageIconName);
-      if (res == null) {
-        return null;
-      }
-      return new ImageIcon(res);
-    }
   }
 
 }

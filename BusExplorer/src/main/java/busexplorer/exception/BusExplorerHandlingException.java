@@ -1,8 +1,8 @@
 package busexplorer.exception;
 
-import exception.handling.ExceptionContext;
-import exception.handling.ExceptionType;
-import exception.handling.HandlingException;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.exception.handling.ExceptionType;
+import busexplorer.exception.handling.HandlingException;
 
 /**
  * Wrapper de exceções específicos para os demos de colaboração. Esta classe

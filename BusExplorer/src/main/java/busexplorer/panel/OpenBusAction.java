@@ -1,26 +1,25 @@
 package busexplorer.panel;
 
-import java.awt.Window;
+import busexplorer.utils.Utils;
+import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.AbstractAction;
-
-import admin.BusAdmin;
-import busexplorer.utils.Utils;
+import java.awt.Window;
 
 /**
  * Ação que contém os principais componentes a serem utilizados na janela
  * principal da aplicação
  * 
  * @author Tecgraf
- * @param <T> Tipo de dado associado ao {@link PanelComponent} relacionado a
+ * @param <T> Tipo de dado associado ao {@link TablePanelComponent} relacionado a
  *        esta ação.
  */
 public abstract class OpenBusAction<T> extends AbstractAction implements
-  PanelActionInterface<T> {
+        TablePanelActionInterface<T> {
 
   protected BusAdmin admin;
   protected Window parentWindow;
-  private PanelComponent<T> panel;
+  private TablePanelComponent<T> panel;
 
   /**
    * Construtor.
@@ -39,7 +38,7 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
    * {@inheritDoc}
    */
   @Override
-  public void setPanelComponent(PanelComponent<T> panel) {
+  public void setTablePanelComponent(TablePanelComponent<T> panel) {
     this.panel = panel;
   }
 
@@ -47,7 +46,7 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
    * {@inheritDoc}
    */
   @Override
-  public PanelComponent<T> getPanelComponent() {
+  public TablePanelComponent<T> getTablePanelComponent() {
     return this.panel;
   }
 

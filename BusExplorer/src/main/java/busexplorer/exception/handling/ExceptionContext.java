@@ -1,4 +1,4 @@
-package exception.handling;
+package busexplorer.exception.handling;
 
 /**
  * Enumeração dos tipos de contextos

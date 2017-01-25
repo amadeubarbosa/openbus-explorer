@@ -1,12 +1,11 @@
 package busexplorer.utils;
 
-import java.awt.Component;
-import java.util.Collections;
-import java.util.Vector;
-
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.Component;
+import java.util.Collections;
+import java.util.Vector;
 
 /**
  * Renderizador de célula que é um {@link Vector} de {@link String}

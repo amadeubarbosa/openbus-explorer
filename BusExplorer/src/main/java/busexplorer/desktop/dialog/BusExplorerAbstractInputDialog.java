@@ -1,9 +1,9 @@
 package busexplorer.desktop.dialog;
 
-import java.awt.Window;
-
 import reuse.modified.logistic.client.util.InputDialog;
-import admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdmin;
+
+import java.awt.Window;
 
 /**
  * A classe abstrata BusExplorerAbstractInputDialog implementa as

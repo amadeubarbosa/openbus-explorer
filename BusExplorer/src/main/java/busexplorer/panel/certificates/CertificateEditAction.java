@@ -1,14 +1,13 @@
 package busexplorer.panel.certificates;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.JFrame;
-
-import tecgraf.javautils.LNG;
-import admin.BusAdmin;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.openbus.admin.BusAdmin;
+
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
 
 /**
  * Classe de ação para criar uma interface. Esta dispara um diálogo.
@@ -51,9 +50,9 @@ public class CertificateEditAction extends OpenBusAction<CertificateWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     CertificateInputDialog dialog = new CertificateInputDialog(parentWindow,
-      getPanelComponent(), admin);
+      getTablePanelComponent(), admin);
     dialog.showDialog();
-    CertificateWrapper certificate = getPanelComponent().getSelectedElement();
+    CertificateWrapper certificate = getTablePanelComponent().getSelectedElement();
     dialog.setEditionMode(certificate);
   }
 

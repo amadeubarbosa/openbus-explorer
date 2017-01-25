@@ -1,4 +1,4 @@
-package admin;
+package tecgraf.openbus.admin;
 
 /**
  * Erro caso o BusExplorer tente se conectar a um barramento incompatível.

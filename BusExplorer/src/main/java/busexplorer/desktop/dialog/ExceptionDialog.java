@@ -1,17 +1,9 @@
 package busexplorer.desktop.dialog;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.Toolkit;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import busexplorer.utils.Utils;
+import tecgraf.javautils.core.lng.LNG;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.GUIUtils;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -25,12 +17,18 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.TreeSelectionModel;
-
-import tecgraf.javautils.LNG;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.GUIUtils;
-
-import busexplorer.utils.Utils;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Janela que exibe o detalhamento de uma exceção.

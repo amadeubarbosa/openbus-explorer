@@ -1,10 +1,10 @@
 package busexplorer.panel.offers;
 
+import busexplorer.utils.Utils;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+
 import java.util.Date;
 import java.util.Vector;
-
-import tecgraf.javautils.gui.table.ObjectTableProvider;
-import busexplorer.utils.Utils;
 
 /**
  * Provedor de dados para a tabela de Ofertas
@@ -42,8 +42,8 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    return new Class<?>[] { String.class, String.class, String.class, Vector
-      .class, Date.class };
+    Class<?>[] colClasses = { String.class, String.class, String.class, Vector.class, Date.class };
+    return colClasses;
   }
 
   /**

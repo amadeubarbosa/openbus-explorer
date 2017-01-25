@@ -1,8 +1,7 @@
 package busexplorer.panel.authorizations;
 
-import tecgraf.javautils.gui.table.ObjectTableProvider;
-
 import busexplorer.utils.Utils;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 /**
  * Provedor de dados para a tabela de Autorizações

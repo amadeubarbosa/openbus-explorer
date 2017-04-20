@@ -37,7 +37,21 @@ public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
    */
   @Override
   public boolean abilityConditions() {
-    return Application.login() != null && Application.login().hasAdminRights();
+    if (Application.login() != null) {
+      if (Application.login().hasAdminRights()) {
+        return true;
+      } else {
+        List<OfferWrapper> offers = getTablePanelComponent().getSelectedElements();
+        if (offers.size() > 0) {
+          for (OfferWrapper offer : offers) {
+            if (!offer.getEntityId().equals(Application.login().entity))
+              return false;
+          }
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @Override

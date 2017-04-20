@@ -1,6 +1,13 @@
 package busexplorer.panel.offers;
 
+import busexplorer.Application;
 import busexplorer.utils.Utils;
+import org.jacorb.orb.ORB;
+import org.jacorb.orb.ParsedIOR;
+import org.jacorb.orb.iiop.IIOPAddress;
+import org.jacorb.orb.iiop.IIOPProfile;
+import org.omg.ETF.Profile;
+import scs.core.IComponent;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
 
 import java.util.ArrayList;
@@ -156,4 +163,26 @@ public class OfferWrapper {
     return list;
   }
 
+  /**
+   * Recupera a versão do componente da oferta.
+   *
+   * @return a string da versão do componente.
+   */
+  public Vector<String> getEndpoints() {
+    ArrayList<String> results = new ArrayList<>();
+    IComponent comp = this.getDescriptor().service_ref;
+    ORB orb = (ORB) Application.login().getOpenBusContext().ORB();
+
+    ParsedIOR ior = new ParsedIOR(orb, comp.toString());
+
+    for (Profile profile : ior.getProfiles()) {
+      IIOPAddress address = (IIOPAddress) ((IIOPProfile) profile).getAddress();
+      //TODO: address.getSSLPort() se retornar -1 não há profile SSLIOP
+      String endpoint = String.format("%s:%s",address.getOriginalHost(), address.getPort());
+      if (!results.contains(endpoint))
+        results.add(endpoint);
+    }
+
+    return new Vector<>(results);
+  }
 }

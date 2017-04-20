@@ -1,18 +1,18 @@
 package busexplorer;
 
+import busexplorer.utils.BusAddress;
+import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
-
-import busexplorer.utils.BusAddress;
-
 import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
-import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.admin.BusAdminImpl;
+import tecgraf.openbus.core.ORBInitializer;
+import tecgraf.openbus.core.v2_1.BusObjectKey;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
@@ -35,7 +35,8 @@ public class BusExplorerLogin {
   private OpenBusContext context;
   /** Conexão com o barramento */
   private Connection conn;
-
+  /** Tentativas de login */
+  private static final short MAX_RETRIES = 3;
   /**
    * Construtor
    *
@@ -111,6 +112,14 @@ public class BusExplorerLogin {
   }
 
   /**
+   * Obtém o contexto da comunicação com o barramento.
+   * @return OpenBusContext o contexto da biblioteca do OpenBus.
+   */
+  public OpenBusContext getOpenBusContext() {
+    return this.context;
+  }
+
+  /**
    * Realiza o login.
    *
    * @param login Informações de login.
@@ -123,30 +132,41 @@ public class BusExplorerLogin {
     ORB orb = ORBInitializer.initORB();
     login.context = (OpenBusContext) orb.resolve_initial_references
       ("OpenBusContext");
+    String corbaloc = "unspecified";
     switch (login.address.getType()) {
       case Address:
-        login.conn = login.context.connectByAddress(login.address.getHost(),
-          login.address.getPort());
+        corbaloc = String.format("corbaloc::1.0@%s:%d/%s",
+                login.address.getHost(),
+                login.address.getPort(),
+                BusObjectKey.value);
         break;
       case Reference:
-        Object ref = orb.string_to_object(login.address.getIOR());
-        login.conn = login.context.connectByReference(ref);
+        corbaloc = login.address.getIOR();
         break;
-      default:
-        throw new IllegalStateException(
-          "Informações inválidas sobre o barramento.");
     }
+
+    try {
+      Object ref = orb.string_to_object(corbaloc);
+      login.conn = login.context.connectByReference(ref);
+    } catch (BAD_PARAM e) {
+      throw new IllegalArgumentException(corbaloc, e);
+    }
+
     login.context.defaultConnection(login.conn);
 
-    for (int i = 0; i < 3; i++) {
+    boolean done = false;
+    Exception lastFailure = null;
+    for (short i = 0; i < MAX_RETRIES; i++) {
       try {
         login.conn.loginByPassword(login.entity, password.getBytes(), domain);
         login.getAdminFacets();
         login.checkAdminRights();
+        done = true;
         break;
       }
       catch (TRANSIENT | COMM_FAILURE e) {
         // retentar
+        lastFailure = e;
       }
       catch (NO_PERMISSION e) {
         if (e.minor != NoLoginCode.value) {
@@ -163,6 +183,10 @@ public class BusExplorerLogin {
         Thread.sleep(250);
       }
       catch (InterruptedException ignored) {}
+    }
+
+    if (!done) {
+      throw new IllegalArgumentException(corbaloc, lastFailure);
     }
   }
 }

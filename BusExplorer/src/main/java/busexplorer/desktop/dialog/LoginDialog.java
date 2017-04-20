@@ -8,6 +8,7 @@ import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusAddress.AddressType;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;
+import busexplorer.utils.Utils;
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.admin.BusAdmin;
@@ -66,8 +67,7 @@ public class LoginDialog extends JDialog {
    * @param admin biblioteca de administração
    */
   public LoginDialog(Window owner, BusAdmin admin) {
-    super(owner, LNG.get("LoginDialog.title") + " - "
-      + LNG.get("Application.title"), JDialog.ModalityType.APPLICATION_MODAL);
+    super(owner, Utils.getString(LoginDialog.class, "title"), JDialog.ModalityType.APPLICATION_MODAL);
     this.admin = admin;
     buildDialog();
   }
@@ -108,7 +108,7 @@ public class LoginDialog extends JDialog {
     JPanel configPanel = new JPanel();
 
     GridBagLayout configLayout = new GridBagLayout();
-    configLayout.columnWidths = new int[] { 300 };
+    configLayout.columnWidths = new int[] { 350 };
     configPanel.setLayout(configLayout);
 
     TitledBorder configBorder =
@@ -356,8 +356,9 @@ public class LoginDialog extends JDialog {
           }
         };
 
-      task.execute(LoginDialog.this, LNG.get("LoginDialog.waiting.title"), LNG
-        .get("LoginDialog.waiting.msg"));
+      task.execute(LoginDialog.this,
+        Utils.getString(LoginDialog.class,"waiting.title"),
+        Utils.getString(LoginDialog.class, "waiting.msg"));
     }
   }
 

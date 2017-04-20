@@ -4,7 +4,10 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.exception.handling.ExceptionHandler;
 import busexplorer.exception.handling.ExceptionType;
 import busexplorer.utils.Utils;
+import org.omg.CORBA.BAD_PARAM;
+import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
+import org.omg.CORBA.TRANSIENT;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.access_control.FailedLoginAttemptDomain;
 import tecgraf.openbus.core.v2_1.services.access_control.InvalidRemoteCode;
@@ -268,7 +271,8 @@ public class BusExplorerExceptionHandler extends
       case InvalidName:
         // Este erro nunca deveria ocorrer se o código foi bem escrito
         exception.setErrorMessage(Utils.getString(this.getClass(),
-          "corba.invalid.name", theException.getMessage()));
+            "unspecified", theException.getClass().getName(),
+                theException.getMessage()));
         System.exit(1);
         break;
 
@@ -288,9 +292,22 @@ public class BusExplorerExceptionHandler extends
 
       case IllegalArgumentException:
         switch (context) {
+          case LoginByPrivateKey:
           case LoginByPassword:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
-              "illegal.argument.login", theException.getMessage()));
+            Throwable cause = theException.getCause();
+            if (cause != null) {
+              if (cause instanceof BAD_PARAM) {
+                exception.setErrorMessage(Utils.getString(this.getClass(),
+                        "illegal.wrong.address", theException.getMessage()));
+              } else if (cause instanceof COMM_FAILURE || cause instanceof TRANSIENT) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(Utils.getString(this.getClass(),
+                        "illegal.address", theException.getMessage()));
+                sb.append("\n\n");
+                sb.append(cause.getMessage());
+                exception.setErrorMessage(sb.toString());
+              }
+            }
             break;
           default:
             exception.setErrorMessage(Utils.getString(this.getClass(),

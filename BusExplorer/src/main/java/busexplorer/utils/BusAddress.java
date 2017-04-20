@@ -1,5 +1,11 @@
 package busexplorer.utils;
 
+import busexplorer.Application;
+import org.jacorb.orb.ORB;
+import org.jacorb.orb.ParsedIOR;
+import org.jacorb.orb.iiop.IIOPAddress;
+import org.jacorb.orb.iiop.IIOPProfile;
+
 /**
  * Reprecentação do endereço de um barramento.
  * 
@@ -60,13 +66,22 @@ public class BusAddress {
    * @return String descritiva do endereço, no formato "Descrição (host:porta)".
    */
   public String toString() {
-    String text = null;
+    String addressFormat = "%s:%s - SSL: %s";
+    String text = "";
     switch (type) {
       case Address:
-        text = host + ":" + port;
+        text = String.format(addressFormat, host, port, "off");
         break;
       case Reference:
-        text = "Hash(IOR)=" + ior.hashCode();
+        IIOPProfile profile =
+          ((IIOPProfile) new ParsedIOR((ORB) Application.login().getOpenBusContext().ORB(), ior).getProfiles().get(0));
+        IIOPAddress address = (IIOPAddress) profile.getAddress();
+        int sslPort = profile.getSSLPort();
+        if (sslPort != -1) {
+          text = String.format(addressFormat, address.getIP(), sslPort, "on");
+        } else {
+          text = String.format(addressFormat, address.getIP(), address.getPort(), "off");
+        }
         break;
       case Unspecified:
         return description;
@@ -133,7 +148,7 @@ public class BusAddress {
   public static BusAddress toAddress(String description, String addressStr) {
     BusAddress address;
     try {
-      if (addressStr.matches("^IOR:.+")) {
+      if (addressStr.matches("^IOR:.+") || addressStr.matches("^corbaloc:.+")) {
         address = new BusAddress(description, addressStr);
       }
       else {
@@ -143,11 +158,7 @@ public class BusAddress {
             .parseInt(addressContents[1]));
       }
     }
-    // TODO
     catch (Exception e) {
-      String msg =
-        String.format(Utils.getString(BusAddress.class,
-          "warning.unreadableAddress"), addressStr);
       address = new BusAddress();
     }
     return address;

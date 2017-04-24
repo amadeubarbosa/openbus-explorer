@@ -9,6 +9,7 @@ import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOffer;
 
+import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.awt.event.ActionEvent;
@@ -25,6 +26,7 @@ public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
   public OfferDeleteAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin, LNG.get(OfferDeleteAction.class.getSimpleName() +
       ".name"));
+    putValue(Action.SHORT_DESCRIPTION, getString("tooltip"));
   }
 
   @Override
@@ -87,6 +89,6 @@ public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

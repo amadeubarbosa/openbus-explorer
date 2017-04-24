@@ -358,7 +358,7 @@ public class LoginDialog extends JDialog {
 
       task.execute(LoginDialog.this,
         Utils.getString(LoginDialog.class,"waiting.title"),
-        Utils.getString(LoginDialog.class, "waiting.msg"));
+        Utils.getString(LoginDialog.class, "waiting.msg"), 2, 0);
     }
   }
 

@@ -54,6 +54,7 @@ import busexplorer.panel.offers.OfferDeleteAction;
 import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
+import busexplorer.panel.offers.OfferStatusAction;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
@@ -385,6 +386,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       new Vector<TablePanelActionInterface<OfferWrapper>>(2);
     actionsVector.add(new OfferRefreshAction(this, admin));
     actionsVector.add(new OfferDeleteAction(this, admin));
+    actionsVector.add(new OfferStatusAction(this, admin));
     final OfferPropertiesAction propertiesAction =
       new OfferPropertiesAction(this, admin);
     actionsVector.add(propertiesAction);

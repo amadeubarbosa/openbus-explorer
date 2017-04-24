@@ -25,6 +25,8 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
   private static final int ENDPOINTS = 4;
   /** Índice da coluna Data */
   private static final int DATE = 5;
+  /** Índice da coluna Status */
+  private static final int STATUS = 6;
 
   /**
    * {@inheritDoc}
@@ -37,7 +39,8 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
           Utils.getString(this.getClass(), "version"),
           Utils.getString(this.getClass(), "interface"),
           Utils.getString(this.getClass(), "endpoints"),
-          Utils.getString(this.getClass(), "date")
+          Utils.getString(this.getClass(), "date"),
+          Utils.getString(this.getClass(), "status")
       };
   }
 
@@ -46,7 +49,7 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class, String.class, Vector.class, Vector.class, Date.class };
+    Class<?>[] colClasses = { String.class, String.class, String.class, Vector.class, Vector.class, Date.class, Integer.class };
     return colClasses;
   }
 
@@ -68,6 +71,8 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
       	return row.getVersion();
       case ENDPOINTS:
         return row.getEndpoints();
+      case STATUS:
+        return row.getStatus();
       default:
         break;
     }

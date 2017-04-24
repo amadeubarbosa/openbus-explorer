@@ -7,7 +7,7 @@ import org.jacorb.orb.iiop.IIOPAddress;
 import org.jacorb.orb.iiop.IIOPProfile;
 
 /**
- * Reprecentação do endereço de um barramento.
+ * Representação do endereço de um barramento.
  * 
  * @author Tecgraf
  */

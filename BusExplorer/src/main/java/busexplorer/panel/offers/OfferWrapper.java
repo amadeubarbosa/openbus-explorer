@@ -1,11 +1,14 @@
 package busexplorer.panel.offers;
 
 import busexplorer.Application;
+import busexplorer.utils.Status;
 import busexplorer.utils.Utils;
 import org.jacorb.orb.ORB;
 import org.jacorb.orb.ParsedIOR;
 import org.jacorb.orb.iiop.IIOPAddress;
 import org.jacorb.orb.iiop.IIOPProfile;
+import org.omg.CORBA.COMM_FAILURE;
+import org.omg.CORBA.TRANSIENT;
 import org.omg.ETF.Profile;
 import scs.core.IComponent;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
@@ -15,6 +18,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+
+import static busexplorer.utils.Status.FAILURE;
+import static busexplorer.utils.Status.ONLINE;
+import static busexplorer.utils.Status.UNKNOWN;
+import static busexplorer.utils.Status.UNREACHABLE;
 
 /**
  * Classe que detém as informações locais da oferta para apresentação em
@@ -36,6 +44,8 @@ public class OfferWrapper {
   private final String name;
   /** Versão do componente */
   private final String version;
+  /** Status da conectividade */
+  private Integer status = UNKNOWN;
 
   /**
    * /** Construtor.
@@ -184,5 +194,24 @@ public class OfferWrapper {
     }
 
     return new Vector<>(results);
+  }
+
+  /**
+   * Recupera o estado da referência remota, se está alcançável ou não.
+   *
+   * @return um valor entre os previstos em {@link Status}
+   *
+   */
+  public Integer getStatus() {
+    return this.status;
+  }
+
+  /**
+   * Atualiza o estado da conectividade da referência.
+   *
+   * @param code um valor entre os previstos em {@link Status}
+   */
+  public void setStatus(Integer code) {
+    this.status = code;
   }
 }

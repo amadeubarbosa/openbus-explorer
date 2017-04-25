@@ -1,9 +1,9 @@
 package busexplorer.panel;
 
 import busexplorer.ApplicationIcons;
+import busexplorer.utils.Availability;
+import busexplorer.utils.AvailabilityRenderer;
 import busexplorer.utils.DateTimeRenderer;
-import busexplorer.utils.Status;
-import busexplorer.utils.StatusRenderer;
 import busexplorer.utils.StringVectorRenderer;
 import busexplorer.utils.Utils;
 import tecgraf.javautils.gui.GBC;
@@ -127,7 +127,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
     table.sort(0, SortOrder.ASCENDING);
     table.setDefaultRenderer(Vector.class, new StringVectorRenderer());
     table.setDefaultRenderer(Date.class, new DateTimeRenderer());
-    table.setDefaultRenderer(Integer.class, new StatusRenderer());
+    table.setDefaultRenderer(Availability.class, new AvailabilityRenderer());
     table.getSelectionModel().addListSelectionListener(
       new TableSelectionListener(table));
 

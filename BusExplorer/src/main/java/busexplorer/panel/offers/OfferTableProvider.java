@@ -1,5 +1,6 @@
 package busexplorer.panel.offers;
 
+import busexplorer.utils.Availability;
 import busexplorer.utils.Utils;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
@@ -25,7 +26,7 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
   private static final int ENDPOINTS = 4;
   /** Índice da coluna Data */
   private static final int DATE = 5;
-  /** Índice da coluna Status */
+  /** Índice da coluna Disponibilidade */
   private static final int STATUS = 6;
 
   /**
@@ -49,7 +50,10 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class, String.class, Vector.class, Vector.class, Date.class, Integer.class };
+    Class<?>[] colClasses = {
+        String.class, String.class, String.class,
+        Vector.class, Vector.class, Date.class, Availability.class
+    };
     return colClasses;
   }
 

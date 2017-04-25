@@ -7,17 +7,12 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 
-import static busexplorer.utils.Status.FAILURE;
-import static busexplorer.utils.Status.ONLINE;
-import static busexplorer.utils.Status.UNEXPECTED;
-import static busexplorer.utils.Status.UNREACHABLE;
-
 /**
- * Renderizador de célula que é um {@link Status} da conectividade da oferta
- * 
+ * Renderizador de célula que é um {@link Availability} da conectividade da oferta
+ *
  * @author Tecgraf
  */
-public class StatusRenderer extends DefaultTableCellRenderer {
+public class AvailabilityRenderer extends DefaultTableCellRenderer {
 
   /**
    * {@inheritDoc}
@@ -34,28 +29,29 @@ public class StatusRenderer extends DefaultTableCellRenderer {
     }
 
     setFont(table.getFont());
+    Availability availability = (Availability) value;
     StringBuilder builder = new StringBuilder();
-    builder.append("<html><center>");
-    switch ((Integer) value) {
+    builder.append("<html>");
+    switch (availability.status) {
       case ONLINE:
-        builder.append(Utils.getString(Status.class, "online"));
         component.setForeground(Color.WHITE);
         component.setBackground(new Color(40, 155, 44));
+        builder.append(Utils.getString(Availability.class, "online"));
         break;
       case UNREACHABLE:
         component.setBackground(new Color(188,20,48));
         component.setForeground(Color.WHITE);
-        builder.append(Utils.getString(Status.class, "unreachable"));
+        builder.append(Utils.getString(Availability.class, "unreachable"));
         break;
       case FAILURE:
         component.setBackground(new Color(255,212,43));
         component.setForeground(Color.BLACK);
-        builder.append(Utils.getString(Status.class, "failure"));
+        builder.append(Utils.getString(Availability.class, "failure"));
         break;
       case UNEXPECTED:
         component.setBackground(new Color(221, 138, 28));
         component.setForeground(Color.BLACK);
-        builder.append(Utils.getString(Status.class, "unexpected"));
+        builder.append(Utils.getString(Availability.class, "unexpected"));
         break;
       default:
         if (isSelected) {
@@ -65,11 +61,17 @@ public class StatusRenderer extends DefaultTableCellRenderer {
           component.setBackground(UIManager.getColor("Table.background"));
           component.setForeground(UIManager.getColor("Table.foreground"));
         }
-        builder.append(Utils.getString(Status.class, "unknown"));
+        builder.append(Utils.getString(Availability.class, "unknown"));
         break;
     }
-    builder.append("</center><html>");
+    if (!availability.detail.isEmpty()) {
+      builder.append("<br>");
+      builder.append(availability.detail);
+    }
+    builder.append("<html>");
     ((JLabel) component).setText(builder.toString());
+    ((JLabel) component).setVerticalAlignment(CENTER);
+    ((JLabel) component).setHorizontalAlignment(CENTER);
     return component;
   }
 }

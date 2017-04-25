@@ -16,10 +16,10 @@ import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import static busexplorer.utils.Status.FAILURE;
-import static busexplorer.utils.Status.ONLINE;
-import static busexplorer.utils.Status.UNEXPECTED;
-import static busexplorer.utils.Status.UNREACHABLE;
+import static busexplorer.utils.Availability.Status.FAILURE;
+import static busexplorer.utils.Availability.Status.ONLINE;
+import static busexplorer.utils.Availability.Status.UNEXPECTED;
+import static busexplorer.utils.Availability.Status.UNREACHABLE;
 
 /**
  * Ação que atualiza a tabela de ofertas
@@ -46,10 +46,8 @@ public class OfferStatusAction extends OpenBusAction<OfferWrapper> {
    */
   @Override
   public boolean abilityConditions() {
-    if ((Application.login() != null) && (getTablePanelComponent().getSelectedElements().size() > 0)) {
-      return true;
-    }
-    return false;
+    return ((Application.login() != null) &&
+            (getTablePanelComponent().getSelectedElements().size() > 0));
   }
 
   @Override
@@ -64,18 +62,14 @@ public class OfferStatusAction extends OpenBusAction<OfferWrapper> {
         List<OfferWrapper> offers = getTablePanelComponent().getSelectedElements();
         for (OfferWrapper offer : offers) {
           try {
-            if (offer.getDescriptor().service_ref._non_existent()) {
-              offer.setStatus(UNREACHABLE); // OBJECT_NOT_EXIST
-            } else {
-              offer.setStatus(ONLINE);
-            }
+            offer.getDescriptor().service_ref.getComponentId();
+            offer.updateStatus(ONLINE, null);
           } catch (TRANSIENT e) {
-            offer.setStatus(UNREACHABLE);
+            offer.updateStatus(UNREACHABLE, e);
           } catch (COMM_FAILURE e) {
-            offer.setStatus(FAILURE);
+            offer.updateStatus(FAILURE, e);
           } catch (Exception e) {
-            // TODO: status poderia ser um objeto { int, string } para salvar a stacktrace
-            offer.setStatus(UNEXPECTED);
+            offer.updateStatus(UNEXPECTED, e);
           }
           i++;
           this.setProgressStatus(100*i/offers.size());

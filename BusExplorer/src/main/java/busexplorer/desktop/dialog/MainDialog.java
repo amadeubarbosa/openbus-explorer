@@ -458,26 +458,31 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.busloglevel")), "grow");
     final JSpinner busLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
     busLogLevelSpinner.setToolTipText(LNG.get("MainDialog.conf.busloglevel.tooltip"));
+    busLogLevelSpinner.setEnabled(false);
     settingsPanel.add(busLogLevelSpinner,"grow");
 
     settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.oilloglevel")),"grow");
     final JSpinner oilLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 6, 1));
     oilLogLevelSpinner.setToolTipText(LNG.get("MainDialog.conf.oilloglevel.tooltip"));
+    oilLogLevelSpinner.setEnabled(false);
     settingsPanel.add(oilLogLevelSpinner,"grow");
 
     settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.maxchannels")),"grow");
     final JSpinner maxChannelsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1024, 1));
     maxChannelsSpinner.setToolTipText(LNG.get("MainDialog.conf.maxchannels.tooltip"));
+    maxChannelsSpinner.setEnabled(false);
     settingsPanel.add(maxChannelsSpinner,"grow");
 
     settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.maxcachesize")), "grow");
     final JSpinner maxCacheSizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     maxCacheSizeSpinner.setToolTipText(LNG.get("MainDialog.conf.maxcachesize.tooltip"));
+    maxCacheSizeSpinner.setEnabled(false);
     settingsPanel.add(maxCacheSizeSpinner, "grow");
 
     settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.timeout")), "grow");
     final JSpinner timeoutSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
     timeoutSpinner.setToolTipText(LNG.get("MainDialog.conf.timeout.tooltip"));
+    timeoutSpinner.setEnabled(false);
     settingsPanel.add(timeoutSpinner, "grow");
 
     final JButton cancelButton = new JButton(LNG.get("MainDialog.conf.cancel"));
@@ -561,9 +566,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     ChangeListener activateButtons = new ChangeListener() {
       @Override
       public void stateChanged(ChangeEvent changeEvent) {
-        if (Application.login().hasAdminRights()) {
-          applyButton.setEnabled(true);
-        }
+        applyButton.setEnabled(true);
         cancelButton.setEnabled(true);
       }
     };
@@ -580,11 +583,16 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     final RefreshablePanel customPanel = new RefreshablePanel() {
       @Override
       public void refresh(ActionEvent event) {
-      if (Application.login().hasAdminRights()) {
-        restoreDefaultsButton.setEnabled(true);
-      } else {
-        restoreDefaultsButton.setEnabled(false);
-      }
+      boolean isAdmin = Application.login().hasAdminRights();
+      restoreDefaultsButton.setEnabled(isAdmin);
+      applyButton.setEnabled(isAdmin);
+      cancelButton.setEnabled(isAdmin);
+      busLogLevelSpinner.setEnabled(isAdmin);
+      oilLogLevelSpinner.setEnabled(isAdmin);
+      maxChannelsSpinner.setEnabled(isAdmin);
+      maxCacheSizeSpinner.setEnabled(isAdmin);
+      timeoutSpinner.setEnabled(isAdmin);
+
       adminsPanel.refresh(event);
       validatorsPanel.refresh(event);
       getBasicConfFromBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.waiting.title"),

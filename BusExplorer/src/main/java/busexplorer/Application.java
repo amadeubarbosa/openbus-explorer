@@ -38,6 +38,7 @@ public class Application {
 
   private static BusAdmin admin = new BusAdminImpl();
 
+  public static final String APPLICATION_LOGIN = "Application.login";
   /**
    * Inicializa a aplicação, criando o diálogo de login.
    */
@@ -79,7 +80,7 @@ public class Application {
     LoginDialog loginDialog = new LoginDialog(mainDialog, admin);
     loginDialog.setVisible(true);
     login = loginDialog.getLogin();
-    loginPcs.firePropertyChange("Application.login", null, login);
+    loginPcs.firePropertyChange(APPLICATION_LOGIN, null, login);
   }
 
   /**

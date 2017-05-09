@@ -75,6 +75,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
@@ -529,6 +530,16 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     applyButton.setEnabled(false);
     applyButton.setToolTipText(LNG.get("MainDialog.conf.apply.tooltip"));
 
+    // force a different disabled text color to make spinner values visible
+    // even if user is not allowed to edit
+    for (Component c : settingsPanel.getComponents()) {
+      if (c instanceof JSpinner) {
+        JSpinner spinner = (JSpinner) c;
+        ((JSpinner.NumberEditor) spinner.getEditor())
+          .getTextField().setDisabledTextColor(UIManager.getColor("TextField.foreground"));
+      }
+    }
+
     settingsPanel.add(cancelButton,"gapleft push");
     settingsPanel.add(applyButton,"gapleft push");
 
@@ -617,14 +628,6 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     final RefreshablePanel customPanel = new RefreshablePanel() {
       @Override
       public void refresh(ActionEvent event) {
-        boolean isAdmin = Application.login().hasAdminRights();
-
-        restoreDefaultsButton.setEnabled(isAdmin);
-        for (Component c : settingsPanel.getComponents()) {
-          if (c instanceof JSpinner) {
-            c.setEnabled(isAdmin);
-          }
-        }
         adminsPanel.refresh(event);
         validatorsPanel.refresh(event);
         getBasicConfFromBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.waiting.title"),
@@ -667,6 +670,20 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     customPanel.add(adminsPanel, "spany 2, grow");
     customPanel.add(validatorsPanel, "grow");
     customPanel.add(restoreDefaultsPanel, "spanx 2, grow");
+
+    // trigger to enable controls if user is admin executed by BusExplorer login completion task
+    notifiers.add(isAdmin -> {
+      if (admin.isReconfigurationCapable()) {
+        restoreDefaultsButton.setEnabled(isAdmin);
+        for (Component c : settingsPanel.getComponents()) {
+          if (c instanceof JSpinner) {
+            JSpinner spinner = (JSpinner) c;
+            spinner.setEnabled(isAdmin);
+            ((JSpinner.NumberEditor) spinner.getEditor()).getTextField().setEditable(isAdmin);
+          }
+        }
+      }
+    });
 
     return customPanel;
   }

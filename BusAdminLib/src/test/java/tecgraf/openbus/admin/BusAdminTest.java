@@ -9,17 +9,22 @@ import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import scs.core.ComponentContext;
 import tecgraf.openbus.Connection;
+import tecgraf.openbus.LocalOffer;
 import tecgraf.openbus.OpenBusContext;
+import tecgraf.openbus.RemoteOffer;
 import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
-import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 
 public class BusAdminTest {
 
+  private static final int MAX_OFFERS_TO_REGISTER = 5;
+  private static final String TEST_SPECIFIC_PROPERTY = "BusExplorer Test";
   private static String host;
   private static short port;
   private static String entity;
@@ -52,17 +57,40 @@ public class BusAdminTest {
     BusAdminImpl admin = new BusAdminImpl();
     admin.getAdminFacets(host, port, orb);
 
-    int index;
-    for (index = 0; index < 5; index++) {
+    ArrayList<LocalOffer> locals = new ArrayList<>();
+    for (int i = 0; i < MAX_OFFERS_TO_REGISTER; i++) {
       ComponentContext component = Utils.buildComponent(orb);
       ArrayListMultimap<String,String> props = ArrayListMultimap.create();
-      props.put("offer.domain", "BusAdminLib Test");
-      props.put("loop.index", Integer.toString(index));
-      conn.offerRegistry().registerService(component.getIComponent(), props);
+      props.put("offer.domain", TEST_SPECIFIC_PROPERTY);
+      props.put("loop.index", Integer.toString(i));
+      // tarefas assíncronas
+      locals.add(conn.offerRegistry()
+              .registerService(component.getIComponent(), props));
     }
-    List<ServiceOfferDesc> found = admin.getOffers();
-    Assert.assertTrue(found.size() >= index);
-    conn.logout();
+    // sincronização
+    ConcurrentLinkedQueue<RemoteOffer> expected = new ConcurrentLinkedQueue<RemoteOffer>();
+    locals.parallelStream().forEach(localOffer -> {
+      try {
+        expected.add(localOffer.remoteOffer());
+      } catch (Exception e) {
+        Assert.fail(e.getMessage());
+      }
+    });
+    // fim da barreira de sincronização
+    Assert.assertEquals(MAX_OFFERS_TO_REGISTER, expected.size());
+    // tarefa síncrona porque usa as interfaces de administração diretamente
+    List<ServiceOfferDesc> allOffers = admin.getOffers();
+
+    expected.removeIf(serviceOfferDesc -> {
+      for (int i=0; i< allOffers.size(); i++) {
+        if (allOffers.get(i).ref.owner().id.equals(serviceOfferDesc.owner().id)) {
+          return true;
+        }
+      }
+      return false;
+    });
+    Assert.assertEquals(0, expected.size());
+    Assert.assertTrue(conn.logout());
     orb.shutdown(true);
     orb.destroy();
   }

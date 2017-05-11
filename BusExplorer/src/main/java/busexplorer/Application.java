@@ -9,12 +9,19 @@ import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.admin.BusAdminImpl;
 
 import javax.swing.JOptionPane;
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.Color;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.Properties;
+
+import static busexplorer.desktop.dialog.MainDialog.COMPATIBILITY_FOREGROUND;
+import static busexplorer.desktop.dialog.MainDialog.TABBED_PANE_DISABLED_TEXT;
 
 /**
  * Classe principal da aplicação.
@@ -39,6 +46,34 @@ public class Application {
   private static BusAdmin admin = new BusAdminImpl();
 
   public static final String APPLICATION_LOGIN = "Application.login";
+
+  static {
+    LookAndFeel javaRuntimeDefault = UIManager.getLookAndFeel();
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (Exception e) {
+      try {
+        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+      } catch (Exception e1) {
+        try {
+          // restore java runtime default
+          UIManager.setLookAndFeel(javaRuntimeDefault);
+        } catch (UnsupportedLookAndFeelException e2) {
+          e2.printStackTrace();
+        }
+      }
+    }
+    // hack to override foreground color on disabled tabs in some platforms like MacOSX
+    // pick the most compliant property over known platforms = Label.disabledForeground
+    //   http://nadeausoftware.com/articles/2008/11/all_ui_defaults_names_common_java_look_and_feels_windows_mac_os_x_and_linux
+    Color disabledTextColor =
+      UIManager.getColor(TABBED_PANE_DISABLED_TEXT) != null
+        ? UIManager.getColor(TABBED_PANE_DISABLED_TEXT)
+        : UIManager.getColor(COMPATIBILITY_FOREGROUND);
+    // ugly but some component is testing color references instead of equals method!
+    UIManager.put(TABBED_PANE_DISABLED_TEXT, new Color(disabledTextColor.getRGB()));
+  }
+
   /**
    * Inicializa a aplicação, criando o diálogo de login.
    */

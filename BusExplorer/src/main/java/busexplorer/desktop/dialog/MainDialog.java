@@ -109,6 +109,10 @@ import static busexplorer.Application.APPLICATION_LOGIN;
  * @author Tecgraf
  */
 public class MainDialog extends JFrame implements PropertyChangeListener {
+  public static final String TABBED_PANE_DISABLED_TEXT = "TabbedPane.disabledText";
+  public static final String TABBED_PANE_FOREGROUND = "TabbedPane.foreground";
+  public static final String COMPATIBILITY_FOREGROUND = "Label.disabledForeground";
+
   public ArrayList<Consumer<Boolean>> notifiers = new ArrayList<>();
   /**
    * Acessa os serviços barramento relacionados à administração.
@@ -260,8 +264,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     HashMap<String, JComponent> conceptsPanels = new LinkedHashMap<>();
     conceptsPanels.put("offer",  initPanelOffer());
     conceptsPanels.put("login",  initPanelLogin());
-    conceptsPanels.put("editor", initPanelEditor());
     conceptsPanels.put("conf",   initPanelConfiguration());
+    conceptsPanels.put("editor", initPanelEditor());
     for (String concept : conceptsPanels.keySet()) {
       String tabTitle = LNG.get("MainDialog." + concept + ".title");
       String tabTooltip = LNG.get("MainDialog." + concept + ".toolTip");
@@ -276,14 +280,11 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     });
 
     notifiers.add(isAdmin -> {
-      featuresPane.setEnabledAt(featuresPane
-              .indexOfComponent(conceptsPanels.get("login")), isAdmin);
+      disableTab(featuresPane, conceptsPanels.get("login"), isAdmin);
 
       // A ativação da aba de configurações segue uma regra
       // diferenciada para suportar busservices < 2.0.0.9
-      featuresPane.setEnabledAt(featuresPane
-                      .indexOfComponent(conceptsPanels.get("conf")),
-              admin.isReconfigurationCapable());
+      disableTab(featuresPane, conceptsPanels.get("conf"), admin.isReconfigurationCapable());
 
       // Seleciona a primeira aba do pane de funcionalidades.
       featuresPane.setSelectedIndex(0);
@@ -294,6 +295,16 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     });
 
     add(featuresPane, BorderLayout.CENTER);
+  }
+
+  private static void disableTab(JTabbedPane pane, Component component, Boolean enabled) {
+    int index = pane.indexOfComponent(component);
+    pane.setEnabledAt(index, enabled);
+    if (!enabled) {
+      pane.setForegroundAt(index, UIManager.getColor(TABBED_PANE_DISABLED_TEXT));
+    } else {
+      pane.setForegroundAt(index, UIManager.getColor(TABBED_PANE_FOREGROUND));
+    }
   }
 
   private JComponent initPanelEditor() {
@@ -316,8 +327,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       }
     });
     notifiers.add(isAdmin -> {
-      int index = editorPane.indexOfComponent(conceptsPanels.get("certificate"));
-      editorPane.setEnabledAt(index, isAdmin);
+      disableTab(editorPane, conceptsPanels.get("certificate"), isAdmin);
       editorPane.setSelectedIndex(0);
       ((RefreshablePanel) editorPane.getSelectedComponent()).refresh(null);
     });

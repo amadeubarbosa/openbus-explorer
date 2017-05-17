@@ -2,7 +2,6 @@ package tecgraf.openbus.admin;
 
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
-
 import scs.core.IComponent;
 import scs.core.IComponentHelper;
 import tecgraf.javautils.core.lng.LNG;
@@ -478,7 +477,6 @@ public class BusAdminImpl implements BusAdmin {
       iComponent.getFacet(ConfigurationHelper.id());
     if (configurationObj != null) {
       this.configuration = ConfigurationHelper.narrow(configurationObj);
-
     }
   }
 }

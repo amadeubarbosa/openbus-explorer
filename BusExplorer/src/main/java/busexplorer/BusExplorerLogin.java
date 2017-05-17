@@ -16,6 +16,8 @@ import tecgraf.openbus.core.v2_1.BusObjectKey;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
+import tecgraf.openbus.extension.BusExtensionFacade;
+import tecgraf.openbus.extension.BusExtensionImpl;
 
 /**
  * Trata, analisa e armazena dados de login no barramento.
@@ -37,6 +39,8 @@ public class BusExplorerLogin {
   private Connection conn;
   /** Tentativas de login */
   private static final short MAX_RETRIES = 3;
+  public BusExtensionFacade extension;
+
   /**
    * Construtor
    *
@@ -161,6 +165,7 @@ public class BusExplorerLogin {
         login.conn.loginByPassword(login.entity, password.getBytes(), domain);
         login.getAdminFacets();
         login.checkAdminRights();
+        login.extension = new BusExtensionImpl(login.conn.offerRegistry());
         done = true;
         break;
       }

@@ -35,12 +35,30 @@ import busexplorer.panel.configuration.validators.ValidatorRefreshAction;
 import busexplorer.panel.configuration.validators.ValidatorRestartAction;
 import busexplorer.panel.configuration.validators.ValidatorTableProvider;
 import busexplorer.panel.configuration.validators.ValidatorWrapper;
+import busexplorer.panel.consumers.ConsumerAddAction;
+import busexplorer.panel.consumers.ConsumerDeleteAction;
+import busexplorer.panel.consumers.ConsumerEditAction;
+import busexplorer.panel.consumers.ConsumerRefreshAction;
+import busexplorer.panel.consumers.ConsumerTableProvider;
+import busexplorer.panel.consumers.ConsumerWrapper;
+import busexplorer.panel.contracts.ContractAddAction;
+import busexplorer.panel.contracts.ContractDeleteAction;
+import busexplorer.panel.contracts.ContractEditAction;
+import busexplorer.panel.contracts.ContractRefreshAction;
+import busexplorer.panel.contracts.ContractTableProvider;
+import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.entities.EntityAddAction;
 import busexplorer.panel.entities.EntityDeleteAction;
 import busexplorer.panel.entities.EntityEditAction;
 import busexplorer.panel.entities.EntityRefreshAction;
 import busexplorer.panel.entities.EntityTableProvider;
 import busexplorer.panel.entities.EntityWrapper;
+import busexplorer.panel.integrations.IntegrationAddAction;
+import busexplorer.panel.integrations.IntegrationDeleteAction;
+import busexplorer.panel.integrations.IntegrationEditAction;
+import busexplorer.panel.integrations.IntegrationRefreshAction;
+import busexplorer.panel.integrations.IntegrationTableProvider;
+import busexplorer.panel.integrations.IntegrationWrapper;
 import busexplorer.panel.interfaces.InterfaceAddAction;
 import busexplorer.panel.interfaces.InterfaceDeleteAction;
 import busexplorer.panel.interfaces.InterfaceRefreshAction;
@@ -56,6 +74,12 @@ import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferStatusAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.panel.offers.OfferWrapper;
+import busexplorer.panel.providers.ProviderAddAction;
+import busexplorer.panel.providers.ProviderDeleteAction;
+import busexplorer.panel.providers.ProviderEditAction;
+import busexplorer.panel.providers.ProviderRefreshAction;
+import busexplorer.panel.providers.ProviderTableProvider;
+import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Utils;
@@ -309,12 +333,13 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
   private JComponent initPanelEditor() {
     JTabbedPane editorPane = new JTabbedPane(JTabbedPane.TOP);
-    HashMap<String, RefreshablePanel> conceptsPanels = new LinkedHashMap<>();
+    HashMap<String, JComponent> conceptsPanels = new LinkedHashMap<>();
     conceptsPanels.put("category",      initPanelCategory());
     conceptsPanels.put("entity",        initPanelEntity());
     conceptsPanels.put("certificate",   initPanelCertificate());
     conceptsPanels.put("interface",     initPanelInterface());
     conceptsPanels.put("authorization", initPanelAuthorization());
+    conceptsPanels.put("integration",   initExtensionEditor());
     for (String concept : conceptsPanels.keySet()) {
       String tabTitle = LNG.get("MainDialog." + concept + ".title");
       String tabTooltip = LNG.get("MainDialog." + concept + ".toolTip");
@@ -327,14 +352,98 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       }
     });
     notifiers.add(isAdmin -> {
-      disableTab(editorPane, conceptsPanels.get("certificate"), isAdmin);
       editorPane.setSelectedIndex(0);
       ((RefreshablePanel) editorPane.getSelectedComponent()).refresh(null);
+      disableTab(editorPane, conceptsPanels.get("certificate"), isAdmin);
+      disableTab(editorPane, conceptsPanels.get("integration"),
+        Application.login().extension.isExtensionCapable());
     });
     return editorPane;
   }
 
-  /**
+    private JComponent initExtensionEditor() {
+        JTabbedPane editorPane = new JTabbedPane(JTabbedPane.TOP);
+        HashMap<String, RefreshablePanel> conceptsPanels = new LinkedHashMap<>();
+        conceptsPanels.put("extension.overview", initPanelIntegrationOverview());
+        conceptsPanels.put("extension.consumer", initPanelIntegrationConsumer());
+        conceptsPanels.put("extension.provider", initPanelIntegrationProvider());
+        conceptsPanels.put("extension.contract", initPanelIntegrationContract());
+        for (String concept : conceptsPanels.keySet()) {
+            String tabTitle = LNG.get("MainDialog." + concept + ".title");
+            String tabTooltip = LNG.get("MainDialog." + concept + ".toolTip");
+            editorPane.addTab(tabTitle, null,  conceptsPanels.get(concept), tabTooltip);
+        }
+        editorPane.addChangeListener(changeEvent -> {
+            Component selected = editorPane.getSelectedComponent();
+            if (selected instanceof RefreshDelegate) {
+                ((RefreshDelegate) selected).refresh(null);
+            }
+        });
+
+        return editorPane;
+    }
+
+  private RefreshablePanel initPanelIntegrationContract() {
+    ObjectTableModel<ContractWrapper> model = new ObjectTableModel<>(new
+      ArrayList<>(), new ContractTableProvider());
+
+    List<TablePanelActionInterface<ContractWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<ContractWrapper>>(3);
+    actionsVector.add(new ContractRefreshAction(this, admin));
+    actionsVector.add(new ContractAddAction(this, admin));
+    actionsVector.add(new ContractEditAction(this, admin));
+    actionsVector.add(new ContractDeleteAction(this, admin));
+
+    return
+      new TablePanelComponent<ContractWrapper>(model, actionsVector, true);
+  }
+
+  private RefreshablePanel initPanelIntegrationProvider() {
+    ObjectTableModel<ProviderWrapper> model = new ObjectTableModel<>(new
+      ArrayList<>(), new ProviderTableProvider());
+
+    List<TablePanelActionInterface<ProviderWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<ProviderWrapper>>(3);
+    actionsVector.add(new ProviderRefreshAction(this, admin));
+    actionsVector.add(new ProviderAddAction(this, admin));
+    actionsVector.add(new ProviderEditAction(this, admin));
+    actionsVector.add(new ProviderDeleteAction(this, admin));
+
+    return
+      new TablePanelComponent<ProviderWrapper>(model, actionsVector, true);
+  }
+
+  private RefreshablePanel initPanelIntegrationConsumer() {
+    ObjectTableModel<ConsumerWrapper> model = new ObjectTableModel<>(new
+      ArrayList<>(), new ConsumerTableProvider());
+
+    List<TablePanelActionInterface<ConsumerWrapper>> actionsVector =
+      new Vector<TablePanelActionInterface<ConsumerWrapper>>(3);
+    actionsVector.add(new ConsumerRefreshAction(this, admin));
+    actionsVector.add(new ConsumerAddAction(this, admin));
+    actionsVector.add(new ConsumerEditAction(this, admin));
+    actionsVector.add(new ConsumerDeleteAction(this, admin));
+
+    return
+      new TablePanelComponent<ConsumerWrapper>(model, actionsVector, true);
+  }
+
+  private RefreshablePanel initPanelIntegrationOverview() {
+      ObjectTableModel<IntegrationWrapper> model = new ObjectTableModel<>(new
+        ArrayList<>(), new IntegrationTableProvider());
+
+      List<TablePanelActionInterface<IntegrationWrapper>> actionsVector =
+        new Vector<TablePanelActionInterface<IntegrationWrapper>>(3);
+      actionsVector.add(new IntegrationRefreshAction(this, admin));
+      actionsVector.add(new IntegrationAddAction(this, admin));
+      actionsVector.add(new IntegrationEditAction(this, admin));
+      actionsVector.add(new IntegrationDeleteAction(this, admin));
+
+      return
+        new TablePanelComponent<IntegrationWrapper>(model, actionsVector, true);
+    }
+
+    /**
    * Inicializa o painel de CRUD de categorias.
    * @return painel contendo dados e ações relativas a categorias
    */

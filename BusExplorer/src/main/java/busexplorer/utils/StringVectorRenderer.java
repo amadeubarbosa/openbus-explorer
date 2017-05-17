@@ -4,7 +4,9 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -28,14 +30,13 @@ public class StringVectorRenderer extends DefaultTableCellRenderer {
       return component;
     }
 
-    Vector<String> interfaces = (Vector<String>) value;
-    Collections.sort(interfaces);
-    setFont(table.getFont());
+    List<String> values = new ArrayList((List<String>) value);
+    Collections.sort(values);
     StringBuilder builder = new StringBuilder();
     builder.append("<html>");
-    for (int i = 0; i < interfaces.size(); i++) {
-      builder.append(interfaces.get(i));
-      if (i < interfaces.size() - 1) {
+    for (int i = 0; i < values.size(); i++) {
+      builder.append(values.get(i));
+      if (i < values.size() - 1) {
         builder.append("<br>");
       }
     }

@@ -3,7 +3,6 @@ package busexplorer.panel.interfaces;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
@@ -24,8 +23,7 @@ public class InterfaceAddAction extends OpenBusAction<InterfaceWrapper> {
    * @param admin biblioteca de administração
    */
   public InterfaceAddAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(InterfaceAddAction.class.getSimpleName()
-      + ".name"));
+    super(parentWindow, admin);
   }
 
   /**

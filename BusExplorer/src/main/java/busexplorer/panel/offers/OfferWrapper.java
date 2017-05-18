@@ -2,7 +2,6 @@ package busexplorer.panel.offers;
 
 import busexplorer.Application;
 import busexplorer.utils.Availability;
-import busexplorer.utils.Utils;
 import org.jacorb.orb.ORB;
 import org.jacorb.orb.ParsedIOR;
 import org.jacorb.orb.iiop.IIOPAddress;
@@ -10,6 +9,7 @@ import org.jacorb.orb.iiop.IIOPProfile;
 import org.omg.ETF.Profile;
 import scs.core.IComponent;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -47,24 +47,60 @@ public class OfferWrapper {
    */
   public OfferWrapper(ServiceOfferDesc desc) {
     this.desc = desc;
-    this.entity = Utils.getProperty(desc, "openbus.offer.entity");
-    this.interfaces = Utils.getProperties(desc, "openbus.component.interface");
-    int year = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.year"));
+    this.entity = getProperty(desc, "openbus.offer.entity");
+    this.interfaces = getProperties(desc, "openbus.component.interface");
+    int year = Integer.parseInt(getProperty(desc, "openbus.offer.year"));
     // precisa decrementar o mes em 1
     int month =
-      Integer.parseInt(Utils.getProperty(desc, "openbus.offer.month")) - 1;
-    int day = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.day"));
-    int hour = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.hour"));
-    int min = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.minute"));
-    int sec = Integer.parseInt(Utils.getProperty(desc, "openbus.offer.second"));
+      Integer.parseInt(getProperty(desc, "openbus.offer.month")) - 1;
+    int day = Integer.parseInt(getProperty(desc, "openbus.offer.day"));
+    int hour = Integer.parseInt(getProperty(desc, "openbus.offer.hour"));
+    int min = Integer.parseInt(getProperty(desc, "openbus.offer.minute"));
+    int sec = Integer.parseInt(getProperty(desc, "openbus.offer.second"));
     Calendar calendar = Calendar.getInstance();
     calendar.set(year, month, day, hour, min, sec);
     this.date = calendar.getTime();
-    this.name = Utils.getProperty(desc, "openbus.component.name");
-    String version = Utils.getProperty(desc, "openbus.component.version.major");
-    version += "." + Utils.getProperty(desc, "openbus.component.version.minor");
-    version += "." + Utils.getProperty(desc, "openbus.component.version.patch");
+    this.name = getProperty(desc, "openbus.component.name");
+    String version = getProperty(desc, "openbus.component.version.major");
+    version += "." + getProperty(desc, "openbus.component.version.minor");
+    version += "." + getProperty(desc, "openbus.component.version.patch");
     this.version = version;
+  }
+
+  /**
+   * Recupera o valor de uma dada propriedade em uma oferta.
+   *
+   * @param offer o descritor da oferta
+   * @param prop a propriedade sendo buscada
+   * @return o valor da propriedade na oferta, ou <code>null</code> caso não a
+   *         propriedade não exista.
+   */
+  static public String getProperty(ServiceOfferDesc offer, String prop) {
+    ServiceProperty[] properties = offer.properties;
+    for (ServiceProperty property : properties) {
+      if (property.name.equals(prop)) {
+        return property.value;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Recupera os valores de uma dada propriedade em uma oferta.
+   *
+   * @param offer o descritor da oferta
+   * @param prop a propriedade sendo buscada
+   * @return a lista de valores na propriedade na oferta.
+   */
+  static public Vector<String> getProperties(ServiceOfferDesc offer, String prop) {
+    Vector<String> list = new Vector<>();
+    ServiceProperty[] properties = offer.properties;
+    for (ServiceProperty property : properties) {
+      if (property.name.equals(prop)) {
+        list.add(property.value);
+      }
+    }
+    return list;
   }
 
   /**

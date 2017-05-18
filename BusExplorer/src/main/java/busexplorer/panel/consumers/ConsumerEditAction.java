@@ -3,7 +3,6 @@ package busexplorer.panel.consumers;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
@@ -12,8 +11,7 @@ import java.awt.event.ActionEvent;
 public class ConsumerEditAction extends OpenBusAction<ConsumerWrapper> {
 
   public ConsumerEditAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(ConsumerEditAction.class.getSimpleName()
-      + ".name"));
+    super(parentWindow, admin);
   }
 
   /**

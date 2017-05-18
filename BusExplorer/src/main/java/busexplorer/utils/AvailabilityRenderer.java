@@ -36,22 +36,22 @@ public class AvailabilityRenderer extends DefaultTableCellRenderer {
       case ONLINE:
         component.setForeground(Color.WHITE);
         component.setBackground(new Color(40, 155, 44));
-        builder.append(Utils.getString(Availability.class, "online"));
+        builder.append(Language.get(Availability.class, "online"));
         break;
       case UNREACHABLE:
         component.setBackground(new Color(188,20,48));
         component.setForeground(Color.WHITE);
-        builder.append(Utils.getString(Availability.class, "unreachable"));
+        builder.append(Language.get(Availability.class, "unreachable"));
         break;
       case FAILURE:
         component.setBackground(new Color(255,212,43));
         component.setForeground(Color.BLACK);
-        builder.append(Utils.getString(Availability.class, "failure"));
+        builder.append(Language.get(Availability.class, "failure"));
         break;
       case UNEXPECTED:
         component.setBackground(new Color(221, 138, 28));
         component.setForeground(Color.BLACK);
-        builder.append(Utils.getString(Availability.class, "unexpected"));
+        builder.append(Language.get(Availability.class, "unexpected"));
         break;
       default:
         if (isSelected) {
@@ -61,7 +61,7 @@ public class AvailabilityRenderer extends DefaultTableCellRenderer {
           component.setBackground(UIManager.getColor("Table.background"));
           component.setForeground(UIManager.getColor("Table.foreground"));
         }
-        builder.append(Utils.getString(Availability.class, "unknown"));
+        builder.append(Language.get(Availability.class, "unknown"));
         break;
     }
     if (!availability.detail.isEmpty()) {

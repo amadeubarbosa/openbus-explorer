@@ -1,6 +1,6 @@
 package busexplorer.panel.interfaces;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 /**
@@ -19,7 +19,7 @@ public class InterfaceTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    return new String[] { Utils.getString(this.getClass(), "interface") };
+    return new String[] { Language.get(this.getClass(), "interface") };
   }
 
   /**

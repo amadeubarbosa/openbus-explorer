@@ -4,8 +4,8 @@ import busexplorer.ApplicationIcons;
 import busexplorer.utils.Availability;
 import busexplorer.utils.AvailabilityRenderer;
 import busexplorer.utils.DateTimeRenderer;
+import busexplorer.utils.Language;
 import busexplorer.utils.StringVectorRenderer;
-import busexplorer.utils.Utils;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
 import tecgraf.javautils.gui.table.ObjectTableModel;
@@ -153,7 +153,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
 
           addBtn = new JButton(action);
           addBtn
-            .setToolTipText(Utils.getString(this.getClass(), "add.tooltip"));
+            .setToolTipText(Language.get(this.getClass(), "add.tooltip"));
           addBtn.setIcon(ApplicationIcons.ICON_ADD_16);
           hasBtns = true;
           break;
@@ -163,7 +163,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
           removeAction.setEnabled(false);
 
           removeBtn = new JButton(action);
-          removeBtn.setToolTipText(Utils.getString(this.getClass(),
+          removeBtn.setToolTipText(Language.get(this.getClass(),
             "remove.tooltip"));
           removeBtn.setIcon(ApplicationIcons.ICON_DELETE_16);
           hasBtns = true;
@@ -174,7 +174,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
           editAction.setEnabled(false);
 
           editBtn = new JButton(action);
-          editBtn.setToolTipText(Utils.getString(this.getClass(),
+          editBtn.setToolTipText(Language.get(this.getClass(),
             "edit.tooltip"));
           editBtn.setIcon(ApplicationIcons.ICON_EDIT_16);
           hasBtns = true;
@@ -228,27 +228,27 @@ public class TablePanelComponent<T> extends RefreshablePanel {
     final JPanel panel = new JPanel(new GridBagLayout());
     GBC gbc = new GBC(0, 0).west().insets(10, 10, 10, 0);
     final JLabel filterLabel =
-      new JLabel(Utils.getString(this.getClass(), "filter.label"));
+      new JLabel(Language.get(this.getClass(), "filter.label"));
     panel.add(filterLabel, gbc);
 
     filterText = new JTextField();
     gbc = new GBC(1, 0).insets(10).horizontal().filly();
     panel.add(filterText, gbc);
-    filterText.setToolTipText(Utils
-      .getString(this.getClass(), "filter.tooltip"));
+    filterText.setToolTipText(Language
+      .get(this.getClass(), "filter.tooltip"));
 
-    clearButton = new JButton(Utils.getString(this.getClass(), "filter.clear"));
+    clearButton = new JButton(Language.get(this.getClass(), "filter.clear"));
     gbc = new GBC(2, 0).east().insets(10, 0, 10, 10);
-    clearButton.setToolTipText(Utils.getString(this.getClass(),
+    clearButton.setToolTipText(Language.get(this.getClass(),
       "filter.clear.tooltip"));
     clearButton.setIcon(ApplicationIcons.ICON_CLEAR_16);
     panel.add(clearButton, gbc);
 
     JButton refreshButton =
-      new JButton(Utils.getString(this.getClass(), "refresh"));
+      new JButton(Language.get(this.getClass(), "refresh"));
     refreshButton.setAction(refreshAction);
     gbc = new GBC(3, 0).east().insets(10, 0, 10, 10);
-    refreshButton.setToolTipText(Utils.getString(this.getClass(),
+    refreshButton.setToolTipText(Language.get(this.getClass(),
       "refresh.tooltip"));
     refreshButton.setIcon(ApplicationIcons.ICON_REFRESH_16);
     panel.add(refreshButton, gbc);

@@ -74,7 +74,7 @@ public class BusAdminImpl implements BusAdmin {
    * @param port Porta do barramento
    * @param orb ORB do barramento
    */
-  public void getAdminFacets(String host, int port, ORB orb) {
+  public void getAdminFacets(String host, short port, ORB orb) {
     org.omg.CORBA.Object ref = buildCorbaLoc(host, port, orb);
     obtainRegistries(ref);
   }
@@ -414,7 +414,7 @@ public class BusAdminImpl implements BusAdmin {
   /**
    * {@inheritDoc}
    */
-  private static org.omg.CORBA.Object buildCorbaLoc(String host, int port,
+  private static org.omg.CORBA.Object buildCorbaLoc(String host, short port,
     ORB orb) {
     String str =
       String.format("corbaloc::1.0@%s:%d/%s", host, port, BusObjectKey.value);

@@ -3,7 +3,7 @@ package busexplorer;
 import busexplorer.desktop.dialog.LoginDialog;
 import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.BusExplorerExceptionHandler;
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.admin.BusAdminImpl;
@@ -82,8 +82,6 @@ public class Application {
   public static void main(String[] args) {
     LNG.load("busadminlib.resources.language.idiom", new Locale("pt", "BR"));
     LNG.load("busexplorer.resources.language.idiom", new Locale("pt", "BR"));
-    LNG.load("reuse.modified.logistic.client.resources.language.idiom",
-      new Locale("pt", "BR"));
 
     final Properties properties = new Properties();
     try {
@@ -94,8 +92,8 @@ public class Application {
       in.close();
     }
     catch (IOException e) {
-      JOptionPane.showMessageDialog(null, Utils.getString(MainDialog.class,
-        "error.properties.file"), Utils.getString(MainDialog.class,
+      JOptionPane.showMessageDialog(null, Language.get(MainDialog.class,
+        "error.properties.file"), Language.get(MainDialog.class,
         "error.properties.title"), JOptionPane.ERROR_MESSAGE);
     }
 

@@ -1,7 +1,7 @@
 package busexplorer.panel.offers;
 
 import busexplorer.utils.Availability;
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 import java.util.Date;
@@ -35,13 +35,13 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
   @Override
   public String[] getColumnNames() {
     return new String[]
-      { Utils.getString(this.getClass(), "entity"),
-          Utils.getString(this.getClass(), "name"),
-          Utils.getString(this.getClass(), "version"),
-          Utils.getString(this.getClass(), "interface"),
-          Utils.getString(this.getClass(), "endpoints"),
-          Utils.getString(this.getClass(), "date"),
-          Utils.getString(this.getClass(), "status")
+      { Language.get(this.getClass(), "entity"),
+          Language.get(this.getClass(), "name"),
+          Language.get(this.getClass(), "version"),
+          Language.get(this.getClass(), "interface"),
+          Language.get(this.getClass(), "endpoints"),
+          Language.get(this.getClass(), "date"),
+          Language.get(this.getClass(), "status")
       };
   }
 

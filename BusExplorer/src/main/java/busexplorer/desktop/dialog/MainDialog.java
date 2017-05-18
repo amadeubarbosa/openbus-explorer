@@ -82,9 +82,8 @@ import busexplorer.panel.providers.ProviderTableProvider;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.admin.BusAdmin;
@@ -227,7 +226,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     buildFeaturesComponent();
     pack();
 
-    setDialogTitle(LNG.get("MainDialog.title.disconnected"));
+    setDialogTitle(Language.get(this.getClass(),"title.disconnected"));
   }
 
   /**
@@ -236,7 +235,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   private void buildTopPanel() {
     JPanel panel = new JPanel(new GridBagLayout());
 
-    disconnect = new JButton(LNG.get("MainDialog.disconnect"));
+    disconnect = new JButton(Language.get(this.getClass(),"disconnect"));
     disconnect.setEnabled(false);
     disconnect.setIcon(ApplicationIcons.ICON_LOGOUT_16);
     disconnect.addActionListener(new ActionListener() {
@@ -248,7 +247,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
           @Override
           protected void performTask() throws Exception {
             Application.login().logout();
-            setDialogTitle(LNG.get("MainDialog.title.disconnected"));
+            setDialogTitle(Language.get(MainDialog.class,"title.disconnected"));
             disconnect.setEnabled(false);
           }
 
@@ -259,14 +258,14 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
         };
 
       int option =
-        JOptionPane.showConfirmDialog(MainDialog.this, Utils.getString(
-          MainDialog.class, "disconnect.confirm.msg"), Utils.getString(
+        JOptionPane.showConfirmDialog(MainDialog.this, Language.get(
+          MainDialog.class, "disconnect.confirm.msg"), Language.get(
           MainDialog.class, "disconnect.confirm.title"),
           JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
       if (option == JOptionPane.YES_OPTION) {
-        task.execute(MainDialog.this, Utils.getString(MainDialog.class,
-          "logout.waiting.title"), Utils.getString(MainDialog.class,
+        task.execute(MainDialog.this, Language.get(MainDialog.class,
+          "logout.waiting.title"), Language.get(MainDialog.class,
           "logout.waiting.msg"));
       }
     }});
@@ -291,8 +290,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     conceptsPanels.put("conf",   initPanelConfiguration());
     conceptsPanels.put("editor", initPanelEditor());
     for (String concept : conceptsPanels.keySet()) {
-      String tabTitle = LNG.get("MainDialog." + concept + ".title");
-      String tabTooltip = LNG.get("MainDialog." + concept + ".toolTip");
+      String tabTitle = Language.get(MainDialog.class, concept + ".title");
+      String tabTooltip = Language.get(MainDialog.class, concept + ".toolTip");
       featuresPane.addTab(tabTitle, null,  conceptsPanels.get(concept), tabTooltip);
     }
 
@@ -341,8 +340,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     conceptsPanels.put("authorization", initPanelAuthorization());
     conceptsPanels.put("integration",   initExtensionEditor());
     for (String concept : conceptsPanels.keySet()) {
-      String tabTitle = LNG.get("MainDialog." + concept + ".title");
-      String tabTooltip = LNG.get("MainDialog." + concept + ".toolTip");
+      String tabTitle = Language.get(MainDialog.class,concept + ".title");
+      String tabTooltip = Language.get(MainDialog.class, concept + ".toolTip");
       editorPane.addTab(tabTitle, null,  conceptsPanels.get(concept), tabTooltip);
     }
     editorPane.addChangeListener(changeEvent -> {
@@ -369,8 +368,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
         conceptsPanels.put("extension.provider", initPanelIntegrationProvider());
         conceptsPanels.put("extension.contract", initPanelIntegrationContract());
         for (String concept : conceptsPanels.keySet()) {
-            String tabTitle = LNG.get("MainDialog." + concept + ".title");
-            String tabTooltip = LNG.get("MainDialog." + concept + ".toolTip");
+            String tabTitle = Language.get(MainDialog.class, concept + ".title");
+            String tabTooltip = Language.get(MainDialog.class, concept + ".toolTip");
             editorPane.addTab(tabTitle, null,  conceptsPanels.get(concept), tabTooltip);
         }
         editorPane.addChangeListener(changeEvent -> {
@@ -620,40 +619,40 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
                     new ValidatorTableProvider()), validatorActionsVector, false);
 
     JPanel settingsPanel = new JPanel(new MigLayout("wrap 2","[grow][]", "[][][][]"));
-    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.busloglevel")), "grow");
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.busloglevel")), "grow");
     final JSpinner busLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
-    busLogLevelSpinner.setToolTipText(LNG.get("MainDialog.conf.busloglevel.tooltip"));
+    busLogLevelSpinner.setToolTipText(Language.get(MainDialog.class,"conf.busloglevel.tooltip"));
     settingsPanel.add(busLogLevelSpinner,"grow");
 
-    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.oilloglevel")),"grow");
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.oilloglevel")),"grow");
     final JSpinner oilLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 6, 1));
-    oilLogLevelSpinner.setToolTipText(LNG.get("MainDialog.conf.oilloglevel.tooltip"));
+    oilLogLevelSpinner.setToolTipText(Language.get(MainDialog.class,"conf.oilloglevel.tooltip"));
     settingsPanel.add(oilLogLevelSpinner,"grow");
 
-    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.maxchannels")),"grow");
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.maxchannels")),"grow");
     final JSpinner maxChannelsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1024, 1));
-    maxChannelsSpinner.setToolTipText(LNG.get("MainDialog.conf.maxchannels.tooltip"));
+    maxChannelsSpinner.setToolTipText(Language.get(MainDialog.class,"conf.maxchannels.tooltip"));
     settingsPanel.add(maxChannelsSpinner,"grow");
 
-    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.maxcachesize")), "grow");
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.maxcachesize")), "grow");
     final JSpinner maxCacheSizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-    maxCacheSizeSpinner.setToolTipText(LNG.get("MainDialog.conf.maxcachesize.tooltip"));
+    maxCacheSizeSpinner.setToolTipText(Language.get(MainDialog.class,"conf.maxcachesize.tooltip"));
     settingsPanel.add(maxCacheSizeSpinner, "grow");
 
-    settingsPanel.add(new JLabel(LNG.get("MainDialog.conf.timeout")), "grow");
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.timeout")), "grow");
     final JSpinner timeoutSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-    timeoutSpinner.setToolTipText(LNG.get("MainDialog.conf.timeout.tooltip"));
+    timeoutSpinner.setToolTipText(Language.get(MainDialog.class,"conf.timeout.tooltip"));
     settingsPanel.add(timeoutSpinner, "grow");
 
-    final JButton cancelButton = new JButton(LNG.get("MainDialog.conf.cancel"));
-    cancelButton.setToolTipText(LNG.get("MainDialog.conf.cancel.tooltip"));
+    final JButton cancelButton = new JButton(Language.get(MainDialog.class,"conf.cancel"));
+    cancelButton.setToolTipText(Language.get(MainDialog.class,"conf.cancel.tooltip"));
     cancelButton.setIcon(ApplicationIcons.ICON_CANCEL_16);
     cancelButton.setEnabled(false);
 
-    final JButton applyButton = new JButton(LNG.get("MainDialog.conf.apply"));
+    final JButton applyButton = new JButton(Language.get(MainDialog.class,"conf.apply"));
     applyButton.setIcon(ApplicationIcons.ICON_VALIDATE_16);
     applyButton.setEnabled(false);
-    applyButton.setToolTipText(LNG.get("MainDialog.conf.apply.tooltip"));
+    applyButton.setToolTipText(Language.get(MainDialog.class,"conf.apply.tooltip"));
 
     // force a different disabled text color to make spinner values visible
     // even if user is not allowed to edit
@@ -722,15 +721,17 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     applyButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent actionEvent) {
-        sendBasicConfToBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.apply.waiting.title"),
-          LNG.get("MainDialog.conf.apply.waiting.msg"));
+        sendBasicConfToBusTask.execute(MainDialog.this,
+          Language.get(MainDialog.class,"conf.apply.waiting.title"),
+          Language.get(MainDialog.class,"conf.apply.waiting.msg"));
       }
     });
     cancelButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent actionEvent) {
-        getBasicConfFromBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.apply.waiting.title"),
-          LNG.get("MainDialog.conf.apply.waiting.msg"));
+        getBasicConfFromBusTask.execute(MainDialog.this,
+          Language.get(MainDialog.class,"conf.apply.waiting.title"),
+          Language.get(MainDialog.class,"conf.apply.waiting.msg"));
       }
     });
     ChangeListener activateButtons = new ChangeListener() {
@@ -747,7 +748,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     oilLogLevelSpinner.addChangeListener(activateButtons);
 
     JPanel restoreDefaultsPanel = new JPanel(new MigLayout("align center"));
-    final JButton restoreDefaultsButton = new JButton(LNG.get("MainDialog.conf.restoredefaults.label"));
+    final JButton restoreDefaultsButton = new JButton(Language.get(MainDialog.class,"conf.restoredefaults.label"));
     restoreDefaultsPanel.add(restoreDefaultsButton);
 
     final RefreshablePanel customPanel = new RefreshablePanel() {
@@ -755,8 +756,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       public void refresh(ActionEvent event) {
         adminsPanel.refresh(event);
         validatorsPanel.refresh(event);
-        getBasicConfFromBusTask.execute(MainDialog.this, LNG.get("MainDialog.conf.waiting.title"),
-          LNG.get("MainDialog.conf.waiting.msg"));
+        getBasicConfFromBusTask.execute(MainDialog.this,
+          Language.get(MainDialog.class,"conf.waiting.title"),
+          Language.get(MainDialog.class,"conf.waiting.msg"));
         }
     };
 
@@ -780,15 +782,19 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
             }
           };
 
-        task.execute(MainDialog.this, LNG.get("MainDialog.conf.waiting.title"),
-          LNG.get("MainDialog.conf.waiting.msg"));
+        task.execute(MainDialog.this,
+          Language.get(MainDialog.class,"conf.waiting.title"),
+          Language.get(MainDialog.class,"conf.waiting.msg"));
       }
     });
 
     Border loweredBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-    settingsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder, LNG.get("MainDialog.conf.settings.label")));
-    adminsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder, LNG.get("MainDialog.conf.admins.label")));
-    validatorsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder, LNG.get("MainDialog.conf.validators.label")));
+    settingsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder,
+      Language.get(MainDialog.class,"conf.settings.label")));
+    adminsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder,
+      Language.get(MainDialog.class,"conf.admins.label")));
+    validatorsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder,
+      Language.get(MainDialog.class,"conf.validators.label")));
 
     customPanel.setLayout(new MigLayout("wrap 2, fill, insets 10","[]10[]","[][grow][]"));
     customPanel.add(settingsPanel, "growx");
@@ -819,6 +825,6 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * @param title Título do diálogo.
    */
   private void setDialogTitle(String title) {
-    setTitle(Utils.getString(Application.class, "title") + " - " + title);
+    setTitle(Language.get(Application.class, "title") + " - " + title);
   }
 }

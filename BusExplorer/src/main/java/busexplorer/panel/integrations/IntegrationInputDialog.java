@@ -8,8 +8,7 @@ import busexplorer.panel.consumers.ConsumerWrapper;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.services.governance.v1_0.Integration;
@@ -75,8 +74,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
   public IntegrationInputDialog(Window parentWindow,
                                 TablePanelComponent<IntegrationWrapper> panel, BusAdmin admin,
                                 List<ConsumerWrapper> consumers, List<ProviderWrapper> providers, List<ContractWrapper> contracts) {
-    super(parentWindow, LNG.get(IntegrationInputDialog.class.getSimpleName()
-      + ".title"), admin);
+    super(parentWindow, admin);
     this.panel = panel;
     for (ConsumerWrapper consumer : consumers) {
       this.consumers.put(consumer.name(), consumer);
@@ -130,8 +128,8 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
     return task.getStatus();
   }
 
@@ -144,7 +142,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
     GBC baseGBC = new GBC().gridx(0).insets(5).west();
 
     consumerLabel =
-      new JLabel(Utils.getString(this.getClass(), "consumer.label"));
+      new JLabel(Language.get(this.getClass(), "consumer.label"));
     panel.add(consumerLabel, new GBC(baseGBC).gridy(0).none());
 
     consumerCombo =
@@ -153,7 +151,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
     panel.add(consumerCombo, new GBC(baseGBC).gridy(1).horizontal());
 
     providerLabel =
-      new JLabel(Utils.getString(this.getClass(), "provider.label"));
+      new JLabel(Language.get(this.getClass(), "provider.label"));
     panel.add(providerLabel, new GBC(baseGBC).gridy(2).none());
 
     providerCombo = new JComboBox<>(providers.keySet().toArray(new String[providers.size()
@@ -161,7 +159,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
     panel.add(providerCombo, new GBC(baseGBC).gridy(3).horizontal());
 
     contractLabel =
-      new JLabel(Utils.getString(this.getClass(), "contract.label"));
+      new JLabel(Language.get(this.getClass(), "contract.label"));
     panel.add(contractLabel, new GBC(baseGBC).gridy(4).none());
 
     contractList = new JList<>(contracts.keySet().toArray(new String[contracts.size()]));
@@ -171,7 +169,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
     panel.add(new JScrollPane(contractList), new GBC(baseGBC).gridy(5).horizontal());
 
     activationLabel =
-      new JLabel(Utils.getString(this.getClass(), "activated.label"));
+      new JLabel(Language.get(this.getClass(), "activated.label"));
     panel.add(activationLabel, new GBC(baseGBC).gridy(6).none());
 
     activationBox =
@@ -188,7 +186,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
   @Override
   public boolean hasValidFields() {
     if (contractList.getSelectedValuesList().size() == 0) {
-      setErrorMessage(Utils.getString(this.getClass(),
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.contracts"));
       return false;
     }

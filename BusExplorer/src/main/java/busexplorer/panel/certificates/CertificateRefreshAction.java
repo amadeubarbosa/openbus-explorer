@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
@@ -27,8 +26,7 @@ public class CertificateRefreshAction extends OpenBusAction<CertificateWrapper> 
    * @param admin biblioteca de administração.
    */
   public CertificateRefreshAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin,
-      LNG.get(CertificateRefreshAction.class.getSimpleName() + ".name"));
+    super(parentWindow, admin);
   }
 
   /**

@@ -5,8 +5,7 @@ import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
@@ -53,8 +52,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   public EntityInputDialog(Window parentWindow,
                            TablePanelComponent<EntityWrapper> panel, BusAdmin admin,
                            List<EntityCategoryDesc> categoryDescList) {
-    super(parentWindow, LNG.get(EntityInputDialog.class.getSimpleName()
-      + ".title"), admin);
+    super(parentWindow, admin);
     this.panel = panel;
     for (EntityCategoryDesc desc : categoryDescList) {
       categories.put(desc.id, desc);
@@ -96,8 +94,8 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
     return task.getStatus();
   }
 
@@ -110,7 +108,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     GBC baseGBC = new GBC().gridx(0).insets(5).west();
 
     categoryIDLabel =
-      new JLabel(Utils.getString(this.getClass(), "categoryID.label"));
+      new JLabel(Language.get(this.getClass(), "categoryID.label"));
     panel.add(categoryIDLabel, new GBC(baseGBC).gridy(0).none());
 
     categoryIDCombo =
@@ -119,14 +117,14 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     panel.add(categoryIDCombo, new GBC(baseGBC).gridy(1).horizontal());
 
     entityIDLabel =
-      new JLabel(Utils.getString(this.getClass(), "entityID.label"));
+      new JLabel(Language.get(this.getClass(), "entityID.label"));
     panel.add(entityIDLabel, new GBC(baseGBC).gridy(2).none());
 
     entityIDField = new JTextField();
     panel.add(entityIDField, new GBC(baseGBC).gridy(3).horizontal());
 
     entityNameLabel =
-      new JLabel(Utils.getString(this.getClass(), "entityName.label"));
+      new JLabel(Language.get(this.getClass(), "entityName.label"));
     panel.add(entityNameLabel, new GBC(baseGBC).gridy(4).none());
 
     entityNameField = new JTextField();
@@ -143,7 +141,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
     String entityID = entityIDField.getText();
 
     if (entityID.equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyID"));
       return false;
     }

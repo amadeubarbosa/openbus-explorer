@@ -1,7 +1,6 @@
 package busexplorer.desktop.dialog;
 
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
 
@@ -295,7 +294,7 @@ public abstract class ExceptionDialog extends JDialog {
 
       // Cria uma árvore de erros/exceções
       final JLabel troubleTreeLabel = new
-        JLabel(Utils.getString(this.getClass(), "exceptionTree"));
+        JLabel(Language.get(this.getClass(), "exceptionTree"));
       this._throwableTree = new JTree(new ThrowableTreeNode(this._throwable));
       this._throwableTree.addTreeSelectionListener(e -> updateFields());
       this._throwableTree.getSelectionModel().setSelectionMode(
@@ -307,7 +306,7 @@ public abstract class ExceptionDialog extends JDialog {
 
       // Cria a área p/ mostrar a mensagem da exceção selecionada na árvore
       final JLabel messageLabel = new
-        JLabel(Utils.getString(this.getClass(), "exceptionMessage"));
+        JLabel(Language.get(this.getClass(), "exceptionMessage"));
       this._messageTextArea =
         new JTextArea(this._throwable.getLocalizedMessage());
       this._messageTextArea.setColumns(_MESSAGE_COLUMNS);
@@ -317,7 +316,7 @@ public abstract class ExceptionDialog extends JDialog {
 
       // Cria a área p/ mostrar a stack da exceção
       final JLabel stackTraceLabel = new
-        JLabel(Utils.getString(this.getClass(), "stackTrace"));
+        JLabel(Language.get(this.getClass(), "stackTrace"));
       this._stackTraceTextArea =
         new JTextArea(getStackTraceText(this._throwable.getStackTrace()));
       this._stackTraceTextArea.setColumns(_STACK_TRACE_COLUMNS);
@@ -509,12 +508,12 @@ public abstract class ExceptionDialog extends JDialog {
 
       c.gridy = 1;
       c.insets = new Insets(12, 0, 0, 0);
-      JLabel jwhere = new JLabel(Utils.getString(this.getClass(),
+      JLabel jwhere = new JLabel(Language.get(this.getClass(),
         "executionError"));
       panel.add(jwhere, c);
       c.gridy = 2;
       c.insets = new Insets(0, 0, 0, 0);
-      panel.add(new JLabel(Utils.getString(this.getClass(), "contactError")),
+      panel.add(new JLabel(Language.get(this.getClass(), "contactError")),
         c);
       return panel;
     }
@@ -557,7 +556,7 @@ public abstract class ExceptionDialog extends JDialog {
      * @param owner janela corrente
      */
     protected CloseAction(ExceptionDialog owner) {
-      this(owner, LNG.get(ExceptionDialog.class.getSimpleName() + ".close"));
+      this(owner, Language.get(ExceptionDialog.class,"close"));
     }
 
     /**
@@ -596,8 +595,7 @@ public abstract class ExceptionDialog extends JDialog {
      * @param owner janela corrente
      */
     protected DetailThrowableAction(ExceptionDialog owner) {
-      super(owner, LNG.get(ExceptionDialog.class.getSimpleName() +
-        ".errorDetails"));
+      super(owner, Language.get(ExceptionDialog.class, "errorDetails"));
     }
 
     /**

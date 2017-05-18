@@ -1,6 +1,6 @@
 package busexplorer.panel.configuration.validators;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 /**
@@ -18,7 +18,7 @@ public class ValidatorTableProvider implements ObjectTableProvider<ValidatorWrap
    */
   @Override
   public String[] getColumnNames() {
-    return new String[]{ Utils.getString(this.getClass(), "validator") };
+    return new String[]{ Language.get(this.getClass(), "validator") };
   }
 
   /**

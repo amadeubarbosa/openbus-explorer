@@ -1,18 +1,17 @@
-package reuse.modified.logistic.client.util;
+package busexplorer.desktop.dialog;
 
-import reuse.modified.logistic.client.action.FrameCancelAction;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
+import busexplorer.utils.Language;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
+import javax.swing.UIManager;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -22,18 +21,16 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 /**
- * Interface para entrada de dados.
- * 
- * Modificada para usar JFrame, ao invés de GenericFrame, e um objeto de acesso
- * ao barramento.
- * 
+ * Diálogo para entrada de dados com suporte embutido à internacionalização
+ * do título através do uso de {@link Language}.
+ *
  */
 public abstract class InputDialog extends JFrame {
 
   /**
    * Imagem de aviso colocada se houver problemas no preenchimento de dados.
    */
-  private static final ImageIcon errorIcon = UI.ERROR_ICON;
+  private static final Icon errorIcon = UIManager.getIcon("OptionPane.errorIcon");
 
   /**
    * Botão de confirmação de dados.
@@ -67,22 +64,91 @@ public abstract class InputDialog extends JFrame {
 
   private Window parentWindow;
 
-  protected BusAdmin admin;
+  /**
+   * Construtor básico com referência à janela pai e preenche o título a partir do
+   *
+   * @param parentWindow janela pai.
+   */
+  public InputDialog(Window parentWindow) {
+    this.setTitle(Language.get(this.getClass(), "title"));
+    init(parentWindow);
+  }
 
   /**
-   * Construtor.
+   * Construtor para criar o frame com um título pré-definido.
    * 
    * @param parentWindow janela pai.
    * @param title título da janela.
-   * @param admin referência para biblioteca do BusAdmin.
    */
-  public InputDialog(Window parentWindow, String title, BusAdmin admin) {
+  public InputDialog(Window parentWindow, String title) {
     super(title);
+    init(parentWindow);
+  }
+
+  private void init(Window parentWindow) {
     this.parentWindow = parentWindow;
-    this.admin = admin;
     messageText = new JTextPane();
     messageText.setFocusable(false);
     buttons = buildButtons();
+  }
+
+  /**
+   * Insere os botões passados como parâmetro em um painel com BoxLayout e
+   * iguala o tamanho dos botões.
+   *
+   * @param buttons array com os botões
+   *
+   * @return o painel criado.
+   */
+  public static JPanel buildButtonPanel(JButton... buttons) {
+    equalizeButtonSizes(buttons);
+    JPanel buttonPanel = new JPanel(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
+    int x = 0;
+    c.gridx = x++;
+    c.gridy = 0;
+    c.anchor = GridBagConstraints.EAST;
+    c.weightx = 1;
+    c.weighty = 0;
+    c.fill = GridBagConstraints.HORIZONTAL;
+    c.insets = new Insets(0, 0, 0, 0);
+    buttonPanel.add(new JLabel(), c);
+
+    for (JButton button : buttons) {
+      c.gridx = x++;
+      c.weightx = 0;
+      c.weighty = 0;
+      c.fill = GridBagConstraints.NONE;
+      c.insets = new Insets(0, 0, 5, 5);
+      buttonPanel.add(button, c);
+    }
+    return buttonPanel;
+  }
+
+  /**
+   * Iguala o tamanho dos botões contidos no array passado como parâmetro.
+   *
+   * @param buttons o array com os botões
+   */
+  public static void equalizeButtonSizes(JButton[] buttons) {
+    Dimension maxSize = new Dimension(0, 0);
+    int i;
+
+    // Encontra maior dimensão
+    for (i = 0; i < buttons.length; ++i) {
+      maxSize.width =
+        Math.max(maxSize.width, buttons[i].getPreferredSize().width);
+      maxSize.height =
+        Math.max(maxSize.height, buttons[i].getPreferredSize().height);
+    }
+
+    // Atribui novos valores para "preferred" e "maximum size", uma vez que
+    // BoxLayout leva ambos os valores em consideração. */
+    for (i = 0; i < buttons.length; ++i) {
+      buttons[i].setPreferredSize((Dimension) maxSize.clone());
+      buttons[i].setMaximumSize((Dimension) maxSize.clone());
+      buttons[i].setMinimumSize((Dimension) maxSize.clone());
+    }
   }
 
   /**
@@ -156,7 +222,6 @@ public abstract class InputDialog extends JFrame {
   private JScrollPane buildMessagePane() {
     messageText.setEditable(false);
     messageText.setBackground(getContentPane().getBackground());
-    messageText.setFont(new Font("Arial", Font.PLAIN, 11));
     JScrollPane pane = new JScrollPane(messageText);
     pane.setPreferredSize(new Dimension(160, 40));
     pane.setBorder(null);
@@ -214,8 +279,8 @@ public abstract class InputDialog extends JFrame {
    * @return painel com os botões.
    */
   private JPanel buildButtons() {
-    accept = new JButton(LNG.get("InputDialog.confirm.button"));
-    accept.setToolTipText(LNG.get("InputDialog.confirm.tooltip"));
+    accept = new JButton(getString("confirm.button"));
+    accept.setToolTipText(getString("confirm.tooltip"));
     accept.addActionListener(ev -> {
       if (accept()) {
         cancelled = false;
@@ -232,9 +297,19 @@ public abstract class InputDialog extends JFrame {
         super.actionPerformed(ev);
       }
     });
-    cancel.setToolTipText(LNG.get("InputDialog.cancel.tooltip"));
+    cancel.setToolTipText(getString("cancel.tooltip"));
 
-    return UI.buildButtonPanel(accept, cancel);
+    return buildButtonPanel(accept, cancel);
+  }
+
+  private String getString(String key) {
+    String acceptText;
+    if (Language.hasKey(this.getClass(),key)) {
+      acceptText = Language.get(this.getClass(), key);
+    } else {
+      acceptText = Language.get(InputDialog.class, key);
+    }
+    return acceptText;
   }
 
   /**

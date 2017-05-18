@@ -1,6 +1,6 @@
 package busexplorer.panel.logins;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 /**
@@ -20,8 +20,8 @@ public class LoginTableProvider implements ObjectTableProvider<LoginWrapper> {
    */
   @Override
   public String[] getColumnNames() {
-    return new String[] { Utils.getString(this.getClass(), "login"),
-      Utils.getString(this.getClass(), "entity") };
+    return new String[] { Language.get(this.getClass(), "login"),
+      Language.get(this.getClass(), "entity") };
   }
 
   /**

@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.StandardDialogs;
 import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
@@ -30,8 +29,7 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
    * @param admin biblioteca de administração
    */
   public AuthorizationAddAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin,
-      LNG.get(AuthorizationAddAction.class.getSimpleName() + ".name"));
+    super(parentWindow, admin);
   }
 
   /**

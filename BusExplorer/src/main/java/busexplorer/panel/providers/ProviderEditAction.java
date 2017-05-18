@@ -6,7 +6,6 @@ import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
@@ -27,8 +26,7 @@ public class ProviderEditAction extends OpenBusAction<ProviderWrapper> {
    * @param admin biblioteca de administração
    */
   public ProviderEditAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(ProviderEditAction.class.getSimpleName()
-      + ".name"));
+    super(parentWindow, admin);
   }
 
   /**

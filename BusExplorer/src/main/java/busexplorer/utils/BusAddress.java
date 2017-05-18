@@ -17,7 +17,7 @@ public class BusAddress {
   /** Host do barramento. */
   private String host;
   /** Porta do barramento. */
-  private int port;
+  private short port;
   /** IOR */
   private String ior;
   /** Tipo de endereço */
@@ -33,7 +33,7 @@ public class BusAddress {
    * @param host host.
    * @param port porta.
    */
-  private BusAddress(String description, String host, int port) {
+  private BusAddress(String description, String host, short port) {
     this.description = description;
     this.host = host;
     this.port = port;
@@ -56,7 +56,7 @@ public class BusAddress {
    * Representação de endereço não especificado.
    */
   private BusAddress() {
-    this.description = Utils.getString(BusAddress.class, "unspecified");
+    this.description = Language.get(BusAddress.class, "unspecified");
     this.type = AddressType.Unspecified;
   }
 
@@ -106,7 +106,7 @@ public class BusAddress {
    *
    * @return A porta especificada.
    */
-  public int getPort() {
+  public short getPort() {
     return port;
   }
 
@@ -153,9 +153,13 @@ public class BusAddress {
       }
       else {
         String[] addressContents = addressStr.split(":");
+        short port = Short
+          .parseShort(addressContents[1]);
+        if (port < 0) {
+          throw new IllegalArgumentException();
+        }
         address =
-          new BusAddress(description, addressContents[0], Integer
-            .parseInt(addressContents[1]));
+          new BusAddress(description, addressContents[0], port);
       }
     }
     catch (Exception e) {

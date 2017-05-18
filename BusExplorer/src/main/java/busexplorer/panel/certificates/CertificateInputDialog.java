@@ -5,9 +5,8 @@ import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import org.apache.commons.io.FileUtils;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.admin.BusAdmin;
 
@@ -18,8 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.GridBagLayout;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 /**
@@ -46,8 +43,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    */
   public CertificateInputDialog(Window parentWindow,
                                 TablePanelComponent<CertificateWrapper> panel, BusAdmin admin) {
-    super(parentWindow, LNG.get(CertificateInputDialog.class.getSimpleName() +
-      ".title"), admin);
+    super(parentWindow, admin);
     this.panel = panel;
   }
 
@@ -80,8 +76,8 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
     return task.getStatus();
   }
 
@@ -94,14 +90,14 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
     GBC baseGBC = new GBC().gridx(0).insets(5).west();
 
     identifierLabel =
-      new JLabel(LNG.get("CertificateInputDialog.identifier.label"));
+      new JLabel(Language.get(this.getClass(),"identifier.label"));
     panel.add(identifierLabel, new GBC(baseGBC).gridy(0).none());
 
     identifierField = new JTextField(30);
     panel.add(identifierField, new GBC(baseGBC).gridy(1).horizontal());
 
     certificateLabel =
-      new JLabel(LNG.get("CertificateInputDialog.certificate.label"));
+      new JLabel(Language.get(this.getClass(),"certificate.label"));
     panel.add(certificateLabel, new GBC(baseGBC).gridy(2).none());
 
     JPanel certificatePane = new JPanel(new GridBagLayout());
@@ -111,7 +107,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
     certificatePane.add(certificateField, new GBC(0, 0).right(5).horizontal());
 
     certificateButton =
-      new JButton(LNG.get("CertificateInputDialog.certificate.search"));
+      new JButton(Language.get(this.getClass(),"certificate.search"));
     certificateButton.addActionListener(e -> chooseCertificateFile());
     certificatePane.add(certificateButton, new GBC(1, 0).east());
 
@@ -126,13 +122,13 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
   @Override
   public boolean hasValidFields() {
     if (getIdentifier().equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyID"));
       return false;
     }
 
     if (getCertificatePath().equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyPath"));
       return false;
     }

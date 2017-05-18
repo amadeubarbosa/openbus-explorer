@@ -6,7 +6,6 @@ import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOffer;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
@@ -33,8 +32,7 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
    * @param offer oferta cujas propriedades serão exibidas
    */
   public PropertiesRefreshAction(Window parentWindow, OfferWrapper offer) {
-    super(parentWindow, null, Utils.getString(PropertiesRefreshAction.class,
-      "name"));
+    super(parentWindow, null);
     this.offer = offer.getDescriptor().ref;
   }
 

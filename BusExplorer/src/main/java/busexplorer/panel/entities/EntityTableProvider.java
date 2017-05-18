@@ -1,6 +1,6 @@
 package busexplorer.panel.entities;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 /**
@@ -22,9 +22,9 @@ public class EntityTableProvider implements ObjectTableProvider<EntityWrapper> {
    */
   @Override
   public String[] getColumnNames() {
-    return new String[] { Utils.getString(this.getClass(), "entity"),
-      Utils.getString(this.getClass(), "category"),
-      Utils.getString(this.getClass(), "description") };
+    return new String[] { Language.get(this.getClass(), "entity"),
+      Language.get(this.getClass(), "category"),
+      Language.get(this.getClass(), "description") };
   }
 
   /**

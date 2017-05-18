@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.StandardDialogs;
 import tecgraf.openbus.admin.BusAdmin;
 
@@ -27,8 +26,7 @@ public class ContractAddAction extends OpenBusAction<ContractWrapper> {
    * @param admin biblioteca de administração
    */
   public ContractAddAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(ContractAddAction.class.getSimpleName()
-      + ".name"));
+    super(parentWindow, admin);
   }
 
   /**

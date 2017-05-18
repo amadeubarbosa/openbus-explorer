@@ -6,8 +6,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.services.governance.v1_0.Provider;
@@ -71,8 +70,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
   public ProviderInputDialog(Window parentWindow,
                              TablePanelComponent<ProviderWrapper> panel, BusAdmin admin,
                              List<ContractWrapper> contracts) {
-    super(parentWindow, LNG.get(ProviderInputDialog.class.getSimpleName()
-      + ".title"), admin);
+    super(parentWindow, admin);
     this.panel = panel;
     for (ContractWrapper contract : contracts) {
       this.contracts.put(contract.name(), contract);
@@ -123,8 +121,8 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
     return task.getStatus();
   }
 
@@ -138,7 +136,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
 
 
     nameLabel =
-      new JLabel(Utils.getString(this.getClass(), "name.label"));
+      new JLabel(Language.get(this.getClass(), "name.label"));
     panel.add(nameLabel, new GBC(baseGBC).gridy(0).none());
 
     nameTextField =
@@ -146,42 +144,42 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
     panel.add(nameTextField, new GBC(baseGBC).gridy(1).horizontal());
 
     codeLabel =
-      new JLabel(Utils.getString(this.getClass(), "code.label"));
+      new JLabel(Language.get(this.getClass(), "code.label"));
     panel.add(codeLabel, new GBC(baseGBC).gridy(2).none());
 
     codeTextField = new JTextField();
     panel.add(codeTextField, new GBC(baseGBC).gridy(3).horizontal());
 
     officeLabel =
-      new JLabel(Utils.getString(this.getClass(), "office.label"));
+      new JLabel(Language.get(this.getClass(), "office.label"));
     panel.add(officeLabel, new GBC(baseGBC).gridy(4).none());
 
     officeTextField = new JTextField();
     panel.add(officeTextField, new GBC(baseGBC).gridy(5).horizontal());
 
     supportLabel =
-      new JLabel(Utils.getString(this.getClass(), "support.label"));
+      new JLabel(Language.get(this.getClass(), "support.label"));
     panel.add(supportLabel, new GBC(baseGBC).gridy(6).none());
 
     supportTextField = new JTextField();
     panel.add(supportTextField, new GBC(baseGBC).gridy(7).horizontal());
 
     managerLabel =
-      new JLabel(Utils.getString(this.getClass(), "manager.label"));
+      new JLabel(Language.get(this.getClass(), "manager.label"));
     panel.add(managerLabel, new GBC(baseGBC).gridy(8).none());
 
     managerTextField = new JTextField();
     panel.add(managerTextField, new GBC(baseGBC).gridy(9).horizontal());
 
     queryLabel =
-      new JLabel(Utils.getString(this.getClass(), "busquery.label"));
+      new JLabel(Language.get(this.getClass(), "busquery.label"));
     panel.add(queryLabel, new GBC(baseGBC).gridy(10).none());
 
     queryTextField = new JTextField();
     panel.add(queryTextField, new GBC(baseGBC).gridy(11).horizontal());
 
     contractLabel =
-      new JLabel(Utils.getString(this.getClass(), "contract.label"));
+      new JLabel(Language.get(this.getClass(), "contract.label"));
     panel.add(contractLabel, new GBC(baseGBC).gridy(12).none());
 
     contractList = new JList<>(contracts.keySet().toArray(new String[contracts.size()]));
@@ -201,7 +199,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
     String name = nameTextField.getText();
 
     if (name.equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyID"));
       return false;
     }

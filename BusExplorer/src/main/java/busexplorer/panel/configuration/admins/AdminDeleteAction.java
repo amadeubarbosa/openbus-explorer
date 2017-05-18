@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
@@ -28,8 +27,7 @@ public class AdminDeleteAction extends OpenBusAction<AdminWrapper> {
    * @param admin a referência para fachada {@link BusAdmin} do Serviço de Configuração
    */
   public AdminDeleteAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin,
-      LNG.get(AdminDeleteAction.class.getSimpleName() + ".name"));
+    super(parentWindow, admin);
   }
 
   /**

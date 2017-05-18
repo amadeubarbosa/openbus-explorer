@@ -5,8 +5,7 @@ import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.admin.BusAdmin;
 
@@ -41,8 +40,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    */
   public AdminInputDialog(Window parentWindow, TablePanelComponent<AdminWrapper>
     panel, BusAdmin admin) {
-    super(parentWindow, LNG.get(AdminInputDialog.class.getSimpleName() +
-      ".title"), admin);
+    super(parentWindow, admin);
     this.panel = panel;
   }
 
@@ -81,8 +79,8 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
     return task.getStatus();
   }
 
@@ -95,7 +93,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
     GBC baseGBC = new GBC().gridx(0).insets(3).west();
 
     adminNameLabel =
-      new JLabel(LNG.get("AdminInputDialog.adminName.label"));
+      new JLabel(Language.get(this.getClass(),"adminName.label"));
     panel.add(adminNameLabel, new GBC(baseGBC).gridy(0).none());
 
     adminNameField = new JTextField(30);
@@ -112,7 +110,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
     String administrator = adminNameField.getText();
 
     if (administrator.equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyID"));
       return false;
     }

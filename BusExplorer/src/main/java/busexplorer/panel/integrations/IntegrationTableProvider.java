@@ -1,6 +1,6 @@
 package busexplorer.panel.integrations;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 import java.util.Vector;
@@ -22,10 +22,10 @@ public class IntegrationTableProvider implements ObjectTableProvider<Integration
    */
   @Override
   public String[] getColumnNames() {
-    return new String[] { Utils.getString(this.getClass(), "consumer"),
-      Utils.getString(this.getClass(), "provider"),
-      Utils.getString(this.getClass(), "contracts"),
-      Utils.getString(this.getClass(), "activated")};
+    return new String[] { Language.get(this.getClass(), "consumer"),
+      Language.get(this.getClass(), "provider"),
+      Language.get(this.getClass(), "contracts"),
+      Language.get(this.getClass(), "activated")};
   }
 
   /**

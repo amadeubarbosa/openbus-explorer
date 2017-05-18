@@ -1,6 +1,6 @@
 package busexplorer.panel.contracts;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 import java.util.Vector;
@@ -20,8 +20,8 @@ public class ContractTableProvider implements ObjectTableProvider<ContractWrappe
    */
   @Override
   public String[] getColumnNames() {
-    return new String[] { Utils.getString(this.getClass(), "name"),
-      Utils.getString(this.getClass(), "interfaces") };
+    return new String[] { Language.get(this.getClass(), "name"),
+      Language.get(this.getClass(), "interfaces") };
   }
 
   /**

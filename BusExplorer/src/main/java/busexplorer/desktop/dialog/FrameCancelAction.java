@@ -1,7 +1,7 @@
 /**
  * 
  */
-package reuse.modified.logistic.client.action;
+package busexplorer.desktop.dialog;
 
 import tecgraf.javautils.core.lng.LNG;
 

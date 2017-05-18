@@ -1,6 +1,6 @@
 package busexplorer.panel.consumers;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 import java.util.Vector;
@@ -19,12 +19,12 @@ public class ConsumerTableProvider implements ObjectTableProvider<ConsumerWrappe
    */
   @Override
   public String[] getColumnNames() {
-    return new String[] { Utils.getString(this.getClass(), "name"),
-      Utils.getString(this.getClass(), "code"),
-      Utils.getString(this.getClass(), "office"),
-      Utils.getString(this.getClass(), "support"),
-      Utils.getString(this.getClass(), "manager"),
-      Utils.getString(this.getClass(), "busquery") };
+    return new String[] { Language.get(this.getClass(), "name"),
+      Language.get(this.getClass(), "code"),
+      Language.get(this.getClass(), "office"),
+      Language.get(this.getClass(), "support"),
+      Language.get(this.getClass(), "manager"),
+      Language.get(this.getClass(), "busquery") };
   }
 
   /**

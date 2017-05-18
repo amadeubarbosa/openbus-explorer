@@ -1,6 +1,6 @@
 package busexplorer.panel.configuration.admins;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 /**
@@ -18,7 +18,7 @@ public class AdminTableProvider implements ObjectTableProvider<AdminWrapper> {
    */
   @Override
   public String[] getColumnNames() {
-    return new String[]{ Utils.getString(this.getClass(), "administrator") };
+    return new String[]{ Language.get(this.getClass(), "administrator") };
   }
 
   /**

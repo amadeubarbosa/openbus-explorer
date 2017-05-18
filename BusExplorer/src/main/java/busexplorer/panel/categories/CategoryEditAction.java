@@ -3,7 +3,6 @@ package busexplorer.panel.categories;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
@@ -24,8 +23,7 @@ public class CategoryEditAction extends OpenBusAction<CategoryWrapper> {
    * @param admin biblioteca de administração
    */
   public CategoryEditAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(CategoryEditAction.class.getSimpleName() +
-      ".name"));
+    super(parentWindow, admin);
   }
 
   /**

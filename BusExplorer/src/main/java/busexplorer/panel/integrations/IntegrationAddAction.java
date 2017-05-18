@@ -8,7 +8,6 @@ import busexplorer.panel.consumers.ConsumerWrapper;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.StandardDialogs;
 import tecgraf.openbus.admin.BusAdmin;
 
@@ -30,8 +29,7 @@ public class IntegrationAddAction extends OpenBusAction<IntegrationWrapper> {
    * @param admin biblioteca de administração
    */
   public IntegrationAddAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(IntegrationAddAction.class.getSimpleName()
-      + ".name"));
+    super(parentWindow, admin);
   }
 
   /**

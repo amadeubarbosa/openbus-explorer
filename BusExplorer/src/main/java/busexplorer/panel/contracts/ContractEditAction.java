@@ -5,7 +5,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -24,7 +24,7 @@ public class ContractEditAction extends OpenBusAction<ContractWrapper> {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param admin biblioteca de administração
    */
-  public ContractEditAction(JFrame parentWindow, BusAdmin admin) {
+  public ContractEditAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
   }
 

@@ -43,11 +43,11 @@ import java.util.Map;
 
 /**
  * A classe implementa os comandos especificados na interface
- * {@link BusAdmin}.
+ * {@link BusAdminFacade}.
  *
  * @author Tecgraf
  */
-public class BusAdminImpl implements BusAdmin {
+public class BusAdminImpl implements BusAdminFacade {
   /** Registro de entidades do barramento. */
   private EntityRegistry entityRegistry;
   /** Registro de certificados do barramento. */

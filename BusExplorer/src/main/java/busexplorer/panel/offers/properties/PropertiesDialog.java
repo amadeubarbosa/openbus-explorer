@@ -5,7 +5,7 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
 import javax.swing.JButton;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 public class PropertiesDialog extends JDialog {
 
-  private final BusAdmin admin;
+  private final BusAdminFacade admin;
   /**
    * Oferta sendo visualizada.
    */
@@ -36,7 +36,7 @@ public class PropertiesDialog extends JDialog {
    * @param owner janela pai
    * @param offer oferta sendo visualizada
    */
-  public PropertiesDialog(Window owner, OfferWrapper offer, BusAdmin admin) {
+  public PropertiesDialog(Window owner, OfferWrapper offer, BusAdminFacade admin) {
     super(owner, Language.get(PropertiesDialog.class, "title"),
       JDialog.ModalityType.APPLICATION_MODAL);
     this.offer = offer;

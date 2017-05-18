@@ -5,7 +5,7 @@ import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.BusExplorerExceptionHandler;
 import busexplorer.utils.Language;
 import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.admin.BusAdminImpl;
 
 import javax.swing.JOptionPane;
@@ -43,7 +43,7 @@ public class Application {
 
   private static PropertyChangeSupport loginPcs;
 
-  private static BusAdmin admin = new BusAdminImpl();
+  private static BusAdminFacade admin = new BusAdminImpl();
 
   public static final String APPLICATION_LOGIN = "Application.login";
 

@@ -5,7 +5,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 
 import javax.swing.JFrame;
@@ -25,7 +25,7 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param admin biblioteca de administração
    */
-  public EntityEditAction(JFrame parentWindow, BusAdmin admin) {
+  public EntityEditAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
   }
 

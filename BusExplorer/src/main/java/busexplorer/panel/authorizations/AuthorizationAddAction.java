@@ -6,7 +6,7 @@ import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
 import tecgraf.javautils.gui.StandardDialogs;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 import javax.swing.JFrame;
@@ -28,7 +28,7 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param admin biblioteca de administração
    */
-  public AuthorizationAddAction(JFrame parentWindow, BusAdmin admin) {
+  public AuthorizationAddAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
   }
 

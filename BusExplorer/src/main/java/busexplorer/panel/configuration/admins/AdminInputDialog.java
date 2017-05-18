@@ -7,7 +7,7 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -39,7 +39,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public AdminInputDialog(Window parentWindow, TablePanelComponent<AdminWrapper>
-    panel, BusAdmin admin) {
+    panel, BusAdminFacade admin) {
     super(parentWindow, admin);
     this.panel = panel;
   }

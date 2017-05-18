@@ -3,7 +3,7 @@ package busexplorer.panel.categories;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -22,7 +22,7 @@ public class CategoryAddAction extends OpenBusAction<CategoryWrapper> {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param admin biblioteca de administração
    */
-  public CategoryAddAction(JFrame parentWindow, BusAdmin admin) {
+  public CategoryAddAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
   }
 

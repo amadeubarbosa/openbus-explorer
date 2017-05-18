@@ -86,7 +86,7 @@ import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -140,7 +140,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   /**
    * Acessa os serviços barramento relacionados à administração.
    */
-  private BusAdmin admin;
+  private BusAdminFacade admin;
   /**
    * Painel de recursos de gerência do barramento.
    */
@@ -160,7 +160,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * @param properties proprieades da aplicação.
    * @param admin instância de administração do barramento.
    */
-  public MainDialog(Properties properties, BusAdmin admin) {
+  public MainDialog(Properties properties, BusAdminFacade admin) {
     this.admin = admin;
     this.properties = properties;
     buildDialog();

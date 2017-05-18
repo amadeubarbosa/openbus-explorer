@@ -5,7 +5,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOffer;
 
 import javax.swing.Action;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
 
-  public OfferDeleteAction(JFrame parentWindow, BusAdmin admin) {
+  public OfferDeleteAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
     putValue(Action.SHORT_DESCRIPTION, getString("tooltip"));
   }

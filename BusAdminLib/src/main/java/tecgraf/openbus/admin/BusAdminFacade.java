@@ -24,7 +24,7 @@ import java.util.Map;
  * 
  * @author Tecgraf
  */
-public interface BusAdmin {
+public interface BusAdminFacade {
 
   /*
    * CATEGORIAS
@@ -62,7 +62,7 @@ public interface BusAdmin {
    *
    * @throws ServiceFailure caso aconteça um erro imprevisto no serviço remoto
    * @throws UnauthorizedOperation caso o usuário não seja um administrador
-   * @throws EntityCategoryInUse caso a categoria esteja em uso em alguma entidade {@link BusAdmin#removeEntity}
+   * @throws EntityCategoryInUse caso a categoria esteja em uso em alguma entidade {@link BusAdminFacade#removeEntity}
    */
   void removeCategory(String categoryID) throws ServiceFailure,
     UnauthorizedOperation, EntityCategoryInUse;
@@ -188,7 +188,7 @@ public interface BusAdmin {
    *
    * @throws ServiceFailure caso aconteça um erro imprevisto no serviço remoto
    * @throws UnauthorizedOperation caso o usuário não seja um administrador
-   * @throws InterfaceInUse caso a interface esteja em uso em alguma autorização {@link BusAdmin#revokeAuthorization}
+   * @throws InterfaceInUse caso a interface esteja em uso em alguma autorização {@link BusAdminFacade#revokeAuthorization}
    */
   void removeInterface(String interfaceName) throws ServiceFailure,
     UnauthorizedOperation, InterfaceInUse;
@@ -235,7 +235,7 @@ public interface BusAdmin {
    * @throws ServiceFailure caso aconteça um erro imprevisto no serviço remoto
    * @throws UnauthorizedOperation caso o usuário não seja um administrador
    * @throws InvalidInterface caso a interface não tenha um nome válido
-   * @throws AuthorizationInUse caso a autorização esteja em uso em alguma oferta {@link BusAdmin#getOffers}
+   * @throws AuthorizationInUse caso a autorização esteja em uso em alguma oferta {@link BusAdminFacade#getOffers}
    */
   void revokeAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface,

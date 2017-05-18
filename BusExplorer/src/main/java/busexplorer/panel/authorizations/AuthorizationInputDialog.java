@@ -7,7 +7,7 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 import javax.swing.JComboBox;
@@ -47,7 +47,7 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    * @param interfacesList Lista de interfaces.
    */
   public AuthorizationInputDialog(Window parentWindow,
-                                  TablePanelComponent<AuthorizationWrapper> panel, BusAdmin admin, List<String>
+                                  TablePanelComponent<AuthorizationWrapper> panel, BusAdminFacade admin, List<String>
     entitiesIDList, List<String> interfacesList) {
     super(parentWindow, admin);
 

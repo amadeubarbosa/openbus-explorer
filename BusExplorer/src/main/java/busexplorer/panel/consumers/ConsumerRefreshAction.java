@@ -5,7 +5,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ConsumerRefreshAction extends OpenBusAction<ConsumerWrapper> {
 
-  public ConsumerRefreshAction(JFrame parentWindow, BusAdmin admin) {
+  public ConsumerRefreshAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
   }
 

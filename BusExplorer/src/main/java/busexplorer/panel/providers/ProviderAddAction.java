@@ -7,7 +7,7 @@ import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
 import tecgraf.javautils.gui.StandardDialogs;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -26,7 +26,7 @@ public class ProviderAddAction extends OpenBusAction<ProviderWrapper> {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param admin biblioteca de administração
    */
-  public ProviderAddAction(JFrame parentWindow, BusAdmin admin) {
+  public ProviderAddAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
   }
 

@@ -3,7 +3,7 @@ package busexplorer.panel.configuration.admins;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -22,7 +22,7 @@ public class AdminEditAction extends OpenBusAction<AdminWrapper> {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param admin biblioteca de administração
    */
-  public AdminEditAction(JFrame parentWindow, BusAdmin admin) {
+  public AdminEditAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
   }
 

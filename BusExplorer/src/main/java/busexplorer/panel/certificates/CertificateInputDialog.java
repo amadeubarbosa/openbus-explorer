@@ -8,7 +8,7 @@ import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import org.apache.commons.io.FileUtils;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -42,7 +42,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public CertificateInputDialog(Window parentWindow,
-                                TablePanelComponent<CertificateWrapper> panel, BusAdmin admin) {
+                                TablePanelComponent<CertificateWrapper> panel, BusAdminFacade admin) {
     super(parentWindow, admin);
     this.panel = panel;
   }

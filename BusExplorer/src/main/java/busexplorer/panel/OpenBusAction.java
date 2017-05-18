@@ -1,7 +1,7 @@
 package busexplorer.panel;
 
 import busexplorer.utils.Language;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.AbstractAction;
 import java.awt.Window;
@@ -18,7 +18,7 @@ import java.awt.Window;
 public abstract class OpenBusAction<T> extends AbstractAction implements
         TablePanelActionInterface<T> {
 
-  protected BusAdmin admin;
+  protected BusAdminFacade admin;
   protected Window parentWindow;
   private TablePanelComponent<T> panel;
 
@@ -29,7 +29,7 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
    * @param parentWindow janela
    * @param admin instância do busadmin
    */
-  public OpenBusAction(Window parentWindow, BusAdmin admin) {
+  public OpenBusAction(Window parentWindow, BusAdminFacade admin) {
     this.putValue(NAME, getString("name"));
     this.admin = admin;
     this.parentWindow = parentWindow;
@@ -42,7 +42,7 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
    * @param admin instância do busadmin
    * @param actionName nome da ação
    */
-  public OpenBusAction(Window parentWindow, BusAdmin admin, String actionName) {
+  public OpenBusAction(Window parentWindow, BusAdminFacade admin, String actionName) {
     super(actionName);
     this.admin = admin;
     this.parentWindow = parentWindow;

@@ -8,7 +8,7 @@ import busexplorer.panel.consumers.ConsumerWrapper;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -27,7 +27,7 @@ public class IntegrationEditAction extends OpenBusAction<IntegrationWrapper> {
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
    * @param admin biblioteca de administração
    */
-  public IntegrationEditAction(JFrame parentWindow, BusAdmin admin) {
+  public IntegrationEditAction(JFrame parentWindow, BusAdminFacade admin) {
     super(parentWindow, admin);
   }
 

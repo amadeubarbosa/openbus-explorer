@@ -10,7 +10,7 @@ import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
 import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.admin.BusAdminImpl;
 import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.BusObjectKey;
@@ -54,7 +54,7 @@ public class BusExplorerLogin {
    * @param entity Entidade.
    * @param address endereço do barramento.
    */
-  public BusExplorerLogin(BusAdmin admin, String entity, BusAddress
+  public BusExplorerLogin(BusAdminFacade admin, String entity, BusAddress
     address) {
     this.admin = (BusAdminImpl)admin;
     this.entity = entity;

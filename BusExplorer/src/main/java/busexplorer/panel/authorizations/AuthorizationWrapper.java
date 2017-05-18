@@ -25,7 +25,7 @@ public class AuthorizationWrapper {
    * Construtor.
    * 
    * @param desc descritor da entidade autorizada
-   * @param interfaceName interface 
+   * @param interfaceName nome da interface a ser autorizada
    */
   public AuthorizationWrapper(RegisteredEntityDesc desc, String interfaceName) {
     this.desc = desc;

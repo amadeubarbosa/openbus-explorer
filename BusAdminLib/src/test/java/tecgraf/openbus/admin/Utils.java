@@ -1,15 +1,12 @@
 package tecgraf.openbus.admin;
 
 import org.omg.CORBA.ORB;
-import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CORBA.Object;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
-import org.omg.PortableServer.POAManagerPackage.AdapterInactive;
 import scs.core.ComponentContext;
 import scs.core.ComponentId;
 import scs.core.IComponentServant;
-import scs.core.exception.SCSException;
 import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
 
@@ -33,7 +30,7 @@ public class Utils {
    * 
    * @param fileName o nome do arquivo.
    * @return as propriedades.
-   * @throws IOException
+   * @throws IOException caso não seja possível ler o arquivo
    */
   static public Properties readPropertyFile(String fileName) throws IOException {
     Properties properties = new Properties();
@@ -62,9 +59,9 @@ public class Utils {
    * Constrói componente para o teste de verificação de CallerChain dentro de um
    * método de despacho.
    * 
-   * @param context o contexto.
-   * @return o componente
-   * @throws Exception
+   * @param context o contexto da comunicação com o barramento
+   * @return o contexto do componente SCS
+   * @throws Exception caso aconteça algum erro na construção do componente SCS
    */
   public static ComponentContext buildTestCallerChainComponent(
     final OpenBusContext context) throws Exception {
@@ -91,9 +88,9 @@ public class Utils {
    * Constrói componente para o teste de verificação de CallerChain dentro de um
    * método de despacho.
    * 
-   * @param context o contexto.
-   * @return o componente
-   * @throws Exception
+   * @param context o contexto da comunicação com o barramento
+   * @return o contexto do componente SCS
+   * @throws Exception caso aconteça algum erro na construção do componente SCS
    */
   public static ComponentContext buildTestConnectionComponent(
     final OpenBusContext context) throws Exception {
@@ -120,14 +117,11 @@ public class Utils {
   /**
    * Constrói um componente SCS
    * 
-   * @param orb o orb em uso
-   * @return um componente
-   * @throws SCSException
-   * @throws AdapterInactive
-   * @throws InvalidName
+   * @param orb a instância do {@link ORB} CORBA em uso na comunicação com o barramento
+   * @return o contexto do componente SCS
+   * @throws Exception caso aconteça algum erro na construção do componente SCS
    */
-  public static ComponentContext buildComponent(ORB orb) throws SCSException,
-    AdapterInactive, InvalidName {
+  public static ComponentContext buildComponent(ORB orb) throws Exception {
     POA poa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
     poa.the_POAManager().activate();
     ComponentId id =

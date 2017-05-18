@@ -280,10 +280,7 @@ public class JMultilineLabel extends JComponent {
   }
 
   /**
-   * <p>
    * Divide um texto em partes, dado um separador.
-   * </p>
-   * </p>
    * <p>
    * Diferente da versão {@link String#split(String)}, essa mantém elementos
    * vazios no final. <br>
@@ -311,7 +308,6 @@ public class JMultilineLabel extends JComponent {
    * </tr>
    * </table>
    * </blockquote>
-   * </p>
    * 
    * @param text Texto a ser dividido.
    * @param delimiter Delimitador do texto.

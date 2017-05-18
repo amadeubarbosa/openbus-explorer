@@ -105,7 +105,9 @@ public class TablePanelComponent<T> extends RefreshablePanel {
    * Construtor.
    *  @param pTableModel Modelo da tabela.
    * @param actions Conjunto de ações relacionadas ao componente.
-   * @param hasFilter
+   * @param hasFilter Deve ser {@code true} caso se queira construir o painel contendo uma
+   *                  barra de pesquisa para filtrar os resultados, ou {@code false} caso contrário.
+   *                  Valor padrão é {@code true}.
    */
   public TablePanelComponent(ObjectTableModel<T> pTableModel,
                              List<? extends TablePanelActionInterface<T>> actions, boolean hasFilter) {

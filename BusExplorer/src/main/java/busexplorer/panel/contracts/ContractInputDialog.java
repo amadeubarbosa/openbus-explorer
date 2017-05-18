@@ -23,8 +23,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Classe que dá a especialização necessária ao Diálogo de Cadastro de Entidades
- * 
+ * Diálogo de adição/edição de contratos que será responsável pela manutenção
+ * de objetos {@link ContractWrapper} (para uso nos componentes swing) a partir de
+ * uma referência remota do objeto do contrato {@link Contract}.
+ *
+ * @see ContractWrapper
+ * @see Contract
+ *
  * @author Tecgraf
  */
 public class ContractInputDialog extends BusExplorerAbstractInputDialog {
@@ -40,7 +45,14 @@ public class ContractInputDialog extends BusExplorerAbstractInputDialog {
 
   private ContractWrapper editingContract = null;
 
-
+  /**
+   * Construtor do diálogo de adição/edição de contratos.
+   *
+   * @param parentWindow Janela mãe do Diálogo.
+   * @param panel Painel de {@link ContractWrapper} a ser atualizado após a adição/edição.
+   * @param admin Referência para fachada {@link BusAdmin} do Serviço de Configuração.
+   * @param interfaces Lista dos nomes das interfaces cadastradas.
+   */
   public ContractInputDialog(Window parentWindow,
                              TablePanelComponent<ContractWrapper> panel, BusAdmin admin,
                              List<String> interfaces) {

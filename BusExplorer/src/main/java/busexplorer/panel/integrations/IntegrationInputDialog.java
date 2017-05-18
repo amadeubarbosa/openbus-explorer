@@ -27,8 +27,13 @@ import java.util.List;
 import java.util.TreeMap;
 
 /**
- * Classe que dá a especialização necessária ao Diálogo de Cadastro de Entidades
- * 
+ * Diálogo de adição/edição de integrações que será responsável pela manutenção
+ * de objetos {@link IntegrationWrapper} (para uso nos componentes swing) a partir de
+ * uma referência remota da integração {@link Integration}.
+ *
+ * @see IntegrationWrapper
+ * @see Integration
+ *
  * @author Tecgraf
  */
 public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
@@ -54,11 +59,18 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
   private IntegrationWrapper editingIntegration = null;
 
   /**
-   * Construtor.
-   * 
+   * Construtor do diálogo de adição/edição de integrações.
+   *
    * @param parentWindow Janela mãe do Diálogo.
-   * @param panel Painel a ser atualizado após a adição/edição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
+   * @param panel Painel de {@link IntegrationWrapper} a ser atualizado após a adição/edição.
+   * @param admin Referência para fachada {@link BusAdmin} do Serviço de Configuração.
+   * @param consumers Lista de objetos locais para uso nos componentes swing e que representam os consumidores.
+   * @param providers Lista de objetos locais para uso nos componentes swing e que representam os provedores.
+   * @param contracts Lista de objetos locais para uso nos componentes swing e que representam os contratos.
+   *
+   * @see ConsumerWrapper
+   * @see ProviderWrapper
+   * @see ContractWrapper
    */
   public IntegrationInputDialog(Window parentWindow,
                                 TablePanelComponent<IntegrationWrapper> panel, BusAdmin admin,

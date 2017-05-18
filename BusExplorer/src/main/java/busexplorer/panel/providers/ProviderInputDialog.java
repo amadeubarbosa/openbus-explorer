@@ -24,6 +24,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
 
+/**
+ * Diálogo de adição/edição de provedores que será responsável pela manutenção
+ * de objetos {@link ProviderWrapper} (para uso nos componentes swing) a partir de
+ * uma referência remota do objeto do provedor {@link Provider}.
+ *
+ * @see ProviderWrapper
+ * @see Provider
+ *
+ * @author Tecgraf
+ */
 public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel nameLabel;
   private JTextField nameTextField;
@@ -48,6 +58,16 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
 
   private ProviderWrapper editingProvider = null;
 
+  /**
+   * Construtor do diálogo de adição/edição de provedores.
+   *
+   * @param parentWindow Janela mãe do Diálogo.
+   * @param panel Painel de {@link ProviderWrapper} a ser atualizado após a adição/edição.
+   * @param admin Referência para fachada {@link BusAdmin} do Serviço de Configuração.
+   * @param contracts Lista de objetos locais para uso nos componentes swing e que representam os contratos.
+   *
+   * @see ContractWrapper
+   */
   public ProviderInputDialog(Window parentWindow,
                              TablePanelComponent<ProviderWrapper> panel, BusAdmin admin,
                              List<ContractWrapper> contracts) {

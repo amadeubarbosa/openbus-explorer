@@ -18,6 +18,16 @@ import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.util.Arrays;
 
+/**
+ * Diálogo de adição/edição de consumidores que será responsável pela manutenção
+ * de objetos {@link ConsumerWrapper} (para uso nos componentes swing) a partir de
+ * uma referência remota do objeto do consumidor {@link Consumer}.
+ *
+ * @see ConsumerWrapper
+ * @see Consumer
+ *
+ * @author Tecgraf
+ */
 public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel nameLabel;
   private JTextField nameTextField;
@@ -36,6 +46,13 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
 
   private ConsumerWrapper editingConsumer = null;
 
+  /**
+   * Construtor do diálogo de adição/edição de consumidores.
+   *
+   * @param parentWindow Janela mãe do Diálogo.
+   * @param panel Painel de {@link ConsumerWrapper} a ser atualizado após a adição/edição.
+   * @param admin Referência para fachada {@link BusAdmin} do Serviço de Configuração.
+   */
   public ConsumerInputDialog(Window parentWindow,
                              TablePanelComponent<ConsumerWrapper> panel, BusAdmin admin) {
     super(parentWindow, LNG.get(ConsumerInputDialog.class.getSimpleName()

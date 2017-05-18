@@ -321,7 +321,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     add(featuresPane, BorderLayout.CENTER);
   }
 
-  private static void disableTab(JTabbedPane pane, Component component, Boolean enabled) {
+  private static void disableTab(JTabbedPane pane, JComponent component, Boolean enabled) {
     int index = pane.indexOfComponent(component);
     pane.setEnabledAt(index, enabled);
     if (!enabled) {
@@ -378,6 +378,12 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
             if (selected instanceof RefreshDelegate) {
                 ((RefreshDelegate) selected).refresh(null);
             }
+        });
+        notifiers.add(isAdmin -> {
+          if (Application.login().extension.isExtensionCapable()) {
+            editorPane.setSelectedIndex(0);
+            ((RefreshablePanel) editorPane.getSelectedComponent()).refresh(null);
+          }
         });
 
         return editorPane;

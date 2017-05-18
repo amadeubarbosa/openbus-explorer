@@ -18,7 +18,7 @@ import java.awt.event.KeyEvent;
  * 
  * Modificada para usar JFrame, ao invés de GenericFrame.
  * 
- * @author allan
+ * @author Tecgraf / Allan Valeriano (allan@tecgraf.puc-rio.br)
  * 
  */
 public class FrameCancelAction extends AbstractAction {

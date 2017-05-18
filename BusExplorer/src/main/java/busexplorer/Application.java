@@ -40,6 +40,8 @@ public class Application {
 
   /**
    * Inicializa a aplicação, criando o diálogo de login.
+   *
+   * @param args parâmetro da linha de comando serão <strong>descartados</strong>
    */
   public static void main(String[] args) {
     LNG.load("busadminlib.resources.language.idiom", new Locale("pt", "BR"));

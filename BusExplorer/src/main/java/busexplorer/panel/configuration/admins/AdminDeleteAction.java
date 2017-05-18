@@ -25,7 +25,7 @@ public class AdminDeleteAction extends OpenBusAction<AdminWrapper> {
    * Construtor da ação.
    * 
    * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin
+   * @param admin a referência para fachada {@link BusAdmin} do Serviço de Configuração
    */
   public AdminDeleteAction(JFrame parentWindow, BusAdmin admin) {
     super(parentWindow, admin,

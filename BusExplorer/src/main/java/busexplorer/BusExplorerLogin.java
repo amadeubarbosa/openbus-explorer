@@ -1,21 +1,25 @@
 package busexplorer;
 
+import busexplorer.utils.BusAddress;
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
-
-import busexplorer.utils.BusAddress;
-
 import tecgraf.openbus.Connection;
 import tecgraf.openbus.OpenBusContext;
-import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.admin.BusAdminImpl;
+import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
+import tecgraf.openbus.core.v2_1.services.access_control.AccessDenied;
 import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
+import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
+import tecgraf.openbus.core.v2_1.services.access_control.UnknownDomain;
+import tecgraf.openbus.core.v2_1.services.access_control.WrongEncoding;
+import tecgraf.openbus.exception.AlreadyLoggedIn;
 
 /**
  * Trata, analisa e armazena dados de login no barramento.
@@ -79,7 +83,7 @@ public class BusExplorerLogin {
    * Realiza uma verificação sobre a permissão de administração deste login e
    * armazena o resultado em uma membro auxiliar.
    *
-   * @throws ServiceFailure
+   * @throws ServiceFailure caso aconteça um erro imprevisto no serviço remoto
    */
   private void checkAdminRights() throws ServiceFailure {
     try {
@@ -111,15 +115,31 @@ public class BusExplorerLogin {
   }
 
   /**
+   * Obtém o contexto da comunicação com o barramento.
+   * @return o contexto da biblioteca do OpenBus.
+   */
+  public OpenBusContext getOpenBusContext() {
+    return this.context;
+  }
+
+  /**
    * Realiza o login.
    *
    * @param login Informações de login.
    * @param password Senha.
    * @param domain Domínio
-   * @throws Exception
+   *
+   * @throws AccessDenied caso as credenciais (entidade ou senha) não sejam válidas
+   * @throws AlreadyLoggedIn caso a conexão com o barramento já esteja autenticada
+   * @throws IllegalArgumentException caso não seja possível determinar o {@code corbaloc} do endereço do barramento
+   * @throws InvalidName caso tenha havido um erro interno na biblioteca do OpenBus SDK Java
+   * @throws ServiceFailure caso não seja possível acessar o serviço remoto
+   * @throws TooManyAttempts caso tenham havido muitas tentativas repetidas de autenticação por senha no barramento com a mesma entidade
+   * @throws UnknownDomain caso o domínio de autenticação não seja conhecido pelo barramento
+   * @throws WrongEncoding caso tenha havido um erro na codificação do handshake do protocolo OpenBus (pode ser um erro interno na biblioteca do OpenBus SDK Java)
    */
   public static void doLogin(BusExplorerLogin login, String password,
-    String domain) throws Exception {
+    String domain) throws InvalidName, WrongEncoding, AlreadyLoggedIn, ServiceFailure, UnknownDomain, TooManyAttempts, AccessDenied {
     ORB orb = ORBInitializer.initORB();
     login.context = (OpenBusContext) orb.resolve_initial_references
       ("OpenBusContext");
@@ -136,6 +156,7 @@ public class BusExplorerLogin {
         throw new IllegalStateException(
           "Informações inválidas sobre o barramento.");
     }
+
     login.context.defaultConnection(login.conn);
 
     for (int i = 0; i < 3; i++) {

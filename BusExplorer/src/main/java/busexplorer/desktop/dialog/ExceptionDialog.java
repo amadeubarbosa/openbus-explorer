@@ -1,6 +1,7 @@
 package busexplorer.desktop.dialog;
 
 import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
 
@@ -16,11 +17,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -31,7 +30,7 @@ import java.awt.event.WindowEvent;
 
 /**
  * Janela que exibe o detalhamento de uma exceção.
- * 
+ *
  * @author Tecgraf PUC-Rio
  */
 public abstract class ExceptionDialog extends JDialog {
@@ -49,7 +48,7 @@ public abstract class ExceptionDialog extends JDialog {
 
   /**
    * Construtor auxiliar com <code>JDialog</code>.
-   * 
+   *
    * @param owner a janela pai
    * @param title o título
    * @param throwable o erro ou exceção
@@ -60,7 +59,7 @@ public abstract class ExceptionDialog extends JDialog {
 
   /**
    * Construtor auxiliar com <code>JFrame</code>.
-   * 
+   *
    * @param owner a janela pai
    * @param title o título
    * @param throwable o erro ou exceção
@@ -93,7 +92,7 @@ public abstract class ExceptionDialog extends JDialog {
   /**
    * Método estático de criação de um diálogo <b>detalhado</b> com base em
    * parâmetros passados pelo módulo-cliente para uso sem construtor.
-   * 
+   *
    * @param window a janela-mãe.
    * @param title o título.
    * @param throwable a exceção.
@@ -110,7 +109,7 @@ public abstract class ExceptionDialog extends JDialog {
    * É criado um ExceptionDialog <b>simplificado</b> pois o foco deste é
    * apresentar a mensagem ao usuário. Caso o usuário queira saber mais sobre o
    * erro/exceção, este diálogo apresenta uma opção para detalhar.
-   * 
+   *
    * @param window a janela-mãe.
    * @param title o título.
    * @param throwable a exceção.
@@ -125,7 +124,7 @@ public abstract class ExceptionDialog extends JDialog {
   /**
    * Método estático de criação de um diálogo <b>detalhado</b> com base em
    * parâmetros passados pelo módulo-cliente para uso sem construtor.
-   * 
+   *
    * @param window a janela-mãe.
    * @param title o título.
    * @param throwable a exceção.
@@ -144,7 +143,7 @@ public abstract class ExceptionDialog extends JDialog {
    * É criado um ExceptionDialog <b>simplificado</b> pois o foco deste é
    * apresentar a mensagem ao usuário. Caso o usuário queira saber mais sobre o
    * erro/exceção, este diálogo apresenta uma opção para detalhar.
-   * 
+   *
    * @param window a janela-mãe.
    * @param title o título.
    * @param throwable a exceção.
@@ -162,7 +161,7 @@ public abstract class ExceptionDialog extends JDialog {
 
   /**
    * Ajuste de um conjunto de elementos de interface para o mesmo tamanho.
-   * 
+   *
    * @param comps os widgets que serão ajustados.
    */
   public static void adjustEqualSizes(JComponent... comps) {
@@ -187,7 +186,7 @@ public abstract class ExceptionDialog extends JDialog {
 
   /**
    * Centralização
-   * 
+   *
    * @param window a janela de referência para centralização
    */
   public void center(Window window) {
@@ -234,7 +233,7 @@ public abstract class ExceptionDialog extends JDialog {
    * Classe que modela um diálogo <b>detalhado</b> de exibição de um
    * erro/exceção detectado no sistema. Este diálogo apresenta a pilha do
    * erro/exceção para o usuário.
-   * 
+   *
    * @see ExceptionDialog diálogo que apresenta um erro/exceção, detectado no
    *      sistema, para o usuário.
    */
@@ -269,7 +268,7 @@ public abstract class ExceptionDialog extends JDialog {
 
     /**
      * Construtor auxiliar com <code>JDialog</code>.
-     * 
+     *
      * @param owner a janela pai
      * @param title o título
      * @param throwable o erro ou exceção
@@ -356,7 +355,7 @@ public abstract class ExceptionDialog extends JDialog {
 
     /**
      * Criação do painel de botões.
-     * 
+     *
      * @return o painel.
      */
     private JPanel createButtonPanel() {
@@ -387,7 +386,7 @@ public abstract class ExceptionDialog extends JDialog {
 
     /**
      * Busca de uma string que representa a pilha de execução.
-     * 
+     *
      * @param stackTrace a pilha.
      * @return uma string.
      */
@@ -409,7 +408,7 @@ public abstract class ExceptionDialog extends JDialog {
    * erro/exceção detectado no sistema. Este diálogo apresenta uma mensagem do
    * sistema para o usuário e dá a possibilidade de abrir um
    * DetailedExceptionDialog.
-   * 
+   *
    * @see ExceptionDialog diálogo que apresenta um erro/exceção, detectado no
    *      sistema, para o usuário.
    * @see DetailedExceptionDialog diálogo que detalha o erro/exceção
@@ -418,7 +417,7 @@ public abstract class ExceptionDialog extends JDialog {
 
     /**
      * Construtor auxiliar com <code>JDialog</code>.
-     * 
+     *
      * @param owner a janela pai
      * @param title o título
      * @param message as mensagens de erro
@@ -435,87 +434,36 @@ public abstract class ExceptionDialog extends JDialog {
 
     /**
      * Inicialização interna do diálogo.
-     * 
+     *
      * @param message mensagem que deve aparecer no diálogo.
      */
     private void buildGui(String message) {
-      getContentPane().setLayout(new BorderLayout());
-      getContentPane().add(makeIconPanel(), BorderLayout.WEST);
-      getContentPane().add(makeMainPanel(message), BorderLayout.CENTER);
-      pack();
-      center();
-    }
-
-    /**
-     * Cria o painel que contém o ícone de erro
-     * 
-     * @return o painel
-     */
-    private JPanel makeIconPanel() {
-      JPanel panel = new JPanel();
-      panel.add(new JLabel(UIManager.getIcon("OptionPane.errorIcon")));
-
-      return panel;
-    }
-
-    /**
-     * Cria o painel principal
-     * 
-     * @param message mensagem a ser exibida
-     * @return o painel
-     */
-    private JPanel makeMainPanel(String message) {
-
-      JPanel mainPanel = new JPanel(new GridBagLayout());
-      GridBagConstraints c = new GridBagConstraints();
-      c.insets = new Insets(12, 12, 11, 11);
-      c.anchor = GridBagConstraints.CENTER;
-      c.weightx = 1;
-      c.weighty = 1;
-      mainPanel.add(makeInfoPanel(message), c);
-      c.gridy = 1;
-      c.anchor = GridBagConstraints.SOUTHEAST;
-      c.insets = new Insets(17, 12, 11, 11);
-      mainPanel.add(makeButtonsPanel(), c);
-
-      return mainPanel;
-    }
-
-    /**
-     * Cria o painel que contém a mensagem de erro
-     * 
-     * @param message mensagem a ser exibida
-     * @return o painel
-     */
-    private JPanel makeInfoPanel(String message) {
-
-      JPanel panel = new JPanel(new GridBagLayout());
-      GridBagConstraints c = new GridBagConstraints();
-      c.insets = new Insets(0, 0, 0, 0);
-
-      c.fill = GridBagConstraints.HORIZONTAL;
+      setMinimumSize(new Dimension(350, 150));
+if (message.isEmpty()) message = " vai ficar vai ficar  vai ficar vai ficar  vai ficar vai ficar  vai ficar vai ficar ";
+      JLabel errorLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
+      JPanel mainPanel = new JPanel(new MigLayout("debug, fill, wrap", "[grow]","[grow][][][]"));
       if (message == null || message.isEmpty() || message.startsWith("<html>")) {
-        JLabel label = new JLabel(message);
-        panel.add(label, c);
-      }
-      else {
+        mainPanel.add(new JLabel(message));
+      } else {
         JMultilineLabel label = new JMultilineLabel();
         label.setMaxWidth(550);
+        // heurística
+        setMinimumSize(new Dimension(label.getMaxWidth() + 80, Math.max(getHeight(), message.length()/5)));
         label.setJustified(false);
         label.setText(message);
-        panel.add(label, c);
+        mainPanel.add(label, "grow");
       }
 
-      c.gridy = 1;
-      c.insets = new Insets(12, 0, 0, 0);
-      JLabel jwhere = new JLabel(Language.get(this.getClass(),
-        "executionError"));
-      panel.add(jwhere, c);
-      c.gridy = 2;
-      c.insets = new Insets(0, 0, 0, 0);
-      panel.add(new JLabel(Language.get(this.getClass(), "contactError")),
-        c);
-      return panel;
+      mainPanel.add( new JLabel(Language.get(this.getClass(),"executionError")));
+      mainPanel.add(new JLabel(Language.get(this.getClass(),"contactError")));
+      mainPanel.add(makeButtonsPanel(), "growx");
+
+      getContentPane().setLayout(new MigLayout("debug, fill","[center][grow]","[grow]"));
+      getContentPane().add(errorLabel);
+      getContentPane().add(mainPanel, "grow");
+
+      pack();
+      center();
     }
 
     /**

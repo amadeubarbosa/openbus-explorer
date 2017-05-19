@@ -6,14 +6,18 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
 
 /**
@@ -26,7 +30,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel categoryIDLabel;
   private JTextField categoryIDField;
   private JLabel categoryNameLabel;
-  private JTextField categoryNameField;
+  private JTextArea categoryNameField;
 
   private TablePanelComponent<CategoryWrapper> panel;
 
@@ -86,22 +90,43 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(5).west();
+    setMinimumSize(new Dimension(300, 300));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     categoryIDLabel =
       new JLabel(Language.get(this.getClass(),"categoryID.label"));
-    panel.add(categoryIDLabel, new GBC(baseGBC).gridy(0).none());
+    panel.add(categoryIDLabel,"grow");
 
     categoryIDField = new JTextField(30);
-    panel.add(categoryIDField, new GBC(baseGBC).gridy(1).horizontal());
+    categoryIDField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (categoryIDField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(CategoryInputDialog.class,
+            "error.validation.name"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+      }
+    });
+    panel.add(categoryIDField, "grow");
 
     categoryNameLabel =
       new JLabel(Language.get(this.getClass(),"categoryName.label"));
-    panel.add(categoryNameLabel, new GBC(baseGBC).gridy(2).none());
+    panel.add(categoryNameLabel, "grow");
 
-    categoryNameField = new JTextField(30);
-    panel.add(categoryNameField, new GBC(baseGBC).gridy(3).horizontal());
+    categoryNameField = new JTextArea(5, 20);
+    categoryNameField.setLineWrap(true);
+    panel.add(new JScrollPane(categoryNameField), "grow");
 
     return panel;
   }
@@ -111,11 +136,9 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    String categoryID = categoryIDField.getText();
-
-    if (categoryID.equals("")) {
+    if (categoryIDField.getText().trim().isEmpty()) {
       setErrorMessage(Language.get(this.getClass(),
-        "error.validation.emptyID"));
+        "error.validation.name"));
       return false;
     }
 

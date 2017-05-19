@@ -6,7 +6,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.services.governance.v1_0.Contract;
 
@@ -16,7 +16,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.util.Collections;
 import java.util.List;
@@ -106,24 +108,49 @@ public class ContractInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(5).west();
+    setMinimumSize(new Dimension(550,350));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     nameLabel =
       new JLabel(Language.get(this.getClass(), "name.label"));
-    panel.add(nameLabel, new GBC(baseGBC).gridy(0).none());
+    panel.add(nameLabel, "grow");
 
     nameTextField = new JTextField();
-    panel.add(nameTextField, new GBC(baseGBC).gridy(1).horizontal());
+    nameTextField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (nameTextField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(ContractInputDialog.class,
+            "error.validation.name"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+      }
+    });
+    panel.add(nameTextField, "grow");
 
     interfacesLabel =
       new JLabel(Language.get(this.getClass(), "interfaces.label"));
-    panel.add(interfacesLabel, new GBC(baseGBC).gridy(2).none());
+    panel.add(interfacesLabel, "grow");
 
     interfacesList =
       new JList(this.interfaces.toArray());
     interfacesList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-    panel.add(new JScrollPane(interfacesList), new GBC(baseGBC).gridy(3).horizontal());
+    interfacesList.addListSelectionListener(listener -> {
+      if ((listener.getFirstIndex() != -1) && (listener.getLastIndex() != -1)) {
+        clearErrorMessage();
+      }
+    });
+    panel.add(new JScrollPane(interfacesList), "grow");
 
     return panel;
   }
@@ -133,12 +160,16 @@ public class ContractInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    String name = nameTextField.getText();
-
-    if (name.equals("")) {
+    if (nameTextField.getText().trim().isEmpty()) {
       setErrorMessage(Language.get(this.getClass(),
         "error.validation.name"));
       return false;
+    } else {
+      if(interfacesList.getSelectedValuesList().size() == 0) {
+        setErrorMessage(Language.get(this.getClass(),
+          "error.validation.interfaces"));
+        return false;
+      }
     }
 
     clearErrorMessage();

@@ -7,7 +7,7 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
@@ -15,9 +15,12 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +48,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel managerLabel;
   private JTextField managerTextField;
   private JLabel queryLabel;
-  private JTextField queryTextField;
+  private JTextArea queryTextField;
   private JLabel contractLabel;
   private JList<String> contractList;
 
@@ -94,20 +97,20 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
       protected void performTask() throws Exception {
         if (editingProvider == null) {
           Provider provider =
-            Application.login().extension.getProviderRegistry().add(nameTextField.getText());
-          provider.code(codeTextField.getText());
-          provider.office(officeTextField.getText());
-          provider.support(supportTextField.getText().split(","));
-          provider.manager(managerTextField.getText().split(","));
-          provider.busquery(queryTextField.getText());
+            Application.login().extension.getProviderRegistry().add(nameTextField.getText().trim());
+          provider.code(codeTextField.getText().trim());
+          provider.office(officeTextField.getText().trim());
+          provider.support(supportTextField.getText().trim().split(","));
+          provider.manager(managerTextField.getText().trim().split(","));
+          provider.busquery(queryTextField.getText().trim());
           editingProvider = new ProviderWrapper(provider);
         } else {
-          editingProvider.name(nameTextField.getText());
-          editingProvider.code(codeTextField.getText());
-          editingProvider.office(officeTextField.getText());
-          editingProvider.support(Arrays.asList(supportTextField.getText().split(",")));
-          editingProvider.manager(Arrays.asList(managerTextField.getText().split(",")));
-          editingProvider.busquery(queryTextField.getText());
+          editingProvider.name(nameTextField.getText().trim());
+          editingProvider.code(codeTextField.getText().trim());
+          editingProvider.office(officeTextField.getText().trim());
+          editingProvider.support(Arrays.asList(supportTextField.getText().trim().split(",")));
+          editingProvider.manager(Arrays.asList(managerTextField.getText().trim().split(",")));
+          editingProvider.busquery(queryTextField.getText().trim());
           editingProvider.contracts(contractList.getSelectedValuesList());
         }
       }
@@ -131,62 +134,87 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(5).west();
-
+    setMinimumSize(new Dimension(550, 480));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy","[]10[]"));
 
     nameLabel =
       new JLabel(Language.get(this.getClass(), "name.label"));
-    panel.add(nameLabel, new GBC(baseGBC).gridy(0).none());
+    panel.add(nameLabel, "grow");
 
     nameTextField =
       new JTextField();
-    panel.add(nameTextField, new GBC(baseGBC).gridy(1).horizontal());
+    nameTextField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (nameTextField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(ProviderInputDialog.class,
+            "error.validation.name"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+
+      }
+    });
+    panel.add(nameTextField, "grow");
 
     codeLabel =
       new JLabel(Language.get(this.getClass(), "code.label"));
-    panel.add(codeLabel, new GBC(baseGBC).gridy(2).none());
+    panel.add(codeLabel, "grow");
 
     codeTextField = new JTextField();
-    panel.add(codeTextField, new GBC(baseGBC).gridy(3).horizontal());
+    panel.add(codeTextField, "grow");
 
     officeLabel =
       new JLabel(Language.get(this.getClass(), "office.label"));
-    panel.add(officeLabel, new GBC(baseGBC).gridy(4).none());
+    panel.add(officeLabel, "grow");
 
     officeTextField = new JTextField();
-    panel.add(officeTextField, new GBC(baseGBC).gridy(5).horizontal());
+    panel.add(officeTextField, "grow");
 
     supportLabel =
       new JLabel(Language.get(this.getClass(), "support.label"));
-    panel.add(supportLabel, new GBC(baseGBC).gridy(6).none());
+    panel.add(supportLabel, "grow");
 
     supportTextField = new JTextField();
-    panel.add(supportTextField, new GBC(baseGBC).gridy(7).horizontal());
+    panel.add(supportTextField, "grow");
 
     managerLabel =
       new JLabel(Language.get(this.getClass(), "manager.label"));
-    panel.add(managerLabel, new GBC(baseGBC).gridy(8).none());
+    panel.add(managerLabel, "grow");
 
     managerTextField = new JTextField();
-    panel.add(managerTextField, new GBC(baseGBC).gridy(9).horizontal());
+    panel.add(managerTextField, "grow");
 
     queryLabel =
       new JLabel(Language.get(this.getClass(), "busquery.label"));
-    panel.add(queryLabel, new GBC(baseGBC).gridy(10).none());
+    panel.add(queryLabel, "grow");
 
-    queryTextField = new JTextField();
-    panel.add(queryTextField, new GBC(baseGBC).gridy(11).horizontal());
+    queryTextField = new JTextArea(5, 20);
+    queryTextField.setLineWrap(true);
+    panel.add(new JScrollPane(queryTextField), "grow, wrap");
 
     contractLabel =
       new JLabel(Language.get(this.getClass(), "contract.label"));
-    panel.add(contractLabel, new GBC(baseGBC).gridy(12).none());
+    panel.add(contractLabel, "grow");
 
     contractList = new JList<>(contracts.keySet().toArray(new String[contracts.size()]));
     contractList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     contractList.setVisibleRowCount(4);
-
-    panel.add(new JScrollPane(contractList), new GBC(baseGBC).gridy(13).horizontal());
+    contractList.addListSelectionListener(listener -> {
+      if ((listener.getFirstIndex() != -1) && (listener.getLastIndex() != -1)) {
+        clearErrorMessage();
+      }
+    });
+    panel.add(new JScrollPane(contractList), "grow, spany "+ (panel.getComponentCount()-2));
 
     return panel;
   }
@@ -196,12 +224,16 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    String name = nameTextField.getText();
-
-    if (name.equals("")) {
+    if (nameTextField.getText().trim().isEmpty()) {
       setErrorMessage(Language.get(this.getClass(),
-        "error.validation.emptyID"));
+        "error.validation.name"));
       return false;
+    } else {
+      if(contractList.getSelectedValuesList().size() == 0) {
+        setErrorMessage(Language.get(this.getClass(),
+          "error.validation.contracts"));
+        return false;
+      }
     }
 
     clearErrorMessage();

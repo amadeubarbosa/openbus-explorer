@@ -441,7 +441,7 @@ public abstract class ExceptionDialog extends JDialog {
       setMinimumSize(new Dimension(350, 150));
 if (message.isEmpty()) message = " vai ficar vai ficar  vai ficar vai ficar  vai ficar vai ficar  vai ficar vai ficar ";
       JLabel errorLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
-      JPanel mainPanel = new JPanel(new MigLayout("debug, fill, wrap", "[grow]","[grow][][][]"));
+      JPanel mainPanel = new JPanel(new MigLayout("fill, wrap", "[grow]","[grow][][][]"));
       if (message == null || message.isEmpty() || message.startsWith("<html>")) {
         mainPanel.add(new JLabel(message));
       } else {
@@ -458,7 +458,7 @@ if (message.isEmpty()) message = " vai ficar vai ficar  vai ficar vai ficar  vai
       mainPanel.add(new JLabel(Language.get(this.getClass(),"contactError")));
       mainPanel.add(makeButtonsPanel(), "growx");
 
-      getContentPane().setLayout(new MigLayout("debug, fill","[center][grow]","[grow]"));
+      getContentPane().setLayout(new MigLayout("fill","[center][grow]","[grow]"));
       getContentPane().add(errorLabel);
       getContentPane().add(mainPanel, "grow");
 

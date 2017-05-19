@@ -9,7 +9,7 @@ import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 
@@ -20,7 +20,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.util.List;
 import java.util.TreeMap;
@@ -138,44 +138,48 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(5).west();
+    setMinimumSize(new Dimension(400,400));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     consumerLabel =
       new JLabel(Language.get(this.getClass(), "consumer.label"));
-    panel.add(consumerLabel, new GBC(baseGBC).gridy(0).none());
+    panel.add(consumerLabel, "grow");
 
     consumerCombo =
       new JComboBox<>(consumers.keySet().toArray(new String[consumers.size()
         ]));
-    panel.add(consumerCombo, new GBC(baseGBC).gridy(1).horizontal());
+    panel.add(consumerCombo, "grow");
 
     providerLabel =
       new JLabel(Language.get(this.getClass(), "provider.label"));
-    panel.add(providerLabel, new GBC(baseGBC).gridy(2).none());
+    panel.add(providerLabel, "grow");
 
     providerCombo = new JComboBox<>(providers.keySet().toArray(new String[providers.size()
       ]));
-    panel.add(providerCombo, new GBC(baseGBC).gridy(3).horizontal());
+    panel.add(providerCombo, "grow");
 
     contractLabel =
       new JLabel(Language.get(this.getClass(), "contract.label"));
-    panel.add(contractLabel, new GBC(baseGBC).gridy(4).none());
+    panel.add(contractLabel, "grow");
 
     contractList = new JList<>(contracts.keySet().toArray(new String[contracts.size()]));
     contractList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     contractList.setVisibleRowCount(8);
-
-    panel.add(new JScrollPane(contractList), new GBC(baseGBC).gridy(5).horizontal());
+    contractList.addListSelectionListener(listener -> {
+      if ((listener.getFirstIndex() != -1) && (listener.getLastIndex() != -1)) {
+        clearErrorMessage();
+      }
+    });
+    panel.add(new JScrollPane(contractList), "grow");
 
     activationLabel =
       new JLabel(Language.get(this.getClass(), "activated.label"));
-    panel.add(activationLabel, new GBC(baseGBC).gridy(6).none());
+    panel.add(activationLabel, "grow");
 
     activationBox =
       new JCheckBox();
     activationBox.setSelected(false);
-    panel.add(activationBox, new GBC(baseGBC).gridy(7).horizontal());
+    panel.add(activationBox, "grow");
 
     return panel;
   }
@@ -185,9 +189,14 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    if (contractList.getSelectedValuesList().size() == 0) {
+    if(contractList.getSelectedValuesList().size() == 0) {
       setErrorMessage(Language.get(this.getClass(),
         "error.validation.contracts"));
+      contractList.addListSelectionListener(listener -> {
+        if ((listener.getFirstIndex() != -1) && (listener.getLastIndex() != -1)) {
+          clearErrorMessage();
+        }
+      });
       return false;
     }
 

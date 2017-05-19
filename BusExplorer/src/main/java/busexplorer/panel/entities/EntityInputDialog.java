@@ -6,7 +6,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
@@ -15,8 +15,12 @@ import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEn
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.util.List;
 import java.util.TreeMap;
@@ -32,7 +36,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel categoryIDLabel;
   private JComboBox categoryIDCombo;
   private JLabel entityNameLabel;
-  private JTextField entityNameField;
+  private JTextArea entityNameField;
 
   private TreeMap<String, EntityCategoryDesc> categories =
     new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -104,31 +108,52 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(5).west();
+    setMinimumSize(new Dimension(300, 300));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     categoryIDLabel =
       new JLabel(Language.get(this.getClass(), "categoryID.label"));
-    panel.add(categoryIDLabel, new GBC(baseGBC).gridy(0).none());
+    panel.add(categoryIDLabel, "grow");
 
     categoryIDCombo =
       new JComboBox<>(categories.keySet().toArray(new String[categories.size()
         ]));
-    panel.add(categoryIDCombo, new GBC(baseGBC).gridy(1).horizontal());
+    panel.add(categoryIDCombo, "grow");
 
     entityIDLabel =
       new JLabel(Language.get(this.getClass(), "entityID.label"));
-    panel.add(entityIDLabel, new GBC(baseGBC).gridy(2).none());
+    panel.add(entityIDLabel, "grow");
 
     entityIDField = new JTextField();
-    panel.add(entityIDField, new GBC(baseGBC).gridy(3).horizontal());
+    entityIDField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (entityIDField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(EntityInputDialog.class,
+            "error.validation.name"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+      }
+    });
+    panel.add(entityIDField, "grow");
 
     entityNameLabel =
       new JLabel(Language.get(this.getClass(), "entityName.label"));
-    panel.add(entityNameLabel, new GBC(baseGBC).gridy(4).none());
+    panel.add(entityNameLabel, "grow");
 
-    entityNameField = new JTextField();
-    panel.add(entityNameField, new GBC(baseGBC).gridy(5).horizontal());
+    entityNameField = new JTextArea(5, 20);
+    entityNameField.setLineWrap(true);
+    panel.add(new JScrollPane(entityNameField), "grow");
 
     return panel;
   }
@@ -138,11 +163,9 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    String entityID = entityIDField.getText();
-
-    if (entityID.equals("")) {
+    if (entityIDField.getText().trim().isEmpty()) {
       setErrorMessage(Language.get(this.getClass(),
-        "error.validation.emptyID"));
+        "error.validation.name"));
       return false;
     }
 

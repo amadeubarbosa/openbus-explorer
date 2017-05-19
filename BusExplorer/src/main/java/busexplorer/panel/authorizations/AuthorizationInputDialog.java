@@ -6,7 +6,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.util.Collections;
 import java.util.List;
@@ -109,22 +109,27 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
+    setMinimumSize(new Dimension(550,350));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     entityIDLabel =
       new JLabel(Language.get(this.getClass(), "entityID.label"));
-    panel.add(entityIDLabel, new GBC(0, 0).insets(5).none().west());
+    panel.add(entityIDLabel, "grow");
 
     entityIDCombo = new JComboBox<>(entitiesIDList.toArray());
-    panel.add(entityIDCombo, new GBC(0, 1).insets(5).horizontal().west());
+    panel.add(entityIDCombo, "grow");
 
     interfacesLabel =
       new JLabel(Language.get(this.getClass(), "interfaces.label"));
-    panel.add(interfacesLabel, new GBC(0, 2).insets(5).none().west());
+    panel.add(interfacesLabel, "grow");
 
     interfacesScrollList = new JList<>(interfacesList.toArray());
-    panel.add(new JScrollPane(interfacesScrollList),
-      new GBC(0, 3).insets(5).both().west());
+    interfacesScrollList.addListSelectionListener(listener -> {
+      if ((listener.getFirstIndex() != -1) && (listener.getLastIndex() != -1)) {
+        clearErrorMessage();
+      }
+    });
+    panel.add(new JScrollPane(interfacesScrollList),"grow");
       
     return panel;
   }

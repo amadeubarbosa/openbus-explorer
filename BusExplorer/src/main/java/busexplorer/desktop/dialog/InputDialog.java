@@ -1,20 +1,17 @@
 package busexplorer.desktop.dialog;
 
+import busexplorer.ApplicationIcons;
 import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextPane;
-import javax.swing.UIManager;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -26,11 +23,6 @@ import java.awt.event.WindowEvent;
  *
  */
 public abstract class InputDialog extends JFrame {
-
-  /**
-   * Imagem de aviso colocada se houver problemas no preenchimento de dados.
-   */
-  private static final Icon errorIcon = UIManager.getIcon("OptionPane.errorIcon");
 
   /**
    * Botão de confirmação de dados.
@@ -102,25 +94,10 @@ public abstract class InputDialog extends JFrame {
    */
   public static JPanel buildButtonPanel(JButton... buttons) {
     equalizeButtonSizes(buttons);
-    JPanel buttonPanel = new JPanel(new GridBagLayout());
-    GridBagConstraints c = new GridBagConstraints();
-    int x = 0;
-    c.gridx = x++;
-    c.gridy = 0;
-    c.anchor = GridBagConstraints.EAST;
-    c.weightx = 1;
-    c.weighty = 0;
-    c.fill = GridBagConstraints.HORIZONTAL;
-    c.insets = new Insets(0, 0, 0, 0);
-    buttonPanel.add(new JLabel(), c);
+    JPanel buttonPanel = new JPanel(new MigLayout("fill","[grow][]"));
 
     for (JButton button : buttons) {
-      c.gridx = x++;
-      c.weightx = 0;
-      c.weighty = 0;
-      c.fill = GridBagConstraints.NONE;
-      c.insets = new Insets(0, 0, 5, 5);
-      buttonPanel.add(button, c);
+      buttonPanel.add(button, "gapleft push");
     }
     return buttonPanel;
   }
@@ -234,41 +211,11 @@ public abstract class InputDialog extends JFrame {
    * @return painel principal.
    */
   private JPanel getMainPane() {
-    JPanel panel = new JPanel(new GridBagLayout());
-
-    GridBagConstraints c = new GridBagConstraints();
-    c.insets = new Insets(12, 12, 0, 11);
-    c.gridx = 0;
-    c.gridy = 0;
-    c.weightx = 1;
-    c.weighty = 1;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.BOTH;
-    c.anchor = GridBagConstraints.EAST;
-    panel.add(buildFields(), c);
-
-    c.insets = new Insets(0, 12, 0, 11);
-    c.gridx = 0;
-    c.gridy = 1;
-    c.weightx = 1;
-    c.weighty = 1;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.BOTH;
-    c.anchor = GridBagConstraints.WEST;
-    panel.add(buildMessagePane(), c);
-
-    c.insets = new Insets(0, 12, 11, 11);
-    c.gridx = 0;
-    c.gridy = 2;
-    c.weightx = 0;
-    c.weighty = 0;
-    c.gridwidth = 1;
-    c.gridheight = 1;
-    c.fill = GridBagConstraints.NONE;
-    c.anchor = GridBagConstraints.EAST;
-    panel.add(buttons, c);
+    JPanel panel = new JPanel(new MigLayout("fill","[grow]"));
+    panel.add(buildFields(),"grow, wrap");
+    panel.add(buildMessagePane(), "grow, wrap");
+    panel.add(new JSeparator(JSeparator.HORIZONTAL),"growx, wrap");
+    panel.add(buttons, "grow");
 
     return panel;
   }
@@ -331,7 +278,7 @@ public abstract class InputDialog extends JFrame {
     }
     messageText.setText("  " + msg);
     messageText.setCaretPosition(0);
-    messageText.insertIcon(errorIcon);
+    messageText.insertIcon(ApplicationIcons.ICON_CANCEL_16);
     hasError = true;
   }
 

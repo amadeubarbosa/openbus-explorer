@@ -6,13 +6,15 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
@@ -89,15 +91,35 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(3).west();
+    setMinimumSize(new Dimension(330, 190));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     adminNameLabel =
       new JLabel(Language.get(this.getClass(),"adminName.label"));
-    panel.add(adminNameLabel, new GBC(baseGBC).gridy(0).none());
+    panel.add(adminNameLabel, "grow");
 
     adminNameField = new JTextField(30);
-    panel.add(adminNameField, new GBC(baseGBC).gridy(1).horizontal());
+    adminNameField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (adminNameField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(AdminInputDialog.class,
+            "error.validation.emptyID"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+      }
+    });
+    panel.add(adminNameField, "grow");
 
     return panel;
   }
@@ -107,9 +129,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    String administrator = adminNameField.getText();
-
-    if (administrator.equals("")) {
+    if (adminNameField.getText().trim().isEmpty()) {
       setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyID"));
       return false;

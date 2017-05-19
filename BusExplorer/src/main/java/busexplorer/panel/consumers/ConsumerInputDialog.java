@@ -6,14 +6,18 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.services.governance.v1_0.Consumer;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.util.Arrays;
 
@@ -39,7 +43,7 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel managerLabel;
   private JTextField managerTextField;
   private JLabel queryLabel;
-  private JTextField queryTextField;
+  private JTextArea queryTextField;
 
   private TablePanelComponent<ConsumerWrapper> panel;
 
@@ -77,19 +81,19 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
           Consumer consumer =
             Application.login().extension
               .getConsumerRegistry().add(nameTextField.getText());
-          consumer.code(codeTextField.getText());
-          consumer.office(officeTextField.getText());
-          consumer.support(supportTextField.getText().split(","));
-          consumer.manager(managerTextField.getText().split(","));
-          consumer.busquery(queryTextField.getText());
+          consumer.code(codeTextField.getText().trim());
+          consumer.office(officeTextField.getText().trim());
+          consumer.support(supportTextField.getText().trim().split(","));
+          consumer.manager(managerTextField.getText().trim().split(","));
+          consumer.busquery(queryTextField.getText().trim());
           editingConsumer = new ConsumerWrapper(consumer);
         } else {
-          editingConsumer.name(nameTextField.getText());
-          editingConsumer.code(codeTextField.getText());
-          editingConsumer.office(officeTextField.getText());
-          editingConsumer.support(Arrays.asList(supportTextField.getText().split(",")));
-          editingConsumer.manager(Arrays.asList(managerTextField.getText().split(",")));
-          editingConsumer.busquery(queryTextField.getText());
+          editingConsumer.name(nameTextField.getText().trim());
+          editingConsumer.code(codeTextField.getText().trim());
+          editingConsumer.office(officeTextField.getText().trim());
+          editingConsumer.support(Arrays.asList(supportTextField.getText().trim().split(",")));
+          editingConsumer.manager(Arrays.asList(managerTextField.getText().trim().split(",")));
+          editingConsumer.busquery(queryTextField.getText().trim());
         }
       }
 
@@ -112,51 +116,73 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(5).west();
+    setMinimumSize(new Dimension(400, 550));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     nameLabel =
       new JLabel(Language.get(this.getClass(), "name.label"));
-    panel.add(nameLabel, new GBC(baseGBC).gridy(0).none());
+    panel.add(nameLabel, "grow");
 
     nameTextField =
       new JTextField();
-    panel.add(nameTextField, new GBC(baseGBC).gridy(1).horizontal());
+    nameTextField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (nameTextField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(ConsumerInputDialog.class,
+            "error.validation.name"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+
+      }
+    });
+    panel.add(nameTextField, "grow");
 
     codeLabel =
       new JLabel(Language.get(this.getClass(), "code.label"));
-    panel.add(codeLabel, new GBC(baseGBC).gridy(2).none());
+    panel.add(codeLabel, "grow");
 
     codeTextField = new JTextField();
-    panel.add(codeTextField, new GBC(baseGBC).gridy(3).horizontal());
+    panel.add(codeTextField, "grow");
 
     officeLabel =
       new JLabel(Language.get(this.getClass(), "office.label"));
-    panel.add(officeLabel, new GBC(baseGBC).gridy(4).none());
+    panel.add(officeLabel, "grow");
 
     officeTextField = new JTextField();
-    panel.add(officeTextField, new GBC(baseGBC).gridy(5).horizontal());
+    panel.add(officeTextField, "grow");
 
     supportLabel =
       new JLabel(Language.get(this.getClass(), "support.label"));
-    panel.add(supportLabel, new GBC(baseGBC).gridy(6).none());
+    panel.add(supportLabel, "grow");
 
     supportTextField = new JTextField();
-    panel.add(supportTextField, new GBC(baseGBC).gridy(7).horizontal());
+    panel.add(supportTextField, "grow");
 
     managerLabel =
       new JLabel(Language.get(this.getClass(), "manager.label"));
-    panel.add(managerLabel, new GBC(baseGBC).gridy(8).none());
+    panel.add(managerLabel, "grow");
 
     managerTextField = new JTextField();
-    panel.add(managerTextField, new GBC(baseGBC).gridy(9).horizontal());
+    panel.add(managerTextField, "grow");
 
     queryLabel =
       new JLabel(Language.get(this.getClass(), "busquery.label"));
-    panel.add(queryLabel, new GBC(baseGBC).gridy(10).none());
+    panel.add(queryLabel, "grow");
 
-    queryTextField = new JTextField();
-    panel.add(queryTextField, new GBC(baseGBC).gridy(11).horizontal());
+    queryTextField = new JTextArea(5, 20);
+    queryTextField.setLineWrap(true);
+    panel.add(new JScrollPane(queryTextField), "grow");
 
     return panel;
   }
@@ -166,9 +192,7 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    String name = nameTextField.getText();
-
-    if (name.equals("")) {
+    if (nameTextField.getText().trim().isEmpty()) {
       setErrorMessage(Language.get(this.getClass(),
         "error.validation.name"));
       return false;

@@ -331,7 +331,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   }
 
   private JComponent initPanelEditor() {
-    JTabbedPane editorPane = new JTabbedPane(JTabbedPane.TOP);
+    JTabbedPane editorPane = new JTabbedPane(JTabbedPane.LEFT);
     HashMap<String, JComponent> conceptsPanels = new LinkedHashMap<>();
     conceptsPanels.put("category",      initPanelCategory());
     conceptsPanels.put("entity",        initPanelEntity());
@@ -361,7 +361,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   }
 
     private JComponent initExtensionEditor() {
-        JTabbedPane editorPane = new JTabbedPane(JTabbedPane.TOP);
+        JTabbedPane editorPane = new JTabbedPane(JTabbedPane.LEFT);
         HashMap<String, RefreshablePanel> conceptsPanels = new LinkedHashMap<>();
         conceptsPanels.put("extension.overview", initPanelIntegrationOverview());
         conceptsPanels.put("extension.consumer", initPanelIntegrationConsumer());

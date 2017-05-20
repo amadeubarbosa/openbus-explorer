@@ -68,7 +68,7 @@ public class AvailabilityRenderer extends DefaultTableCellRenderer {
       builder.append("<br>");
       builder.append(availability.detail);
     }
-    builder.append("<html>");
+    builder.append("</html>");
     ((JLabel) component).setText(builder.toString());
     ((JLabel) component).setVerticalAlignment(CENTER);
     ((JLabel) component).setHorizontalAlignment(CENTER);

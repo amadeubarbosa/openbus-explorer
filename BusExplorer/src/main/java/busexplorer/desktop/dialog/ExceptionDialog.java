@@ -439,7 +439,6 @@ public abstract class ExceptionDialog extends JDialog {
      */
     private void buildGui(String message) {
       setMinimumSize(new Dimension(350, 150));
-if (message.isEmpty()) message = " vai ficar vai ficar  vai ficar vai ficar  vai ficar vai ficar  vai ficar vai ficar ";
       JLabel errorLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
       JPanel mainPanel = new JPanel(new MigLayout("fill, wrap", "[grow]","[grow][][][]"));
       if (message == null || message.isEmpty() || message.startsWith("<html>")) {

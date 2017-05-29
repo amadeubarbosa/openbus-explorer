@@ -1,6 +1,5 @@
 package busexplorer.panel.configuration.validators;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -43,11 +42,10 @@ public class ValidatorRefreshAction extends OpenBusAction<ValidatorWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ValidatorWrapper>> task =
-      new BusExplorerTask<List<ValidatorWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ValidatorWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(ValidatorWrapper.convertToInfo(admin.getPasswordValidators()));
       }
 
@@ -60,7 +58,7 @@ public class ValidatorRefreshAction extends OpenBusAction<ValidatorWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

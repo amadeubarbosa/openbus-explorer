@@ -241,11 +241,11 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     disconnect.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
-        BusExplorerTask<Object> task =
-          new BusExplorerTask<Object>(Application.exceptionHandler(),
-            ExceptionContext.Service) {
+        BusExplorerTask<Void> task =
+          new BusExplorerTask<Void>(ExceptionContext.Service) {
+
           @Override
-          protected void performTask() throws Exception {
+          protected void doPerformTask() throws Exception {
             Application.login().logout();
             setDialogTitle(Language.get(MainDialog.class,"title.disconnected"));
             disconnect.setEnabled(false);
@@ -667,9 +667,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     settingsPanel.add(cancelButton,"gapleft push");
     settingsPanel.add(applyButton,"gapleft push");
 
-    final BusExplorerTask<Object> getBasicConfFromBusTask =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    final BusExplorerTask<Void> getBasicConfFromBusTask =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
         int maxChannels = 0;
         int maxCacheSize = 0;
@@ -678,7 +677,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
         int oilLogLevel = 0;
 
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           maxChannels = admin.getMaxChannels();
           maxCacheSize = admin.getMaxCacheSize();
           timeout = admin.getCallsTimeout();
@@ -699,12 +698,11 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
           }
         }
       };
-    final BusExplorerTask<Object> sendBasicConfToBusTask =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    final BusExplorerTask<Void> sendBasicConfToBusTask =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           admin.setMaxChannels(((SpinnerNumberModel) maxChannelsSpinner.getModel()).getNumber().intValue());
           admin.setMaxCacheSize(((SpinnerNumberModel) maxCacheSizeSpinner.getModel()).getNumber().intValue());
           admin.setCallsTimeout(((SpinnerNumberModel) timeoutSpinner.getModel()).getNumber().intValue());
@@ -765,12 +763,11 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     restoreDefaultsButton.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent actionEvent) {
-        BusExplorerTask<Object> task =
-          new BusExplorerTask<Object>(Application.exceptionHandler(),
-            ExceptionContext.BusCore) {
+        BusExplorerTask<Void> task =
+          new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
             @Override
-            protected void performTask() throws Exception {
+            protected void doPerformTask() throws Exception {
               admin.reloadConfigsFile();
             }
 

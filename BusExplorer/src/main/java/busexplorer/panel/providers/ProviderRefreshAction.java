@@ -31,11 +31,10 @@ public class ProviderRefreshAction extends OpenBusAction<ProviderWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ProviderWrapper>> task =
-      new BusExplorerTask<List<ProviderWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ProviderWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(ProviderWrapper.convertToInfo(Application.login().extension.getProviders()));
       }
 
@@ -48,7 +47,7 @@ public class ProviderRefreshAction extends OpenBusAction<ProviderWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

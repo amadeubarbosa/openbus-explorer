@@ -32,11 +32,10 @@ public class ConsumerRefreshAction extends OpenBusAction<ConsumerWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ConsumerWrapper>> task =
-      new BusExplorerTask<List<ConsumerWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ConsumerWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(ConsumerWrapper.convertToInfo(Arrays.asList(
           Application.login().extension.getConsumerRegistry().consumers())));
       }
@@ -50,7 +49,7 @@ public class ConsumerRefreshAction extends OpenBusAction<ConsumerWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

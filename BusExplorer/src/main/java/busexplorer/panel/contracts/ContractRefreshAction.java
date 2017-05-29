@@ -31,11 +31,10 @@ public class ContractRefreshAction extends OpenBusAction<ContractWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ContractWrapper>> task =
-      new BusExplorerTask<List<ContractWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ContractWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(ContractWrapper.convertToInfo(Application.login().extension.getContracts()));
       }
 
@@ -48,7 +47,7 @@ public class ContractRefreshAction extends OpenBusAction<ContractWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

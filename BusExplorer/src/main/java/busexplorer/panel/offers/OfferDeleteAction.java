@@ -65,26 +65,25 @@ public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
-      @Override
-      protected void performTask() throws Exception {
-        List<OfferWrapper> offers = getTablePanelComponent().getSelectedElements();
-        for (OfferWrapper offer : offers) {
-          ServiceOffer ref = offer.getDescriptor().ref;
-          ref.remove();
+        @Override
+        protected void doPerformTask() throws Exception {
+          List<OfferWrapper> offers = getTablePanelComponent().getSelectedElements();
+          for (OfferWrapper offer : offers) {
+            ServiceOffer ref = offer.getDescriptor().ref;
+            ref.remove();
+          }
         }
-      }
 
-      @Override
-      protected void afterTaskUI() {
-        if (getStatus()) {
-          getTablePanelComponent().removeSelectedElements();
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            getTablePanelComponent().removeSelectedElements();
+          }
         }
-      }
-    };
+      };
 
     task.execute(parentWindow, getString("waiting.title"),
       getString("waiting.msg"), 2, 0);

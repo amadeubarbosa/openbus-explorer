@@ -1,6 +1,5 @@
 package busexplorer.panel.logins;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -43,11 +42,10 @@ public class LoginRefreshAction extends OpenBusAction<LoginWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<LoginWrapper>> task =
-      new BusExplorerTask<List<LoginWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<LoginWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(LoginWrapper.convertToInfo(admin.getLogins()));
       }
 
@@ -60,7 +58,7 @@ public class LoginRefreshAction extends OpenBusAction<LoginWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

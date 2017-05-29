@@ -60,12 +60,11 @@ public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         List<LoginWrapper> logins = getTablePanelComponent().getSelectedElements();
         for (LoginWrapper login : logins) {
           admin.invalidateLogin(login.getInfo());
@@ -81,6 +80,6 @@ public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

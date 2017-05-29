@@ -1,6 +1,5 @@
 package busexplorer.panel.offers.properties;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -50,11 +49,10 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ServiceProperty>> task =
-      new BusExplorerTask<List<ServiceProperty>>(
-        Application.exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ServiceProperty>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(Arrays.asList(offer.describe().properties));
       }
 
@@ -67,7 +65,7 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

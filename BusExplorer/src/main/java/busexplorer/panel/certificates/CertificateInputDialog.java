@@ -1,6 +1,5 @@
 package busexplorer.panel.certificates;
 
-import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
@@ -58,12 +57,11 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    BusExplorerTask<Object> task = 
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         File certificateFile = new File(getCertificatePath());
         byte[] certificate = FileUtils.readFileToByteArray(certificateFile);
         admin.registerCertificate(getIdentifier(), certificate);

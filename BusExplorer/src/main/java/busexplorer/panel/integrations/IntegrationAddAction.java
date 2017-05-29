@@ -54,14 +54,13 @@ public class IntegrationAddAction extends OpenBusAction<IntegrationWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     BusExplorerTask<Void> task =
-      new BusExplorerTask<Void>(Application
-        .exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
         private List<ConsumerWrapper> consumers;
         private List<ProviderWrapper> providers;
         private List<ContractWrapper> contracts;
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           consumers = ConsumerWrapper.convertToInfo(Application.login().extension.getConsumers());
           providers = ProviderWrapper.convertToInfo(Application.login().extension.getProviders());
           contracts = ContractWrapper.convertToInfo(Application.login().extension.getContracts());
@@ -92,7 +91,7 @@ public class IntegrationAddAction extends OpenBusAction<IntegrationWrapper> {
         }
       };
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

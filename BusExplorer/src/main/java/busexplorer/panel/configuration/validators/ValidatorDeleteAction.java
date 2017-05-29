@@ -59,12 +59,11 @@ public class ValidatorDeleteAction extends OpenBusAction<ValidatorWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         List<ValidatorWrapper> validators = getTablePanelComponent().getSelectedElements();
         for (ValidatorWrapper validator : validators) {
           admin.delPasswordValidator(validator.getValidator());
@@ -81,6 +80,6 @@ public class ValidatorDeleteAction extends OpenBusAction<ValidatorWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

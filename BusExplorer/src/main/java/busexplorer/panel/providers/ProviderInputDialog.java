@@ -89,12 +89,11 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         if (editingProvider == null) {
           Provider provider =
             Application.login().extension.getProviderRegistry().add(nameTextField.getText().trim());

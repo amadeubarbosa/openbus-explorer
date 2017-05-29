@@ -1,6 +1,5 @@
 package busexplorer.panel.configuration.admins;
 
-import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
@@ -55,13 +54,11 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
     final List<String> grantTo = new ArrayList<String>();
     grantTo.add(adminNameField.getText());
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         if (editingAdministrator == null) {
           admin.grantAdminTo(grantTo);
         } else {

@@ -61,12 +61,10 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrappe
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         List<AuthorizationWrapper> authorizations =
           getTablePanelComponent().getSelectedElements();
 
@@ -77,7 +75,6 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrappe
           ref.revokeInterface(interfaceName);
         }
       }
-
       @Override
       protected void afterTaskUI() {
         if (getStatus()) {
@@ -87,6 +84,6 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrappe
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

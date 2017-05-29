@@ -43,24 +43,23 @@ public class IntegrationRefreshAction extends OpenBusAction<IntegrationWrapper> 
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<IntegrationWrapper>> task =
-      new BusExplorerTask<List<IntegrationWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<IntegrationWrapper>>(ExceptionContext.BusCore) {
 
-      @Override
-      protected void performTask() throws Exception {
-        setResult(IntegrationWrapper.convertToInfo(Application.login().extension.getIntegrations()));
-      }
-
-      @Override
-      protected void afterTaskUI() {
-        if (getStatus()) {
-          getTablePanelComponent().setElements(getResult());
+        @Override
+        protected void doPerformTask() throws Exception {
+          setResult(IntegrationWrapper.convertToInfo(Application.login().extension.getIntegrations()));
         }
-      }
-    };
+
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            getTablePanelComponent().setElements(getResult());
+          }
+        }
+      };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

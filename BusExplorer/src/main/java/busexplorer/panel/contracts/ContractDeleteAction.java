@@ -59,12 +59,11 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           List<ContractWrapper> contracts = getTablePanelComponent().getSelectedElements();
           for (ContractWrapper contract : contracts) {
             Application.login().extension.getContractRegistry().remove(
@@ -81,6 +80,6 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
       };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

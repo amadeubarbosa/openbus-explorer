@@ -1,6 +1,5 @@
 package busexplorer.panel.categories;
 
-import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
@@ -55,14 +54,12 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
       EntityCategory category;
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         if (editingCategory == null) {
           category = admin.createCategory(getCategoryID(), getCategoryName());
         } else {

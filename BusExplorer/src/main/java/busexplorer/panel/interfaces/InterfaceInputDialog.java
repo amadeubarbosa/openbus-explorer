@@ -1,6 +1,5 @@
 package busexplorer.panel.interfaces;
 
-import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
@@ -51,12 +50,11 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         admin.createInterface(getInterfaceName());
       }
 

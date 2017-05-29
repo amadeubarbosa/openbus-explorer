@@ -59,12 +59,11 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           List<ProviderWrapper> providers = getTablePanelComponent().getSelectedElements();
           for (ProviderWrapper provider : providers) {
             Application.login().extension.getProviderRegistry().remove(provider.name());
@@ -80,6 +79,6 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
       };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

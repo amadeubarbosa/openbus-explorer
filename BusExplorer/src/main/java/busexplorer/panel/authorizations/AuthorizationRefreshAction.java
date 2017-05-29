@@ -1,6 +1,5 @@
 package busexplorer.panel.authorizations;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -43,12 +42,11 @@ public class AuthorizationRefreshAction extends
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    BusExplorerTask<List<AuthorizationWrapper>> task =
-      new BusExplorerTask<List<AuthorizationWrapper>>(
-        Application.exceptionHandler(), ExceptionContext.BusCore) {
+    BusExplorerTask<List<AuthorizationWrapper>> task = new BusExplorerTask<List<AuthorizationWrapper>>(
+      ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(AuthorizationWrapper.convertToInfo(admin.getAuthorizations()));
       }
 
@@ -61,7 +59,7 @@ public class AuthorizationRefreshAction extends
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

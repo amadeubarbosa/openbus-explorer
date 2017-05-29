@@ -59,12 +59,11 @@ public class IntegrationDeleteAction extends OpenBusAction<IntegrationWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           List<IntegrationWrapper> integrations = getTablePanelComponent().getSelectedElements();
           for (IntegrationWrapper integration : integrations) {
             Application.login().extension.getIntegrationRegistry().remove(integration.remote().id());
@@ -80,6 +79,6 @@ public class IntegrationDeleteAction extends OpenBusAction<IntegrationWrapper> {
       };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

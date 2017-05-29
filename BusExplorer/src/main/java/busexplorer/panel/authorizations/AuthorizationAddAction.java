@@ -53,15 +53,12 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application
-        .exceptionHandler(), ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task = new BusExplorerTask<Void>(ExceptionContext.BusCore) {
       List<String> entitiesIDList = null;
       List<String> interfacesList = null;
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         entitiesIDList = new LinkedList<>();
         List<RegisteredEntityDesc> entitiesDescList = admin.getEntities();
         interfacesList = admin.getInterfaces();
@@ -92,6 +89,6 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
       }
     };
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

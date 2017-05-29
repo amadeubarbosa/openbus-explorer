@@ -1,6 +1,5 @@
 package busexplorer.panel.entities;
 
-import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
@@ -72,14 +71,12 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
       RegisteredEntity entity;
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         if (editingEntity == null) {
           EntityCategory category = getCategory().ref;
           entity = category.registerEntity(getEntityId(), getEntityName());

@@ -1,6 +1,5 @@
 package busexplorer.panel.configuration.admins;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -43,11 +42,10 @@ public class AdminRefreshAction extends OpenBusAction<AdminWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<AdminWrapper>> task =
-      new BusExplorerTask<List<AdminWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<AdminWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(AdminWrapper.convertToInfo(admin.getAdmins()));
       }
 
@@ -60,7 +58,7 @@ public class AdminRefreshAction extends OpenBusAction<AdminWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

@@ -52,11 +52,10 @@ public class EntityAddAction extends OpenBusAction<EntityWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     BusExplorerTask<List<EntityCategoryDesc>> task =
-      new BusExplorerTask<List<EntityCategoryDesc>>(Application
-        .exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<List<EntityCategoryDesc>>(ExceptionContext.BusCore) {
 
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           setResult(admin.getCategories());
         }
 
@@ -77,7 +76,7 @@ public class EntityAddAction extends OpenBusAction<EntityWrapper> {
         }
       };
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

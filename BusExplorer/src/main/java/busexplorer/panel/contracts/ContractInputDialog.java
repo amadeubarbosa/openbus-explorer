@@ -73,11 +73,10 @@ public class ContractInputDialog extends BusExplorerAbstractInputDialog {
     }
 
     BusExplorerTask<Void> task =
-      new BusExplorerTask<Void>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           if (editingContract == null) {
             Contract contract = Application.login()
               .extension.getContractRegistry().add(nameTextField.getText());

@@ -318,9 +318,14 @@ public class BusExplorerExceptionHandler extends
 
       case Unspecified:
       default:
-        exception.setErrorMessage(Language.get(this.getClass(),
-          "unspecified", theException.getClass().getName(), theException
-            .getMessage()));
+        if (theException != null) {
+          exception.setErrorMessage(Language.get(this.getClass(),
+            "unspecified", theException.getClass().getName(), theException
+              .getMessage()));
+        } else {
+          exception.setErrorMessage(Language.get(this.getClass(),
+            "javaerror"));
+        }
         break;
     }
   }

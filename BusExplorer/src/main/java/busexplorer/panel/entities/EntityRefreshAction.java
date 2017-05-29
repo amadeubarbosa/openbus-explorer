@@ -1,6 +1,5 @@
 package busexplorer.panel.entities;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -43,11 +42,10 @@ public class EntityRefreshAction extends OpenBusAction<EntityWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<EntityWrapper>> task =
-      new BusExplorerTask<List<EntityWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<EntityWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(EntityWrapper.convertToInfo(admin.getEntities()));
       }
 
@@ -60,7 +58,7 @@ public class EntityRefreshAction extends OpenBusAction<EntityWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

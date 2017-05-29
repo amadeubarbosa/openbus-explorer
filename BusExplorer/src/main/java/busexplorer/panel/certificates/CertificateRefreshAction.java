@@ -1,6 +1,5 @@
 package busexplorer.panel.certificates;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -43,11 +42,10 @@ public class CertificateRefreshAction extends OpenBusAction<CertificateWrapper> 
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<CertificateWrapper>> task =
-      new BusExplorerTask<List<CertificateWrapper>>(
-        Application.exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<List<CertificateWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(CertificateWrapper.convertToInfo(
           admin.getEntitiesWithCertificate()));
       }
@@ -61,7 +59,7 @@ public class CertificateRefreshAction extends OpenBusAction<CertificateWrapper> 
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

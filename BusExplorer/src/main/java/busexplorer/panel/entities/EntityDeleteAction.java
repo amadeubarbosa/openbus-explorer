@@ -60,12 +60,10 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           List<EntityWrapper> entities = getTablePanelComponent().getSelectedElements();
           for (EntityWrapper entity : entities) {
             RegisteredEntity ref = entity.getDescriptor().ref;
@@ -82,6 +80,6 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
       };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

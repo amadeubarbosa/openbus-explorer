@@ -1,6 +1,5 @@
 package busexplorer.panel.offers;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -43,11 +42,10 @@ public class OfferRefreshAction extends OpenBusAction<OfferWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<OfferWrapper>> task =
-      new BusExplorerTask<List<OfferWrapper>>(Application.exceptionHandler(),
-      ExceptionContext.BusCore) {
+      new BusExplorerTask<List<OfferWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(OfferWrapper.convertToInfo(admin.getOffers()));
       }
 
@@ -60,7 +58,7 @@ public class OfferRefreshAction extends OpenBusAction<OfferWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

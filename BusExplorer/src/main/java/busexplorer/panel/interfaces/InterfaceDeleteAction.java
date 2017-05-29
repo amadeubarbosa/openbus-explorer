@@ -59,12 +59,11 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         List<InterfaceWrapper> interfaces = getTablePanelComponent().getSelectedElements();
         for (InterfaceWrapper interfaceInfo : interfaces) {
           String interfaceName = interfaceInfo.getName();
@@ -81,6 +80,6 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

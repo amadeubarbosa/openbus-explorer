@@ -60,12 +60,11 @@ public class CategoryDeleteAction extends OpenBusAction<CategoryWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         CategoryWrapper category = getTablePanelComponent().getSelectedElement();
         EntityCategory ref = category.getDescriptor().ref;
         ref.remove();
@@ -80,6 +79,6 @@ public class CategoryDeleteAction extends OpenBusAction<CategoryWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

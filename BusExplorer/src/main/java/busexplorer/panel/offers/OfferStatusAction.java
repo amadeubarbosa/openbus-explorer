@@ -50,12 +50,11 @@ public class OfferStatusAction extends OpenBusAction<OfferWrapper> {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         int i = 0;
         List<OfferWrapper> offers = getTablePanelComponent().getSelectedElements();
         for (OfferWrapper offer : offers) {

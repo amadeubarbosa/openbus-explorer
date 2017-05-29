@@ -1,6 +1,5 @@
 package busexplorer.desktop.dialog;
 
-import busexplorer.Application;
 import busexplorer.ApplicationIcons;
 import busexplorer.BusExplorerLogin;
 import busexplorer.exception.handling.ExceptionContext;
@@ -312,14 +311,13 @@ public class LoginDialog extends JDialog {
     @Override
     public void actionPerformed(ActionEvent event) {
 
-      BusExplorerTask<Object> task =
-        new BusExplorerTask<Object>(Application.exceptionHandler(),
-          ExceptionContext.LoginByPassword) {
+      BusExplorerTask<Void> task =
+        new BusExplorerTask<Void>(ExceptionContext.LoginByPassword) {
 
           BusExplorerLogin theLogin;
 
           @Override
-          protected void performTask() throws Exception {
+          protected void doPerformTask() throws Exception {
             BusAddress address;
             if (comboBus == null) {
               address =

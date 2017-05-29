@@ -52,11 +52,10 @@ public class ProviderAddAction extends OpenBusAction<ProviderWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     BusExplorerTask<List<ContractWrapper>> task =
-      new BusExplorerTask<List<ContractWrapper>>(Application
-        .exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ContractWrapper>>(ExceptionContext.BusCore) {
 
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           setResult(ContractWrapper
             .convertToInfo(Application.login().extension.getContracts()));
         }
@@ -78,7 +77,7 @@ public class ProviderAddAction extends OpenBusAction<ProviderWrapper> {
         }
       };
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

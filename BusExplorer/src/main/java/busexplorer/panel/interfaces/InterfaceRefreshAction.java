@@ -1,6 +1,5 @@
 package busexplorer.panel.interfaces;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -43,24 +42,23 @@ public class InterfaceRefreshAction extends OpenBusAction<InterfaceWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<InterfaceWrapper>> task =
-      new BusExplorerTask<List<InterfaceWrapper>>(
-        Application.exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<List<InterfaceWrapper>>(ExceptionContext.BusCore) {
 
-      @Override
-      protected void performTask() throws Exception {
-        setResult(InterfaceWrapper.convertToInfo(admin.getInterfaces()));
-      }
-
-      @Override
-      protected void afterTaskUI() {
-        if (getStatus()) {
-          getTablePanelComponent().setElements(getResult());
+        @Override
+        protected void doPerformTask() throws Exception {
+          setResult(InterfaceWrapper.convertToInfo(admin.getInterfaces()));
         }
-      }
-    };
+
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            getTablePanelComponent().setElements(getResult());
+          }
+        }
+      };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

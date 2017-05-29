@@ -59,12 +59,10 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           List<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
           for (ConsumerWrapper consumer : consumers) {
             Application.login().extension.getConsumerRegistry().remove(consumer.name());
@@ -80,6 +78,6 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
       };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

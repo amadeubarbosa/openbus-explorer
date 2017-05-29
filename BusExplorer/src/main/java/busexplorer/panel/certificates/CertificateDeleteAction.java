@@ -59,12 +59,11 @@ public class CertificateDeleteAction extends OpenBusAction<CertificateWrapper> {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         List<CertificateWrapper> certificates =
           getTablePanelComponent().getSelectedElements();
         for (CertificateWrapper certificate : certificates) {
@@ -82,6 +81,6 @@ public class CertificateDeleteAction extends OpenBusAction<CertificateWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

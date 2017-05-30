@@ -43,6 +43,8 @@ import java.util.Vector;
 public class LoginDialog extends JDialog {
   /** Combo box de barramentos pré-configurados */
   private JComboBox comboBus;
+  /** Combo box de domínios pré-configurados */
+  private JComboBox comboDomain;
   /** Campo de texto para o endereço do barramento */
   private JTextField fieldAddress;
   /** Campo de texto para o nome do usuário (entidade do barramento). */
@@ -120,6 +122,7 @@ public class LoginDialog extends JDialog {
 
     ConfigurationProperties configProps = new ConfigurationProperties();
     final Vector<BusAddress> busVector = new Vector<>();
+    final Vector<Vector<String>> busDomain = new Vector<>();
 
     for (int i = 1;; i++) {
       String busPrefix = "bus" + i + ".";
@@ -128,6 +131,14 @@ public class LoginDialog extends JDialog {
       if (description == null || address == null) {
         break;
       }
+      busDomain.add(new Vector<>());
+      for (int j = 1;; j++) {
+        String domain = configProps.getProperty(busPrefix + "domain" + j);
+        if (domain == null) {
+          break;
+        }
+        busDomain.get(i-1).add(domain);
+      }
       busVector.add(BusAddress.toAddress(description, address));
     }
 
@@ -135,6 +146,7 @@ public class LoginDialog extends JDialog {
 
     if (!busVector.isEmpty()) {
       busVector.add(BusAddress.UNSPECIFIED_ADDRESS);
+      busDomain.add(new Vector<>());
 
       JLabel labelBus = new JLabel(Language.get(this.getClass(),"bus.label"));
       labelBus.setFont(FONT_LABEL);
@@ -196,6 +208,9 @@ public class LoginDialog extends JDialog {
     labelDomain.setFont(FONT_LABEL);
     configPanel.add(labelDomain, new GBC(0, 8).west().insets(6, 6, 3, 6));
 
+    comboDomain = new JComboBox<String>();
+    configPanel.add(comboDomain, new GBC(0, 8).east().insets(0,6,0,9));
+
     fieldDomain = new JTextField();
     fieldDomain.setToolTipText(Language.get(this.getClass(),"domain.help"));
     fieldDomain.addFocusListener(selectAllTextListener);
@@ -210,6 +225,38 @@ public class LoginDialog extends JDialog {
 
     buttonLogin.setIcon(ApplicationIcons.ICON_LOGIN_16);
     buttonLogin.setEnabled(false);
+
+    if (!busDomain.isEmpty()) {
+      comboBus.addItemListener(listener -> {
+        comboDomain.removeAllItems();
+        BusAddress selectedBus = (BusAddress) comboBus.getSelectedItem();
+        for (String d : busDomain.get(busVector.indexOf(selectedBus))) {
+          comboDomain.addItem(d);
+        }
+        if (comboDomain.getItemCount() == 0) {
+          comboDomain.setVisible(false);
+          fieldDomain.setEnabled(true);
+        } else {
+          comboDomain.setVisible(true);
+        }
+      });
+      comboDomain.addItemListener(listener -> {
+        String selected = (String) comboDomain.getSelectedItem();
+        fieldDomain.setText(selected);
+        fieldDomain.setEnabled(false);
+        buttonLogin.requestFocus();
+      });
+      // first presentation
+      for (String d : busDomain.get(busVector.indexOf(busVector.get(0)))) {
+        comboDomain.addItem(d);
+      }
+      if (comboDomain.getItemCount() == 0) {
+        comboDomain.setVisible(false);
+        fieldDomain.setEnabled(true);
+      } else {
+        comboDomain.setVisible(true);
+      }
+    }
 
     Box buttonsBox = Box.createHorizontalBox();
     buttonsBox.setBorder(new EmptyBorder(9, 3, 3, 3));

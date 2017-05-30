@@ -269,11 +269,10 @@ public class BusExplorerExceptionHandler extends
         break;
 
       case InvalidName:
-        // Este erro nunca deveria ocorrer se o código foi bem escrito
+        // Esse erro sobre a configuração do POA só ocorre por falha no SDK
         exception.setErrorMessage(Language.get(this.getClass(),
             "unspecified", theException.getClass().getName(),
                 theException.getMessage()));
-        System.exit(1);
         break;
 
       case IncompatibleBus:

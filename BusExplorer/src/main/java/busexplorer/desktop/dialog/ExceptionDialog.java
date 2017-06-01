@@ -285,7 +285,7 @@ public abstract class ExceptionDialog extends JDialog {
      * Método interno de construção da inteface gráfica.
      */
     private void createComponents() {
-
+      setMinimumSize(new Dimension(750, 550));
       // Define a cor que será utilizada como cor de fundo para componentes
       // inativos
       Color inactiveColor =
@@ -429,19 +429,22 @@ public abstract class ExceptionDialog extends JDialog {
       final Throwable throwable, final String message,
       final String[] additionalInfo) {
       super(owner, title, throwable, additionalInfo);
-      buildGui(message);
+      createComponents(message);
     }
 
     /**
-     * Inicialização interna do diálogo.
+     * Método interno de construção da inteface gráfica.
      *
-     * @param message mensagem que deve aparecer no diálogo.
+     * @param message mensagem que deve aparecer no diálogo simplificado
      */
-    private void buildGui(String message) {
+    private void createComponents(String message) {
       setMinimumSize(new Dimension(350, 150));
       JLabel errorLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
       JPanel mainPanel = new JPanel(new MigLayout("fill, wrap", "[grow]","[grow][][][]"));
-      if (message == null || message.isEmpty() || message.startsWith("<html>")) {
+      if (message == null || message.isEmpty()) {
+        mainPanel.add(new JLabel(Language.get(this.getClass(),"executionError")));
+        mainPanel.add(new JLabel(Language.get(this.getClass(),"contactError")));
+      } else if (message.startsWith("<html>")) {
         mainPanel.add(new JLabel(message));
       } else {
         JMultilineLabel label = new JMultilineLabel();
@@ -452,10 +455,7 @@ public abstract class ExceptionDialog extends JDialog {
         label.setText(message);
         mainPanel.add(label, "grow");
       }
-
-      mainPanel.add( new JLabel(Language.get(this.getClass(),"executionError")));
-      mainPanel.add(new JLabel(Language.get(this.getClass(),"contactError")));
-      mainPanel.add(makeButtonsPanel(), "growx");
+      mainPanel.add(createButtonPanel(), "growx");
 
       getContentPane().setLayout(new MigLayout("fill","[center][grow]","[grow]"));
       getContentPane().add(errorLabel);
@@ -466,11 +466,11 @@ public abstract class ExceptionDialog extends JDialog {
     }
 
     /**
-     * Cria o painel com os botões
-     * 
-     * @return o painel
+     * Criação do painel de botões.
+     *
+     * @return o painel.
      */
-    private JPanel makeButtonsPanel() {
+    private JPanel createButtonPanel() {
       final JPanel panel = new JPanel();
       final JButton detailButton = new JButton(new DetailThrowableAction(this));
       final JButton closeButton = new JButton(new CloseAction(this));

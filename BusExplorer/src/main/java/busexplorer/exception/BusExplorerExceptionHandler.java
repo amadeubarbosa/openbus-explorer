@@ -4,7 +4,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.exception.handling.ExceptionHandler;
 import busexplorer.exception.handling.ExceptionType;
 import busexplorer.utils.Language;
-import org.omg.CORBA.BAD_PARAM;
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.TRANSIENT;
@@ -190,6 +189,8 @@ public class BusExplorerExceptionHandler extends
       case OBJECT_NOT_EXIST:
         switch (context) {
           case BusCore:
+          case LoginByPassword:
+          case LoginByPrivateKey:
             exception.setErrorMessage(Language.get(this.getClass(),
               "not.exist.core"));
             break;
@@ -204,6 +205,8 @@ public class BusExplorerExceptionHandler extends
       case TRANSIENT:
         switch (context) {
           case BusCore:
+          case LoginByPassword:
+          case LoginByPrivateKey:
             exception.setErrorMessage(Language.get(this.getClass(),
               "transient.core"));
             break;
@@ -218,6 +221,8 @@ public class BusExplorerExceptionHandler extends
       case COMM_FAILURE:
         switch (context) {
           case BusCore:
+          case LoginByPassword:
+          case LoginByPrivateKey:
             exception.setErrorMessage(Language.get(this.getClass(),
               "comm.failure.core"));
             break;
@@ -294,18 +299,19 @@ public class BusExplorerExceptionHandler extends
           case LoginByPrivateKey:
           case LoginByPassword:
             Throwable cause = theException.getCause();
-            if (cause != null) {
-              if (cause instanceof BAD_PARAM) {
-                exception.setErrorMessage(Language.get(this.getClass(),
-                        "illegal.wrong.address", theException.getMessage()));
-              } else if (cause instanceof COMM_FAILURE || cause instanceof TRANSIENT) {
+            if ((cause != null) &&
+                ( cause instanceof COMM_FAILURE ||
+                  cause instanceof TRANSIENT ||
+                  cause instanceof NO_PERMISSION )) {
                 StringBuilder sb = new StringBuilder();
                 sb.append(Language.get(this.getClass(),
                         "illegal.address", theException.getMessage()));
                 sb.append("\n\n");
                 sb.append(cause.getMessage());
                 exception.setErrorMessage(sb.toString());
-              }
+            } else {
+              exception.setErrorMessage(Language.get(this.getClass(),
+                "illegal.wrong.address", theException.getMessage()));
             }
             break;
           default:

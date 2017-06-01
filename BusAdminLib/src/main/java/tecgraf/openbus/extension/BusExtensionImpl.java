@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ArrayListMultimap;
 import scs.core.IComponent;
+import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.OfferRegistry;
 import tecgraf.openbus.RemoteOffer;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
@@ -24,6 +25,7 @@ import tecgraf.openbus.services.governance.v1_0.ServiceName;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Implementação da fachada para o Serviço de Extensão à Governança.
@@ -75,15 +77,20 @@ public class BusExtensionImpl implements BusExtensionFacade {
           return false;
         });
         if (available.size() == 0) {
-          throw new ServiceFailure(
-            ServiceFailureHelper.id(), String.format(
-            "Service with %s %s is unavailable on bus %s",
-            SEARCH_CRITERIA_KEY, SEARCH_CRITERIA_VALUE, offers.connection().busId()));
+          throw new ServiceFailure(LNG.get("ServiceFailure.not.found",
+            new String[]{SEARCH_CRITERIA_VALUE,
+              offers.connection().busId(),
+              SEARCH_CRITERIA_KEY
+            }));
         }
         return available.get(0).service();
       });
-    } catch (Exception e) {
-      throw new ServiceFailure(e.getMessage());
+    } catch (ExecutionException e) {
+      if (e.getCause() instanceof ServiceFailure) {
+        throw (ServiceFailure) e.getCause();
+      } else {
+        throw new ServiceFailure(ServiceFailureHelper.id(), e.getMessage());
+      }
     }
   }
 
@@ -95,7 +102,6 @@ public class BusExtensionImpl implements BusExtensionFacade {
       getConsumerRegistry();
       return true;
     } catch (Exception e) {
-      e.printStackTrace();
       return false;
     }
   }

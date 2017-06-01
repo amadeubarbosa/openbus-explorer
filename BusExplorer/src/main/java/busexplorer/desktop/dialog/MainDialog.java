@@ -98,6 +98,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
@@ -152,6 +153,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    */
   private JButton disconnect;
   /**
+   * Barra de status.
+   */
+  private JTextField status;
+  /**
    * Propriedades da aplicação.
    */
   private Properties properties;
@@ -204,9 +209,15 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       }
       setDialogTitle(bus);
       busExplorerLogin.onRelogin((connection, oldLogin) -> { // atualização dinâmica a cada relogin
+        // status
+        status.setText(Language.get(this.getClass(), "connected.as",
+          busExplorerLogin.info.entity, busExplorerLogin.domain, busExplorerLogin.info.id));
         // notificação para os controles
         notifiers.forEach(booleanConsumer -> booleanConsumer.accept(busExplorerLogin.hasAdminRights()));
       });
+      status.setText(Language.get(this.getClass(), "connected.as",
+        busExplorerLogin.info.entity, busExplorerLogin.domain, busExplorerLogin.info.id));
+      status.setEnabled(true);
       disconnect.setEnabled(true);
       notifiers.forEach(booleanConsumer -> booleanConsumer.accept(busExplorerLogin.hasAdminRights()));
     }
@@ -227,17 +238,17 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       }
     });
 
-    buildTopPanel();
     buildFeaturesComponent();
+    buildBottomPanel();
     pack();
 
-    setDialogTitle(Language.get(this.getClass(),"title.disconnected"));
+    setDialogTitle("");
   }
 
   /**
    * Constrói a barra de menu da janela.
    */
-  private void buildTopPanel() {
+  private void buildBottomPanel() {
     JPanel panel = new JPanel(new GridBagLayout());
 
     disconnect = new JButton(Language.get(this.getClass(),"disconnect"));
@@ -252,7 +263,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
           @Override
           protected void doPerformTask() throws Exception {
             Application.login().logout();
-            setDialogTitle(Language.get(MainDialog.class,"title.disconnected"));
+            setDialogTitle("");
+            status.setText(Language.get(MainDialog.class,"title.disconnected"));
+            status.setEnabled(false);
             disconnect.setEnabled(false);
           }
 
@@ -276,7 +289,13 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     }});
 
     panel.add(disconnect, new GBC(0,0).insets(5));
-    panel.add(new JLabel(), new GBC(1,0).horizontal());
+    status = new JTextField();
+    status.setText(Language.get(MainDialog.class,"title.disconnected"));
+    status.setHorizontalAlignment(JTextField.RIGHT);
+    status.setBorder(null);
+    status.setEditable(false);
+    status.setEnabled(false);
+    panel.add(status, new GBC(1,0).insets(5).east().both());
 
     add(panel, BorderLayout.SOUTH);
   }
@@ -826,9 +845,13 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   /**
    * Ajusta o título do diálogo.
    * 
-   * @param title Título do diálogo.
+   * @param message Mensagem extra ser adicionada no título do diálogo.
    */
-  private void setDialogTitle(String title) {
-    setTitle(Language.get(Application.class, "title") + " - " + title);
+  private void setDialogTitle(String message) {
+    String title = Language.get(Application.class, "title");
+    if (!message.isEmpty()) {
+      title += " - " + message;
+    }
+    setTitle(title);
   }
 }

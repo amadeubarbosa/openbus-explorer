@@ -4,7 +4,6 @@ import busexplorer.ApplicationIcons;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.offers.properties.PropertiesDialog;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -19,12 +18,11 @@ public class OfferPropertiesAction extends OpenBusAction<OfferWrapper> {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow janela pai
-   * @param admin biblioteca de admin
+   *  @param parentWindow janela pai
+   *
    */
-  public OfferPropertiesAction(Window parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public OfferPropertiesAction(Window parentWindow) {
+    super(parentWindow);
     putValue(SHORT_DESCRIPTION, getString("tooltip"));
     putValue(SMALL_ICON, ApplicationIcons.ICON_PROPS_16);
   }
@@ -43,7 +41,7 @@ public class OfferPropertiesAction extends OpenBusAction<OfferWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     OfferWrapper offer = getTablePanelComponent().getSelectedElement();
-    PropertiesDialog dialog = new PropertiesDialog(parentWindow, offer, admin);
+    PropertiesDialog dialog = new PropertiesDialog(parentWindow, offer);
     dialog.setVisible(true);
   }
 }

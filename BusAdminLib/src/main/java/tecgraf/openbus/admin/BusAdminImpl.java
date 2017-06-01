@@ -1,11 +1,9 @@
 package tecgraf.openbus.admin;
 
-import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import scs.core.IComponent;
 import scs.core.IComponentHelper;
 import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.core.v2_1.BusObjectKey;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
@@ -42,12 +40,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A classe implementa os comandos especificados na interface
- * {@link BusAdminFacade}.
+ * A classe implementa os comandos especificados na interface {@link BusAdminFacade}.
  *
  * @author Tecgraf
  */
 public class BusAdminImpl implements BusAdminFacade {
+  /** Endereço do barramento. */
+  private final Object reference;
   /** Registro de entidades do barramento. */
   private EntityRegistry entityRegistry;
   /** Registro de certificados do barramento. */
@@ -62,30 +61,16 @@ public class BusAdminImpl implements BusAdminFacade {
   private Configuration configuration = null;
 
   /**
-   * Construtor da classe.
+   * Construtor da biblioteca de administração a partir de uma referência para o barramento.
+   *
+   * @param reference objeto remoto para o {@link IComponent} do barramento.
+   *
+   * @throws IncompatibleBus caso não seja possível encontrar as interfaces
+   *                         de administração do barramento na referência fornecida.
    */
-  public BusAdminImpl() {
-  }
-
-  /**
-   * Obtém as referências para facetas de administração do barramento.
-   * 
-   * @param host Host do barramento
-   * @param port Porta do barramento
-   * @param orb ORB do barramento
-   */
-  public void getAdminFacets(String host, short port, ORB orb) {
-    org.omg.CORBA.Object ref = buildCorbaLoc(host, port, orb);
-    obtainRegistries(ref);
-  }
-
-  /**
-   * Obtém as referências para facetas de administração do barramento.
-   * 
-   * @param ref Referência de um barramento
-   */
-  public void getAdminFacets(Object ref) {
-    obtainRegistries(ref);
+  public BusAdminImpl(Object reference) {
+    this.reference = reference;
+    this.setRegistries();
   }
 
   /*
@@ -412,22 +397,19 @@ public class BusAdminImpl implements BusAdminFacade {
    */
 
   /**
-   * {@inheritDoc}
+   * Obtém a referência para o barramento, tipicamente um {@link IComponent}
+   *
+   * @return instância de {@link org.omg.CORBA.Object} da referência inicial para o barramento
    */
-  private static org.omg.CORBA.Object buildCorbaLoc(String host, short port,
-    ORB orb) {
-    String str =
-      String.format("corbaloc::1.0@%s:%d/%s", host, port, BusObjectKey.value);
-    return orb.string_to_object(str);
+  public Object getBusReference() {
+    return reference;
   }
 
   /**
-   * Obtém as facetas de administração do barramento.
-   * 
-   * @param obj referência para o barramento
+   * Preenche os objetos locais das referências das facetas de administração do barramento.
    */
-  private void obtainRegistries(Object obj) {
-    IComponent iComponent = IComponentHelper.narrow(obj);
+  private void setRegistries() {
+    IComponent iComponent = IComponentHelper.narrow(getBusReference());
     if (iComponent == null) {
       throw new IncompatibleBus(
         LNG.get("IncompatibleBus.missing.icomponent"));

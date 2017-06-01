@@ -1,5 +1,6 @@
 package busexplorer.panel.configuration.admins;
 
+import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
@@ -34,14 +35,12 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição/edição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public AdminInputDialog(Window parentWindow, TablePanelComponent<AdminWrapper>
-    panel, BusAdminFacade admin) {
-    super(parentWindow, admin);
+    panel) {
+    super(parentWindow);
     this.panel = panel;
   }
 
@@ -59,6 +58,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
 
       @Override
       protected void doPerformTask() throws Exception {
+        BusAdminFacade admin = Application.login().admin;
         if (editingAdministrator == null) {
           admin.grantAdminTo(grantTo);
         } else {

@@ -1,10 +1,10 @@
 package busexplorer.panel.configuration.admins;
 
+import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -22,10 +22,9 @@ public class AdminRefreshAction extends OpenBusAction<AdminWrapper> {
    * Construtor.
    *
    * @param parentWindow janela pai.
-   * @param admin biblioteca de administração.
    */
-  public AdminRefreshAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public AdminRefreshAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -46,7 +45,7 @@ public class AdminRefreshAction extends OpenBusAction<AdminWrapper> {
 
       @Override
       protected void doPerformTask() throws Exception {
-        setResult(AdminWrapper.convertToInfo(admin.getAdmins()));
+        setResult(AdminWrapper.convertToInfo(Application.login().admin.getAdmins()));
       }
 
       @Override

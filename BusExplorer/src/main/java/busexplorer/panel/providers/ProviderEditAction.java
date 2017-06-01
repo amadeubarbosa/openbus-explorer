@@ -6,7 +6,6 @@ import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -21,12 +20,11 @@ public class ProviderEditAction extends OpenBusAction<ProviderWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public ProviderEditAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public ProviderEditAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -63,7 +61,7 @@ public class ProviderEditAction extends OpenBusAction<ProviderWrapper> {
         if (getStatus()) {
           ProviderInputDialog dialog =
             new ProviderInputDialog(ProviderEditAction.this.parentWindow,
-              getTablePanelComponent(), admin, getResult());
+              getTablePanelComponent(), getResult());
           dialog.showDialog();
           ProviderWrapper entity = getTablePanelComponent().getSelectedElement();
           dialog.setEditionMode(entity);

@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -20,12 +19,11 @@ public class ContractEditAction extends OpenBusAction<ContractWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public ContractEditAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public ContractEditAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -54,7 +52,7 @@ public class ContractEditAction extends OpenBusAction<ContractWrapper> {
 
       @Override
       protected void doPerformTask() throws Exception {
-        setResult(admin.getInterfaces());
+        setResult(Application.login().admin.getInterfaces());
       }
 
       @Override
@@ -62,7 +60,7 @@ public class ContractEditAction extends OpenBusAction<ContractWrapper> {
         if (getStatus()) {
           ContractInputDialog dialog =
             new ContractInputDialog(ContractEditAction.this.parentWindow,
-              getTablePanelComponent(), admin, getResult());
+              getTablePanelComponent(), getResult());
           dialog.showDialog();
           ContractWrapper contract = getTablePanelComponent().getSelectedElement();
           dialog.setEditionMode(contract);

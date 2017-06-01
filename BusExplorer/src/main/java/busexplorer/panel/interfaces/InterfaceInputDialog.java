@@ -1,12 +1,12 @@
 package busexplorer.panel.interfaces;
 
+import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -30,14 +30,12 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public InterfaceInputDialog(Window parentWindow, TablePanelComponent<InterfaceWrapper>
-    panel, BusAdminFacade admin) {
-    super(parentWindow, admin);
+    panel) {
+    super(parentWindow);
     this.panel = panel;
   }
 
@@ -55,7 +53,7 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
 
       @Override
       protected void doPerformTask() throws Exception {
-        admin.createInterface(getInterfaceName());
+        Application.login().admin.createInterface(getInterfaceName());
       }
 
       @Override

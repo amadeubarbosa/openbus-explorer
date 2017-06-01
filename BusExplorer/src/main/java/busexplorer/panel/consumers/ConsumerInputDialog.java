@@ -7,7 +7,6 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.services.governance.v1_0.Consumer;
 
 import javax.swing.JLabel;
@@ -54,11 +53,10 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
    *
    * @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel de {@link ConsumerWrapper} a ser atualizado após a adição/edição.
-   * @param admin Referência para fachada {@link BusAdminFacade} do Serviço de Configuração.
    */
   public ConsumerInputDialog(Window parentWindow,
-                             TablePanelComponent<ConsumerWrapper> panel, BusAdminFacade admin) {
-    super(parentWindow, admin);
+                             TablePanelComponent<ConsumerWrapper> panel) {
+    super(parentWindow);
     this.panel = panel;
   }
 

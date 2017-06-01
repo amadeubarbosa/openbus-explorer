@@ -7,7 +7,6 @@ import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
 import tecgraf.javautils.gui.StandardDialogs;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -22,12 +21,11 @@ public class ProviderAddAction extends OpenBusAction<ProviderWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public ProviderAddAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public ProviderAddAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -71,7 +69,7 @@ public class ProviderAddAction extends OpenBusAction<ProviderWrapper> {
             }
             else {
               new ProviderInputDialog(ProviderAddAction.this.parentWindow,
-                getTablePanelComponent(), admin, getResult()).showDialog();
+                getTablePanelComponent(), getResult()).showDialog();
             }
           }
         }

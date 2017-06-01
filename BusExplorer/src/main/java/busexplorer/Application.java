@@ -5,8 +5,6 @@ import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.BusExplorerExceptionHandler;
 import busexplorer.utils.Language;
 import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdminFacade;
-import tecgraf.openbus.admin.BusAdminImpl;
 
 import javax.swing.JOptionPane;
 import javax.swing.LookAndFeel;
@@ -41,9 +39,7 @@ public class Application {
    */
   private static BusExplorerLogin login;
 
-  private static PropertyChangeSupport loginPcs;
-
-  private static BusAdminFacade admin = new BusAdminImpl();
+  private static PropertyChangeSupport propertyChangeSupport;
 
   public static final String APPLICATION_LOGIN = "Application.login";
 
@@ -100,22 +96,23 @@ public class Application {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {
-        MainDialog mainDialog = new MainDialog(properties, admin);
+        MainDialog mainDialog = new MainDialog(properties);
         mainDialog.setVisible(true);
 
-        loginPcs = new PropertyChangeSupport(this);
-        loginPcs.addPropertyChangeListener(mainDialog);
-        loginProcess(mainDialog);
+        propertyChangeSupport = new PropertyChangeSupport(this);
+        propertyChangeSupport.addPropertyChangeListener(mainDialog);
+        showLoginDialog(mainDialog);
       }
     });
   }
 
-  public static void loginProcess(MainDialog mainDialog) {
+  public static void showLoginDialog(MainDialog mainDialog) {
+    BusExplorerLogin oldLogin = login;
     login = null;
-    LoginDialog loginDialog = new LoginDialog(mainDialog, admin);
+    LoginDialog loginDialog = new LoginDialog(mainDialog);
     loginDialog.setVisible(true);
     login = loginDialog.getLogin();
-    loginPcs.firePropertyChange(APPLICATION_LOGIN, null, login);
+    propertyChangeSupport.firePropertyChange(APPLICATION_LOGIN, oldLogin, login);
   }
 
   /**

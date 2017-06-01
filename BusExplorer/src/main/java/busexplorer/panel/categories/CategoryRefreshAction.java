@@ -1,10 +1,10 @@
 package busexplorer.panel.categories;
 
+import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -20,12 +20,11 @@ public class CategoryRefreshAction extends OpenBusAction<CategoryWrapper> {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow janela pai.
-   * @param admin biblioteca de administração.
+   *  @param parentWindow janela pai.
+   *
    */
-  public CategoryRefreshAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public CategoryRefreshAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -46,7 +45,7 @@ public class CategoryRefreshAction extends OpenBusAction<CategoryWrapper> {
 
         @Override
         protected void doPerformTask() throws Exception {
-          setResult(CategoryWrapper.convertToInfo(admin.getCategories()));
+          setResult(CategoryWrapper.convertToInfo(Application.login().admin.getCategories()));
         }
 
         @Override

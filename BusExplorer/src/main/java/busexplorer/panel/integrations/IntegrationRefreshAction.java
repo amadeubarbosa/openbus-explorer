@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -21,12 +20,11 @@ public class IntegrationRefreshAction extends OpenBusAction<IntegrationWrapper> 
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow janela pai.
-   * @param admin biblioteca de administração.
+   *  @param parentWindow janela pai.
+   *
    */
-  public IntegrationRefreshAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public IntegrationRefreshAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**

@@ -1,7 +1,6 @@
 package busexplorer.panel;
 
 import busexplorer.utils.Language;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.AbstractAction;
 import java.awt.Window;
@@ -18,7 +17,6 @@ import java.awt.Window;
 public abstract class OpenBusAction<T> extends AbstractAction implements
         TablePanelActionInterface<T> {
 
-  protected BusAdminFacade admin;
   protected Window parentWindow;
   private TablePanelComponent<T> panel;
 
@@ -27,24 +25,19 @@ public abstract class OpenBusAction<T> extends AbstractAction implements
    * da busca usando {@link Language#get(Class, String)} com a classe concreta e a chave {@code .name}.
    *
    * @param parentWindow janela
-   * @param admin instância do busadmin
    */
-  public OpenBusAction(Window parentWindow, BusAdminFacade admin) {
+  public OpenBusAction(Window parentWindow) {
     this.putValue(NAME, getString("name"));
-    this.admin = admin;
     this.parentWindow = parentWindow;
   }
 
   /**
    * Construtor para permitir a personalização do nome da ação.
-   * 
-   * @param parentWindow janela
-   * @param admin instância do busadmin
+   *  @param parentWindow janela
    * @param actionName nome da ação
    */
-  public OpenBusAction(Window parentWindow, BusAdminFacade admin, String actionName) {
+  public OpenBusAction(Window parentWindow, String actionName) {
     super(actionName);
-    this.admin = admin;
     this.parentWindow = parentWindow;
   }
 

@@ -1,10 +1,18 @@
 package busexplorer.utils;
 
-import busexplorer.Application;
 import org.jacorb.orb.ORB;
 import org.jacorb.orb.ParsedIOR;
 import org.jacorb.orb.iiop.IIOPAddress;
 import org.jacorb.orb.iiop.IIOPProfile;
+import org.omg.CORBA.BAD_PARAM;
+import org.omg.CORBA.MARSHAL;
+import org.omg.CORBA.OBJECT_NOT_EXIST;
+import org.omg.CORBA.Object;
+import org.omg.ETF.Profile;
+import tecgraf.openbus.admin.IncompatibleBus;
+import tecgraf.openbus.core.v2_1.BusObjectKey;
+
+import java.util.Properties;
 
 /**
  * Representação do endereço de um barramento.
@@ -22,12 +30,21 @@ public class BusAddress {
   private String ior;
   /** Tipo de endereço */
   private AddressType type;
+  /** ORB puro sem interceptadores */
+  private static final ORB orb;
+
+  static {
+    Properties props = new Properties();
+    props.setProperty("org.omg.CORBA.ORBClass", "org.jacorb.orb.ORB");
+    props.setProperty("org.omg.CORBA.ORBSingletonClass", "org.jacorb.orb.ORBSingleton");
+    orb = (org.jacorb.orb.ORB) org.omg.CORBA.ORB.init(new String[]{} , props);
+  }
 
   /** Representação de um endereço não especificado. */
   public static final BusAddress UNSPECIFIED_ADDRESS = new BusAddress();
 
   /**
-   * Construtor.
+   * Construtor para endereços pelo par de host e porta.
    *
    * @param description Descrição do barramento.
    * @param host host.
@@ -41,7 +58,7 @@ public class BusAddress {
   }
 
   /**
-   * Construtor.
+   * Construtor para endereços IOR
    * 
    * @param description Descrição do barramento.
    * @param ior ior.
@@ -61,6 +78,48 @@ public class BusAddress {
   }
 
   /**
+   * Validação do endereço do barramento através da análise dos objetos de {@link Profile}
+   * contidos no {@link ParsedIOR} gerado a partir do endereço.
+   *
+   * @throws IllegalArgumentException caso não seja possível realizar o parsing do IOR através do {@link ParsedIOR}
+   *                                  ou não seja identificado nenhum object key conhecido
+   * @throws IncompatibleBus caso seja identificado um endereço do barramento da versão anterior
+   *                         contendo um object key com valor {@link tecgraf.openbus.core.v2_0.BusObjectKey#value}
+   */
+  public void checkBusVersion() throws IncompatibleBus {
+    String stringfiedIOR = this.toIOR();
+    try {
+      for (Profile profile : new ParsedIOR(orb, stringfiedIOR).getProfiles()) {
+        String objectKey = new String(profile.get_object_key());
+        if (objectKey.equals(tecgraf.openbus.core.v2_0.BusObjectKey.value)) {
+          throw new IncompatibleBus(
+            Language.get(BusAddress.class, "legacy.version.unsupported", stringfiedIOR));
+        } else if (objectKey.equals(BusObjectKey.value)) {
+          return;
+        }
+      }
+    } catch (MARSHAL | BAD_PARAM e) {
+      throw new IllegalArgumentException(Language.get(BusAddress.class,
+        "parsedior.fail", stringfiedIOR, e.toString()));
+    }
+    throw new IllegalArgumentException(stringfiedIOR);
+  }
+
+  /**
+   * Validação da responsividade do endereço do barramento através da chamada de {@link Object#_non_existent()}
+   * ao objeto que será criado a partir do {@link #toIOR()}.
+   *
+   * @throws org.omg.CORBA.COMM_FAILURE caso haja falha na comunicação de rede
+   * @throws org.omg.CORBA.TRANSIENT caso o endereço seja inalcancável na rede
+   * @throws org.omg.CORBA.OBJECT_NOT_EXIST caso o endereço remoto exista mas não haja nenhum objeto remoto conhecido
+   */
+  public void checkBusReference() {
+    if (orb.string_to_object(toIOR())._non_existent()) {
+      throw new OBJECT_NOT_EXIST();
+    }
+  }
+
+  /**
    * Obtém uma string descritiva do endereço.
    *
    * @return String descritiva do endereço, no formato "Descrição (host:porta)".
@@ -74,7 +133,7 @@ public class BusAddress {
         break;
       case Reference:
         IIOPProfile profile =
-          ((IIOPProfile) new ParsedIOR((ORB) Application.login().getOpenBusContext().ORB(), ior).getProfiles().get(0));
+          ((IIOPProfile) new ParsedIOR(orb, ior).getProfiles().get(0));
         IIOPAddress address = (IIOPAddress) profile.getAddress();
         int sslPort = profile.getSSLPort();
         if (sslPort != -1) {
@@ -117,6 +176,27 @@ public class BusAddress {
    */
   public String getIOR() {
     return ior;
+  }
+
+  /**
+   * Converte a representação interna do endereço para um IOR
+   *
+   * @return a string contendo o IOR (similar ao {@link BusAddress#getIOR()}) ou contendo o corbaloc
+   * construído a partir do uso dos métodos {@link BusAddress#getHost()} e {@link BusAddress#getPort()}
+   */
+  public String toIOR() {
+    String corbaloc = "";
+    switch (this.getType()) {
+      case Address:
+        corbaloc = String.format("corbaloc::1.0@%s:%d/%s",
+          this.getHost(), this.getPort(),
+          tecgraf.openbus.core.v2_1.BusObjectKey.value);
+        break;
+      case Reference:
+        corbaloc = this.ior;
+        break;
+    }
+    return corbaloc;
   }
 
   /**

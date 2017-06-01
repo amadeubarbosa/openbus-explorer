@@ -1,12 +1,12 @@
 package busexplorer.panel.categories;
 
+import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
 
 import javax.swing.JLabel;
@@ -37,14 +37,12 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição/edição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public CategoryInputDialog(Window parentWindow, TablePanelComponent<CategoryWrapper>
-    panel, BusAdminFacade admin) {
-    super(parentWindow, admin);
+    panel) {
+    super(parentWindow);
     this.panel = panel;
   }
 
@@ -61,7 +59,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
       @Override
       protected void doPerformTask() throws Exception {
         if (editingCategory == null) {
-          category = admin.createCategory(getCategoryID(), getCategoryName());
+          category = Application.login().admin.createCategory(getCategoryID(), getCategoryName());
         } else {
           category = editingCategory.getDescriptor().ref;
           category.setName(getCategoryName());

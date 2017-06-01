@@ -8,7 +8,6 @@ import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.TRANSIENT;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.Action;
 import javax.swing.JFrame;
@@ -28,8 +27,8 @@ import static busexplorer.utils.Availability.Status.UNREACHABLE;
  */
 public class OfferStatusAction extends OpenBusAction<OfferWrapper> {
 
-  public OfferStatusAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public OfferStatusAction(JFrame parentWindow) {
+    super(parentWindow);
     putValue(Action.SMALL_ICON, ApplicationIcons.ICON_VALIDATE_16);
     putValue(Action.SHORT_DESCRIPTION, getString("tooltip"));
   }

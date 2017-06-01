@@ -1,5 +1,6 @@
 package busexplorer.panel.certificates;
 
+import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
@@ -7,7 +8,6 @@ import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
 import org.apache.commons.io.FileUtils;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -37,14 +37,12 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição/edição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public CertificateInputDialog(Window parentWindow,
-                                TablePanelComponent<CertificateWrapper> panel, BusAdminFacade admin) {
-    super(parentWindow, admin);
+                                TablePanelComponent<CertificateWrapper> panel) {
+    super(parentWindow);
     this.panel = panel;
   }
 
@@ -64,7 +62,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
       protected void doPerformTask() throws Exception {
         File certificateFile = new File(getCertificatePath());
         byte[] certificate = FileUtils.readFileToByteArray(certificateFile);
-        admin.registerCertificate(getIdentifier(), certificate);
+        Application.login().admin.registerCertificate(getIdentifier(), certificate);
       }
 
       @Override

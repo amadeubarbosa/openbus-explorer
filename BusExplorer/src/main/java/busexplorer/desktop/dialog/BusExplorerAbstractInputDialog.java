@@ -19,25 +19,20 @@ public abstract class BusExplorerAbstractInputDialog extends InputDialog {
 
   /**
    * Construtor básico para preencher a referência do {@link BusAdminFacade}.
-   * 
-   * @param parentWindow Janela mãe do Diálogo
-   * @param admin Referência para fachada {@link BusAdminFacade} do Serviço de Configuração.
+   *  @param parentWindow Janela mãe do Diálogo
+   *
    */
-  public BusExplorerAbstractInputDialog(Window parentWindow, BusAdminFacade admin) {
+  public BusExplorerAbstractInputDialog(Window parentWindow) {
     super(parentWindow);
-    this.admin = admin;
   }
 
   /**
    * Construtor para preencher a referência do {@link BusAdminFacade} e um título pré-definido.
-   *
-   * @param parentWindow Janela mãe do Diálogo
+   *  @param parentWindow Janela mãe do Diálogo
    * @param title Título do Diálogo.
-   * @param admin Referência para fachada {@link BusAdminFacade} do Serviço de Configuração.
    */
-  public BusExplorerAbstractInputDialog(Window parentWindow, String title, BusAdminFacade admin) {
+  public BusExplorerAbstractInputDialog(Window parentWindow, String title) {
     super(parentWindow, title);
-    this.admin = admin;
   }
 
   /**

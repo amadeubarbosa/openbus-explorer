@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -22,12 +21,11 @@ public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin instância do busadmin
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public LoginDeleteAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public LoginDeleteAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -67,7 +65,7 @@ public class LoginDeleteAction extends OpenBusAction<LoginWrapper> {
       protected void doPerformTask() throws Exception {
         List<LoginWrapper> logins = getTablePanelComponent().getSelectedElements();
         for (LoginWrapper login : logins) {
-          admin.invalidateLogin(login.getInfo());
+          Application.login().admin.invalidateLogin(login.getInfo());
         }
       }
 

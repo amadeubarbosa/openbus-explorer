@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
 
 import javax.swing.JFrame;
@@ -21,12 +20,11 @@ public class CategoryDeleteAction extends OpenBusAction<CategoryWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin instância do busadmin
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public CategoryDeleteAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public CategoryDeleteAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**

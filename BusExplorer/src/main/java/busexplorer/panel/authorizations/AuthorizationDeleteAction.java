@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
 
 import javax.swing.JFrame;
@@ -23,12 +22,11 @@ public class AuthorizationDeleteAction extends OpenBusAction<AuthorizationWrappe
 
   /**
    * Construtor da ação
-   * 
-   * @param parentWindow janela mãe do diálogo a ser criado pela ação
-   * @param admin instância do busadmin
+   *  @param parentWindow janela mãe do diálogo a ser criado pela ação
+   *
    */
-  public AuthorizationDeleteAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public AuthorizationDeleteAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**

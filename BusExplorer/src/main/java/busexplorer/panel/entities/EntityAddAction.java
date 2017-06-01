@@ -6,7 +6,6 @@ import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
 import tecgraf.javautils.gui.StandardDialogs;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 
 import javax.swing.JFrame;
@@ -22,12 +21,11 @@ public class EntityAddAction extends OpenBusAction<EntityWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public EntityAddAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public EntityAddAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -56,7 +54,7 @@ public class EntityAddAction extends OpenBusAction<EntityWrapper> {
 
         @Override
         protected void doPerformTask() throws Exception {
-          setResult(admin.getCategories());
+          setResult(Application.login().admin.getCategories());
         }
 
         @Override
@@ -70,7 +68,7 @@ public class EntityAddAction extends OpenBusAction<EntityWrapper> {
             }
             else {
               new EntityInputDialog(EntityAddAction.this.parentWindow,
-                getTablePanelComponent(), admin, getResult()).showDialog();
+                getTablePanelComponent(), getResult()).showDialog();
             }
           }
         }

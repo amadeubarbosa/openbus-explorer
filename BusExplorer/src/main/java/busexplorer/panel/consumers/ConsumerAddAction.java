@@ -3,7 +3,6 @@ package busexplorer.panel.consumers;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -11,8 +10,8 @@ import java.awt.event.ActionEvent;
 
 public class ConsumerAddAction extends OpenBusAction<ConsumerWrapper> {
 
-  public ConsumerAddAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public ConsumerAddAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -36,8 +35,7 @@ public class ConsumerAddAction extends OpenBusAction<ConsumerWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    new ConsumerInputDialog(parentWindow, getTablePanelComponent(),
-      admin).showDialog();
+    new ConsumerInputDialog(parentWindow, getTablePanelComponent()).showDialog();
   }
 
 }

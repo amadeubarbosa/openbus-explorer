@@ -6,7 +6,6 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
@@ -46,16 +45,14 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição/edição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    * @param categoryDescList Lista de categorias.
    */
   public EntityInputDialog(Window parentWindow,
-                           TablePanelComponent<EntityWrapper> panel, BusAdminFacade admin,
+                           TablePanelComponent<EntityWrapper> panel,
                            List<EntityCategoryDesc> categoryDescList) {
-    super(parentWindow, admin);
+    super(parentWindow);
     this.panel = panel;
     for (EntityCategoryDesc desc : categoryDescList) {
       categories.put(desc.id, desc);

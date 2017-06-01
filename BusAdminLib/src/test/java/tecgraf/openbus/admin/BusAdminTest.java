@@ -5,6 +5,7 @@ import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.omg.CORBA.ORB;
+import org.omg.CORBA.Object;
 import org.omg.PortableServer.POA;
 import org.omg.PortableServer.POAHelper;
 import scs.core.ComponentContext;
@@ -13,6 +14,7 @@ import tecgraf.openbus.LocalOffer;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.RemoteOffer;
 import tecgraf.openbus.core.ORBInitializer;
+import tecgraf.openbus.core.v2_1.BusObjectKey;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
 
 import java.util.ArrayList;
@@ -53,9 +55,10 @@ public class BusAdminTest {
     context.defaultConnection(conn);
     POA poa = POAHelper.narrow(orb.resolve_initial_references("RootPOA"));
     poa.the_POAManager().activate();
-    
-    BusAdminImpl admin = new BusAdminImpl();
-    admin.getAdminFacets(host, port, orb);
+
+    Object reference = orb.string_to_object(
+      String.format("corbaloc::1.0@%s:%d/%s", host, port, BusObjectKey.value));
+    BusAdminImpl admin = new BusAdminImpl(reference);
 
     ArrayList<LocalOffer> locals = new ArrayList<>();
     for (int i = 0; i < MAX_OFFERS_TO_REGISTER; i++) {

@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 
 import javax.swing.JFrame;
@@ -21,12 +20,11 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public EntityEditAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public EntityEditAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -55,7 +53,7 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
 
       @Override
       protected void doPerformTask() throws Exception {
-        setResult(admin.getCategories());
+        setResult(Application.login().admin.getCategories());
       }
 
       @Override
@@ -63,7 +61,7 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
         if (getStatus()) {
           EntityInputDialog dialog =
             new EntityInputDialog(EntityEditAction.this.parentWindow,
-              getTablePanelComponent(), admin, getResult());
+              getTablePanelComponent(), getResult());
           dialog.showDialog();
           EntityWrapper entity = getTablePanelComponent().getSelectedElement();
           dialog.setEditionMode(entity);

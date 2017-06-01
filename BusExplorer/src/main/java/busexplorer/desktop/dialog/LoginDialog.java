@@ -9,7 +9,6 @@ import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;
 import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -57,18 +56,14 @@ public class LoginDialog extends JDialog {
   private JButton buttonLogin;
   /** Informações de login */
   private BusExplorerLogin login;
-  /** Referência para a biblioteca de administração */
-  private BusAdminFacade admin;
 
   /**
    * Construtor do diálogo.
-   * 
-   * @param owner janela pai.
-   * @param admin biblioteca de administração
+   *  @param owner janela pai.
+   *
    */
-  public LoginDialog(Window owner, BusAdminFacade admin) {
+  public LoginDialog(Window owner) {
     super(owner, Language.get(LoginDialog.class, "title"), JDialog.ModalityType.APPLICATION_MODAL);
-    this.admin = admin;
     buildDialog();
   }
 
@@ -378,11 +373,11 @@ public class LoginDialog extends JDialog {
             }
 
             String entity = fieldUser.getText().trim();
-            String password = new String(fieldPassword.getPassword());
             String domain = fieldDomain.getText().trim();
+            String password = new String(fieldPassword.getPassword());
 
-            theLogin = new BusExplorerLogin(admin, entity, address);
-            BusExplorerLogin.doLogin(theLogin, password, domain);
+            theLogin = new BusExplorerLogin(address, entity, domain);
+            theLogin.doLogin(password);
           }
 
           @Override

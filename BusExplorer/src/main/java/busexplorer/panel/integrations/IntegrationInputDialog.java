@@ -10,7 +10,6 @@ import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 
 import javax.swing.JCheckBox;
@@ -62,7 +61,6 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
    *
    * @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel de {@link IntegrationWrapper} a ser atualizado após a adição/edição.
-   * @param admin Referência para fachada {@link BusAdminFacade} do Serviço de Configuração.
    * @param consumers Lista de objetos locais para uso nos componentes swing e que representam os consumidores.
    * @param providers Lista de objetos locais para uso nos componentes swing e que representam os provedores.
    * @param contracts Lista de objetos locais para uso nos componentes swing e que representam os contratos.
@@ -72,9 +70,9 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
    * @see ContractWrapper
    */
   public IntegrationInputDialog(Window parentWindow,
-                                TablePanelComponent<IntegrationWrapper> panel, BusAdminFacade admin,
+                                TablePanelComponent<IntegrationWrapper> panel,
                                 List<ConsumerWrapper> consumers, List<ProviderWrapper> providers, List<ContractWrapper> contracts) {
-    super(parentWindow, admin);
+    super(parentWindow);
     this.panel = panel;
     for (ConsumerWrapper consumer : consumers) {
       this.consumers.put(consumer.name(), consumer);

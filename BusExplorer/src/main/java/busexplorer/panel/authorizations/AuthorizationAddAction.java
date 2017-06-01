@@ -24,12 +24,11 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public AuthorizationAddAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public AuthorizationAddAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -59,6 +58,7 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
 
       @Override
       protected void doPerformTask() throws Exception {
+        BusAdminFacade admin = Application.login().admin;
         entitiesIDList = new LinkedList<>();
         List<RegisteredEntityDesc> entitiesDescList = admin.getEntities();
         interfacesList = admin.getInterfaces();
@@ -82,7 +82,7 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
           }
           else {
             new AuthorizationInputDialog(AuthorizationAddAction.this.parentWindow,
-              getTablePanelComponent(), admin, entitiesIDList,
+              getTablePanelComponent(), entitiesIDList,
               interfacesList).showDialog();
           }
         }

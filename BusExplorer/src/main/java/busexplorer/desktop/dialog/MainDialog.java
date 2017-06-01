@@ -2,6 +2,7 @@ package busexplorer.desktop.dialog;
 
 import busexplorer.Application;
 import busexplorer.ApplicationIcons;
+import busexplorer.BusExplorerLogin;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.RefreshDelegate;
 import busexplorer.panel.RefreshablePanel;
@@ -136,11 +137,12 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   public static final String TABBED_PANE_FOREGROUND = "TabbedPane.foreground";
   public static final String COMPATIBILITY_FOREGROUND = "Label.disabledForeground";
 
-  public ArrayList<Consumer<Boolean>> notifiers = new ArrayList<>();
   /**
-   * Acessa os serviços barramento relacionados à administração.
+   * Lista de consumidores a serem notificados da mudança da propriedade
+   * {@link Application#APPLICATION_LOGIN} em outras partes deste diálogo.
    */
-  private BusAdminFacade admin;
+  private ArrayList<Consumer<Boolean>> notifiers = new ArrayList<>();
+
   /**
    * Painel de recursos de gerência do barramento.
    */
@@ -156,12 +158,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
   /**
    * Construtor.
-   * 
-   * @param properties proprieades da aplicação.
-   * @param admin instância de administração do barramento.
+   *  @param properties proprieades da aplicação.
+   *
    */
-  public MainDialog(Properties properties, BusAdminFacade admin) {
-    this.admin = admin;
+  public MainDialog(Properties properties) {
     this.properties = properties;
     buildDialog();
   }
@@ -192,9 +192,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   @Override
   public void propertyChange(PropertyChangeEvent e) {
     String propertyName = e.getPropertyName();
+    BusExplorerLogin login = (BusExplorerLogin) e.getNewValue();
     if (APPLICATION_LOGIN.equals(propertyName)) {
       String bus;
-      BusAddress address = Application.login().address;
+      BusAddress address = login.address;
       if (address.getDescription() != null) {
         bus = address.getDescription();
       }
@@ -203,7 +204,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       }
       setDialogTitle(Application.login().entity + "@" + bus);
       disconnect.setEnabled(true);
-      notifiers.forEach(booleanConsumer -> booleanConsumer.accept(Application.login().hasAdminRights()));
+      notifiers.forEach(booleanConsumer -> booleanConsumer.accept(login.hasAdminRights()));
     }
   }
 
@@ -253,7 +254,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
           @Override
           protected void afterTaskUI() {
-            Application.loginProcess(MainDialog.this);
+            Application.showLoginDialog(MainDialog.this);
           }
         };
 
@@ -307,7 +308,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
       // A ativação da aba de configurações segue uma regra
       // diferenciada para suportar busservices < 2.0.0.9
-      disableTab(featuresPane, conceptsPanels.get("conf"), admin.isReconfigurationCapable());
+      disableTab(featuresPane, conceptsPanels.get("conf"), Application.login().admin.isReconfigurationCapable());
 
       // Seleciona a primeira aba do pane de funcionalidades.
       featuresPane.setSelectedIndex(0);
@@ -394,10 +395,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<ContractWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<ContractWrapper>>(3);
-    actionsVector.add(new ContractRefreshAction(this, admin));
-    actionsVector.add(new ContractAddAction(this, admin));
-    actionsVector.add(new ContractEditAction(this, admin));
-    actionsVector.add(new ContractDeleteAction(this, admin));
+    actionsVector.add(new ContractRefreshAction(this));
+    actionsVector.add(new ContractAddAction(this));
+    actionsVector.add(new ContractEditAction(this));
+    actionsVector.add(new ContractDeleteAction(this));
 
     return
       new TablePanelComponent<ContractWrapper>(model, actionsVector, true);
@@ -409,10 +410,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<ProviderWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<ProviderWrapper>>(3);
-    actionsVector.add(new ProviderRefreshAction(this, admin));
-    actionsVector.add(new ProviderAddAction(this, admin));
-    actionsVector.add(new ProviderEditAction(this, admin));
-    actionsVector.add(new ProviderDeleteAction(this, admin));
+    actionsVector.add(new ProviderRefreshAction(this));
+    actionsVector.add(new ProviderAddAction(this));
+    actionsVector.add(new ProviderEditAction(this));
+    actionsVector.add(new ProviderDeleteAction(this));
 
     return
       new TablePanelComponent<ProviderWrapper>(model, actionsVector, true);
@@ -424,10 +425,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<ConsumerWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<ConsumerWrapper>>(3);
-    actionsVector.add(new ConsumerRefreshAction(this, admin));
-    actionsVector.add(new ConsumerAddAction(this, admin));
-    actionsVector.add(new ConsumerEditAction(this, admin));
-    actionsVector.add(new ConsumerDeleteAction(this, admin));
+    actionsVector.add(new ConsumerRefreshAction(this));
+    actionsVector.add(new ConsumerAddAction(this));
+    actionsVector.add(new ConsumerEditAction(this));
+    actionsVector.add(new ConsumerDeleteAction(this));
 
     return
       new TablePanelComponent<ConsumerWrapper>(model, actionsVector, true);
@@ -439,10 +440,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
       List<TablePanelActionInterface<IntegrationWrapper>> actionsVector =
         new Vector<TablePanelActionInterface<IntegrationWrapper>>(3);
-      actionsVector.add(new IntegrationRefreshAction(this, admin));
-      actionsVector.add(new IntegrationAddAction(this, admin));
-      actionsVector.add(new IntegrationEditAction(this, admin));
-      actionsVector.add(new IntegrationDeleteAction(this, admin));
+      actionsVector.add(new IntegrationRefreshAction(this));
+      actionsVector.add(new IntegrationAddAction(this));
+      actionsVector.add(new IntegrationEditAction(this));
+      actionsVector.add(new IntegrationDeleteAction(this));
 
       return
         new TablePanelComponent<IntegrationWrapper>(model, actionsVector, true);
@@ -458,10 +459,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<CategoryWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<CategoryWrapper>>(3);
-    actionsVector.add(new CategoryRefreshAction(this, admin));
-    actionsVector.add(new CategoryAddAction(this, admin));
-    actionsVector.add(new CategoryEditAction(this, admin));
-    actionsVector.add(new CategoryDeleteAction(this, admin));
+    actionsVector.add(new CategoryRefreshAction(this));
+    actionsVector.add(new CategoryAddAction(this));
+    actionsVector.add(new CategoryEditAction(this));
+    actionsVector.add(new CategoryDeleteAction(this));
 
     return
       new TablePanelComponent<CategoryWrapper>(model, actionsVector, true);
@@ -477,10 +478,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<EntityWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<EntityWrapper>>(3);
-    actionsVector.add(new EntityRefreshAction(this, admin));
-    actionsVector.add(new EntityAddAction(this, admin));
-    actionsVector.add(new EntityEditAction(this, admin));
-    actionsVector.add(new EntityDeleteAction(this, admin));
+    actionsVector.add(new EntityRefreshAction(this));
+    actionsVector.add(new EntityAddAction(this));
+    actionsVector.add(new EntityEditAction(this));
+    actionsVector.add(new EntityDeleteAction(this));
 
     return
       new TablePanelComponent<EntityWrapper>(model, actionsVector, true);
@@ -496,10 +497,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<CertificateWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<CertificateWrapper>>(3);
-    actionsVector.add(new CertificateRefreshAction(this, admin));
-    actionsVector.add(new CertificateAddAction(this, admin));
-    actionsVector.add(new CertificateEditAction(this, admin));
-    actionsVector.add(new CertificateDeleteAction(this, admin));
+    actionsVector.add(new CertificateRefreshAction(this));
+    actionsVector.add(new CertificateAddAction(this));
+    actionsVector.add(new CertificateEditAction(this));
+    actionsVector.add(new CertificateDeleteAction(this));
 
     return new TablePanelComponent<CertificateWrapper>(model, actionsVector, true);
   }
@@ -514,9 +515,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<InterfaceWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<InterfaceWrapper>>(3);
-    actionsVector.add(new InterfaceRefreshAction(this, admin));
-    actionsVector.add(new InterfaceAddAction(this, admin));
-    actionsVector.add(new InterfaceDeleteAction(this, admin));
+    actionsVector.add(new InterfaceRefreshAction(this));
+    actionsVector.add(new InterfaceAddAction(this));
+    actionsVector.add(new InterfaceDeleteAction(this));
 
     return
       new TablePanelComponent<InterfaceWrapper>(model, actionsVector, true);
@@ -532,9 +533,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<AuthorizationWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<AuthorizationWrapper>>(3);
-    actionsVector.add(new AuthorizationRefreshAction(this, admin));
-    actionsVector.add(new AuthorizationAddAction(this, admin));
-    actionsVector.add(new AuthorizationDeleteAction(this, admin));
+    actionsVector.add(new AuthorizationRefreshAction(this));
+    actionsVector.add(new AuthorizationAddAction(this));
+    actionsVector.add(new AuthorizationDeleteAction(this));
 
     return
       new TablePanelComponent<AuthorizationWrapper>(model, actionsVector, true);
@@ -550,11 +551,11 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<OfferWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<OfferWrapper>>(2);
-    actionsVector.add(new OfferRefreshAction(this, admin));
-    actionsVector.add(new OfferDeleteAction(this, admin));
-    actionsVector.add(new OfferStatusAction(this, admin));
+    actionsVector.add(new OfferRefreshAction(this));
+    actionsVector.add(new OfferDeleteAction(this));
+    actionsVector.add(new OfferStatusAction(this));
     final OfferPropertiesAction propertiesAction =
-      new OfferPropertiesAction(this, admin);
+      new OfferPropertiesAction(this);
     actionsVector.add(propertiesAction);
 
     TablePanelComponent<OfferWrapper> panelOffer =
@@ -585,8 +586,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<LoginWrapper>> actionsVector =
       new Vector<TablePanelActionInterface<LoginWrapper>>(2);
-    actionsVector.add(new LoginRefreshAction(this, admin));
-    actionsVector.add(new LoginDeleteAction(this, admin));
+    actionsVector.add(new LoginRefreshAction(this));
+    actionsVector.add(new LoginDeleteAction(this));
 
     return
       new TablePanelComponent<LoginWrapper>(model, actionsVector, true);
@@ -599,10 +600,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   private RefreshablePanel initPanelConfiguration() {
     List<TablePanelActionInterface<AdminWrapper>> adminActionsVector =
       new Vector<TablePanelActionInterface<AdminWrapper>>(3);
-    adminActionsVector.add(new AdminRefreshAction(this, admin));
-    adminActionsVector.add(new AdminAddAction(this, admin));
-    adminActionsVector.add(new AdminEditAction(this, admin));
-    adminActionsVector.add(new AdminDeleteAction(this, admin));
+    adminActionsVector.add(new AdminRefreshAction(this));
+    adminActionsVector.add(new AdminAddAction(this));
+    adminActionsVector.add(new AdminEditAction(this));
+    adminActionsVector.add(new AdminDeleteAction(this));
 
     final TablePanelComponent<AdminWrapper> adminsPanel =
       new TablePanelComponent<AdminWrapper>(new ObjectTableModel<AdminWrapper>(new LinkedList<AdminWrapper>(),
@@ -610,9 +611,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     List<TablePanelActionInterface<ValidatorWrapper>> validatorActionsVector =
             new Vector<TablePanelActionInterface<ValidatorWrapper>>(3);
-    validatorActionsVector.add(new ValidatorRefreshAction(this, admin));
-    validatorActionsVector.add(new ValidatorRestartAction(this, admin));
-    validatorActionsVector.add(new ValidatorDeleteAction(this, admin));
+    validatorActionsVector.add(new ValidatorRefreshAction(this));
+    validatorActionsVector.add(new ValidatorRestartAction(this));
+    validatorActionsVector.add(new ValidatorDeleteAction(this));
 
     final TablePanelComponent<ValidatorWrapper> validatorsPanel =
             new TablePanelComponent<ValidatorWrapper>(new ObjectTableModel<ValidatorWrapper>(new LinkedList<ValidatorWrapper>(),
@@ -678,6 +679,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
         @Override
         protected void doPerformTask() throws Exception {
+          BusAdminFacade admin = Application.login().admin;
           maxChannels = admin.getMaxChannels();
           maxCacheSize = admin.getMaxCacheSize();
           timeout = admin.getCallsTimeout();
@@ -703,6 +705,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
         @Override
         protected void doPerformTask() throws Exception {
+          BusAdminFacade admin = Application.login().admin;
           admin.setMaxChannels(((SpinnerNumberModel) maxChannelsSpinner.getModel()).getNumber().intValue());
           admin.setMaxCacheSize(((SpinnerNumberModel) maxCacheSizeSpinner.getModel()).getNumber().intValue());
           admin.setCallsTimeout(((SpinnerNumberModel) timeoutSpinner.getModel()).getNumber().intValue());
@@ -768,7 +771,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
             @Override
             protected void doPerformTask() throws Exception {
-              admin.reloadConfigsFile();
+              Application.login().admin.reloadConfigsFile();
             }
 
             @Override
@@ -801,7 +804,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
     // trigger to enable controls if user is admin executed by BusExplorer login completion task
     notifiers.add(isAdmin -> {
-      if (admin.isReconfigurationCapable()) {
+      if (Application.login().admin.isReconfigurationCapable()) {
         restoreDefaultsButton.setEnabled(isAdmin);
         for (Component c : settingsPanel.getComponents()) {
           if (c instanceof JSpinner) {

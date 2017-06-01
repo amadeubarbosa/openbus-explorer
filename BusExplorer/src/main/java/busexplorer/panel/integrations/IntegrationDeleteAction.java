@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -21,12 +20,11 @@ public class IntegrationDeleteAction extends OpenBusAction<IntegrationWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin instância do busadmin
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public IntegrationDeleteAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public IntegrationDeleteAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**

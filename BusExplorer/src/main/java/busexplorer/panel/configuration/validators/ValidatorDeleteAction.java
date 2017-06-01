@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -21,12 +20,11 @@ public class ValidatorDeleteAction extends OpenBusAction<ValidatorWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin a referência para fachada {@link BusAdminFacade} do Serviço de Configuração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public ValidatorDeleteAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public ValidatorDeleteAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -66,7 +64,7 @@ public class ValidatorDeleteAction extends OpenBusAction<ValidatorWrapper> {
       protected void doPerformTask() throws Exception {
         List<ValidatorWrapper> validators = getTablePanelComponent().getSelectedElements();
         for (ValidatorWrapper validator : validators) {
-          admin.delPasswordValidator(validator.getValidator());
+          Application.login().admin.delPasswordValidator(validator.getValidator());
         }
       }
 

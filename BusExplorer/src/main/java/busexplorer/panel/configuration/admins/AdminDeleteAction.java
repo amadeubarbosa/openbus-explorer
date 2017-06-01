@@ -5,7 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -22,12 +21,11 @@ public class AdminDeleteAction extends OpenBusAction<AdminWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin a referência para fachada {@link BusAdminFacade} do Serviço de Configuração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public AdminDeleteAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public AdminDeleteAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -70,7 +68,7 @@ public class AdminDeleteAction extends OpenBusAction<AdminWrapper> {
         for (AdminWrapper admin : admins) {
           revoke.add(admin.getAdmin());
         }
-        admin.revokeAdminFrom(revoke);
+        Application.login().admin.revokeAdminFrom(revoke);
       }
 
       @Override

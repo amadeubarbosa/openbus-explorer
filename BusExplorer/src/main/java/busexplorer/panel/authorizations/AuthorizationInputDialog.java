@@ -1,12 +1,12 @@
 package busexplorer.panel.authorizations;
 
+import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 import javax.swing.JComboBox;
@@ -38,17 +38,15 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    * @param entitiesIDList Lista de entidades.
    * @param interfacesList Lista de interfaces.
    */
   public AuthorizationInputDialog(Window parentWindow,
-                                  TablePanelComponent<AuthorizationWrapper> panel, BusAdminFacade admin, List<String>
-    entitiesIDList, List<String> interfacesList) {
-    super(parentWindow, admin);
+                                  TablePanelComponent<AuthorizationWrapper> panel, List<String>
+                                    entitiesIDList, List<String> interfacesList) {
+    super(parentWindow);
 
     this.panel = panel;
 
@@ -75,7 +73,7 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
         String[] selectedInterfaces = getSelectedInterfaces();
 
         for (String selectedInterface : selectedInterfaces) {
-          admin.setAuthorization(entityID, selectedInterface);
+          Application.login().admin.setAuthorization(entityID, selectedInterface);
         }
       }
 

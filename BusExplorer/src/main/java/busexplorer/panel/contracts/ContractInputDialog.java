@@ -7,7 +7,6 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.services.governance.v1_0.Contract;
 
 import javax.swing.JLabel;
@@ -48,16 +47,14 @@ public class ContractInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor do diálogo de adição/edição de contratos.
-   *
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel de {@link ContractWrapper} a ser atualizado após a adição/edição.
-   * @param admin Referência para fachada {@link BusAdminFacade} do Serviço de Configuração.
    * @param interfaces Lista dos nomes das interfaces cadastradas.
    */
   public ContractInputDialog(Window parentWindow,
-                             TablePanelComponent<ContractWrapper> panel, BusAdminFacade admin,
+                             TablePanelComponent<ContractWrapper> panel,
                              List<String> interfaces) {
-    super(parentWindow, admin);
+    super(parentWindow);
     this.panel = panel;
     this.interfaces = interfaces;
     Collections.sort(this.interfaces);

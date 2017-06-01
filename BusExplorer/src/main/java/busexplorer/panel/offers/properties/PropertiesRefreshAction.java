@@ -31,7 +31,7 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
    * @param offer oferta cujas propriedades serão exibidas
    */
   public PropertiesRefreshAction(Window parentWindow, OfferWrapper offer) {
-    super(parentWindow, null);
+    super(parentWindow);
     this.offer = offer.getDescriptor().ref;
   }
 

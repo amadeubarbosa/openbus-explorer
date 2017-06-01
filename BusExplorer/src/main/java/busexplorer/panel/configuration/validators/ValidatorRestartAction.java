@@ -21,12 +21,11 @@ public class ValidatorRestartAction extends OpenBusAction<ValidatorWrapper> {
 
   /**
    * Construtor da ação.
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
    *
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin a referência para fachada {@link BusAdminFacade} do Serviço de Configuração
    */
-  public ValidatorRestartAction(JFrame parentWindow, BusAdminFacade admin) {
-    super(parentWindow, admin);
+  public ValidatorRestartAction(JFrame parentWindow) {
+    super(parentWindow);
     putValue(SHORT_DESCRIPTION, getString("tooltip"));
     putValue(SMALL_ICON, ApplicationIcons.ICON_RESTART_16);
   }
@@ -67,6 +66,7 @@ public class ValidatorRestartAction extends OpenBusAction<ValidatorWrapper> {
 
       @Override
       protected void doPerformTask() throws Exception {
+        BusAdminFacade admin = Application.login().admin;
         String validator = getTablePanelComponent().getSelectedElement()
                 .getValidator();
         admin.delPasswordValidator(validator);

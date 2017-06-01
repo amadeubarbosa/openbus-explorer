@@ -8,7 +8,6 @@ import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
 import javax.swing.JLabel;
@@ -65,15 +64,14 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
    *
    * @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel de {@link ProviderWrapper} a ser atualizado após a adição/edição.
-   * @param admin Referência para fachada {@link BusAdminFacade} do Serviço de Configuração.
    * @param contracts Lista de objetos locais para uso nos componentes swing e que representam os contratos.
    *
    * @see ContractWrapper
    */
   public ProviderInputDialog(Window parentWindow,
-                             TablePanelComponent<ProviderWrapper> panel, BusAdminFacade admin,
+                             TablePanelComponent<ProviderWrapper> panel,
                              List<ContractWrapper> contracts) {
-    super(parentWindow, admin);
+    super(parentWindow);
     this.panel = panel;
     for (ContractWrapper contract : contracts) {
       this.contracts.put(contract.name(), contract);

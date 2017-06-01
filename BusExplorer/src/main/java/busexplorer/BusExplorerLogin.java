@@ -8,6 +8,7 @@ import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
 import tecgraf.openbus.Connection;
+import tecgraf.openbus.OnReloginCallback;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.admin.BusAdminImpl;
@@ -15,6 +16,7 @@ import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_1.services.access_control.AccessDenied;
+import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
 import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
 import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
 import tecgraf.openbus.core.v2_1.services.access_control.UnknownDomain;
@@ -30,7 +32,7 @@ import tecgraf.openbus.extension.BusExtensionImpl;
  */
 public class BusExplorerLogin {
   /** Entidade. */
-  public final String entity;
+  public final LoginInfo info;
   /** Endereço. */
   public final BusAddress address;
   /** Domínio de autenticação */
@@ -47,6 +49,8 @@ public class BusExplorerLogin {
   private boolean adminRights = false;
   /** Conexão com o barramento */
   private Connection conn;
+  /** Callback de Relogin do OpenBus SDK Java que pode ser customizada pela aplicação */
+  private OnReloginCallback onReloginCallback;
 
   /**
    * Construtor para o objeto que representa o login no barramento.
@@ -63,11 +67,21 @@ public class BusExplorerLogin {
     address.checkBusVersion();
     address.checkBusReference();
 
-    this.entity = entity;
+    this.info = new LoginInfo();
+    this.info.entity = entity;
     this.address = address;
     this.domain = domain;
     this.context = (OpenBusContext) ORBInitializer.initORB()
       .resolve_initial_references("OpenBusContext");
+  }
+
+  /** Permite a personalização da {@link OnReloginCallback} presente no OpenBus SDK Java
+   *  e garante o comportamento necessário para atualizar as informações armazenadas no {@link BusExplorerLogin}.
+   *
+   *  @param callback implementação personalizada do {@link OnReloginCallback}
+   */
+  public void onRelogin(OnReloginCallback callback) {
+    this.onReloginCallback = callback;
   }
 
   /**
@@ -92,7 +106,19 @@ public class BusExplorerLogin {
     Exception lastFailure = null;
     for (short i = 0; i < MAX_RETRIES; i++) {
       try {
-        conn.loginByPassword(entity, password.getBytes(), domain);
+        conn.loginByPassword(info.entity, password.getBytes(), domain);
+        conn.onReloginCallback((connection, oldLogin) -> {
+          BusExplorerLogin.this.info.id = connection.login().id;
+          try {
+            BusExplorerLogin.this.checkAdminRights();
+          } catch (ServiceFailure e) {
+            //TODO: a OnReloginCallback não aceita exceções, exibir outro diálogo?
+          }
+          if (onReloginCallback != null) {
+            onReloginCallback.onRelogin(connection, oldLogin);
+          }
+        });
+        info.id = conn.login().id;
         admin = new BusAdminImpl(reference);
         extension = new BusExtensionImpl(conn.offerRegistry());
         checkAdminRights();

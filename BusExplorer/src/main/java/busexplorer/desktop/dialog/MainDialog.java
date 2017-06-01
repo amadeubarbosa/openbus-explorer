@@ -192,19 +192,23 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
   @Override
   public void propertyChange(PropertyChangeEvent e) {
     String propertyName = e.getPropertyName();
-    BusExplorerLogin login = (BusExplorerLogin) e.getNewValue();
+    BusExplorerLogin busExplorerLogin = (BusExplorerLogin) e.getNewValue();
     if (APPLICATION_LOGIN.equals(propertyName)) {
       String bus;
-      BusAddress address = login.address;
+      BusAddress address = busExplorerLogin.address;
       if (address.getDescription() != null) {
         bus = address.getDescription();
       }
       else {
         bus = address.toString();
       }
-      setDialogTitle(Application.login().entity + "@" + bus);
+      setDialogTitle(bus);
+      busExplorerLogin.onRelogin((connection, oldLogin) -> { // atualização dinâmica a cada relogin
+        // notificação para os controles
+        notifiers.forEach(booleanConsumer -> booleanConsumer.accept(busExplorerLogin.hasAdminRights()));
+      });
       disconnect.setEnabled(true);
-      notifiers.forEach(booleanConsumer -> booleanConsumer.accept(login.hasAdminRights()));
+      notifiers.forEach(booleanConsumer -> booleanConsumer.accept(busExplorerLogin.hasAdminRights()));
     }
   }
 

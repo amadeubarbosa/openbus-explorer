@@ -43,7 +43,7 @@ public class OfferDeleteAction extends OpenBusAction<OfferWrapper> {
         List<OfferWrapper> offers = getTablePanelComponent().getSelectedElements();
         if (offers.size() > 0) {
           for (OfferWrapper offer : offers) {
-            if (!offer.getEntityId().equals(Application.login().entity))
+            if (!offer.getEntityId().equals(Application.login().info.entity))
               return false;
           }
           return true;

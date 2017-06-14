@@ -107,6 +107,9 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
           integration.provider(Application.login().extension.getProviderRegistry()
             .get(getProviderSelected().name()));
           integration.activated(getActivation());
+          for (String contract : getContractNameSelected()) {
+            integration.addContract(contract);
+          }
           editingIntegration = new IntegrationWrapper(integration);
         } else {
           editingIntegration.contracts(getContractNameSelected());

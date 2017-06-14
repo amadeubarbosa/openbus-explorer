@@ -100,6 +100,9 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
           provider.support(supportTextField.getText().trim().split(","));
           provider.manager(managerTextField.getText().trim().split(","));
           provider.busquery(queryTextField.getText().trim());
+          for (String contract : contractList.getSelectedValuesList()) {
+            provider.addContract(contract);
+          }
           editingProvider = new ProviderWrapper(provider);
         } else {
           editingProvider.name(nameTextField.getText().trim());

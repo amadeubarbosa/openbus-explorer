@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import java.awt.Dimension;
 import java.awt.Window;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
@@ -43,6 +44,8 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
   private JList<String> contractList;
   private JLabel activationLabel;
   private JCheckBox activationBox;
+  private JLabel contractValidationLabel;
+  private JCheckBox contractValidationBox;
 
   // dependency
   private TreeMap<String, ConsumerWrapper> consumers =
@@ -107,12 +110,47 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
           integration.provider(Application.login().extension.getProviderRegistry()
             .get(getProviderSelected().name()));
           integration.activated(getActivation());
+          ArrayList<String> changes = new ArrayList<>();
           for (String contract : getContractNameSelected()) {
-            integration.addContract(contract);
+            if (integration.addContract(contract) == false) {
+              if (shouldAddContractToProvider()) {
+                if (integration.provider().addContract(contract) == false) {
+                  for (String revert : changes) {
+                    integration.provider().removeContract(revert);
+                  }
+                  Application.login()
+                    .extension.getIntegrationRegistry().remove(integration.id());
+                  throw new IllegalArgumentException(
+                    Language.get(IntegrationInputDialog.class,
+                      "error.couldntaddcontracts", contract));
+                } else {
+                  changes.add(contract);
+                }
+                if (integration.addContract(contract) == false) {
+                  Application.login()
+                    .extension.getIntegrationRegistry().remove(integration.id());
+                  throw new IllegalStateException(
+                    Language.get(IntegrationInputDialog.class,
+                      "error.couldntaddcontracts", contract));
+                }
+              } else {
+                Application.login()
+                  .extension.getIntegrationRegistry().remove(integration.id());
+                throw new IllegalArgumentException(
+                  Language.get(IntegrationInputDialog.class,
+                    "error.couldntaddcontracts", contract));
+              }
+            }
           }
           editingIntegration = new IntegrationWrapper(integration);
         } else {
-          editingIntegration.contracts(getContractNameSelected());
+          try {
+            editingIntegration.contracts(getContractNameSelected(), shouldAddContractToProvider());
+          } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+              Language.get(IntegrationInputDialog.class,
+                "error.couldntaddcontracts", e.getMessage()), e);
+          }
           editingIntegration.consumer(getConsumerSelected());
           editingIntegration.provider(getProviderSelected());
           editingIntegration.activate(getActivation());
@@ -172,14 +210,23 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
     });
     panel.add(new JScrollPane(contractList), "grow");
 
+    activationBox =
+      new JCheckBox();
+    activationBox.setSelected(false);
+    panel.add(activationBox);
+
     activationLabel =
       new JLabel(Language.get(this.getClass(), "activated.label"));
     panel.add(activationLabel, "grow");
 
-    activationBox =
+    contractValidationBox =
       new JCheckBox();
-    activationBox.setSelected(false);
-    panel.add(activationBox, "grow");
+    contractValidationBox.setSelected(false);
+    panel.add(contractValidationBox);
+
+    contractValidationLabel =
+      new JLabel(Language.get(this.getClass(), "contractvalidation.label"));
+    panel.add(contractValidationLabel, "grow");
 
     return panel;
   }
@@ -240,6 +287,9 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
   }
   private List<String> getContractNameSelected() {
     return this.contractList.getSelectedValuesList();
+  }
+  private boolean shouldAddContractToProvider() {
+    return contractValidationBox.isSelected();
   }
   private Boolean getActivation() {
     return this.activationBox.isSelected();

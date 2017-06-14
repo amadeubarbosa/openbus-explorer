@@ -59,20 +59,36 @@ public class IntegrationWrapper {
   public List<String> contracts() {
     return Collections.unmodifiableList(contracts);
   }
-  public void contracts(List<String> updated) {
-    // add new interfaces
-    for (String iface : updated) {
-      if (!this.contracts.contains(iface)) {
-        this.remote.addContract(iface);
-        this.contracts.add(iface);
+  public void contracts(List<String> updated, boolean shouldAddContractToProvider) {
+    ArrayList<String> rollback = new ArrayList<>();
+    // add new contracts
+    for (String contract : updated) {
+      if (!this.contracts.contains(contract)) {
+        if (this.remote.addContract(contract) == false) {
+          if (shouldAddContractToProvider) {
+            if (this.remote.provider().addContract(contract) == false) {
+              for (String revert : rollback) {
+                this.remote.provider().removeContract(revert);
+              }
+              throw new IllegalArgumentException(contract);
+            }
+            rollback.add(contract);
+            if (this.remote.addContract(contract) == false) {
+              throw new IllegalStateException(contract);
+            }
+          } else {
+            throw new IllegalArgumentException(contract);
+          }
+        }
+        this.contracts.add(contract);
       }
     }
     // remove old ones
     ListIterator<String> iterator = this.contracts.listIterator();
     while (iterator.hasNext()) {
-      String iface = iterator.next();
-      if (!updated.contains(iface)) {
-        this.remote.removeContract(iface);
+      String contract = iterator.next();
+      if (!updated.contains(contract)) {
+        this.remote.removeContract(contract);
         iterator.remove();
       }
     }

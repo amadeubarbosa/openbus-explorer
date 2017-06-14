@@ -20,8 +20,8 @@ public class IntegrationWrapper {
 
   public IntegrationWrapper(Integration remote) {
     this.remote = remote;
-    this.consumer = remote.consumer().name();
-    this.provider = remote.provider().name();
+    this.consumer = remote.consumer() == null ? "" : remote.consumer().name();
+    this.provider = remote.provider() == null ? "" : remote.provider().name();
     this.contracts = new ArrayList<>();
     for (Contract contract : remote.contracts()) {
       contracts.add(contract.name());

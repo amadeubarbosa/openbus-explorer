@@ -8,6 +8,7 @@ import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
+import org.omg.CORBA.BAD_PARAM;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
 import javax.swing.JLabel;
@@ -93,8 +94,14 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
       @Override
       protected void doPerformTask() throws Exception {
         if (editingProvider == null) {
-          Provider provider =
-            Application.login().extension.getProviderRegistry().add(nameTextField.getText().trim());
+          Provider provider;
+          try {
+            provider =
+              Application.login().extension.getProviderRegistry().add(nameTextField.getText().trim());
+          } catch (BAD_PARAM e) {
+            throw new IllegalArgumentException(
+              Language.get(ProviderInputDialog.class, "error.alreadyinuse.name"), e);
+          }
           provider.code(codeTextField.getText().trim());
           provider.office(officeTextField.getText().trim());
           provider.support(supportTextField.getText().trim().split(","));
@@ -105,7 +112,12 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
           }
           editingProvider = new ProviderWrapper(provider);
         } else {
-          editingProvider.name(nameTextField.getText().trim());
+          try {
+            editingProvider.name(nameTextField.getText().trim());
+          } catch (BAD_PARAM e) {
+            throw new IllegalArgumentException(
+              Language.get(ProviderInputDialog.class, "error.alreadyinuse.name"), e);
+          }
           editingProvider.code(codeTextField.getText().trim());
           editingProvider.office(officeTextField.getText().trim());
           editingProvider.support(Arrays.asList(supportTextField.getText().trim().split(",")));

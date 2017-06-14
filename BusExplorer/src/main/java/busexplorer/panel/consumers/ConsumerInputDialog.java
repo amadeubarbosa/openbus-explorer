@@ -7,6 +7,7 @@ import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
+import org.omg.CORBA.BAD_PARAM;
 import tecgraf.openbus.services.governance.v1_0.Consumer;
 
 import javax.swing.JLabel;
@@ -75,9 +76,14 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
       @Override
       protected void doPerformTask() throws Exception {
         if (editingConsumer == null) {
-          Consumer consumer =
-            Application.login().extension
+          Consumer consumer;
+          try {
+            consumer = Application.login().extension
               .getConsumerRegistry().add(nameTextField.getText());
+          } catch (BAD_PARAM e) {
+            throw new IllegalArgumentException(
+              Language.get(ConsumerInputDialog.class, "error.alreadyinuse.name"), e);
+          }
           consumer.code(codeTextField.getText().trim());
           consumer.office(officeTextField.getText().trim());
           consumer.support(supportTextField.getText().trim().split(","));
@@ -85,7 +91,12 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
           consumer.busquery(queryTextField.getText().trim());
           editingConsumer = new ConsumerWrapper(consumer);
         } else {
-          editingConsumer.name(nameTextField.getText().trim());
+          try {
+            editingConsumer.name(nameTextField.getText().trim());
+          } catch (BAD_PARAM e) {
+            throw new IllegalArgumentException(
+              Language.get(ConsumerInputDialog.class, "error.alreadyinuse.name"), e);
+          }
           editingConsumer.code(codeTextField.getText().trim());
           editingConsumer.office(officeTextField.getText().trim());
           editingConsumer.support(Arrays.asList(supportTextField.getText().trim().split(",")));

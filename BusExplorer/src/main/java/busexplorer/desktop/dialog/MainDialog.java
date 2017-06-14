@@ -218,6 +218,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       status.setText(Language.get(this.getClass(), "connected.as",
         busExplorerLogin.info.entity, busExplorerLogin.domain, busExplorerLogin.info.id));
       status.setEnabled(true);
+      status.setBackground(null);
       disconnect.setEnabled(true);
       notifiers.forEach(booleanConsumer -> booleanConsumer.accept(busExplorerLogin.hasAdminRights()));
     }
@@ -266,6 +267,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
             setDialogTitle("");
             status.setText(Language.get(MainDialog.class,"title.disconnected"));
             status.setEnabled(false);
+            status.setBackground(null);
             disconnect.setEnabled(false);
           }
 
@@ -295,6 +297,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     status.setBorder(null);
     status.setEditable(false);
     status.setEnabled(false);
+    status.setBackground(null);
     panel.add(status, new GBC(1,0).insets(5).east().both());
 
     add(panel, BorderLayout.SOUTH);

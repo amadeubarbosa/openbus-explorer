@@ -21,6 +21,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import java.awt.Dimension;
 import java.awt.Window;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
@@ -176,7 +178,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   protected JPanel buildFields() {
-    setMinimumSize(new Dimension(400,400));
+    setMinimumSize(new Dimension(550, 400));
     JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     consumerLabel =
@@ -210,23 +212,41 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
     });
     panel.add(new JScrollPane(contractList), "grow");
 
+    JPanel checkBoxesGroup = new JPanel(new MigLayout("fill, ins 0, flowx"));
+
     activationBox =
       new JCheckBox();
     activationBox.setSelected(false);
-    panel.add(activationBox);
+        checkBoxesGroup.add(activationBox);
 
     activationLabel =
       new JLabel(Language.get(this.getClass(), "activated.label"));
-    panel.add(activationLabel, "grow");
+        checkBoxesGroup.add(activationLabel, "grow, wrap");
+    activationLabel.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        activationBox.setSelected(!activationBox.isSelected());
+      }
+    });
 
     contractValidationBox =
       new JCheckBox();
     contractValidationBox.setSelected(false);
-    panel.add(contractValidationBox);
+        checkBoxesGroup.add(contractValidationBox);
 
     contractValidationLabel =
       new JLabel(Language.get(this.getClass(), "contractvalidation.label"));
-    panel.add(contractValidationLabel, "grow");
+        checkBoxesGroup.add(contractValidationLabel, "grow");
+    contractValidationLabel.addMouseListener(new MouseAdapter() {
+      @Override
+      public void mouseClicked(MouseEvent e) {
+        super.mouseClicked(e);
+        contractValidationBox.setSelected(!contractValidationBox.isSelected());
+      }
+    });
+
+    panel.add(checkBoxesGroup);
 
     return panel;
   }

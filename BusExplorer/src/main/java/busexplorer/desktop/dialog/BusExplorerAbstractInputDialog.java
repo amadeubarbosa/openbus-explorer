@@ -13,11 +13,6 @@ import java.awt.Window;
 public abstract class BusExplorerAbstractInputDialog extends InputDialog {
 
   /**
-   *  Referência para fachada {@link BusAdminFacade} do Serviço de Configuração.
-   */
-  protected BusAdminFacade admin;
-
-  /**
    * Construtor básico para preencher a referência do {@link BusAdminFacade}.
    *  @param parentWindow Janela mãe do Diálogo
    *

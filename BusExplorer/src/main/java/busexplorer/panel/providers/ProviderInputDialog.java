@@ -215,7 +215,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
     panel.add(new JScrollPane(queryTextField), "grow, wrap");
 
     contractLabel =
-      new JLabel(Language.get(this.getClass(), "contract.label"));
+      new JLabel(Language.get(this.getClass(), "contracts.label"));
     panel.add(contractLabel, "grow");
 
     contractList = new JList<>(contracts.keySet().toArray(new String[contracts.size()]));

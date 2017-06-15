@@ -199,7 +199,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
     panel.add(providerCombo, "grow");
 
     contractLabel =
-      new JLabel(Language.get(this.getClass(), "contract.label"));
+      new JLabel(Language.get(this.getClass(), "contracts.label"));
     panel.add(contractLabel, "grow");
 
     contractList = new JList<>(contracts.keySet().toArray(new String[contracts.size()]));

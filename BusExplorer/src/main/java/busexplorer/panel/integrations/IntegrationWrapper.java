@@ -50,7 +50,7 @@ public class IntegrationWrapper {
     Consumer consumer = integration.consumer();
     sb.append(consumer == null ? "-" : consumer.name());
     sb.append(separator + space);
-    sb.append(Language.get(IntegrationInputDialog.class, "contract.label"));
+    sb.append(Language.get(IntegrationInputDialog.class, "contracts.label"));
     Contract[] contracts = integration.contracts();
     for (int i = 0; i < contracts.length; i++) {
       sb.append(space);

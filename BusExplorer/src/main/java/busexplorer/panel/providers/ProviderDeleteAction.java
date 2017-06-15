@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -134,7 +135,7 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
 
                 @Override
                 protected JPanel buildFields() {
-
+                  setMinimumSize(new Dimension(500, 320));
                   JPanel panel = new JPanel(new MigLayout("fill, ins 0, flowy"));
                   panel.add(new JLabel(
                     ProviderDeleteAction.this.getString("affected.integrations")), "grow");

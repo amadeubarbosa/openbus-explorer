@@ -1,8 +1,10 @@
 package busexplorer.panel.providers;
 
+import busexplorer.utils.Language;
 import tecgraf.openbus.services.governance.v1_0.Contract;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,6 +34,38 @@ public class ProviderWrapper {
     for (Contract contract : remote.contracts()) {
       contracts.add(contract.name());
     }
+  }
+
+  public static String describe(Provider provider) {
+    String space = " ";
+    String separator = ";";
+    StringBuilder sb = new StringBuilder();
+    for (String field : new String[]{"name", "code", "contracts"}) {
+      sb.append(Language.get(ProviderInputDialog.class, field + ".label"));
+      sb.append(space);
+      try {
+        Object result = Provider.class.getMethod(field).invoke(provider);
+        if (result instanceof String) {
+          sb.append((String) result);
+          sb.append(separator + space);
+        } else if (result instanceof Contract[]) {
+          Contract[] contracts = (Contract[]) result;
+          for (int i = 0; i < contracts.length; i++) {
+            sb.append(space);
+            sb.append(contracts[i].name());
+            if ((i+1) < contracts.length) sb.append(",");
+          }
+        }
+
+      } catch (NoSuchMethodException e) {
+        throw new IllegalStateException(e);
+      } catch (IllegalAccessException e) {
+        throw new IllegalStateException(e);
+      } catch (InvocationTargetException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+    return sb.toString();
   }
 
   public String name() {

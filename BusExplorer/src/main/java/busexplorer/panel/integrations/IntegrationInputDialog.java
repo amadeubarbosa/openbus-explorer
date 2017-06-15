@@ -256,7 +256,19 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    if(contractList.getSelectedValuesList().size() == 0) {
+    if(getConsumerSelected() == null) {
+      setErrorMessage(Language.get(this.getClass(),
+        "error.validation.consumer"));
+      consumerCombo.addActionListener(al -> clearErrorMessage());
+      return false;
+    }
+    if(getProviderSelected() == null) {
+      setErrorMessage(Language.get(this.getClass(),
+        "error.validation.provider"));
+      providerCombo.addActionListener(al -> clearErrorMessage());
+      return false;
+    }
+    if(getContractNameSelected().size() == 0) {
       setErrorMessage(Language.get(this.getClass(),
         "error.validation.contracts"));
       contractList.addListSelectionListener(listener -> {

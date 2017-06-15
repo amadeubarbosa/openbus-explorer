@@ -200,7 +200,7 @@ public abstract class InputDialog extends JFrame {
     messageText.setEditable(false);
     messageText.setBackground(getContentPane().getBackground());
     JScrollPane pane = new JScrollPane(messageText);
-    pane.setPreferredSize(new Dimension(160, 40));
+    pane.setPreferredSize(new Dimension(160, 12));
     pane.setBorder(null);
     return pane;
   }

@@ -16,6 +16,7 @@ import java.util.ListIterator;
 public class IntegrationWrapper {
   private final List<String> contracts;
   private final Integration remote;
+  private final int id;
 
   private boolean activated;
   private String consumer;
@@ -23,6 +24,7 @@ public class IntegrationWrapper {
 
   public IntegrationWrapper(Integration remote) {
     this.remote = remote;
+    this.id = remote.id();
     this.consumer = remote.consumer() == null ? "" : remote.consumer().name();
     this.provider = remote.provider() == null ? "" : remote.provider().name();
     this.contracts = new ArrayList<>();
@@ -152,9 +154,7 @@ public class IntegrationWrapper {
       return false;
     }
     IntegrationWrapper other = (IntegrationWrapper) o;
-    return consumer.equals(other.consumer) &&
-      provider.equals(other.provider) && (activated == other.activated) &&
-      contracts.equals(other.contracts);
+    return (id == other.id);
   }
 
   public static List<IntegrationWrapper> convertToInfo(

@@ -72,16 +72,20 @@ public class ProviderWrapper {
     return this.name;
   }
   public void name(String updated) {
-    this.remote.name(updated);
-    this.name = updated;
+    if (!this.remote.name().equals(updated)) {
+      this.remote.name(updated);
+      this.name = updated;
+    }
   }
   public String code () {
     return this.code;
   }
 
   public void code(String updated) {
-    this.remote.code(updated);
-    this.code = updated;
+    if (!this.remote.code().equals(updated)) {
+      this.remote.code(updated);
+      this.code = updated;
+    }
   }
 
   public String office() {
@@ -89,8 +93,10 @@ public class ProviderWrapper {
   }
 
   public void office(String updated) {
-    this.remote.office(updated);
-    this.office = updated;
+    if (!this.remote.office().equals(updated)) {
+      this.remote.office(updated);
+      this.office = updated;
+    }
   }
 
   public List<String> support() {
@@ -116,8 +122,10 @@ public class ProviderWrapper {
   }
 
   public void busquery(String updated) {
-    this.remote.busquery(updated);
-    this.busquery = updated;
+    if (!this.remote.busquery().equals(updated)) {
+      this.remote.busquery(updated);
+      this.busquery = updated;
+    }
   }
   public List<String> contracts() {
     return Collections.unmodifiableList(contracts);

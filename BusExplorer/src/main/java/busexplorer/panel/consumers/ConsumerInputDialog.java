@@ -32,17 +32,12 @@ import java.util.Arrays;
  * @author Tecgraf
  */
 public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
-  private JLabel nameLabel;
   private JTextField nameTextField;
-  private JLabel codeLabel;
   private JTextField codeTextField;
-  private JLabel officeLabel;
-  private JTextField officeTextField;
-  private JLabel supportLabel;
+  private JTextField supportOfficeTextField;
+  private JTextField managerOfficeTextField;
   private JTextField supportTextField;
-  private JLabel managerLabel;
   private JTextField managerTextField;
-  private JLabel queryLabel;
   private JTextArea queryTextField;
 
   private TablePanelComponent<ConsumerWrapper> panel;
@@ -85,7 +80,8 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
               Language.get(ConsumerInputDialog.class, "error.alreadyinuse.name"), e);
           }
           consumer.code(codeTextField.getText().trim());
-          consumer.office(officeTextField.getText().trim());
+          consumer.supportOffice(supportOfficeTextField.getText().trim());
+          consumer.managerOffice(managerOfficeTextField.getText().trim());
           consumer.support(supportTextField.getText().trim().split(","));
           consumer.manager(managerTextField.getText().trim().split(","));
           consumer.busquery(queryTextField.getText().trim());
@@ -98,7 +94,8 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
               Language.get(ConsumerInputDialog.class, "error.alreadyinuse.name"), e);
           }
           editingConsumer.code(codeTextField.getText().trim());
-          editingConsumer.office(officeTextField.getText().trim());
+          editingConsumer.supportOffice(supportOfficeTextField.getText().trim());
+          editingConsumer.managerOffice(managerOfficeTextField.getText().trim());
           editingConsumer.support(Arrays.asList(supportTextField.getText().trim().split(",")));
           editingConsumer.manager(Arrays.asList(managerTextField.getText().trim().split(",")));
           editingConsumer.busquery(queryTextField.getText().trim());
@@ -127,8 +124,7 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
     setMinimumSize(new Dimension(400, 550));
     JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
-    nameLabel =
-      new JLabel(Language.get(this.getClass(), "name.label"));
+    JLabel nameLabel = new JLabel(Language.get(this.getClass(), "name.label"));
     panel.add(nameLabel, "grow");
 
     nameTextField =
@@ -156,36 +152,37 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
     });
     panel.add(nameTextField, "grow");
 
-    codeLabel =
-      new JLabel(Language.get(this.getClass(), "code.label"));
+    JLabel codeLabel = new JLabel(Language.get(this.getClass(), "code.label"));
     panel.add(codeLabel, "grow");
 
     codeTextField = new JTextField();
     panel.add(codeTextField, "grow");
 
-    officeLabel =
-      new JLabel(Language.get(this.getClass(), "office.label"));
-    panel.add(officeLabel, "grow");
+    JLabel supportOfficeLabel = new JLabel(Language.get(this.getClass(), "supportoffice.label"));
+    panel.add(supportOfficeLabel, "grow");
 
-    officeTextField = new JTextField();
-    panel.add(officeTextField, "grow");
+    supportOfficeTextField = new JTextField();
+    panel.add(supportOfficeTextField, "grow");
 
-    supportLabel =
-      new JLabel(Language.get(this.getClass(), "support.label"));
+    JLabel supportLabel = new JLabel(Language.get(this.getClass(), "support.label"));
     panel.add(supportLabel, "grow");
 
     supportTextField = new JTextField();
     panel.add(supportTextField, "grow");
 
-    managerLabel =
-      new JLabel(Language.get(this.getClass(), "manager.label"));
+    JLabel managerOfficeLabel = new JLabel(Language.get(this.getClass(), "manageroffice.label"));
+    panel.add(managerOfficeLabel, "grow");
+
+    managerOfficeTextField = new JTextField();
+    panel.add(managerOfficeTextField, "grow");
+
+    JLabel managerLabel = new JLabel(Language.get(this.getClass(), "manager.label"));
     panel.add(managerLabel, "grow");
 
     managerTextField = new JTextField();
     panel.add(managerTextField, "grow");
 
-    queryLabel =
-      new JLabel(Language.get(this.getClass(), "busquery.label"));
+    JLabel queryLabel = new JLabel(Language.get(this.getClass(), "busquery.label"));
     panel.add(queryLabel, "grow");
 
     queryTextField = new JTextArea(5, 20);
@@ -219,7 +216,8 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
     this.editingConsumer = info;
     this.nameTextField.setText(info.name());
     this.codeTextField.setText(info.code());
-    this.officeTextField.setText(info.office());
+    this.supportOfficeTextField.setText(info.supportOffice());
+    this.managerOfficeTextField.setText(info.managerOffice());
     this.supportTextField.setText(String.join(", ", info.support()));
     this.managerTextField.setText(String.join(", ", info.manager()));
     this.queryTextField.setText(info.busquery());

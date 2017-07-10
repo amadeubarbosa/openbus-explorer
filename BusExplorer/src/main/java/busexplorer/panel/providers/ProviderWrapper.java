@@ -16,7 +16,8 @@ public class ProviderWrapper {
 
   private String name;
   private String code;
-  private String office;
+  private String supportOffice;
+  private String managerOffice;
   private List<String> support;
   private List<String> manager;
   private String busquery;
@@ -26,7 +27,8 @@ public class ProviderWrapper {
     this.remote = remote;
     this.name = remote.name();
     this.code = remote.code();
-    this.office = remote.office();
+    this.supportOffice = remote.supportOffice();
+    this.managerOffice = remote.managerOffice();
     this.support = new ArrayList<>(Arrays.asList(remote.support()));
     this.manager = new ArrayList<>(Arrays.asList(remote.manager()));
     this.busquery = remote.busquery();
@@ -88,14 +90,25 @@ public class ProviderWrapper {
     }
   }
 
-  public String office() {
-    return office;
+  public String managerOffice() {
+    return supportOffice;
   }
 
-  public void office(String updated) {
-    if (!this.remote.office().equals(updated)) {
-      this.remote.office(updated);
-      this.office = updated;
+  public void managerOffice(String updated) {
+    if (!this.remote.supportOffice().equals(updated)) {
+      this.remote.supportOffice(updated);
+      this.supportOffice = updated;
+    }
+  }
+
+  public String supportOffice() {
+    return supportOffice;
+  }
+
+  public void supportOffice(String updated) {
+    if (!this.remote.supportOffice().equals(updated)) {
+      this.remote.supportOffice(updated);
+      this.supportOffice = updated;
     }
   }
 

@@ -12,7 +12,8 @@ public class ConsumerWrapper {
 
   private String name;
   private String code;
-  private String office;
+  private String supportOffice;
+  private String managerOffice;
   private List<String> support;
   private List<String> manager;
   private String busquery;
@@ -21,7 +22,8 @@ public class ConsumerWrapper {
     this.remote = remote;
     this.name = remote.name();
     this.code = remote.code();
-    this.office = remote.office();
+    this.supportOffice = remote.supportOffice();
+    this.managerOffice = remote.managerOffice();
     this.manager = new ArrayList<>(Arrays.asList(remote.manager()));
     this.support = new ArrayList<>(Arrays.asList(remote.support()));
     this.busquery = remote.busquery();
@@ -49,14 +51,25 @@ public class ConsumerWrapper {
     }
   }
 
-  public String office() {
-    return office;
+  public String supportOffice() {
+    return supportOffice;
   }
 
-  public void office(String updated) {
-    if (!this.remote.office().equals(updated)) {
-      this.remote.office(updated);
-      this.office = updated;
+  public void supportOffice(String updated) {
+    if (!this.remote.supportOffice().equals(updated)) {
+      this.remote.supportOffice(updated);
+      this.supportOffice = updated;
+    }
+  }
+
+  public String managerOffice() {
+    return managerOffice;
+  }
+
+  public void managerOffice(String updated) {
+    if (!this.remote.managerOffice().equals(updated)) {
+      this.remote.managerOffice(updated);
+      this.managerOffice = updated;
     }
   }
 

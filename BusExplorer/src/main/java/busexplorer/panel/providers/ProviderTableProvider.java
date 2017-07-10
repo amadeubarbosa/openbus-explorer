@@ -9,11 +9,12 @@ public class ProviderTableProvider implements ObjectTableProvider<ProviderWrappe
 
   private static final int NAME = 0;
   private static final int CODE = 1;
-  private static final int OFFICE = 2;
+  private static final int SUPPORT_OFFICE = 2;
   private static final int SUPPORT = 3;
-  private static final int MANAGER = 4;
-  private static final int BUSQUERY = 5;
-  private static final int CONTRACTS = 6;
+  private static final int MANAGER_OFFICE = 4;
+  private static final int MANAGER = 5;
+  private static final int BUSQUERY = 6;
+  private static final int CONTRACTS = 7;
 
   /**
    * {@inheritDoc}
@@ -22,8 +23,9 @@ public class ProviderTableProvider implements ObjectTableProvider<ProviderWrappe
   public String[] getColumnNames() {
     return new String[] { Language.get(this.getClass(), "name"),
       Language.get(this.getClass(), "code"),
-      Language.get(this.getClass(), "office"),
+      Language.get(this.getClass(), "supportoffice"),
       Language.get(this.getClass(), "support"),
+      Language.get(this.getClass(), "manageroffice"),
       Language.get(this.getClass(), "manager"),
       Language.get(this.getClass(), "busquery"),
       Language.get(this.getClass(), "contracts") };
@@ -35,7 +37,7 @@ public class ProviderTableProvider implements ObjectTableProvider<ProviderWrappe
   @Override
   public Class<?>[] getColumnClasses() {
     return new Class<?>[] { String.class, String.class, String.class,
-      Vector.class, Vector.class, String.class, Vector.class };
+      Vector.class, String.class, Vector.class, String.class, Vector.class };
   }
 
   /**
@@ -50,11 +52,14 @@ public class ProviderTableProvider implements ObjectTableProvider<ProviderWrappe
       case CODE:
         return row.code();
 
-      case OFFICE:
-        return row.office();
+      case SUPPORT_OFFICE:
+        return row.supportOffice();
 
       case SUPPORT:
         return row.support();
+
+      case MANAGER_OFFICE:
+        return row.managerOffice();
 
       case MANAGER:
         return row.manager();

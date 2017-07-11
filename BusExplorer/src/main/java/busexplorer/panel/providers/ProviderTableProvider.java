@@ -53,13 +53,13 @@ public class ProviderTableProvider implements ObjectTableProvider<ProviderWrappe
         return row.code();
 
       case SUPPORT_OFFICE:
-        return row.supportOffice();
+        return row.supportoffice();
 
       case SUPPORT:
         return row.support();
 
       case MANAGER_OFFICE:
-        return row.managerOffice();
+        return row.manageroffice();
 
       case MANAGER:
         return row.manager();

@@ -97,8 +97,8 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
               Language.get(ProviderInputDialog.class, "error.alreadyinuse.name"), e);
           }
           provider.code(codeTextField.getText().trim());
-          provider.supportOffice(supportOfficeTextField.getText().trim());
-          provider.managerOffice(managerOfficeTextField.getText().trim());
+          provider.supportoffice(supportOfficeTextField.getText().trim());
+          provider.manageroffice(managerOfficeTextField.getText().trim());
           provider.support(supportTextField.getText().trim().split(","));
           provider.manager(managerTextField.getText().trim().split(","));
           provider.busquery(queryTextField.getText().trim());
@@ -114,8 +114,8 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
               Language.get(ProviderInputDialog.class, "error.alreadyinuse.name"), e);
           }
           editingProvider.code(codeTextField.getText().trim());
-          editingProvider.supportOffice(supportOfficeTextField.getText().trim());
-          editingProvider.managerOffice(managerOfficeTextField.getText().trim());
+          editingProvider.supportoffice(supportOfficeTextField.getText().trim());
+          editingProvider.manageroffice(managerOfficeTextField.getText().trim());
           editingProvider.support(Arrays.asList(supportTextField.getText().trim().split(",")));
           editingProvider.manager(Arrays.asList(managerTextField.getText().trim().split(",")));
           editingProvider.busquery(queryTextField.getText().trim());
@@ -251,8 +251,8 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
     this.editingProvider = info;
     this.nameTextField.setText(info.name());
     this.codeTextField.setText(info.code());
-    this.supportOfficeTextField.setText(info.supportOffice());
-    this.managerOfficeTextField.setText(info.managerOffice());
+    this.supportOfficeTextField.setText(info.supportoffice());
+    this.managerOfficeTextField.setText(info.manageroffice());
     this.supportTextField.setText(String.join(", ", info.support()));
     this.managerTextField.setText(String.join(", ", info.manager()));
     this.queryTextField.setText(info.busquery());

@@ -80,8 +80,8 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
               Language.get(ConsumerInputDialog.class, "error.alreadyinuse.name"), e);
           }
           consumer.code(codeTextField.getText().trim());
-          consumer.supportOffice(supportOfficeTextField.getText().trim());
-          consumer.managerOffice(managerOfficeTextField.getText().trim());
+          consumer.supportoffice(supportOfficeTextField.getText().trim());
+          consumer.manageroffice(managerOfficeTextField.getText().trim());
           consumer.support(supportTextField.getText().trim().split(","));
           consumer.manager(managerTextField.getText().trim().split(","));
           consumer.busquery(queryTextField.getText().trim());
@@ -94,8 +94,8 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
               Language.get(ConsumerInputDialog.class, "error.alreadyinuse.name"), e);
           }
           editingConsumer.code(codeTextField.getText().trim());
-          editingConsumer.supportOffice(supportOfficeTextField.getText().trim());
-          editingConsumer.managerOffice(managerOfficeTextField.getText().trim());
+          editingConsumer.supportoffice(supportOfficeTextField.getText().trim());
+          editingConsumer.manageroffice(managerOfficeTextField.getText().trim());
           editingConsumer.support(Arrays.asList(supportTextField.getText().trim().split(",")));
           editingConsumer.manager(Arrays.asList(managerTextField.getText().trim().split(",")));
           editingConsumer.busquery(queryTextField.getText().trim());
@@ -216,8 +216,8 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
     this.editingConsumer = info;
     this.nameTextField.setText(info.name());
     this.codeTextField.setText(info.code());
-    this.supportOfficeTextField.setText(info.supportOffice());
-    this.managerOfficeTextField.setText(info.managerOffice());
+    this.supportOfficeTextField.setText(info.supportoffice());
+    this.managerOfficeTextField.setText(info.manageroffice());
     this.supportTextField.setText(String.join(", ", info.support()));
     this.managerTextField.setText(String.join(", ", info.manager()));
     this.queryTextField.setText(info.busquery());

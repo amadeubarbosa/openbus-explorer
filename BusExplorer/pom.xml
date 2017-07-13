@@ -87,5 +87,10 @@
       <groupId>com.miglayout</groupId>
       <artifactId>miglayout-swing</artifactId>
     </dependency>
+      <dependency>
+          <groupId>org.apache.poi</groupId>
+          <artifactId>poi-ooxml</artifactId>
+          <version>3.7</version>
+      </dependency>
   </dependencies>
 </project>

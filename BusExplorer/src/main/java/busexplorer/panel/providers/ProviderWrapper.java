@@ -91,13 +91,13 @@ public class ProviderWrapper {
   }
 
   public String manageroffice() {
-    return supportoffice;
+    return manageroffice;
   }
 
   public void manageroffice(String updated) {
-    if (!this.remote.supportoffice().equals(updated)) {
-      this.remote.supportoffice(updated);
-      this.supportoffice = updated;
+    if (!this.remote.manageroffice().equals(updated)) {
+      this.remote.manageroffice(updated);
+      this.manageroffice = updated;
     }
   }
 

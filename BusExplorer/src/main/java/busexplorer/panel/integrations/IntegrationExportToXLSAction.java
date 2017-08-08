@@ -1,6 +1,7 @@
 package busexplorer.panel.integrations;
 
 import busexplorer.Application;
+import busexplorer.ApplicationIcons;
 import busexplorer.desktop.dialog.ExceptionDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
@@ -32,6 +33,8 @@ public class IntegrationExportToXLSAction extends OpenBusAction<IntegrationWrapp
 
   public IntegrationExportToXLSAction(Window parentWindow) {
     super(parentWindow);
+    putValue(SHORT_DESCRIPTION, getString("tooltip"));
+    putValue(SMALL_ICON, ApplicationIcons.ICON_SPREADSHEET_16);
   }
 
   @Override

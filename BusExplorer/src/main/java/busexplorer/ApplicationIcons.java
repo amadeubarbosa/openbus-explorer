@@ -69,6 +69,11 @@ public class ApplicationIcons {
   public static final ImageIcon ICON_PROPS_16 = createImageIcon("Props16.png");
 
   /**
+   * Planilha.
+   */
+  public static final Object ICON_SPREADSHEET_16 = createImageIcon("Spreadsheet16.png");
+
+  /**
    * Cancelar.
    */
   public static final ImageIcon ICON_CANCEL_16 = createImageIcon("Cancel16.gif");

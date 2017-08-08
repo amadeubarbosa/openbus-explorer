@@ -57,6 +57,7 @@ import busexplorer.panel.entities.EntityWrapper;
 import busexplorer.panel.integrations.IntegrationAddAction;
 import busexplorer.panel.integrations.IntegrationDeleteAction;
 import busexplorer.panel.integrations.IntegrationEditAction;
+import busexplorer.panel.integrations.IntegrationExportToXLSAction;
 import busexplorer.panel.integrations.IntegrationRefreshAction;
 import busexplorer.panel.integrations.IntegrationTableProvider;
 import busexplorer.panel.integrations.IntegrationWrapper;
@@ -465,7 +466,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
         ArrayList<>(), new IntegrationTableProvider());
 
       List<TablePanelActionInterface<IntegrationWrapper>> actionsVector =
-        new Vector<TablePanelActionInterface<IntegrationWrapper>>(3);
+        new Vector<TablePanelActionInterface<IntegrationWrapper>>(5);
+      actionsVector.add(new IntegrationExportToXLSAction(this));
       actionsVector.add(new IntegrationRefreshAction(this));
       actionsVector.add(new IntegrationAddAction(this));
       actionsVector.add(new IntegrationEditAction(this));

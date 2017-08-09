@@ -3,6 +3,8 @@ package busexplorer.panel.providers;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.BusQueryHelpAction;
+import busexplorer.panel.BusQueryValidateAction;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.utils.BusExplorerTask;
@@ -11,6 +13,7 @@ import net.miginfocom.swing.MigLayout;
 import org.omg.CORBA.BAD_PARAM;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -44,6 +47,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
   private JTextField supportTextField;
   private JTextField managerTextField;
   private JTextArea queryTextField;
+  private BusQueryValidateAction<JTextArea, String> queryValidation;
   private JList<String> contractList;
 
   // dependency
@@ -208,7 +212,32 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
 
     queryTextField = new JTextArea(5, 20);
     queryTextField.setLineWrap(true);
-    panel.add(new JScrollPane(queryTextField), "grow, wrap");
+    queryTextField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        ProviderInputDialog.this.hasValidFields();
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+
+      }
+    });
+
+    queryValidation = new BusQueryValidateAction<JTextArea,String>(this, queryTextField,
+      jTextArea -> jTextArea.getText().trim());
+    JPanel busQueryPanel = new JPanel(new MigLayout("wrap 2, insets 0 0 0 0", "[grow][]", "[grow][grow]"));
+    busQueryPanel.add(new JScrollPane(queryTextField), "grow, span 1 2");
+    busQueryPanel.add(new JButton(queryValidation), "grow");
+
+    JButton help = new JButton(new BusQueryHelpAction(this));
+    busQueryPanel.add(help, "grow");
+    panel.add(busQueryPanel, "grow, wrap");
 
     JLabel contractLabel = new JLabel(Language.get(this.getClass(), "contracts.label"));
     panel.add(contractLabel, "grow");
@@ -240,6 +269,12 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
         setErrorMessage(Language.get(this.getClass(),
           "error.validation.contracts"));
         return false;
+      } else {
+        if (!queryValidation.abilityConditions()) {
+          setErrorMessage(Language.get(this.getClass(),
+            "error.validation.busquery"));
+          return false;
+        }
       }
     }
 

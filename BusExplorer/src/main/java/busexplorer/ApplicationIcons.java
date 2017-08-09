@@ -71,7 +71,17 @@ public class ApplicationIcons {
   /**
    * Planilha.
    */
-  public static final Object ICON_SPREADSHEET_16 = createImageIcon("Spreadsheet16.png");
+  public static final ImageIcon ICON_SPREADSHEET_16 = createImageIcon("Spreadsheet16.png");
+
+  /**
+   * Ajuda.
+   */
+  public static final ImageIcon ICON_HELP_16 = createImageIcon("Help16.png");
+
+  /**
+   * Medidor.
+   */
+  public static final ImageIcon ICON_GAUGE_16 = createImageIcon("Gauge16.png");
 
   /**
    * Cancelar.

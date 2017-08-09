@@ -3,6 +3,8 @@ package busexplorer.panel.consumers;
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.BusQueryHelpAction;
+import busexplorer.panel.BusQueryValidateAction;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
@@ -10,6 +12,7 @@ import net.miginfocom.swing.MigLayout;
 import org.omg.CORBA.BAD_PARAM;
 import tecgraf.openbus.services.governance.v1_0.Consumer;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -39,6 +42,7 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
   private JTextField supportTextField;
   private JTextField managerTextField;
   private JTextArea queryTextField;
+  private BusQueryValidateAction<JTextArea, String> queryValidation;
 
   private TablePanelComponent<ConsumerWrapper> panel;
 
@@ -132,12 +136,7 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
     nameTextField.getDocument().addDocumentListener(new DocumentListener() {
       @Override
       public void insertUpdate(DocumentEvent documentEvent) {
-        if (nameTextField.getText().trim().isEmpty()) {
-          setErrorMessage(Language.get(ConsumerInputDialog.class,
-            "error.validation.name"));
-        } else {
-          clearErrorMessage();
-        }
+        ConsumerInputDialog.this.hasValidFields();
       }
 
       @Override
@@ -187,7 +186,32 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
 
     queryTextField = new JTextArea(5, 20);
     queryTextField.setLineWrap(true);
-    panel.add(new JScrollPane(queryTextField), "grow");
+    queryTextField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        ConsumerInputDialog.this.hasValidFields();
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+
+      }
+    });
+
+    queryValidation = new BusQueryValidateAction<JTextArea,String>(this, queryTextField,
+      jTextArea -> jTextArea.getText().trim());
+    JPanel busQueryPanel = new JPanel(new MigLayout("wrap 2, insets 0 0 0 0", "[grow][]", "[grow][grow]"));
+    busQueryPanel.add(new JScrollPane(queryTextField), "grow, span 1 2");
+    busQueryPanel.add(new JButton(queryValidation), "grow");
+
+    JButton help = new JButton(new BusQueryHelpAction(this));
+    busQueryPanel.add(help, "grow");
+    panel.add(busQueryPanel, "grow");
 
     return panel;
   }
@@ -201,6 +225,12 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
       setErrorMessage(Language.get(this.getClass(),
         "error.validation.name"));
       return false;
+    } else {
+      if (!queryValidation.abilityConditions()) {
+        setErrorMessage(Language.get(this.getClass(),
+          "error.validation.busquery"));
+        return false;
+      }
     }
 
     clearErrorMessage();

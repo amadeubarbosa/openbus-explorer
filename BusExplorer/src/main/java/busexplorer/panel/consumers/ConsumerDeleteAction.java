@@ -6,23 +6,27 @@ import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.panel.RefreshablePanel;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.panel.integrations.IntegrationTableProvider;
 import busexplorer.panel.integrations.IntegrationWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -73,7 +77,7 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
     }
 
     final boolean[] shouldRemoveDependents = {false};
-    HashMap<Integer, String> integrationsAffected = new HashMap<>();
+    HashMap<Integer, IntegrationWrapper> integrationsAffected = new HashMap<>();
 
     BusExplorerTask<Void> removeConsumerTask =
       new BusExplorerTask<Void>(ExceptionContext.BusCore) {
@@ -84,14 +88,14 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
           List<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
           for (ConsumerWrapper consumer : consumers) {
             Application.login().extension.getConsumerRegistry().remove(consumer.name());
+            this.setProgressStatus(100*i/consumers.size());
+            i++;
           }
           if (shouldRemoveDependents[0]) {
             for (Integer id : integrationsAffected.keySet()) {
               Application.login().extension.getIntegrationRegistry().remove(id);
             }
           }
-          this.setProgressStatus(100*i/consumers.size());
-          i++;
         }
 
         @Override
@@ -113,7 +117,7 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
             String consumerName = consumer.remote().name();
             for (Integration integration : Application.login().extension.getIntegrationRegistry().integrations()) {
               if (integration.consumer().name().equals(consumerName)) {
-                integrationsAffected.put(integration.id(), IntegrationWrapper.describe(integration));
+                integrationsAffected.put(integration.id(), new IntegrationWrapper(integration));
               }
             }
             this.setProgressStatus(100*i/consumers.size());
@@ -141,14 +145,10 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
                     panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
                     panel.add(new JLabel(Language.get(MainDialog.class, "integration.title")), "grow");
 
-                    JList<String> affectedList = new JList<>(
-                      integrationsAffected.values()
-                        .toArray(new String[integrationsAffected.size()]));
-                    affectedList.setFocusable(false);
-                    affectedList.setVisibleRowCount(4);
-                    affectedList.setBackground(getContentPane().getBackground());
-
-                    JScrollPane pane = new JScrollPane(affectedList);
+                    ObjectTableModel<IntegrationWrapper> model = new ObjectTableModel<>(
+                      new ArrayList<>(integrationsAffected.values()), new IntegrationTableProvider());
+                    RefreshablePanel pane = new TablePanelComponent<>(model, new ArrayList<>(), false);
+                    pane.setPreferredSize(new Dimension(100, 150));
                     panel.add(pane, "grow, pad 0 10 0 -10");
 
                     panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");

@@ -6,11 +6,16 @@ import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
+import busexplorer.panel.RefreshablePanel;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.panel.integrations.IntegrationTableProvider;
 import busexplorer.panel.integrations.IntegrationWrapper;
+import busexplorer.panel.providers.ProviderTableProvider;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.services.governance.v1_0.Contract;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 import tecgraf.openbus.services.governance.v1_0.Provider;
@@ -18,15 +23,14 @@ import tecgraf.openbus.services.governance.v1_0.Provider;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -78,8 +82,8 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
 
 
     final boolean[] shouldRemoveDependents = {false};
-    HashMap<Integer, String> integrationsAffected = new HashMap<>();
-    HashMap<String, String> providersAffected = new HashMap<>();
+    HashMap<Integer, IntegrationWrapper> integrationsAffected = new HashMap<>();
+    HashMap<String, ProviderWrapper> providersAffected = new HashMap<>();
 
     BusExplorerTask<Void> removeContractTask =
       new BusExplorerTask<Void>(ExceptionContext.BusCore) {
@@ -90,6 +94,8 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
           List<ContractWrapper> contracts = getTablePanelComponent().getSelectedElements();
           for (ContractWrapper contract : contracts) {
             Application.login().extension.getContractRegistry().remove(contract.name());
+            this.setProgressStatus(100*i/contracts.size());
+            i++;
           }
           if (shouldRemoveDependents[0]) {
             for (Integer id : integrationsAffected.keySet()) {
@@ -99,8 +105,6 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
               Application.login().extension.getProviderRegistry().remove(name);
             }
           }
-          this.setProgressStatus(100*i/contracts.size());
-          i++;
         }
 
         @Override
@@ -124,7 +128,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
               for (Contract contract : integration.contracts()) {
                 int integrationId = integration.id();
                 if (contract.name().equals(contractBeingRemovedName) && !integrationsAffected.containsKey(integrationId)) {
-                  integrationsAffected.put(integrationId, IntegrationWrapper.describe(integration));
+                  integrationsAffected.put(integrationId, new IntegrationWrapper(integration));
                 }
               }
             }
@@ -132,7 +136,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
               String providerName = provider.name();
               for (Contract contract : provider.contracts()) {
                 if (contract.name().equals(contractBeingRemovedName) && !providersAffected.containsKey(providerName)) {
-                  providersAffected.put(providerName, ProviderWrapper.describe(provider));
+                  providersAffected.put(providerName, new ProviderWrapper(provider));
                 }
               }
             }
@@ -162,25 +166,19 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
 
                     panel.add(new JLabel(Language.get(MainDialog.class, "integration.title")), "grow");
 
-                    JList<String> affectedIntegrationsList = new JList<>(
-                      integrationsAffected.values()
-                        .toArray(new String[integrationsAffected.size()]));
-                    affectedIntegrationsList.setFocusable(false);
-                    affectedIntegrationsList.setVisibleRowCount(4);
-                    affectedIntegrationsList.setBackground(getContentPane().getBackground());
-
-                    panel.add(new JScrollPane(affectedIntegrationsList), "grow, pad 0 10 0 -10");
+                    RefreshablePanel integrationPane = new TablePanelComponent<>(
+                      new ObjectTableModel<>(new ArrayList<>(integrationsAffected.values()),
+                        new IntegrationTableProvider()), new ArrayList<>(), false);
+                    integrationPane.setPreferredSize(new Dimension(100, 150));
+                    panel.add(integrationPane, "grow, pad 0 10 0 -10");
 
                     panel.add(new JLabel(Language.get(MainDialog.class, "extension.provider.title")), "grow");
 
-                    JList<String> affectedProvidersList = new JList<>(
-                      providersAffected.values()
-                        .toArray(new String[providersAffected.size()]));
-                    affectedProvidersList.setFocusable(false);
-                    affectedProvidersList.setVisibleRowCount(4);
-                    affectedProvidersList.setBackground(getContentPane().getBackground());
-
-                    panel.add(new JScrollPane(affectedProvidersList), "grow, pad 0 10 0 -10");
+                    RefreshablePanel providerPane = new TablePanelComponent<>(
+                      new ObjectTableModel<>(new ArrayList<>(providersAffected.values()),
+                        new ProviderTableProvider()), new ArrayList<>(), false);
+                    providerPane.setPreferredSize(new Dimension(100, 150));
+                    panel.add(providerPane, "grow, pad 0 10 0 -10");
 
                     panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
                     JPanel checkBoxesGroup = new JPanel(new MigLayout("fill, ins 0, flowx"));

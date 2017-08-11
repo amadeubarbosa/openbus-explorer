@@ -2,11 +2,8 @@ package busexplorer.panel.integrations;
 
 import busexplorer.panel.consumers.ConsumerWrapper;
 import busexplorer.panel.providers.ProviderWrapper;
-import busexplorer.utils.Language;
-import tecgraf.openbus.services.governance.v1_0.Consumer;
 import tecgraf.openbus.services.governance.v1_0.Contract;
 import tecgraf.openbus.services.governance.v1_0.Integration;
-import tecgraf.openbus.services.governance.v1_0.Provider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,34 +29,6 @@ public class IntegrationWrapper {
       contracts.add(contract.name());
     }
     this.activated = remote.activated();
-  }
-
-  public static String describe(Integration integration) {
-    String space = " ";
-    String separator = ";";
-    StringBuilder sb = new StringBuilder();
-    sb.append("Id:");
-    sb.append(space);
-    sb.append(integration.id());
-    sb.append(separator + space);
-    sb.append(Language.get(IntegrationInputDialog.class, "provider.label"));
-    sb.append(space);
-    Provider provider = integration.provider();
-    sb.append(provider == null ? "-" : provider.name());
-    sb.append(separator + space);
-    sb.append(Language.get(IntegrationInputDialog.class, "consumer.label"));
-    sb.append(space);
-    Consumer consumer = integration.consumer();
-    sb.append(consumer == null ? "-" : consumer.name());
-    sb.append(separator + space);
-    sb.append(Language.get(IntegrationInputDialog.class, "contracts.label"));
-    Contract[] contracts = integration.contracts();
-    for (int i = 0; i < contracts.length; i++) {
-      sb.append(space);
-      sb.append(contracts[i].name());
-      if ((i+1) < contracts.length) sb.append(",");
-    }
-    return sb.toString();
   }
 
   public String consumer() {

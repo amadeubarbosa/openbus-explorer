@@ -101,7 +101,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  protected JPanel buildFields() {
+  public JPanel buildFields() {
     setMinimumSize(new Dimension(300, 300));
     JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 

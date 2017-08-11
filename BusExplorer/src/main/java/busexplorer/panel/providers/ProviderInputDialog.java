@@ -145,7 +145,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  protected JPanel buildFields() {
+  public JPanel buildFields() {
     setMinimumSize(new Dimension(550, 480));
     JPanel panel = new JPanel(new MigLayout("fill, flowy","[]10[]"));
 

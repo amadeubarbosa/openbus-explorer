@@ -76,7 +76,9 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
       return;
     }
 
-    final boolean[] shouldRemoveDependents = {false};
+    // [0] = flag para remoção das integrações
+    // [1] = flag para remoção das informações de governança (entidades, ofertas, certificados, autorizações)
+    final boolean[] shouldRemoveDependents = {false,false};
     HashMap<Integer, IntegrationWrapper> integrationsAffected = new HashMap<>();
 
     BusExplorerTask<Void> removeConsumerTask =
@@ -86,15 +88,15 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
         protected void doPerformTask() throws Exception {
           int i = 0;
           List<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
-          for (ConsumerWrapper consumer : consumers) {
-            Application.login().extension.getConsumerRegistry().remove(consumer.name());
-            this.setProgressStatus(100*i/consumers.size());
-            i++;
-          }
           if (shouldRemoveDependents[0]) {
             for (Integer id : integrationsAffected.keySet()) {
               Application.login().extension.getIntegrationRegistry().remove(id);
             }
+          }
+          for (ConsumerWrapper consumer : consumers) {
+            Application.login().extension.getConsumerRegistry().remove(consumer.name());
+            this.setProgressStatus(100*i/consumers.size());
+            i++;
           }
         }
 
@@ -137,7 +139,7 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
                   getString("confirm.title")) {
 
                   @Override
-                  protected JPanel buildFields() {
+                  public JPanel buildFields() {
 
                     JPanel panel = new JPanel(new MigLayout("fill, ins 0, flowy"));
                     panel.add(new JLabel(

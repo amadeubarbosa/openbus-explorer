@@ -477,6 +477,7 @@ public abstract class ExceptionDialog extends JDialog {
 
       adjustEqualSizes(new JButton[] { detailButton, closeButton });
 
+      getRootPane().setDefaultButton(detailButton);
       panel.add(detailButton);
       panel.add(closeButton);
       return panel;

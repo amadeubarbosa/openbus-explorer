@@ -305,7 +305,7 @@ public abstract class InputDialog extends JFrame {
    * 
    * @return o painel a ser colocado no centro do diálogo para entrada de dados.
    */
-  protected abstract JPanel buildFields();
+  public abstract JPanel buildFields();
 
   /**
    * Método (a ser definido pela aplicação) de aceitação dos valores colocados

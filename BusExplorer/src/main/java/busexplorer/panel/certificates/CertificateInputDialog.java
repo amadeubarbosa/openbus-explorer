@@ -83,7 +83,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  protected JPanel buildFields() {
+  public JPanel buildFields() {
     setMinimumSize(new Dimension(380,240));
     JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 

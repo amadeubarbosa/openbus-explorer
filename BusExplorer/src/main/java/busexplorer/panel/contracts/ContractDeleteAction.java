@@ -10,6 +10,7 @@ import busexplorer.panel.RefreshablePanel;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.integrations.IntegrationTableProvider;
 import busexplorer.panel.integrations.IntegrationWrapper;
+import busexplorer.panel.providers.ProviderDeleteAction;
 import busexplorer.panel.providers.ProviderTableProvider;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
@@ -21,12 +22,12 @@ import tecgraf.openbus.services.governance.v1_0.Integration;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import java.awt.Dimension;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -46,7 +47,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
    *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
    *
    */
-  public ContractDeleteAction(JFrame parentWindow) {
+  public ContractDeleteAction(Window parentWindow) {
     super(parentWindow);
   }
 
@@ -80,7 +81,6 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
       return;
     }
 
-
     final boolean[] shouldRemoveDependents = {false};
     HashMap<Integer, IntegrationWrapper> integrationsAffected = new HashMap<>();
     HashMap<String, ProviderWrapper> providersAffected = new HashMap<>();
@@ -101,9 +101,11 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
             for (Integer id : integrationsAffected.keySet()) {
               Application.login().extension.getIntegrationRegistry().remove(id);
             }
-            for (String name : providersAffected.keySet()) {
-              Application.login().extension.getProviderRegistry().remove(name);
-            }
+            new ProviderDeleteAction(ContractDeleteAction.this.parentWindow)
+              .performChecksAndRemoteTasks(providersAffected.values(), null);
+//            for (String name : providersAffected.keySet()) {
+//              Application.login().extension.getProviderRegistry().remove(name);
+//            }
           }
         }
 
@@ -157,7 +159,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
                   getString("confirm.title")) {
 
                   @Override
-                  protected JPanel buildFields() {
+                  public JPanel buildFields() {
                     setMinimumSize(new Dimension(500, 420));
                     JPanel panel = new JPanel(new MigLayout("fill, ins 0, flowy"));
                     panel.add(new JLabel(

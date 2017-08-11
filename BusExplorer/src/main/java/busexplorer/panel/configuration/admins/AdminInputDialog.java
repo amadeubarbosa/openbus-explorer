@@ -87,7 +87,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  protected JPanel buildFields() {
+  public JPanel buildFields() {
     setMinimumSize(new Dimension(330, 190));
     JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 

@@ -18,7 +18,7 @@ public class BusQuery {
   private final ScriptEngine engine;
 
   public BusQuery(String str) throws ScriptException {
-    this.expression = str;
+    this.expression = str == null ? "" : str;
     ScriptEngineManager manager = new ScriptEngineManager();
     engine = manager.getEngineByName("nashorn");
     engine.eval("var openbus = {entity: {id: ''} }; ");

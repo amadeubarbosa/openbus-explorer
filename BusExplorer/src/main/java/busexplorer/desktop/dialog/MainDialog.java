@@ -119,6 +119,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -169,6 +170,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    */
   public MainDialog(Properties properties) {
     this.properties = properties;
+    setIconImages(Arrays.asList(ApplicationIcons.BUSEXPLORER_LIST));
     buildDialog();
   }
 
@@ -298,6 +300,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     status.setBorder(null);
     status.setEditable(false);
     status.setEnabled(false);
+    status.setOpaque(false);
     status.setBackground(null);
     panel.add(status, new GBC(1,0).insets(5).east().both());
 

@@ -1,6 +1,7 @@
 package busexplorer;
 
 import javax.swing.ImageIcon;
+import java.awt.Image;
 import java.net.URL;
 
 /**
@@ -9,6 +10,16 @@ import java.net.URL;
  * @author Tecgraf
  */
 public class ApplicationIcons {
+
+  /**
+   * Aplicação.
+   */
+  public static final Image[] BUSEXPLORER_LIST =
+    new Image[]{
+      createImageIcon("BusExplorer16.png").getImage(),
+      createImageIcon("BusExplorer32.png").getImage(),
+      createImageIcon("BusExplorer48.png").getImage()
+    };
 
   /**
    * Adição.

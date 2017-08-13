@@ -44,6 +44,10 @@ public class Application {
   public static final String APPLICATION_LOGIN = "Application.login";
 
   static {
+    LNG.load("busadminlib.resources.language.idiom", new Locale("pt", "BR"));
+    LNG.load("busexplorer.resources.language.idiom", new Locale("pt", "BR"));
+    System.setProperty("apple.laf.useScreenMenuBar", "true");
+
     LookAndFeel javaRuntimeDefault = UIManager.getLookAndFeel();
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -76,9 +80,6 @@ public class Application {
    * @param args parâmetro da linha de comando serão <strong>descartados</strong>
    */
   public static void main(String[] args) {
-    LNG.load("busadminlib.resources.language.idiom", new Locale("pt", "BR"));
-    LNG.load("busexplorer.resources.language.idiom", new Locale("pt", "BR"));
-
     final Properties properties = new Properties();
     try {
       InputStream in =

@@ -16,6 +16,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 
 /**
  * Diálogo para entrada de dados com suporte embutido à internacionalização
@@ -63,6 +64,7 @@ public abstract class InputDialog extends JFrame {
    */
   public InputDialog(Window parentWindow) {
     this.setTitle(Language.get(this.getClass(), "title"));
+    setIconImages(Arrays.asList(ApplicationIcons.BUSEXPLORER_LIST));
     init(parentWindow);
   }
 

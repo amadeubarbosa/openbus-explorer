@@ -280,13 +280,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
           }
         };
 
-      int option =
-        JOptionPane.showConfirmDialog(MainDialog.this, Language.get(
-          MainDialog.class, "disconnect.confirm.msg"), Language.get(
-          MainDialog.class, "disconnect.confirm.title"),
-          JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-
-      if (option == JOptionPane.YES_OPTION) {
+      if (InputDialog.showConfirmDialog(MainDialog.this,
+        Language.get(MainDialog.class, "disconnect.confirm.msg"),
+        Language.get(MainDialog.class, "disconnect.confirm.title")) == JOptionPane.YES_OPTION) {
         task.execute(MainDialog.this, Language.get(MainDialog.class,
           "logout.waiting.title"), Language.get(MainDialog.class,
           "logout.waiting.msg"));

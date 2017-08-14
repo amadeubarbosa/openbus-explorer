@@ -2,6 +2,7 @@ package busexplorer.panel.contracts;
 
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.desktop.dialog.InputDialog;
 import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
@@ -37,7 +38,7 @@ import java.util.List;
 
 /**
  * Classe de ação para a remoção de uma entidade.
- * 
+ *
  * @author Tecgraf
  */
 public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
@@ -72,12 +73,9 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    int option =
-      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
-        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE);
-
-    if (option != JOptionPane.YES_OPTION) {
+    if (InputDialog.showConfirmDialog(parentWindow,
+      getString("confirm.msg"),
+      getString("confirm.title")) != JOptionPane.YES_OPTION) {
       return;
     }
 
@@ -101,7 +99,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
             for (Integer id : integrationsAffected.keySet()) {
               Application.login().extension.getIntegrationRegistry().remove(id);
             }
-            new ProviderDeleteAction(ContractDeleteAction.this.parentWindow)
+            new ProviderDeleteAction(parentWindow)
               .performChecksAndRemoteTasks(providersAffected.values(), null);
 //            for (String name : providersAffected.keySet()) {
 //              Application.login().extension.getProviderRegistry().remove(name);
@@ -227,4 +225,5 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
     dependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
       getString("waiting.dependency.msg"), 2, 0, true, false);
   }
+
 }

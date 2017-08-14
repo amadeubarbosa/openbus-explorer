@@ -6,6 +6,7 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
@@ -77,6 +78,14 @@ public abstract class InputDialog extends JFrame {
   public InputDialog(Window parentWindow, String title) {
     super(title);
     init(parentWindow);
+  }
+
+  public static int showConfirmDialog(Window parentWindow, String message, String title) {
+    Object[] options = new Object[] {
+      Language.get(InputDialog.class, "confirm.button"),
+      Language.get(FrameCancelAction.class, "name") };
+    return JOptionPane.showOptionDialog(parentWindow, message, title, JOptionPane.YES_NO_OPTION,
+      JOptionPane.WARNING_MESSAGE, null, options, options[0]);
   }
 
   private void init(Window parentWindow) {

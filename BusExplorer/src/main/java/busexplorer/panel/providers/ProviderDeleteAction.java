@@ -2,6 +2,7 @@ package busexplorer.panel.providers;
 
 import busexplorer.Application;
 import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.desktop.dialog.InputDialog;
 import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
@@ -83,12 +84,9 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    int option =
-      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
-        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE);
-
-    if (option != JOptionPane.YES_OPTION) {
+    if (InputDialog.showConfirmDialog(parentWindow,
+      getString("confirm.msg"),
+      getString("confirm.title")) != JOptionPane.YES_OPTION) {
       return;
     }
     performChecksAndRemoteTasks(getTablePanelComponent().getSelectedElements(),

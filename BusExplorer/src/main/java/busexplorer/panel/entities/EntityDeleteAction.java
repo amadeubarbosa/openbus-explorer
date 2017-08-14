@@ -1,6 +1,7 @@
 package busexplorer.panel.entities;
 
 import busexplorer.Application;
+import busexplorer.desktop.dialog.InputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -49,12 +50,9 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    int option =
-      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
-        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE);
-
-    if (option != JOptionPane.YES_OPTION) {
+    if (InputDialog.showConfirmDialog(parentWindow,
+      getString("confirm.msg"),
+      getString("confirm.title")) != JOptionPane.YES_OPTION) {
       return;
     }
 

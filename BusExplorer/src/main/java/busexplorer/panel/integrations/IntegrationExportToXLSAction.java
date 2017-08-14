@@ -3,6 +3,7 @@ package busexplorer.panel.integrations;
 import busexplorer.Application;
 import busexplorer.ApplicationIcons;
 import busexplorer.desktop.dialog.ExceptionDialog;
+import busexplorer.desktop.dialog.InputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
@@ -130,15 +131,10 @@ public class IntegrationExportToXLSAction extends OpenBusAction<IntegrationWrapp
             JFileChooser chooser = new JFileChooser() {
               public void approveSelection() {
                 if (getSelectedFile().exists() && getDialogType() == SAVE_DIALOG) {
-                  int result = JOptionPane.showConfirmDialog(this,
-                    getString("replace.message"), getString("replace.title"),
-                    JOptionPane.YES_NO_OPTION);
-                  switch (result) {
-                    case JOptionPane.YES_OPTION:
-                      super.approveSelection();
-                      return;
-                    default:
-                      return;
+                  if (InputDialog.showConfirmDialog(parentWindow,
+                    getString("replace.message"),
+                    getString("replace.title")) != JOptionPane.YES_OPTION) {
+                    return;
                   }
                 }
                 super.approveSelection();

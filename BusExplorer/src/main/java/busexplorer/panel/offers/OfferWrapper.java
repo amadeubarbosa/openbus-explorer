@@ -210,9 +210,9 @@ public class OfferWrapper {
   public Vector<String> getEndpoints() {
     ArrayList<String> results = new ArrayList<>();
     IComponent comp = this.getDescriptor().service_ref;
-    ORB orb = (ORB) Application.login().getOpenBusContext().ORB();
+    ORB orb = (ORB) Application.login().getORB();
 
-    ParsedIOR ior = new ParsedIOR(orb, comp.toString());
+    ParsedIOR ior = new ParsedIOR(orb, orb.object_to_string(comp));
 
     for (Profile profile : ior.getProfiles()) {
       IIOPAddress address = (IIOPAddress) ((IIOPProfile) profile).getAddress();

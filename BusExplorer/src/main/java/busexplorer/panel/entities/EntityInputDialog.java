@@ -147,7 +147,7 @@ public class EntityInputDialog extends BusExplorerAbstractInputDialog {
 
     entityNameField = new JTextArea(5, 20);
     entityNameField.setLineWrap(true);
-    panel.add(new JScrollPane(entityNameField), "grow");
+    panel.add(new JScrollPane(entityNameField), "grow, push");
 
     return panel;
   }

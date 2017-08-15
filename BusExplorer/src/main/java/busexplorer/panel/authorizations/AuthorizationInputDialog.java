@@ -123,7 +123,7 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
         clearErrorMessage();
       }
     });
-    panel.add(new JScrollPane(interfacesScrollList),"grow");
+    panel.add(new JScrollPane(interfacesScrollList),"grow, push");
       
     return panel;
   }

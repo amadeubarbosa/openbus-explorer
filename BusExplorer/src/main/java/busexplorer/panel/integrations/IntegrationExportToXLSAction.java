@@ -21,6 +21,7 @@ import tecgraf.openbus.services.governance.v1_0.Provider;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.FileOutputStream;
@@ -140,6 +141,7 @@ public class IntegrationExportToXLSAction extends OpenBusAction<IntegrationWrapp
                 super.approveSelection();
               }
             };
+            chooser.setPreferredSize(new Dimension(800, 600));
             chooser.setFileFilter(new FileNameExtensionFilter("Microsoft Excel Workbook / Open XML Spreadsheet", "xlsx"));
             chooser.setAcceptAllFileFilterUsed(false);
             chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);

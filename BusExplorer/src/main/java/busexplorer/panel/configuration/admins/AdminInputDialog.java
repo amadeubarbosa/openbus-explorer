@@ -88,7 +88,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public JPanel buildFields() {
-    setMinimumSize(new Dimension(330, 190));
+    setMinimumSize(new Dimension(330, 180));
     JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     adminNameLabel =
@@ -116,7 +116,7 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
       public void changedUpdate(DocumentEvent documentEvent) {
       }
     });
-    panel.add(adminNameField, "grow");
+    panel.add(adminNameField, "grow, push");
 
     return panel;
   }

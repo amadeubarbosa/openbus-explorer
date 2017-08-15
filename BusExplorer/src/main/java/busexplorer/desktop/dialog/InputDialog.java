@@ -12,6 +12,7 @@ import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextPane;
+import javax.swing.UIManager;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -90,13 +91,17 @@ public abstract class InputDialog extends JFrame {
 
   private void init(Window parentWindow) {
     this.parentWindow = parentWindow;
-    messageText = new JTextPane();
-    messageText.setFocusable(false);
-    buttons = buildButtons();
+    this.messageText = new JTextPane();
+    this.messageText.setOpaque(true);
+    this.messageText.setFocusable(true);
+    this.messageText.setEditable(false);
+    this.messageText.setEnabled(false);
+    this.messageText.setDisabledTextColor(UIManager.getColor("TextPane.foreground"));
+    this.buttons = buildButtons();
   }
 
   /**
-   * Insere os botões passados como parâmetro em um painel com BoxLayout e
+   * Insere os botões passados como parâmetro em um painel com MigLayout e
    * iguala o tamanho dos botões.
    *
    * @param buttons array com os botões
@@ -105,7 +110,7 @@ public abstract class InputDialog extends JFrame {
    */
   public static JPanel buildButtonPanel(JButton... buttons) {
     equalizeButtonSizes(buttons);
-    JPanel buttonPanel = new JPanel(new MigLayout("fill","[grow][]"));
+    JPanel buttonPanel = new JPanel(new MigLayout("fill, insets 0 0 0 0","[grow][]"));
 
     for (JButton button : buttons) {
       buttonPanel.add(button, "gapleft push");
@@ -189,7 +194,7 @@ public abstract class InputDialog extends JFrame {
    * Cria e apresenta um diálogo para entrada dos dados.
    */
   public void showDialog() {
-    getContentPane().add(getMainPane());
+    getContentPane().add(buildMainPane());
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent ev) {
@@ -202,32 +207,20 @@ public abstract class InputDialog extends JFrame {
     setVisible(true);
   }
 
-  /**
-   * Monta a área de mensagens de erro com o campo messageText.
-   * 
-   * @return área de mensagens de erro com o campo messageText.
-   */
-  private JScrollPane buildMessagePane() {
-    messageText.setEditable(false);
-    messageText.setBackground(getContentPane().getBackground());
-    JScrollPane pane = new JScrollPane(messageText);
-    pane.setPreferredSize(new Dimension(160, 12));
-    pane.setBorder(null);
-    return pane;
-  }
+  private JPanel buildMainPane() {
+    JScrollPane scrolledMessageText = new JScrollPane(messageText);
+    scrolledMessageText.setViewportBorder(null);
+    scrolledMessageText.setBorder(null);
+    scrolledMessageText.setMinimumSize(new Dimension(160, 25));
 
-  /**
-   * Constrói um painel para entrada dos dados.
-   * 
-   * @return painel principal.
-   */
-  private JPanel getMainPane() {
-    JPanel panel = new JPanel(new MigLayout("fill","[grow]"));
-    panel.add(buildFields(),"grow, wrap");
-    panel.add(buildMessagePane(), "grow, wrap");
-    panel.add(new JSeparator(JSeparator.HORIZONTAL),"growx, wrap");
-    panel.add(buttons, "grow");
+    JPanel bottomPanel = new JPanel(new MigLayout("fill, flowy"));
+    bottomPanel.add(scrolledMessageText, "grow, push");
+    bottomPanel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
+    bottomPanel.add(this.buttons, "grow");
 
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
+    panel.add(buildFields(),"grow");
+    panel.add(bottomPanel, "grow, dock south");
     return panel;
   }
 

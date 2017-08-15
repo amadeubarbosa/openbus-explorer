@@ -105,7 +105,7 @@ public class InterfaceInputDialog extends BusExplorerAbstractInputDialog {
       public void changedUpdate(DocumentEvent documentEvent) {
       }
     });
-    panel.add(interfaceNameField, "grow");
+    panel.add(interfaceNameField, "grow, push");
 
     return panel;
   }

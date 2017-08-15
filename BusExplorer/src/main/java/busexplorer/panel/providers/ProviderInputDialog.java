@@ -106,9 +106,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
           provider.support(supportTextField.getText().trim().split(","));
           provider.manager(managerTextField.getText().trim().split(","));
           provider.busquery(queryTextField.getText().trim());
-          for (String contract : contractList.getSelectedValuesList()) {
-            provider.addContract(contract);
-          }
+          contractList.getSelectedValuesList().forEach(provider::addContract);
           editingProvider = new ProviderWrapper(provider);
         } else {
           try {
@@ -146,7 +144,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public JPanel buildFields() {
-    setMinimumSize(new Dimension(550, 480));
+    setMinimumSize(new Dimension(550, 580));
     JPanel panel = new JPanel(new MigLayout("fill, flowy","[]10[]"));
 
     JLabel nameLabel = new JLabel(Language.get(this.getClass(), "name.label"));
@@ -231,13 +229,13 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
 
     queryValidation = new BusQueryValidateAction<JTextArea,String>(this, queryTextField,
       jTextArea -> jTextArea.getText().trim());
-    JPanel busQueryPanel = new JPanel(new MigLayout("wrap 2, insets 0 0 0 0", "[grow][]", "[grow][grow]"));
-    busQueryPanel.add(new JScrollPane(queryTextField), "grow, span 1 2");
-    busQueryPanel.add(new JButton(queryValidation), "grow");
-
-    JButton help = new JButton(new BusQueryHelpAction(this));
-    busQueryPanel.add(help, "grow");
-    panel.add(busQueryPanel, "grow, wrap");
+    JPanel busQueryPanel = new JPanel(new MigLayout("wrap 2, ins 0", "[grow][]", "[grow][grow]"));
+    busQueryPanel.add(new JScrollPane(queryTextField), "grow, push, span 1 2");
+    JPanel buttonsPanel = new JPanel(new MigLayout("flowy, ins 0"));
+    buttonsPanel.add(new JButton(queryValidation), "grow");
+    buttonsPanel.add(new JButton(new BusQueryHelpAction(this)), "grow");
+    busQueryPanel.add(buttonsPanel, "grow, gapbottom push");
+    panel.add(busQueryPanel, "grow, push, wrap");
 
     JLabel contractLabel = new JLabel(Language.get(this.getClass(), "contracts.label"));
     panel.add(contractLabel, "grow");
@@ -250,7 +248,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
         clearErrorMessage();
       }
     });
-    panel.add(new JScrollPane(contractList), "grow, spany "+ (panel.getComponentCount()-2));
+    panel.add(new JScrollPane(contractList), "grow, pushx, spany "+ (panel.getComponentCount()-2));
 
     return panel;
   }

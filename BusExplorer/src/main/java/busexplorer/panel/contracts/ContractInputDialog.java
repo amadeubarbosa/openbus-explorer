@@ -146,7 +146,8 @@ public class ContractInputDialog extends BusExplorerAbstractInputDialog {
         clearErrorMessage();
       }
     });
-    panel.add(new JScrollPane(interfacesList), "grow");
+    JScrollPane scroll = new JScrollPane(interfacesList);
+    panel.add(scroll, "grow, push");
 
     return panel;
   }

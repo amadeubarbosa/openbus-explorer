@@ -132,7 +132,7 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
     });
     certificatePane.add(certificateButton, "dock east");
 
-    panel.add(certificatePane, "grow");
+    panel.add(certificatePane, "grow, push");
 
     return panel;
   }

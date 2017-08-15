@@ -8,7 +8,7 @@ import busexplorer.utils.BusAddress.AddressType;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.GBC;
+import net.miginfocom.swing.MigLayout;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -24,7 +24,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -100,11 +99,7 @@ public class LoginDialog extends JDialog {
     JPanel loginPanel = new JPanel(new BorderLayout());
     loginPanel.setBorder(new EmptyBorder(6, 6, 6, 6));
 
-    JPanel configPanel = new JPanel();
-
-    GridBagLayout configLayout = new GridBagLayout();
-    configLayout.columnWidths = new int[] { 350 };
-    configPanel.setLayout(configLayout);
+    JPanel configPanel = new JPanel(new MigLayout("fill, flowy"));
 
     TitledBorder configBorder =
       new TitledBorder(null, Language.get(this.getClass(),"config.label"));
@@ -145,7 +140,7 @@ public class LoginDialog extends JDialog {
 
       JLabel labelBus = new JLabel(Language.get(this.getClass(),"bus.label"));
       labelBus.setFont(FONT_LABEL);
-      configPanel.add(labelBus, new GBC(0, 0).horizontal().insets(6, 6, 3, 6));
+      configPanel.add(labelBus, "grow");
 
       comboBus = new JComboBox<>(busVector);
       comboBus.addItemListener(e -> {
@@ -160,12 +155,12 @@ public class LoginDialog extends JDialog {
           fieldUser.requestFocus();
         }
       });
-      configPanel.add(comboBus, new GBC(0, 1).horizontal().insets(0, 6, 6, 9));
+      configPanel.add(comboBus, "grow");
     }
 
     JLabel labelHost = new JLabel(Language.get(this.getClass(),"host.label"));
     labelHost.setFont(FONT_LABEL);
-    configPanel.add(labelHost, new GBC(0, 2).west().insets(6, 6, 3, 6));
+    configPanel.add(labelHost, "grow");
 
     fieldAddress.setToolTipText(Language.get(this.getClass(),"host.help"));
     fieldAddress.addFocusListener(selectAllTextListener);
@@ -175,42 +170,42 @@ public class LoginDialog extends JDialog {
       fieldAddress.setEnabled(false);
     }
     configPanel
-      .add(fieldAddress, new GBC(0, 3).horizontal().insets(0, 6, 6, 9));
+      .add(fieldAddress, "grow");
 
     JLabel labelUser = new JLabel(Language.get(this.getClass(),"user.label"));
     labelUser.setFont(FONT_LABEL);
-    configPanel.add(labelUser, new GBC(0, 4).west().insets(6, 6, 3, 6));
+    configPanel.add(labelUser, "grow");
 
     fieldUser = new JTextField();
     fieldUser.setToolTipText(Language.get(this.getClass(),"user.help"));
     fieldUser.addFocusListener(selectAllTextListener);
     fieldUser.getDocument().addDocumentListener(enableLoginListener);
     fieldUser.setFocusable(true);
-    configPanel.add(fieldUser, new GBC(0, 5).horizontal().insets(0, 6, 6, 9));
+    configPanel.add(fieldUser, "grow");
 
     JLabel labelPassword = new JLabel(Language.get(this.getClass(),"password.label"));
     labelPassword.setFont(FONT_LABEL);
-    configPanel.add(labelPassword, new GBC(0, 6).west().insets(6, 6, 3, 6));
+    configPanel.add(labelPassword, "grow");
 
     fieldPassword = new JPasswordField();
     fieldPassword.setToolTipText(Language.get(this.getClass(),"password.help"));
     fieldPassword.addFocusListener(selectAllTextListener);
     fieldPassword.setFocusable(true);
-    configPanel.add(fieldPassword, new GBC(0, 7).horizontal()
-      .insets(0, 6, 6, 9));
+    configPanel.add(fieldPassword, "grow");
 
+    JPanel domainPanel = new JPanel(new MigLayout("ins 0, fill","[][]","[]"));
     JLabel labelDomain = new JLabel(Language.get(this.getClass(),"domain.label"));
     labelDomain.setFont(FONT_LABEL);
-    configPanel.add(labelDomain, new GBC(0, 8).west().insets(6, 6, 3, 6));
-
-    comboDomain = new JComboBox<String>();
-    configPanel.add(comboDomain, new GBC(0, 8).east().insets(0,6,0,9));
+    domainPanel.add(labelDomain, "grow, wrap");
 
     fieldDomain = new JTextField();
     fieldDomain.setToolTipText(Language.get(this.getClass(),"domain.help"));
     fieldDomain.addFocusListener(selectAllTextListener);
     fieldDomain.setFocusable(true);
-    configPanel.add(fieldDomain, new GBC(0, 9).horizontal().insets(0, 6, 6, 9));
+    domainPanel.add(fieldDomain, "grow, push");
+    comboDomain = new JComboBox<String>();
+    domainPanel.add(comboDomain, "grow");
+    configPanel.add(domainPanel, "grow");
 
     loginPanel.add(configPanel, BorderLayout.CENTER);
 

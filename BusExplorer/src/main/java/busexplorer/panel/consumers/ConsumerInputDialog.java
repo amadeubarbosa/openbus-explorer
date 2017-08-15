@@ -205,13 +205,13 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
 
     queryValidation = new BusQueryValidateAction<JTextArea,String>(this, queryTextField,
       jTextArea -> jTextArea.getText().trim());
-    JPanel busQueryPanel = new JPanel(new MigLayout("wrap 2, insets 0 0 0 0", "[grow][]", "[grow][grow]"));
-    busQueryPanel.add(new JScrollPane(queryTextField), "grow, span 1 2");
-    busQueryPanel.add(new JButton(queryValidation), "grow");
-
-    JButton help = new JButton(new BusQueryHelpAction(this));
-    busQueryPanel.add(help, "grow");
-    panel.add(busQueryPanel, "grow");
+    JPanel busQueryPanel = new JPanel(new MigLayout("wrap 2, ins 0", "[grow][]", "[grow][grow]"));
+    busQueryPanel.add(new JScrollPane(queryTextField), "grow, push, span 1 2");
+    JPanel buttonsPanel = new JPanel(new MigLayout("flowy, ins 0"));
+    buttonsPanel.add(new JButton(queryValidation), "grow");
+    buttonsPanel.add(new JButton(new BusQueryHelpAction(this)), "grow");
+    busQueryPanel.add(buttonsPanel, "grow, gapbottom push");
+    panel.add(busQueryPanel, "grow, push, wrap");
 
     return panel;
   }

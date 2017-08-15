@@ -121,7 +121,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
 
     categoryNameField = new JTextArea(5, 20);
     categoryNameField.setLineWrap(true);
-    panel.add(new JScrollPane(categoryNameField), "grow");
+    panel.add(new JScrollPane(categoryNameField), "grow, push");
 
     return panel;
   }

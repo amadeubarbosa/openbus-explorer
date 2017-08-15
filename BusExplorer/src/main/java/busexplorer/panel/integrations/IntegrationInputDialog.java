@@ -210,7 +210,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
         clearErrorMessage();
       }
     });
-    panel.add(new JScrollPane(contractList), "grow");
+    panel.add(new JScrollPane(contractList), "grow, push");
 
     JPanel checkBoxesGroup = new JPanel(new MigLayout("fill, ins 0, flowx"));
 

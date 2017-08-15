@@ -224,10 +224,10 @@ public class LoginDialog extends JDialog {
           comboDomain.addItem(d);
         }
         if (comboDomain.getItemCount() == 0) {
-          comboDomain.setVisible(false);
+          comboDomain.setEnabled(false);
           fieldDomain.setEnabled(true);
         } else {
-          comboDomain.setVisible(true);
+          comboDomain.setEnabled(true);
         }
       });
       comboDomain.addItemListener(listener -> {
@@ -241,10 +241,10 @@ public class LoginDialog extends JDialog {
         comboDomain.addItem(d);
       }
       if (comboDomain.getItemCount() == 0) {
-        comboDomain.setVisible(false);
+        comboDomain.setEnabled(false);
         fieldDomain.setEnabled(true);
       } else {
-        comboDomain.setVisible(true);
+        comboDomain.setEnabled(true);
       }
     }
 

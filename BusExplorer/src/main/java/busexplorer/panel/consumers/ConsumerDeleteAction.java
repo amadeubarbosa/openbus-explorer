@@ -180,7 +180,7 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
                   protected boolean accept() {
                     removeConsumerTask.execute(parentWindow, getString("waiting.title"),
                       getString("waiting.msg"), 2, 0);
-                    return removeConsumerTask.getStatus();
+                    return true;
                   }
 
                   @Override

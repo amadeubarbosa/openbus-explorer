@@ -180,89 +180,8 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
         }
       };
 
-    Runnable removeProviderHook = new Runnable() {
-      @Override
-      public void run() {
-        BusExplorerAbstractInputDialog confirmation =
-          new BusExplorerAbstractInputDialog(parentWindow,
-            getString("confirm.title")) {
-
-            public JPanel buildFields() {
-              setMinimumSize(new Dimension(500, 320));
-              JPanel panel = new JPanel(new MigLayout("fill, ins 0, flowy"));
-              panel.add(new JLabel(
-                ProviderDeleteAction.this.getString("affected.message")), "grow");
-              panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
-
-              panel.add(new JLabel(Language.get(MainDialog.class, "offer.title")), "grow");
-
-              RefreshablePanel offerspane = new TablePanelComponent<>(new ObjectTableModel<>(
-                inconsistentOffers, new OfferTableProvider()), new ArrayList<>(), false);
-              offerspane.setPreferredSize(new Dimension(100, 150));
-              panel.add(offerspane, "grow, pad 0 10 0 -10");
-
-              panel.add(new JLabel(Language.get(MainDialog.class, "login.title")), "grow");
-              RefreshablePanel loginspane = new TablePanelComponent<>(new ObjectTableModel<>(
-                inconsistentLogins, new LoginTableProvider()), new ArrayList<>(), false);
-              loginspane.setPreferredSize(new Dimension(100, 150));
-              panel.add(loginspane, "grow, pad 0 10 0 -10");
-
-              panel.add(new JLabel(Language.get(MainDialog.class, "entity.title")), "grow");
-
-              RefreshablePanel entitiespane = new TablePanelComponent<>(new ObjectTableModel<>(
-                inconsistentEntities, new EntityTableProvider()), new ArrayList<>(), false);
-              entitiespane.setPreferredSize(new Dimension(100, 150));
-              panel.add(entitiespane, "grow, pad 0 10 0 -10");
-
-              panel.add(new JLabel(Language.get(MainDialog.class, "authorization.title")), "grow");
-              RefreshablePanel authspane = new TablePanelComponent<>(new ObjectTableModel<>(
-                inconsistentAuthorizations, new AuthorizationTableProvider()), new ArrayList<>(), false);
-              authspane.setPreferredSize(new Dimension(100, 150));
-              panel.add(authspane, "grow, pad 0 10 0 -10");
-
-              panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
-
-              JPanel checkBoxesGroup = new JPanel(new MigLayout("fill, ins 0, flowx"));
-              JCheckBox authorizationValidationBox = new JCheckBox();
-              authorizationValidationBox.setSelected(false);
-              authorizationValidationBox.addChangeListener(removeFlags.governanceDataChangeListener);
-              checkBoxesGroup.add(authorizationValidationBox);
-
-              JLabel authorizationValidationLabel =
-                new JLabel(Language.get(ProviderDeleteAction.class, "affected.governanceData.removal"));
-              checkBoxesGroup.add(authorizationValidationLabel, "grow");
-              authorizationValidationLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                  super.mouseClicked(e);
-                  authorizationValidationBox.setSelected(!authorizationValidationBox.isSelected());
-                }
-              });
-              panel.add(checkBoxesGroup);
-
-              return panel;
-            }
-
-            @Override
-            protected boolean accept() {
-              removeProviderTask.execute(parentWindow, getString("waiting.title"),
-                getString("waiting.msg"), 2, 0, true, false);
-              return removeProviderTask.getStatus();
-            }
-
-            @Override
-            protected boolean hasValidFields() {
-              return true;
-            }
-          };
-        /*JOptionPane.showConfirmDialog(this.parentWindow, confirmation.buildFields());
-        JOptionPane.showOptionDialog(this.parentWindow, confirmation.buildFields(), getString("confirm.title"),
-          JOptionPane.DEFAULT_OPTION, WARNING_MESSAGE,null,
-          new String[]{"Confirmar","Confirmar para todos","Cancelar"}, "Confirmar");*/
-        confirmation.showDialog();
-
-      }
-    };
+    Runnable removeProviderHook = () -> removeProviderTask.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"), 2, 0, true, false);
 
     dependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
       getString("waiting.dependency.msg"), 2, 0, true, false);
@@ -314,7 +233,7 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
             @Override
             protected boolean accept() {
               removeProviderHook.run();
-              return removeProviderTask.getStatus();
+              return true;
             }
 
             @Override
@@ -322,13 +241,86 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
               return true;
             }
           };
-        /*JOptionPane.showConfirmDialog(this.parentWindow, confirmation.buildFields());
-        JOptionPane.showOptionDialog(this.parentWindow, confirmation.buildFields(), getString("confirm.title"),
-          JOptionPane.DEFAULT_OPTION, WARNING_MESSAGE,null,
-          new String[]{"Confirmar","Confirmar para todos","Cancelar"}, "Confirmar");*/
         confirmation.showDialog();
       } else {
-        removeProviderHook.run();
+        if (inconsistentOffers.isEmpty() && inconsistentLogins.isEmpty() && inconsistentEntities.isEmpty() && inconsistentAuthorizations.isEmpty())
+        {
+          removeProviderHook.run();
+          return;
+        } else {
+          BusExplorerAbstractInputDialog confirmation =
+            new BusExplorerAbstractInputDialog(parentWindow,
+              getString("confirm.title")) {
+
+              public JPanel buildFields() {
+                setMinimumSize(new Dimension(500, 320));
+                JPanel panel = new JPanel(new MigLayout("fill, ins 0, flowy"));
+                panel.add(new JLabel(
+                  ProviderDeleteAction.this.getString("affected.message")), "grow");
+                panel.add(new JSeparator(JSeparator.HORIZONTAL), "grow");
+
+                panel.add(new JLabel(Language.get(MainDialog.class, "offer.title")), "grow");
+
+                RefreshablePanel offerspane = new TablePanelComponent<>(new ObjectTableModel<>(
+                  inconsistentOffers, new OfferTableProvider()), new ArrayList<>(), false);
+                offerspane.setPreferredSize(new Dimension(100, 150));
+                panel.add(offerspane, "grow, pad 0 10 0 -10");
+
+                panel.add(new JLabel(Language.get(MainDialog.class, "login.title")), "grow");
+                RefreshablePanel loginspane = new TablePanelComponent<>(new ObjectTableModel<>(
+                  inconsistentLogins, new LoginTableProvider()), new ArrayList<>(), false);
+                loginspane.setPreferredSize(new Dimension(100, 150));
+                panel.add(loginspane, "grow, pad 0 10 0 -10");
+
+                panel.add(new JLabel(Language.get(MainDialog.class, "entity.title")), "grow");
+
+                RefreshablePanel entitiespane = new TablePanelComponent<>(new ObjectTableModel<>(
+                  inconsistentEntities, new EntityTableProvider()), new ArrayList<>(), false);
+                entitiespane.setPreferredSize(new Dimension(100, 150));
+                panel.add(entitiespane, "grow, pad 0 10 0 -10");
+
+                panel.add(new JLabel(Language.get(MainDialog.class, "authorization.title")), "grow");
+                RefreshablePanel authspane = new TablePanelComponent<>(new ObjectTableModel<>(
+                  inconsistentAuthorizations, new AuthorizationTableProvider()), new ArrayList<>(), false);
+                authspane.setPreferredSize(new Dimension(100, 150));
+                panel.add(authspane, "grow, pad 0 10 0 -10");
+
+                panel.add(new JSeparator(JSeparator.HORIZONTAL), "grow");
+
+                JPanel checkBoxesGroup = new JPanel(new MigLayout("fill, ins 0, flowx"));
+                JCheckBox authorizationValidationBox = new JCheckBox();
+                authorizationValidationBox.setSelected(false);
+                authorizationValidationBox.addChangeListener(removeFlags.governanceDataChangeListener);
+                checkBoxesGroup.add(authorizationValidationBox);
+
+                JLabel authorizationValidationLabel =
+                  new JLabel(Language.get(ProviderDeleteAction.class, "affected.governanceData.removal"));
+                checkBoxesGroup.add(authorizationValidationLabel, "grow");
+                authorizationValidationLabel.addMouseListener(new MouseAdapter() {
+                  @Override
+                  public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    authorizationValidationBox.setSelected(!authorizationValidationBox.isSelected());
+                  }
+                });
+                panel.add(checkBoxesGroup);
+
+                return panel;
+              }
+
+              @Override
+              protected boolean accept() {
+                removeProviderHook.run();
+                return true;
+              }
+
+              @Override
+              protected boolean hasValidFields() {
+                return true;
+              }
+            };
+          confirmation.showDialog();
+        }
       }
     }
   }

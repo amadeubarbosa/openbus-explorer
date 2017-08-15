@@ -88,13 +88,6 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
 
         @Override
         protected void doPerformTask() throws Exception {
-          int i = 0;
-          List<ContractWrapper> contracts = getTablePanelComponent().getSelectedElements();
-          for (ContractWrapper contract : contracts) {
-            Application.login().extension.getContractRegistry().remove(contract.name());
-            this.setProgressStatus(100*i/contracts.size());
-            i++;
-          }
           if (shouldRemoveDependents[0]) {
             for (Integer id : integrationsAffected.keySet()) {
               Application.login().extension.getIntegrationRegistry().remove(id);
@@ -104,6 +97,13 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
 //            for (String name : providersAffected.keySet()) {
 //              Application.login().extension.getProviderRegistry().remove(name);
 //            }
+          }
+          int i = 0;
+          List<ContractWrapper> contracts = getTablePanelComponent().getSelectedElements();
+          for (ContractWrapper contract : contracts) {
+            Application.login().extension.getContractRegistry().remove(contract.name());
+            this.setProgressStatus(100*i/contracts.size());
+            i++;
           }
         }
 
@@ -208,7 +208,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
                   protected boolean accept() {
                     removeContractTask.execute(parentWindow, getString("waiting.title"),
                       getString("waiting.msg"), 2, 0);
-                    return removeContractTask.getStatus();
+                    return true;
                   }
 
                   @Override

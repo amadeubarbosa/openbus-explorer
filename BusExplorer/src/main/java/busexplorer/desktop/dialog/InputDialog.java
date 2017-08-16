@@ -253,7 +253,7 @@ public abstract class InputDialog extends JFrame {
     return buildButtonPanel(accept, cancel);
   }
 
-  private String getString(String key) {
+  protected String getString(String key) {
     String acceptText;
     if (Language.hasKey(this.getClass(),key)) {
       acceptText = Language.get(this.getClass(), key);
@@ -309,7 +309,7 @@ public abstract class InputDialog extends JFrame {
    * 
    * @return o painel a ser colocado no centro do diálogo para entrada de dados.
    */
-  public abstract JPanel buildFields();
+  protected abstract JPanel buildFields();
 
   /**
    * Método (a ser definido pela aplicação) de aceitação dos valores colocados

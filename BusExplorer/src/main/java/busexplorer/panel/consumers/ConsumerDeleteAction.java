@@ -17,19 +17,20 @@ import net.miginfocom.swing.MigLayout;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 
-import javax.swing.JCheckBox;
+import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ItemEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Classe de ação para a remoção de uma entidade.
@@ -75,9 +76,9 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
     }
 
     // [0] = flag para remoção das integrações
-    // [1] = flag para remoção das informações de governança (entidades, ofertas, certificados, autorizações)
-    final boolean[] shouldRemoveDependents = {false,false};
+    final AtomicBoolean shouldRemoveDependents = new AtomicBoolean(false);
     HashMap<Integer, IntegrationWrapper> integrationsAffected = new HashMap<>();
+    List<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
 
     BusExplorerTask<Void> removeConsumerTask =
       new BusExplorerTask<Void>(ExceptionContext.BusCore) {
@@ -86,7 +87,7 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
         protected void doPerformTask() throws Exception {
           int i = 0;
           List<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
-          if (shouldRemoveDependents[0]) {
+          if (shouldRemoveDependents.get()) {
             for (Integer id : integrationsAffected.keySet()) {
               Application.login().extension.getIntegrationRegistry().remove(id);
             }
@@ -111,7 +112,6 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
         @Override
         protected void doPerformTask() throws Exception {
           setProgressDialogEnabled(true);
-          List<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
           int i = 0;
           for (ConsumerWrapper consumer : consumers) {
             String consumerName = consumer.remote().name();
@@ -124,77 +124,93 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
             i++;
           }
         }
-
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            if (integrationsAffected.isEmpty()) {
-              removeConsumerTask.execute(parentWindow, getString("waiting.title"),
-                getString("waiting.msg"), 2, 0, true, false);
-            } else {
-              BusExplorerAbstractInputDialog confirmation =
-                new BusExplorerAbstractInputDialog(parentWindow,
-                  getString("confirm.title")) {
-
-                  @Override
-                  public JPanel buildFields() {
-
-                    JPanel panel = new JPanel(new MigLayout("fill, ins 0, flowy"));
-                    panel.add(new JLabel(
-                      ConsumerDeleteAction.this.getString("affected.integrations")), "grow");
-                    panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
-                    panel.add(new JLabel(Language.get(MainDialog.class, "integration.title")), "grow");
-
-                    ObjectTableModel<IntegrationWrapper> model = new ObjectTableModel<>(
-                      new ArrayList<>(integrationsAffected.values()), new IntegrationTableProvider());
-                    RefreshablePanel pane = new TablePanelComponent<>(model, new ArrayList<>(), false);
-                    pane.setPreferredSize(new Dimension(100, 150));
-                    panel.add(pane, "grow, pad 0 10 0 -10");
-
-                    panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
-
-                    JPanel checkBoxesGroup = new JPanel(new MigLayout("fill, ins 0, flowx"));
-
-                    JCheckBox contractValidationBox = new JCheckBox();
-                    contractValidationBox.setSelected(false);
-                    contractValidationBox.addChangeListener(el ->
-                      shouldRemoveDependents[0] = !shouldRemoveDependents[0]);
-                    checkBoxesGroup.add(contractValidationBox);
-
-                    JLabel contractValidationLabel =
-                      new JLabel(Language.get(ConsumerDeleteAction.class, "affected.integrations.removal"));
-                    checkBoxesGroup.add(contractValidationLabel, "grow");
-                    contractValidationLabel.addMouseListener(new MouseAdapter() {
-                      @Override
-                      public void mouseClicked(MouseEvent e) {
-                        super.mouseClicked(e);
-                        contractValidationBox.setSelected(!contractValidationBox.isSelected());
-                      }
-                    });
-
-                    panel.add(checkBoxesGroup);
-                    return panel;
-                  }
-
-                  @Override
-                  protected boolean accept() {
-                    removeConsumerTask.execute(parentWindow, getString("waiting.title"),
-                      getString("waiting.msg"), 2, 0);
-                    return true;
-                  }
-
-                  @Override
-                  protected boolean hasValidFields() {
-                    return true;
-                  }
-                };
-              confirmation.showDialog();
-            }
-          }
-        }
       };
 
     dependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
       getString("waiting.dependency.msg"), 2, 0, true, false);
+
+    if (dependencyCheckTask.getStatus()) {
+      if (integrationsAffected.isEmpty()) {
+        removeConsumerTask.execute(parentWindow, getString("waiting.title"),
+          getString("waiting.msg"), 2, 0, true, false);
+      } else {
+        BusExplorerAbstractInputDialog confirmation =
+          new ConsistencyValidationDialog(integrationsAffected, shouldRemoveDependents, removeConsumerTask);
+        confirmation.showDialog();
+      }
+    }
+  }
+
+  private class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog {
+
+    private final HashMap<Integer, IntegrationWrapper> integrationsAffected;
+    private final AtomicBoolean shouldRemoveDependents;
+    private final BusExplorerTask<Void> removeConsumerTask;
+
+    public ConsistencyValidationDialog(HashMap<Integer, IntegrationWrapper> integrationsAffected,
+                                       AtomicBoolean shouldRemoveDependents, BusExplorerTask<Void> removeConsumerTask) {
+      super(parentWindow, ConsumerDeleteAction.this.getString("confirm.title"));
+      this.integrationsAffected = integrationsAffected;
+      this.shouldRemoveDependents = shouldRemoveDependents;
+      this.removeConsumerTask = removeConsumerTask;
+    }
+
+    @Override
+    protected JPanel buildFields() {
+
+      JPanel panel = new JPanel(new MigLayout("fill, flowy"));
+      panel.add(new JLabel(
+        ConsumerDeleteAction.this.getString("consistency.message")), "grow");
+      panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
+      panel.add(new JLabel(Language.get(MainDialog.class, "integration.title")), "grow");
+
+      ObjectTableModel<IntegrationWrapper> model = new ObjectTableModel<>(
+        new ArrayList<>(integrationsAffected.values()), new IntegrationTableProvider());
+      RefreshablePanel pane = new TablePanelComponent<>(model, new ArrayList<>(), false);
+      pane.setPreferredSize(new Dimension(100, 150));
+      panel.add(pane, "grow, push, pad 0 10 0 -10");
+
+      panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
+      panel.add(new JLabel(ConsumerDeleteAction.this.getString("options.label")), "grow");
+
+      JRadioButton removeDependenciesOption = new JRadioButton(
+        Language.get(ConsumerDeleteAction.class, "consistency.remove.dependencies"));
+      removeDependenciesOption.setSelected(false);
+      removeDependenciesOption.addItemListener(itemEvent -> {
+        if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+          shouldRemoveDependents.set(true);
+        }
+      });
+
+      JRadioButton removeIndexesOnlyOption = new JRadioButton(
+        Language.get(ConsumerDeleteAction.class, "consistency.remove.indexesonly"));
+      removeIndexesOnlyOption.setSelected(true);
+      removeIndexesOnlyOption.addItemListener(itemEvent -> {
+        if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
+          shouldRemoveDependents.set(false);
+        }
+      });
+
+      ButtonGroup group = new ButtonGroup();
+      group.add(removeDependenciesOption);
+      group.add(removeIndexesOnlyOption);
+
+      panel.add(removeDependenciesOption, "grow");
+      panel.add(removeIndexesOnlyOption, "grow");
+
+      return panel;
+    }
+
+    @Override
+    protected boolean accept() {
+      removeConsumerTask.execute(parentWindow, getString("waiting.title"),
+        getString("waiting.msg"), 2, 0);
+      return true;
+    }
+
+    @Override
+    protected boolean hasValidFields() {
+      return true;
+    }
   }
 }

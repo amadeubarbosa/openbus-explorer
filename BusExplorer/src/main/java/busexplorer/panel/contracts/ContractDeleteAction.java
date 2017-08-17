@@ -139,7 +139,20 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
     dependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
       getString("waiting.dependency.msg"), 2, 0, true, false);
 
-    if (dependencyCheckTask.getStatus()) {
+    Task providerDependencyCheckTask = ProviderDeleteAction
+      .ExtensionDependencyCheckTask(consistencyValidationResult.getInconsistentProviders().values(),
+        consistencyValidationResult);
+    providerDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
+      getString("waiting.dependency.msg"), 2, 0, true, false);
+
+    Task providerDependencyGovernanceCheckTask = ProviderDeleteAction
+      .GovernanceDependencyCheckTask(consistencyValidationResult.getInconsistentProviders().values(),
+        consistencyValidationResult);
+    providerDependencyGovernanceCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
+      getString("waiting.dependency.msg"), 2, 0, true, false);
+
+    if (dependencyCheckTask.getStatus() && providerDependencyCheckTask.getStatus()
+      && providerDependencyGovernanceCheckTask.getStatus()) {
       if (consistencyValidationResult.isEmpty()) {
         removeContractTask.execute(parentWindow, getString("waiting.title"),
           getString("waiting.msg"), 2, 0, true, false);

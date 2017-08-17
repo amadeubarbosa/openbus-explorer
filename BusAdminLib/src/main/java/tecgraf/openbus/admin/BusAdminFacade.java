@@ -99,6 +99,17 @@ public interface BusAdminFacade {
     EntityAlreadyRegistered;
 
   /**
+   * Retorna uma entidade no barramento.
+   *
+   * @return Entidade cadastrada.
+   *
+   * @param entityID ID da nova entidade.
+   *
+   * @throws ServiceFailure caso aconteça um erro imprevisto no serviço remoto
+   */
+  RegisteredEntity getEntity(String entityID) throws ServiceFailure;
+
+  /**
    * Remove o registro de uma entidade do barramento.
    * 
    * @return <code>true</code> caso a entidade foi removida, e

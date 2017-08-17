@@ -128,6 +128,13 @@ public class BusAdminImpl implements BusAdminFacade {
     EntityCategory category = this.entityRegistry.getEntityCategory(categoryID);
     return category.registerEntity(entityID, entityName);
   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public RegisteredEntity getEntity(String entityID) throws ServiceFailure {
+    return this.entityRegistry.getEntity(entityID);
+  }
 
   /**
    * {@inheritDoc}
@@ -135,7 +142,7 @@ public class BusAdminImpl implements BusAdminFacade {
   @Override
   public boolean removeEntity(String entityID) throws ServiceFailure,
     UnauthorizedOperation {
-    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    RegisteredEntity entity = this.getEntity(entityID);
     if (entity != null) {
       entity.remove();
       return true;
@@ -232,7 +239,7 @@ public class BusAdminImpl implements BusAdminFacade {
   @Override
   public boolean setAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface {
-    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    RegisteredEntity entity = this.getEntity(entityID);
     return entity.grantInterface(interfaceName);
   }
 
@@ -243,7 +250,7 @@ public class BusAdminImpl implements BusAdminFacade {
   public void revokeAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface,
     AuthorizationInUse {
-    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    RegisteredEntity entity = this.getEntity(entityID);
     entity.revokeInterface(interfaceName);
   }
 

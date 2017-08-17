@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -65,7 +66,6 @@ public abstract class InputDialog extends JFrame {
    */
   public InputDialog(Window parentWindow) {
     this.setTitle(Language.get(this.getClass(), "title"));
-    setIconImages(Arrays.asList(ApplicationIcons.BUSEXPLORER_LIST));
     init(parentWindow);
   }
 
@@ -80,20 +80,21 @@ public abstract class InputDialog extends JFrame {
     init(parentWindow);
   }
 
+  private void init(Window parentWindow) {
+    setIconImages(Arrays.asList(ApplicationIcons.BUSEXPLORER_LIST));
+    this.parentWindow = parentWindow;
+    this.messageText = new JLabel();
+    this.messageText.setOpaque(true);
+    this.messageText.setFocusable(true);
+    this.buttons = buildButtons();
+  }
+
   public static int showConfirmDialog(Window parentWindow, String message, String title) {
     Object[] options = new Object[] {
       Language.get(InputDialog.class, "confirm.button"),
       Language.get(FrameCancelAction.class, "name") };
     return JOptionPane.showOptionDialog(parentWindow, message, title, JOptionPane.YES_NO_OPTION,
       JOptionPane.WARNING_MESSAGE, null, options, options[0]);
-  }
-
-  private void init(Window parentWindow) {
-    this.parentWindow = parentWindow;
-    this.messageText = new JLabel();
-    this.messageText.setOpaque(true);
-    this.messageText.setFocusable(true);
-    this.buttons = buildButtons();
   }
 
   /**
@@ -229,7 +230,7 @@ public abstract class InputDialog extends JFrame {
     accept = new JButton(getString("confirm.button"));
     accept.setToolTipText(getString("confirm.tooltip"));
     accept.addActionListener(ev -> {
-      if (accept()) {
+      if (acceptActionPerformed()) {
         cancelled = false;
         dispose();
       }
@@ -314,6 +315,20 @@ public abstract class InputDialog extends JFrame {
    * @return um indicativo booleano da aceitação.
    */
   protected abstract boolean accept();
+
+  /**
+   * Implementação padrão da ação do botão de confirmação para apresentar o cursor de espera.
+   *
+   * @return o retorno da chamada do método {@link #accept()}
+   */
+  private boolean acceptActionPerformed() {
+    this.setCursor(Cursor
+      .getPredefinedCursor(Cursor.WAIT_CURSOR));
+    boolean result = accept();
+    this.setCursor(Cursor
+      .getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+    return result;
+  }
 
   /**
    * Método a ser sobrescrito para definição de regras de validação de dados do

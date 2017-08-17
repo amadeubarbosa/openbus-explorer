@@ -1,7 +1,5 @@
 package busexplorer.desktop.dialog;
 
-import tecgraf.openbus.admin.BusAdminFacade;
-
 import java.awt.Window;
 
 /**
@@ -13,18 +11,14 @@ import java.awt.Window;
 public abstract class BusExplorerAbstractInputDialog extends InputDialog {
 
   /**
-   * Construtor básico para preencher a referência do {@link BusAdminFacade}.
-   *  @param parentWindow Janela mãe do Diálogo
-   *
+   * {@inheritDoc}
    */
   public BusExplorerAbstractInputDialog(Window parentWindow) {
     super(parentWindow);
   }
 
   /**
-   * Construtor para preencher a referência do {@link BusAdminFacade} e um título pré-definido.
-   *  @param parentWindow Janela mãe do Diálogo
-   * @param title Título do Diálogo.
+   * {@inheritDoc}
    */
   public BusExplorerAbstractInputDialog(Window parentWindow, String title) {
     super(parentWindow, title);

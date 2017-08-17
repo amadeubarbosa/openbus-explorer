@@ -69,12 +69,10 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
       getString("confirm.title")) != JOptionPane.YES_OPTION) {
       return;
     }
-    performChecksAndRemoteTasks(
-      getTablePanelComponent().getSelectedElements(),
-      getTablePanelComponent()::removeSelectedElements);
-  }
 
-  public boolean performChecksAndRemoteTasks(Collection<ProviderWrapper> providers, Runnable delegateAfterTaskUI) {
+    Collection<ProviderWrapper> providers = getTablePanelComponent().getSelectedElements();
+    Runnable delegateAfterTaskUI = getTablePanelComponent()::removeSelectedElements;
+
     final ConsistencyValidationDialog.DeleteOptions removeFlags = new ConsistencyValidationDialog.DeleteOptions();
 
     ConsistencyValidationResult consistencyValidationResult = new ConsistencyValidationResult();
@@ -105,8 +103,6 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
           consistencyValidationResult, removeFlags, effectiveDeletion).showDialog();
       }
     }
-
-    return deleteProviderTask.getStatus();
   }
 
   public static BusExplorerTask<Void> GovernanceDependencyCheckTask(Collection<ProviderWrapper> providers,

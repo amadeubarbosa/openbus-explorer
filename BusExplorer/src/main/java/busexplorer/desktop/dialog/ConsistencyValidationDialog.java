@@ -30,16 +30,19 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
   private final ConsistencyValidationResult consistencyValidationResult;
   private final DeleteOptions removeFlags;
   private final Runnable delegate;
-  private final Class actionClass;
+  private final Class languageEntryClass;
 
-  public ConsistencyValidationDialog(Window parentWindow, String title, Class actionClass,
+  public ConsistencyValidationDialog(Window parentWindow, String title, Class languageEntryClass,
                                      ConsistencyValidationResult consistencyValidationResult,
                                      DeleteOptions removeFlags, Runnable removalDelegate) {
     super(parentWindow, title);
+    if (removalDelegate == null)
+      throw new IllegalArgumentException("Removal delegate must be not null");
+
+    this.languageEntryClass = languageEntryClass;
     this.consistencyValidationResult = consistencyValidationResult;
     this.removeFlags = removeFlags;
     this.delegate = removalDelegate;
-    this.actionClass = actionClass;
   }
 
   public static void addCheckListPanel(JPanel panel, String title, String noValuesMessages,
@@ -99,12 +102,12 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
     panel.add(new JLabel(getString("options.label")), "grow");
 
     JRadioButton removeDependenciesOption = new JRadioButton(
-      Language.get(actionClass, "consistency.remove.dependencies"));
+      Language.get(languageEntryClass, "consistency.remove.dependencies"));
     removeDependenciesOption.setSelected(false);
     removeDependenciesOption.addItemListener(removeFlags.fullyGovernanceRemovalChangeListener);
 
     JRadioButton removeIndexesOnlyOption = new JRadioButton(
-      Language.get(actionClass, "consistency.remove.indexesonly"));
+      Language.get(languageEntryClass, "consistency.remove.indexesonly"));
     removeIndexesOnlyOption.setSelected(true);
 
     ButtonGroup group = new ButtonGroup();
@@ -119,6 +122,7 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
 
   @Override
   protected boolean accept() {
+    // user code
     delegate.run();
     return true;
   }

@@ -132,7 +132,7 @@ public class LoginDialog extends JDialog {
       busVector.add(BusAddress.toAddress(description, address));
     }
 
-    fieldAddress = new JTextField();
+    fieldAddress = new JTextField(30);
 
     if (!busVector.isEmpty()) {
       busVector.add(BusAddress.UNSPECIFIED_ADDRESS);
@@ -204,6 +204,7 @@ public class LoginDialog extends JDialog {
     fieldDomain.setFocusable(true);
     domainPanel.add(fieldDomain, "grow, push");
     comboDomain = new JComboBox<String>();
+    comboDomain.setEnabled(false);
     domainPanel.add(comboDomain, "grow");
     configPanel.add(domainPanel, "grow");
 

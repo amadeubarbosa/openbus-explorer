@@ -1,6 +1,7 @@
 package busexplorer.utils;
 
 import busexplorer.panel.authorizations.AuthorizationWrapper;
+import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.entities.EntityWrapper;
 import busexplorer.panel.integrations.IntegrationWrapper;
 import busexplorer.panel.logins.LoginWrapper;
@@ -18,6 +19,7 @@ public class ConsistencyValidationResult {
   private final List<EntityWrapper> inconsistentEntities;
   private final List<AuthorizationWrapper> inconsistentAuthorizations;
   private HashMap<String, ProviderWrapper> inconsistentProviders;
+  private HashMap<String, ContractWrapper> inconsistentContracts;
 
   public ConsistencyValidationResult() {
     this.inconsistentIntegrations = new HashMap<Integer, IntegrationWrapper>();
@@ -26,6 +28,7 @@ public class ConsistencyValidationResult {
     this.inconsistentEntities = new ArrayList<>();
     this.inconsistentAuthorizations = new ArrayList<>();
     this.inconsistentProviders = new HashMap<String, ProviderWrapper>();
+    this.inconsistentContracts = new HashMap<String, ContractWrapper>();
   }
 
   public HashMap<Integer, IntegrationWrapper> getInconsistentIntegrations() {
@@ -52,9 +55,14 @@ public class ConsistencyValidationResult {
     return inconsistentAuthorizations;
   }
 
+  public HashMap<String, ContractWrapper> getInconsistentContracts() {
+    return inconsistentContracts;
+  }
+
   public boolean isEmpty() {
     return inconsistentProviders.isEmpty() && inconsistentIntegrations.isEmpty()
       && inconsistentOffers.isEmpty() && inconsistentLogins.isEmpty()
-      && inconsistentEntities.isEmpty() && inconsistentAuthorizations.isEmpty();
+      && inconsistentEntities.isEmpty() && inconsistentAuthorizations.isEmpty()
+      && inconsistentContracts.isEmpty();
   }
 }

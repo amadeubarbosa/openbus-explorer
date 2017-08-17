@@ -65,7 +65,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
       return;
     }
 
-    final busexplorer.desktop.dialog.ConsistencyValidationDialog.DeleteOptions removeFlags = new busexplorer.desktop.dialog.ConsistencyValidationDialog.DeleteOptions();
+    final ConsistencyValidationDialog.DeleteOptions removeFlags = new ConsistencyValidationDialog.DeleteOptions();
     ConsistencyValidationResult consistencyValidationResult = new ConsistencyValidationResult();
     Collection<ContractWrapper> contracts = getTablePanelComponent().getSelectedElements();
 
@@ -138,7 +138,8 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
     };
   }
 
-  public static BusExplorerTask<Void> DeleteContractTask(Collection<ContractWrapper> contracts, Runnable delegateAfterTaskUI, ConsistencyValidationDialog.DeleteOptions removeFlags,
+  public static BusExplorerTask<Void> DeleteContractTask(Collection<ContractWrapper> contracts, Runnable delegateAfterTaskUI,
+                                                         ConsistencyValidationDialog.DeleteOptions removeFlags,
                                                          ConsistencyValidationResult consistencyValidationResult) {
     return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 

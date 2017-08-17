@@ -14,6 +14,11 @@ import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
 import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
 import tecgraf.openbus.core.v2_1.services.access_control.UnknownBusCode;
 import tecgraf.openbus.core.v2_1.services.access_control.UnverifiedLoginCode;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.AuthorizationInUse;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.InterfaceInUse;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 /**
  * Tratador de exceções padrão para os demos.
@@ -145,17 +150,16 @@ public class BusExplorerExceptionHandler extends
         break;
 
       case InterfaceInUse:
-        switch (context) {
-          case BusCore:
-            exception.setErrorMessage(Language.get(this.getClass(),
-              "interface.inuse.core"));
-            break;
-
-          default:
-            exception.setErrorMessage(Language.get(this.getClass(),
-              "interface.inuse"));
-            break;
+        StringBuilder builder = new StringBuilder();
+        RegisteredEntityDesc[] entities = ((InterfaceInUse) theException).entities;
+        for (int i = 0; i < entities.length; i++) {
+          builder.append(entities[i].id);
+          if (i+1 < entities.length) {
+            builder.append(" ,");
+          }
         }
+        exception.setErrorMessage(Language.get(this.getClass(),
+          "interface.inuse", builder.toString()));
         break;
 
       case InvalidInterface:
@@ -173,17 +177,21 @@ public class BusExplorerExceptionHandler extends
         break;
 
       case AuthorizationInUse:
-        switch (context) {
-          case BusCore:
-            exception.setErrorMessage(Language.get(this.getClass(),
-              "authorization.inuse.core"));
-            break;
-
-          default:
-            exception.setErrorMessage(Language.get(this.getClass(),
-              "authorization.inuse"));
-            break;
+        builder = new StringBuilder();
+        ServiceOfferDesc[] offers = ((AuthorizationInUse) theException).offers;
+        for (int i = 0; i < offers.length; i++) {
+          for (ServiceProperty prop : offers[i].properties) {
+            if (prop.name.equals("openbus.offer.id")) {
+              builder.append(prop.value);
+              break;
+            }
+          }
+          if (i+1 < offers.length) {
+            builder.append(" ,");
+          }
         }
+        exception.setErrorMessage(Language.get(this.getClass(),
+          "authorization.inuse", builder.toString()));
         break;
 
       case OBJECT_NOT_EXIST:

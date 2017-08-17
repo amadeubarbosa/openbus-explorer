@@ -6,13 +6,12 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextPane;
-import javax.swing.UIManager;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -55,7 +54,7 @@ public abstract class InputDialog extends JFrame {
   /**
    * Painel de mensagem de texto.
    */
-  protected JTextPane messageText;
+  protected JLabel messageText;
 
   private Window parentWindow;
 
@@ -91,12 +90,9 @@ public abstract class InputDialog extends JFrame {
 
   private void init(Window parentWindow) {
     this.parentWindow = parentWindow;
-    this.messageText = new JTextPane();
+    this.messageText = new JLabel();
     this.messageText.setOpaque(true);
     this.messageText.setFocusable(true);
-    this.messageText.setEditable(false);
-    this.messageText.setEnabled(false);
-    this.messageText.setDisabledTextColor(UIManager.getColor("TextPane.foreground"));
     this.buttons = buildButtons();
   }
 
@@ -281,8 +277,7 @@ public abstract class InputDialog extends JFrame {
       return;
     }
     messageText.setText("  " + msg);
-    messageText.setCaretPosition(0);
-    messageText.insertIcon(ApplicationIcons.ICON_CANCEL_16);
+    messageText.setIcon(ApplicationIcons.ICON_CANCEL_16);
     hasError = true;
   }
 

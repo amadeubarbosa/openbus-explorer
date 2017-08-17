@@ -124,7 +124,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
                     .extension.getIntegrationRegistry().remove(integration.id());
                   throw new IllegalArgumentException(
                     Language.get(IntegrationInputDialog.class,
-                      "error.couldntaddcontracts", contract));
+                      "error.provider.doesnt.support.contract", contract));
                 } else {
                   changes.add(contract);
                 }
@@ -140,7 +140,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
                   .extension.getIntegrationRegistry().remove(integration.id());
                 throw new IllegalArgumentException(
                   Language.get(IntegrationInputDialog.class,
-                    "error.couldntaddcontracts", contract));
+                    "error.provider.doesnt.support.contract", contract));
               }
             }
           }
@@ -150,6 +150,10 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
             editingIntegration.contracts(getContractNameSelected(), shouldAddContractToProvider());
           } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(
+              Language.get(IntegrationInputDialog.class,
+                "error.provider.doesnt.support.contract", e.getMessage()), e);
+          } catch (IllegalStateException e) {
+            throw new IllegalStateException(
               Language.get(IntegrationInputDialog.class,
                 "error.couldntaddcontracts", e.getMessage()), e);
           }

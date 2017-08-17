@@ -168,8 +168,8 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
 
     @Override
     protected JPanel buildFields() {
-      setMinimumSize(new Dimension(500, 420));
-      setPreferredSize(new Dimension(750, 420));
+      setMinimumSize(new Dimension(500, 500));
+      setPreferredSize(new Dimension(750, 580));
       JPanel panel = new JPanel(new MigLayout("fill, flowy"));
       panel.add(new JLabel(
         ContractDeleteAction.this.getString("consistency.message")), "grow");

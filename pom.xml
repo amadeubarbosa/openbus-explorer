@@ -12,8 +12,8 @@
   <properties>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
-    <javautils.version>1.20.0</javautils.version>
-    <javautils.gui.version>1.0.6</javautils.gui.version>
+    <javautils.version>4.0.0</javautils.version>
+    <javautils.gui.version>5.0.1</javautils.gui.version>
     <jacorb.version>3.8</jacorb.version>
     <junit.version>4.6</junit.version>
     <miglayout.version>4.2</miglayout.version>

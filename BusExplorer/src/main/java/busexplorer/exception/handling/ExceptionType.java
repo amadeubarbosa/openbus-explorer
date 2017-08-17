@@ -48,7 +48,7 @@ public enum ExceptionType {
       Class<? extends Exception> theClass = exception.getClass();
       return ExceptionType.valueOf(theClass.getSimpleName());
     }
-    catch (IllegalArgumentException ex) {
+    catch (NullPointerException | IllegalArgumentException ex) {
       return ExceptionType.Unspecified;
     }
   }

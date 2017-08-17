@@ -172,8 +172,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Language.get(this.getClass(), "waiting.title"),
-      Language.get(this.getClass(), "waiting.msg"));
+    task.execute(this, getString( "waiting.title"), getString( "waiting.msg"));
     return task.getStatus();
   }
 
@@ -181,7 +180,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  public JPanel buildFields() {
+  protected JPanel buildFields() {
     setMinimumSize(new Dimension(550, 400));
     JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 

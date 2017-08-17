@@ -1,36 +1,25 @@
 package busexplorer.panel.consumers;
 
 import busexplorer.Application;
-import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.desktop.dialog.ConsistencyValidationDialog;
 import busexplorer.desktop.dialog.InputDialog;
-import busexplorer.desktop.dialog.MainDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import busexplorer.panel.RefreshablePanel;
-import busexplorer.panel.TablePanelComponent;
-import busexplorer.panel.integrations.IntegrationTableProvider;
+import busexplorer.panel.entities.EntityWrapper;
 import busexplorer.panel.integrations.IntegrationWrapper;
+import busexplorer.panel.logins.LoginWrapper;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Language;
-import net.miginfocom.swing.MigLayout;
-import tecgraf.javautils.gui.table.ObjectTableModel;
+import busexplorer.utils.BusQuery;
+import busexplorer.utils.ConsistencyValidationResult;
+import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSeparator;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Collection;
 
 /**
  * Classe de ação para a remoção de uma entidade.
@@ -75,142 +64,126 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
       return;
     }
 
-    // [0] = flag para remoção das integrações
-    final AtomicBoolean shouldRemoveDependents = new AtomicBoolean(false);
-    HashMap<Integer, IntegrationWrapper> integrationsAffected = new HashMap<>();
-    List<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
+    final ConsistencyValidationDialog.DeleteOptions removeFlags = new ConsistencyValidationDialog.DeleteOptions();
+    ConsistencyValidationResult consistencyValidationResult = new ConsistencyValidationResult();
+    Collection<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
 
-    BusExplorerTask<Void> removeConsumerTask =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    BusExplorerTask<Void> deleteConsumerTask =
+      DeleteConsumerTask(consumers, getTablePanelComponent()::removeSelectedElements, removeFlags, consistencyValidationResult);
 
-        @Override
-        protected void doPerformTask() throws Exception {
-          int i = 0;
-          List<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
-          if (shouldRemoveDependents.get()) {
-            for (Integer id : integrationsAffected.keySet()) {
-              Application.login().extension.getIntegrationRegistry().remove(id);
-            }
-          }
-          for (ConsumerWrapper consumer : consumers) {
-            Application.login().extension.getConsumerRegistry().remove(consumer.name());
-            this.setProgressStatus(100*i/consumers.size());
-            i++;
-          }
-        }
+    BusExplorerTask<Void> extensionDependencyCheckTask =
+      ExtensionDependencyCheckTask(consumers, consistencyValidationResult);
 
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            getTablePanelComponent().removeSelectedElements();
-          }
-        }
-      };
-
-    BusExplorerTask<Void> dependencyCheckTask =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
-        @Override
-        protected void doPerformTask() throws Exception {
-          setProgressDialogEnabled(true);
-          int i = 0;
-          for (ConsumerWrapper consumer : consumers) {
-            String consumerName = consumer.remote().name();
-            for (Integration integration : Application.login().extension.getIntegrationRegistry().integrations()) {
-              if (integration.consumer().name().equals(consumerName)) {
-                integrationsAffected.put(integration.id(), new IntegrationWrapper(integration));
-              }
-            }
-            this.setProgressStatus(100*i/consumers.size());
-            i++;
-          }
-        }
-      };
-
-    dependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
+    extensionDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
       getString("waiting.dependency.msg"), 2, 0, true, false);
 
-    if (dependencyCheckTask.getStatus()) {
-      if (integrationsAffected.isEmpty()) {
-        removeConsumerTask.execute(parentWindow, getString("waiting.title"),
-          getString("waiting.msg"), 2, 0, true, false);
+    BusExplorerTask<Void> governanceDependencyCheckTask =
+      GovernanceDependencyCheckTask(consumers, consistencyValidationResult);
+
+    governanceDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
+      getString("waiting.dependency.msg"), 2, 0, true, false);
+
+    Runnable effectiveDeletion = () -> deleteConsumerTask.execute(parentWindow, getString("waiting.title"),
+      getString("waiting.msg"), 2, 0, true, false);
+
+    if (extensionDependencyCheckTask.getStatus() && governanceDependencyCheckTask.getStatus()) {
+      if (consistencyValidationResult.isEmpty()) {
+        effectiveDeletion.run();
       } else {
-        BusExplorerAbstractInputDialog confirmation =
-          new ConsistencyValidationDialog(integrationsAffected, shouldRemoveDependents, removeConsumerTask);
-        confirmation.showDialog();
+        new ConsistencyValidationDialog(this.parentWindow, getString("confirm.title"), this.getClass(),
+          consistencyValidationResult, removeFlags, effectiveDeletion).showDialog();
       }
     }
   }
 
-  private class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog {
-
-    private final HashMap<Integer, IntegrationWrapper> integrationsAffected;
-    private final AtomicBoolean shouldRemoveDependents;
-    private final BusExplorerTask<Void> removeConsumerTask;
-
-    public ConsistencyValidationDialog(HashMap<Integer, IntegrationWrapper> integrationsAffected,
-                                       AtomicBoolean shouldRemoveDependents, BusExplorerTask<Void> removeConsumerTask) {
-      super(parentWindow, ConsumerDeleteAction.this.getString("confirm.title"));
-      this.integrationsAffected = integrationsAffected;
-      this.shouldRemoveDependents = shouldRemoveDependents;
-      this.removeConsumerTask = removeConsumerTask;
-    }
-
-    @Override
-    protected JPanel buildFields() {
-
-      JPanel panel = new JPanel(new MigLayout("fill, flowy"));
-      panel.add(new JLabel(
-        ConsumerDeleteAction.this.getString("consistency.message")), "grow");
-      panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
-      panel.add(new JLabel(Language.get(MainDialog.class, "integration.title")), "grow");
-
-      ObjectTableModel<IntegrationWrapper> model = new ObjectTableModel<>(
-        new ArrayList<>(integrationsAffected.values()), new IntegrationTableProvider());
-      RefreshablePanel pane = new TablePanelComponent<>(model, new ArrayList<>(), false);
-      pane.setPreferredSize(new Dimension(100, 150));
-      panel.add(pane, "grow, push, pad 0 10 0 -10");
-
-      panel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
-      panel.add(new JLabel(ConsumerDeleteAction.this.getString("options.label")), "grow");
-
-      JRadioButton removeDependenciesOption = new JRadioButton(
-        Language.get(ConsumerDeleteAction.class, "consistency.remove.dependencies"));
-      removeDependenciesOption.setSelected(false);
-      removeDependenciesOption.addItemListener(itemEvent -> {
-        if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-          shouldRemoveDependents.set(true);
+  public static BusExplorerTask<Void> GovernanceDependencyCheckTask(Collection<ConsumerWrapper> consumers,
+                                                                    ConsistencyValidationResult consistencyValidationResult){
+    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+      @Override
+      protected void doPerformTask() throws Exception {
+        setProgressDialogEnabled(true);
+        int i = 0;
+        for (ConsumerWrapper consumer : consumers) {
+          // retrieve other data
+          BusQuery busQuery = new BusQuery(consumer.busquery());
+          for (RegisteredEntityDesc entity : busQuery.filterEntities()) {
+            consistencyValidationResult.getInconsistentEntities().add(new EntityWrapper(entity));
+            for (LoginInfo login : Application.login().admin.getLogins()) {
+              if (login.entity.equals(entity.id)) {
+                consistencyValidationResult.getInconsistentLogins().add(new LoginWrapper(login));
+              }
+            }
+          }
+          this.setProgressStatus(100*i/consumers.size());
+          i++;
         }
-      });
+      }
+    };
+  }
 
-      JRadioButton removeIndexesOnlyOption = new JRadioButton(
-        Language.get(ConsumerDeleteAction.class, "consistency.remove.indexesonly"));
-      removeIndexesOnlyOption.setSelected(true);
-      removeIndexesOnlyOption.addItemListener(itemEvent -> {
-        if (itemEvent.getStateChange() == ItemEvent.SELECTED) {
-          shouldRemoveDependents.set(false);
+  public static BusExplorerTask<Void> ExtensionDependencyCheckTask(Collection<ConsumerWrapper> consumers,
+                                                                   ConsistencyValidationResult consistencyValidationResult) {
+    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+      @Override
+      protected void doPerformTask() throws Exception {
+        setProgressDialogEnabled(true);
+        int i = 0;
+        for (ConsumerWrapper consumer : consumers) {
+          String consumerName = consumer.remote().name();
+          for (Integration integration : Application.login().extension.getIntegrationRegistry().integrations()) {
+            if (integration.consumer().name().equals(consumerName)) {
+              consistencyValidationResult
+                .getInconsistentIntegrations().put(integration.id(), new IntegrationWrapper(integration));
+            }
+          }
+          this.setProgressStatus(100*i/consumers.size());
+          i++;
         }
-      });
+      }
+    };
+  }
 
-      ButtonGroup group = new ButtonGroup();
-      group.add(removeDependenciesOption);
-      group.add(removeIndexesOnlyOption);
+  public static BusExplorerTask<Void> DeleteConsumerTask(Collection<ConsumerWrapper> consumers, Runnable delegateAfterTaskUI,
+                                                         ConsistencyValidationDialog.DeleteOptions removeFlags,
+                                                         ConsistencyValidationResult consistencyValidationResult) {
+    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
-      panel.add(removeDependenciesOption, "grow");
-      panel.add(removeIndexesOnlyOption, "grow");
+      @Override
+      protected void doPerformTask() throws Exception {
+        int i = 0;
+        if (removeFlags.isFullyGovernanceRemoval()) {
+          for (Integer id : consistencyValidationResult.getInconsistentIntegrations().keySet()) {
+            Application.login().extension.getIntegrationRegistry().remove(id);
+          }
+        }
+        for (ConsumerWrapper consumer : consumers) {
+          if (removeFlags.isFullyGovernanceRemoval()) {
+            BusQuery busQuery = new BusQuery(consumer.busquery());
+            for (RegisteredEntityDesc entityDesc : busQuery.filterEntities()) {
+              for (LoginInfo login : Application.login().admin.getLogins()) {
+                if (entityDesc.id.equals(login.entity)) {
+                  Application.login().admin.invalidateLogin(login);
+                  // ensures this entity will not login again
+                  Application.login().admin.removeCertificate(login.entity);
+                }
+              }
+              // if no login, ensures certificate removal
+              Application.login().admin.removeCertificate(entityDesc.id);
+              entityDesc.ref.remove();
+            }
+          }
+          Application.login().extension.getConsumerRegistry().remove(consumer.name());
+          this.setProgressStatus(100*i/consumers.size());
+          i++;
+        }
+      }
 
-      return panel;
-    }
-
-    @Override
-    protected boolean accept() {
-      removeConsumerTask.execute(parentWindow, getString("waiting.title"),
-        getString("waiting.msg"), 2, 0);
-      return true;
-    }
-
-    @Override
-    protected boolean hasValidFields() {
-      return true;
-    }
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus() && (delegateAfterTaskUI != null)) {
+          delegateAfterTaskUI.run();
+        }
+      }
+    };
   }
 }

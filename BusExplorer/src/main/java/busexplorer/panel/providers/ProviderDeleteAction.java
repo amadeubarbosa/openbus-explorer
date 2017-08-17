@@ -1,7 +1,6 @@
 package busexplorer.panel.providers;
 
 import busexplorer.Application;
-import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.desktop.dialog.ConsistencyValidationDialog;
 import busexplorer.desktop.dialog.InputDialog;
 import busexplorer.exception.handling.ExceptionContext;
@@ -70,8 +69,9 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
       getString("confirm.title")) != JOptionPane.YES_OPTION) {
       return;
     }
-    performChecksAndRemoteTasks(getTablePanelComponent().getSelectedElements(),
-      ProviderDeleteAction.this.getTablePanelComponent()::removeSelectedElements);
+    performChecksAndRemoteTasks(
+      getTablePanelComponent().getSelectedElements(),
+      getTablePanelComponent()::removeSelectedElements);
   }
 
   public boolean performChecksAndRemoteTasks(Collection<ProviderWrapper> providers, Runnable delegateAfterTaskUI) {
@@ -98,14 +98,11 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
       getString("waiting.msg"), 2, 0, true, false);
 
     if (extensionDependencyCheckTask.getStatus() && governanceDependencyCheckTask.getStatus()) {
-      if (consistencyValidationResult.isEmpty())
-      {
+      if (consistencyValidationResult.isEmpty()) {
         effectiveDeletion.run();
       } else {
-        BusExplorerAbstractInputDialog confirmation =
-          new ConsistencyValidationDialog(this.parentWindow, getString("confirm.title"),
-            consistencyValidationResult, removeFlags, effectiveDeletion);
-        confirmation.showDialog();
+        new ConsistencyValidationDialog(this.parentWindow, getString("confirm.title"), this.getClass(),
+          consistencyValidationResult, removeFlags, effectiveDeletion).showDialog();
       }
     }
 
@@ -137,7 +134,6 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
             e.getValue().forEach( iface -> consistencyValidationResult.getInconsistentAuthorizations()
               .add(new AuthorizationWrapper(e.getKey(), iface)));
           }
-
           this.setProgressStatus(100*i/providers.size());
           i++;
         }
@@ -169,8 +165,8 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
     };
   }
 
-  public static BusExplorerTask<Void> DeleteProviderTask(Collection<ProviderWrapper> providers,
-                                                         Runnable delegateAfterTaskUI, ConsistencyValidationDialog.DeleteOptions removeFlags,
+  public static BusExplorerTask<Void> DeleteProviderTask(Collection<ProviderWrapper> providers, Runnable delegateAfterTaskUI,
+                                                         ConsistencyValidationDialog.DeleteOptions removeFlags,
                                                          ConsistencyValidationResult consistencyValidationResult) {
     return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
@@ -189,13 +185,18 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
             for (ServiceOfferDesc offer : busQuery.filterOffers()) {
               LoginInfo login = offer.ref.owner();
               Application.login().admin.invalidateLogin(login);
+              // ensures this entity will not login again
               Application.login().admin.removeCertificate(login.entity);
             }
-            for (Map.Entry<RegisteredEntityDesc, List<String>> entry : busQuery.filterAuthorizations().entrySet()) {
-              for (String auth : entry.getValue()) {
-                entry.getKey().ref.revokeInterface(auth);
+            for (Map.Entry<RegisteredEntityDesc, List<String>> authorizations : busQuery.filterAuthorizations().entrySet()) {
+              for (String iface : authorizations.getValue()) {
+                authorizations.getKey().ref.revokeInterface(iface);
               }
-              entry.getKey().ref.remove();
+            }
+            for (RegisteredEntityDesc entityDesc : busQuery.filterEntities()) {
+              // if no offer, ensures certificate removal
+              Application.login().admin.removeCertificate(entityDesc.id);
+              entityDesc.ref.remove();
             }
           }
           Application.login().extension.getProviderRegistry().remove(provider.name());

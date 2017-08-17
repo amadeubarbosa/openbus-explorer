@@ -7,7 +7,6 @@ import busexplorer.panel.entities.EntityTableProvider;
 import busexplorer.panel.integrations.IntegrationTableProvider;
 import busexplorer.panel.logins.LoginTableProvider;
 import busexplorer.panel.offers.OfferTableProvider;
-import busexplorer.panel.providers.ProviderDeleteAction;
 import busexplorer.panel.providers.ProviderTableProvider;
 import busexplorer.utils.ConsistencyValidationResult;
 import busexplorer.utils.Language;
@@ -31,14 +30,16 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
   private final ConsistencyValidationResult consistencyValidationResult;
   private final DeleteOptions removeFlags;
   private final Runnable delegate;
+  private final Class actionClass;
 
-  public ConsistencyValidationDialog(Window parentWindow, String title,
+  public ConsistencyValidationDialog(Window parentWindow, String title, Class actionClass,
                                      ConsistencyValidationResult consistencyValidationResult,
                                      DeleteOptions removeFlags, Runnable removalDelegate) {
     super(parentWindow, title);
     this.consistencyValidationResult = consistencyValidationResult;
     this.removeFlags = removeFlags;
     this.delegate = removalDelegate;
+    this.actionClass = actionClass;
   }
 
   public static void addCheckListPanel(JPanel panel, String title, String noValuesMessages,
@@ -98,12 +99,12 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
     panel.add(new JLabel(getString("options.label")), "grow");
 
     JRadioButton removeDependenciesOption = new JRadioButton(
-      Language.get(ProviderDeleteAction.class, "consistency.remove.dependencies"));
+      Language.get(actionClass, "consistency.remove.dependencies"));
     removeDependenciesOption.setSelected(false);
     removeDependenciesOption.addItemListener(removeFlags.fullyGovernanceRemovalChangeListener);
 
     JRadioButton removeIndexesOnlyOption = new JRadioButton(
-      Language.get(ProviderDeleteAction.class, "consistency.remove.indexesonly"));
+      Language.get(actionClass, "consistency.remove.indexesonly"));
     removeIndexesOnlyOption.setSelected(true);
 
     ButtonGroup group = new ButtonGroup();

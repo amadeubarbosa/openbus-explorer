@@ -264,6 +264,7 @@ public abstract class InputDialog extends JFrame {
    */
   public void clearErrorMessage() {
     messageText.setText("");
+    messageText.setIcon(null);
     hasError = false;
   }
 

@@ -253,12 +253,12 @@ public class BusExplorerExceptionHandler extends
 
               case UnknownBusCode.value:
                 exception.setErrorMessage(Language.get(this.getClass(),
-                  "unknown.bus"));
+                  "no.permission.unknown.bus"));
                 break;
 
               case UnverifiedLoginCode.value:
                 exception.setErrorMessage(Language.get(this.getClass(),
-                  "unverified.login"));
+                  "no.permission.unverified.login"));
                 break;
 
               case InvalidRemoteCode.value:
@@ -275,7 +275,7 @@ public class BusExplorerExceptionHandler extends
             }
             else {
               exception.setErrorMessage(Language.get(this.getClass(),
-                "no.permission.unspected", noPermission.minor));
+                "no.permission.unexpected", noPermission.minor));
             }
             break;
         }

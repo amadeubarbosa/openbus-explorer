@@ -2,7 +2,6 @@ package busexplorer.desktop.dialog;
 
 import busexplorer.ApplicationIcons;
 import busexplorer.utils.Language;
-import com.sun.istack.internal.Nullable;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
@@ -221,7 +220,7 @@ public abstract class InputDialog extends JFrame {
     return panel;
   }
 
-  protected @Nullable JScrollPane buildErrorMessagePane() {
+  protected JScrollPane buildErrorMessagePane() {
     JScrollPane scrolledMessageText = new JScrollPane(messageText);
     scrolledMessageText.setViewportBorder(null);
     scrolledMessageText.setBorder(null);

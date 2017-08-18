@@ -12,7 +12,6 @@ import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConsistencyValidationResult;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.Task;
 import tecgraf.openbus.services.governance.v1_0.Contract;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 import tecgraf.openbus.services.governance.v1_0.Provider;
@@ -72,29 +71,10 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
     BusExplorerTask<Void> deleteContractTask =
       DeleteContractTask(contracts, getTablePanelComponent()::removeSelectedElements, removeFlags, consistencyValidationResult);
 
-    BusExplorerTask<Void> extensionDependencyCheckTask =
-      ExtensionDependencyCheckTask(contracts, consistencyValidationResult);
-
-    extensionDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
-
-    Task providerDependencyCheckTask = ProviderDeleteAction
-      .ExtensionDependencyCheckTask(consistencyValidationResult.getInconsistentProviders().values(),
-        consistencyValidationResult);
-    providerDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
-
-    Task providerDependencyGovernanceCheckTask = ProviderDeleteAction
-      .GovernanceDependencyCheckTask(consistencyValidationResult.getInconsistentProviders().values(),
-        consistencyValidationResult);
-    providerDependencyGovernanceCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
-
     Runnable effectiveDeletion = () -> deleteContractTask.execute(parentWindow, getString("waiting.title"),
       getString("waiting.msg"), 2, 0, true, false);
 
-    if (extensionDependencyCheckTask.getStatus() && providerDependencyCheckTask.getStatus()
-      && providerDependencyGovernanceCheckTask.getStatus()) {
+    if (ExecuteAllDependencyCheckTasks(parentWindow, contracts, consistencyValidationResult)) {
       if (consistencyValidationResult.isEmpty()) {
         effectiveDeletion.run();
       } else {
@@ -102,6 +82,24 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
           consistencyValidationResult, removeFlags, effectiveDeletion).showDialog();
       }
     }
+  }
+
+  public static boolean ExecuteAllDependencyCheckTasks(Window parentWindow,
+                                                       Collection<ContractWrapper> contracts,
+                                                       ConsistencyValidationResult consistencyValidationResult) {
+
+    String title = Language.get(ConsistencyValidationDialog.class, "waiting.dependency.title");
+    String waitingMessage = Language.get(ContractDeleteAction.class, "waiting.dependency.msg");
+
+    BusExplorerTask extensionDependencyCheckTask =
+      ExtensionDependencyCheckTask(contracts, consistencyValidationResult);
+
+    extensionDependencyCheckTask.execute(parentWindow, title, waitingMessage, 2, 0, true, false);
+
+    return extensionDependencyCheckTask.getStatus() &&
+      ProviderDeleteAction
+      .ExecuteAllDependencyCheckTasks(parentWindow,
+        consistencyValidationResult.getInconsistentProviders().values(), consistencyValidationResult);
   }
 
   public static BusExplorerTask<Void> ExtensionDependencyCheckTask(Collection<ContractWrapper> contracts,
@@ -142,14 +140,16 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
                                                          ConsistencyValidationDialog.DeleteOptions removeFlags,
                                                          ConsistencyValidationResult consistencyValidationResult) {
     return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
-
+      private final String removeDependenciesTitle =
+        Language.get(ContractDeleteAction.class, "waiting.removing.dependencies.title");
+      private final String removeDependenciesMessage =
+        Language.get(ContractDeleteAction.class, "waiting.removing.dependencies.msg");
       @Override
       protected void doPerformTask() throws Exception {
         if (removeFlags.isFullyGovernanceRemoval()) {
-          Task deleteDependencies = ProviderDeleteAction.DeleteProviderTask(consistencyValidationResult.getInconsistentProviders().values(),
-            null, removeFlags, consistencyValidationResult);
-          deleteDependencies.execute(parentWindow, Language.get(ContractDeleteAction.class, "waiting.removing.dependencies.title"),
-            Language.get(ContractDeleteAction.class, "waiting.removing.dependencies.msg"), 2, 0, true, false);
+          ProviderDeleteAction.DeleteProviderTask(consistencyValidationResult
+            .getInconsistentProviders().values(), null, removeFlags, consistencyValidationResult)
+            .execute(parentWindow, removeDependenciesTitle, removeDependenciesMessage, 2, 0, true, false);
         }
         int i = 0;
         for (ContractWrapper contract : contracts) {

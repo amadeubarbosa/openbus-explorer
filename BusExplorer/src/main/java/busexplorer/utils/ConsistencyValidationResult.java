@@ -8,27 +8,27 @@ import busexplorer.panel.logins.LoginWrapper;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.panel.providers.ProviderWrapper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ConsistencyValidationResult {
   private final HashMap<Integer, IntegrationWrapper> inconsistentIntegrations;
-  private final List<OfferWrapper> inconsistentOffers;
-  private final List<LoginWrapper> inconsistentLogins;
-  private final List<EntityWrapper> inconsistentEntities;
-  private final List<AuthorizationWrapper> inconsistentAuthorizations;
-  private HashMap<String, ProviderWrapper> inconsistentProviders;
-  private HashMap<String, ContractWrapper> inconsistentContracts;
+  private final HashMap<String, ProviderWrapper> inconsistentProviders;
+  private final HashMap<String, ContractWrapper> inconsistentContracts;
+  private final HashSet<OfferWrapper> inconsistentOffers;
+  private final HashSet<LoginWrapper> inconsistentLogins;
+  private final HashSet<EntityWrapper> inconsistentEntities;
+  private final HashSet<AuthorizationWrapper> inconsistentAuthorizations;
 
   public ConsistencyValidationResult() {
     this.inconsistentIntegrations = new HashMap<Integer, IntegrationWrapper>();
-    this.inconsistentOffers =  new ArrayList<>();
-    this.inconsistentLogins = new ArrayList<>();
-    this.inconsistentEntities = new ArrayList<>();
-    this.inconsistentAuthorizations = new ArrayList<>();
     this.inconsistentProviders = new HashMap<String, ProviderWrapper>();
     this.inconsistentContracts = new HashMap<String, ContractWrapper>();
+    this.inconsistentOffers =  new HashSet<OfferWrapper>();
+    this.inconsistentLogins = new HashSet<LoginWrapper>();
+    this.inconsistentEntities = new HashSet<EntityWrapper>();
+    this.inconsistentAuthorizations = new HashSet<AuthorizationWrapper>();
   }
 
   public HashMap<Integer, IntegrationWrapper> getInconsistentIntegrations() {
@@ -39,24 +39,24 @@ public class ConsistencyValidationResult {
     return inconsistentProviders;
   }
 
-  public List<OfferWrapper> getInconsistentOffers() {
+  public HashMap<String, ContractWrapper> getInconsistentContracts() {
+    return inconsistentContracts;
+  }
+
+  public Set<OfferWrapper> getInconsistentOffers() {
     return inconsistentOffers;
   }
 
-  public List<LoginWrapper> getInconsistentLogins() {
+  public Set<LoginWrapper> getInconsistentLogins() {
     return inconsistentLogins;
   }
 
-  public List<EntityWrapper> getInconsistentEntities() {
+  public Set<EntityWrapper> getInconsistentEntities() {
     return inconsistentEntities;
   }
 
-  public List<AuthorizationWrapper> getInconsistentAuthorizations() {
+  public Set<AuthorizationWrapper> getInconsistentAuthorizations() {
     return inconsistentAuthorizations;
-  }
-
-  public HashMap<String, ContractWrapper> getInconsistentContracts() {
-    return inconsistentContracts;
   }
 
   public boolean isEmpty() {

@@ -12,6 +12,7 @@ import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConsistencyValidationResult;
+import busexplorer.utils.Language;
 import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
@@ -21,10 +22,12 @@ import tecgraf.openbus.services.governance.v1_0.Contract;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Classe de ação para a remoção de uma interface.
@@ -75,32 +78,13 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
     ConsistencyValidationResult consistencyValidationResult = new ConsistencyValidationResult();
     Collection<InterfaceWrapper> interfaces = getTablePanelComponent().getSelectedElements();
 
-    BusExplorerTask<Void> governanceDependencyCheckTask =
-      GovernanceDependencyCheckTask(interfaces, consistencyValidationResult);
-
-    governanceDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
-
-    BusExplorerTask<Void> extensionDependencyCheckTask =
-      ExtensionDependencyCheckTask(interfaces, consistencyValidationResult);
-
-    extensionDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
-
-    BusExplorerTask<Void> contractDependencyCheckTask =
-      ContractDeleteAction.ExtensionDependencyCheckTask(consistencyValidationResult
-        .getInconsistentContracts().values(), consistencyValidationResult);
-
-    contractDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
-
     BusExplorerTask<Void> deleteInterfaceTask =
       DeleteInterfaceTask(interfaces, getTablePanelComponent()::removeSelectedElements, removeFlags, consistencyValidationResult);
 
     Runnable effectiveDeletion = () -> deleteInterfaceTask.execute(parentWindow, getString("waiting.title"),
       getString("waiting.msg"), 2, 0, true, false);
 
-    if (extensionDependencyCheckTask.getStatus() && governanceDependencyCheckTask.getStatus()) {
+    if (ExecuteAllDependencyCheckTasks(parentWindow, interfaces, consistencyValidationResult)) {
       if (consistencyValidationResult.isEmpty()) {
         effectiveDeletion.run();
       } else {
@@ -108,6 +92,27 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
           consistencyValidationResult, removeFlags, effectiveDeletion).showDialog();
       }
     }
+  }
+
+  public static boolean ExecuteAllDependencyCheckTasks(Window parentWindow,
+                                                       Collection<InterfaceWrapper> interfaces,
+                                                       ConsistencyValidationResult consistencyValidationResult) {
+    String title = Language.get(ConsistencyValidationDialog.class, "waiting.dependency.title");
+    String waitingMessage = Language.get(InterfaceDeleteAction.class,"waiting.dependency.msg");
+
+    BusExplorerTask governanceDependencyCheckTask =
+      GovernanceDependencyCheckTask(interfaces, consistencyValidationResult);
+
+    BusExplorerTask extensionDependencyCheckTask =
+      ExtensionDependencyCheckTask(interfaces, consistencyValidationResult);
+
+    governanceDependencyCheckTask.execute(parentWindow, title, waitingMessage, 2, 0, true, false);
+
+    extensionDependencyCheckTask.execute(parentWindow, title, waitingMessage, 2, 0, true, false);
+
+    return extensionDependencyCheckTask.getStatus() && governanceDependencyCheckTask.getStatus()
+      && ContractDeleteAction.ExecuteAllDependencyCheckTasks(parentWindow, consistencyValidationResult
+      .getInconsistentContracts().values(), consistencyValidationResult);
   }
 
   public static BusExplorerTask<Void> GovernanceDependencyCheckTask(Collection<InterfaceWrapper> interfaces,
@@ -189,72 +194,80 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
                                                           ConsistencyValidationDialog.DeleteOptions removeFlags,
                                                           ConsistencyValidationResult consistencyValidationResult) {
     return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
-
-    @Override
-    protected void doPerformTask() throws Exception {
-      int i = 0;
-      int step = 25;
-      if (Application.login().extension.isExtensionCapable()) {
-        if (removeFlags.isFullyGovernanceRemoval()) {
-          // proceed to contracts removal
-          if (!consistencyValidationResult.getInconsistentContracts().isEmpty()) {
-            ContractDeleteAction.DeleteContractTask(consistencyValidationResult
-              .getInconsistentContracts().values(), null, removeFlags, consistencyValidationResult);
-          }
-        }
-        for (InterfaceWrapper interfaceInfo : interfaces) {
-          // if no contracts should be removed we just remove the interface from that contract
-          for (Contract contract : Application.login().extension.getContracts()) {
-            String[] interfaceContractList = contract.interfaces();
-            for (String inContract : interfaceContractList) {
-              if (inContract.equals(interfaceInfo.getName())) {
-                contract.removeInterface(inContract);
-                break;
-              }
+      private final String removeDependenciesTitle =
+        Language.get(InterfaceDeleteAction.class, "waiting.removing.dependencies.title");
+      private final String removeDependenciesMessage =
+        Language.get(InterfaceDeleteAction.class, "waiting.removing.dependencies.msg");
+      @Override
+      protected void doPerformTask() throws Exception {
+        int i = 0;
+        int step = 25;
+        if (Application.login().extension.isExtensionCapable()) {
+          if (removeFlags.isFullyGovernanceRemoval()) {
+            // proceed to contracts removal
+            if (!consistencyValidationResult.getInconsistentContracts().isEmpty()) {
+              ContractDeleteAction.DeleteContractTask(consistencyValidationResult
+                .getInconsistentContracts().values(), null, removeFlags, consistencyValidationResult)
+                .execute(parentWindow, removeDependenciesTitle, removeDependenciesMessage, 2, 0, true, false);;
             }
           }
-          this.setProgressStatus(step*i/interfaces.size());
-          i++;
-        }
-      }
-      i = 0;
-      // fully removal is indeed to remove interface without any restrictions (force authorization removal for instance)
-      if (removeFlags.isFullyGovernanceRemoval()) {
-        // some offers probably was already removed when extension is enabled
-        List<OfferWrapper> inconsistentOffers = consistencyValidationResult.getInconsistentOffers();
-        for (OfferWrapper offer : inconsistentOffers) {
-          LoginInfo login = offer.getDescriptor().ref.owner();
-          Application.login().admin.invalidateLogin(login);
           for (InterfaceWrapper interfaceInfo : interfaces) {
-            Application.login().admin.revokeAuthorization(login.entity, interfaceInfo.getName());
+            // if no contracts should be removed we just remove the interface from that contract
+            for (Contract contract : Application.login().extension.getContracts()) {
+              String[] interfaceContractList = contract.interfaces();
+              for (String inContract : interfaceContractList) {
+                if (inContract.equals(interfaceInfo.getName())) {
+                  contract.removeInterface(inContract);
+                  break;
+                }
+              }
+            }
+            this.setProgressStatus(step*i/interfaces.size());
+            i++;
           }
-          this.setProgressStatus(step+(step*i/inconsistentOffers.size()));
+        }
+        i = 0;
+        // fully removal is indeed to remove interface without any restrictions (force authorization removal for instance)
+        if (removeFlags.isFullyGovernanceRemoval()) {
+          // some offers probably was already removed when extension is enabled
+          Set<OfferWrapper> inconsistentOffers = consistencyValidationResult.getInconsistentOffers();
+          for (OfferWrapper offer : inconsistentOffers) {
+            LoginInfo login = offer.getDescriptor().ref.owner();
+            Application.login().admin.invalidateLogin(login);
+            for (InterfaceWrapper interfaceInfo : interfaces) {
+              Application.login().admin.revokeAuthorization(login.entity, interfaceInfo.getName());
+            }
+            this.setProgressStatus(step+(step*i/inconsistentOffers.size()));
+            i++;
+          }
+        }
+        i = 0;
+        // some authorizations probably was already removed when extension is enabled
+        Set<AuthorizationWrapper> inconsistentAuthorizations = consistencyValidationResult.getInconsistentAuthorizations();
+        for (AuthorizationWrapper authorization : inconsistentAuthorizations) {
+          try {
+            Application.login().admin.revokeAuthorization(authorization.getEntityId(), authorization.getInterface());
+          } catch (NullPointerException e) {
+            // ignore because means it was already removed..
+          }
+          this.setProgressStatus((step*2)+(step*i/inconsistentAuthorizations.size()));
+          i++;
+        }
+        i = 0;
+        for (InterfaceWrapper interfaceInfo : interfaces) {
+          String interfaceName = interfaceInfo.getName();
+          Application.login().admin.removeInterface(interfaceName);
+          this.setProgressStatus((step*3)+(step*i/interfaces.size()));
           i++;
         }
       }
-      i = 0;
-      // some authorizations probably was already removed when extension is enabled
-      List<AuthorizationWrapper> inconsistentAuthorizations = consistencyValidationResult.getInconsistentAuthorizations();
-      for (AuthorizationWrapper authorization : inconsistentAuthorizations) {
-        Application.login().admin.revokeAuthorization(authorization.getEntityId(), authorization.getInterface());
-        this.setProgressStatus((step*2)+(step*i/inconsistentAuthorizations.size()));
-        i++;
-      }
-      i = 0;
-      for (InterfaceWrapper interfaceInfo : interfaces) {
-        String interfaceName = interfaceInfo.getName();
-        Application.login().admin.removeInterface(interfaceName);
-        this.setProgressStatus((step*3)+(step*i/interfaces.size()));
-        i++;
-      }
-    }
 
-    @Override
-    protected void afterTaskUI() {
-      if (getStatus() && delegateAfterTaskUI != null) {
-        delegateAfterTaskUI.run();
+      @Override
+      protected void afterTaskUI() {
+        if (getStatus() && delegateAfterTaskUI != null) {
+          delegateAfterTaskUI.run();
+        }
       }
-    }
-  };
+    };
   }
 }

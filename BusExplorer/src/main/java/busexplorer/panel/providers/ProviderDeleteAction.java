@@ -14,6 +14,7 @@ import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.BusQuery;
 import busexplorer.utils.ConsistencyValidationResult;
+import busexplorer.utils.Language;
 import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
@@ -74,28 +75,15 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
     Runnable delegateAfterTaskUI = getTablePanelComponent()::removeSelectedElements;
 
     final ConsistencyValidationDialog.DeleteOptions removeFlags = new ConsistencyValidationDialog.DeleteOptions();
-
     ConsistencyValidationResult consistencyValidationResult = new ConsistencyValidationResult();
 
-    BusExplorerTask<Void> deleteProviderTask =
+    BusExplorerTask deleteProviderTask =
       DeleteProviderTask(providers, delegateAfterTaskUI, removeFlags, consistencyValidationResult);
-
-    BusExplorerTask<Void> extensionDependencyCheckTask =
-      ExtensionDependencyCheckTask(providers, consistencyValidationResult);
-
-    BusExplorerTask<Void> governanceDependencyCheckTask =
-      GovernanceDependencyCheckTask(providers, consistencyValidationResult);
-
-    extensionDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
-
-    governanceDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
 
     Runnable effectiveDeletion = () -> deleteProviderTask.execute(parentWindow, getString("waiting.title"),
       getString("waiting.msg"), 2, 0, true, false);
 
-    if (extensionDependencyCheckTask.getStatus() && governanceDependencyCheckTask.getStatus()) {
+    if (ExecuteAllDependencyCheckTasks(parentWindow, providers, consistencyValidationResult)) {
       if (consistencyValidationResult.isEmpty()) {
         effectiveDeletion.run();
       } else {
@@ -103,6 +91,25 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
           consistencyValidationResult, removeFlags, effectiveDeletion).showDialog();
       }
     }
+  }
+
+  public static boolean ExecuteAllDependencyCheckTasks(Window parentWindow,
+                                                       Collection<ProviderWrapper> providers,
+                                                       ConsistencyValidationResult consistencyValidationResult) {
+    String title = Language.get(ConsistencyValidationDialog.class, "waiting.dependency.title");
+    String waitingMessage = Language.get(ProviderDeleteAction.class, "waiting.dependency.msg");
+
+    BusExplorerTask extensionDependencyCheckTask =
+      ExtensionDependencyCheckTask(providers, consistencyValidationResult);
+
+    BusExplorerTask governanceDependencyCheckTask =
+      GovernanceDependencyCheckTask(providers, consistencyValidationResult);
+
+    extensionDependencyCheckTask.execute(parentWindow, title, waitingMessage, 2, 0, true, false);
+
+    governanceDependencyCheckTask.execute(parentWindow, title,waitingMessage, 2, 0, true, false);
+
+    return extensionDependencyCheckTask.getStatus() && governanceDependencyCheckTask.getStatus();
   }
 
   public static BusExplorerTask<Void> GovernanceDependencyCheckTask(Collection<ProviderWrapper> providers,

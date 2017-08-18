@@ -12,18 +12,20 @@ import busexplorer.panel.logins.LoginWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.BusQuery;
 import busexplorer.utils.ConsistencyValidationResult;
+import busexplorer.utils.Language;
 import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
 
 /**
  * Classe de ação para a remoção de uma entidade.
- * 
+ *
  * @author Tecgraf
  */
 public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
@@ -68,25 +70,13 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
     ConsistencyValidationResult consistencyValidationResult = new ConsistencyValidationResult();
     Collection<ConsumerWrapper> consumers = getTablePanelComponent().getSelectedElements();
 
-    BusExplorerTask<Void> deleteConsumerTask =
+    BusExplorerTask deleteConsumerTask =
       DeleteConsumerTask(consumers, getTablePanelComponent()::removeSelectedElements, removeFlags, consistencyValidationResult);
-
-    BusExplorerTask<Void> extensionDependencyCheckTask =
-      ExtensionDependencyCheckTask(consumers, consistencyValidationResult);
-
-    extensionDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
-
-    BusExplorerTask<Void> governanceDependencyCheckTask =
-      GovernanceDependencyCheckTask(consumers, consistencyValidationResult);
-
-    governanceDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
-      getString("waiting.dependency.msg"), 2, 0, true, false);
 
     Runnable effectiveDeletion = () -> deleteConsumerTask.execute(parentWindow, getString("waiting.title"),
       getString("waiting.msg"), 2, 0, true, false);
 
-    if (extensionDependencyCheckTask.getStatus() && governanceDependencyCheckTask.getStatus()) {
+    if (ExecuteAllDependencyCheckTasks(parentWindow, consumers, consistencyValidationResult)) {
       if (consistencyValidationResult.isEmpty()) {
         effectiveDeletion.run();
       } else {
@@ -94,6 +84,25 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
           consistencyValidationResult, removeFlags, effectiveDeletion).showDialog();
       }
     }
+  }
+
+  public static boolean ExecuteAllDependencyCheckTasks(Window parentWindow,
+                                                       Collection<ConsumerWrapper> consumers,
+                                                       ConsistencyValidationResult consistencyValidationResult) {
+    String title = Language.get(ConsistencyValidationDialog.class, "waiting.dependency.title");
+    String waitingMessage = Language.get(ConsumerDeleteAction.class, "waiting.dependency.msg");
+
+    BusExplorerTask extensionDependencyCheckTask =
+      ExtensionDependencyCheckTask(consumers, consistencyValidationResult);
+
+    BusExplorerTask governanceDependencyCheckTask =
+      GovernanceDependencyCheckTask(consumers, consistencyValidationResult);
+
+    extensionDependencyCheckTask.execute(parentWindow, title, waitingMessage, 2, 0, true, false);
+
+    governanceDependencyCheckTask.execute(parentWindow, title, waitingMessage, 2, 0, true, false);
+
+    return extensionDependencyCheckTask.getStatus() && governanceDependencyCheckTask.getStatus();
   }
 
   public static BusExplorerTask<Void> GovernanceDependencyCheckTask(Collection<ConsumerWrapper> consumers,

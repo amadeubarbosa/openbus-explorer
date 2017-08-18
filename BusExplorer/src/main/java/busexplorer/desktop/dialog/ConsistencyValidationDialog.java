@@ -26,6 +26,7 @@ import java.awt.Window;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog {
 
@@ -63,17 +64,18 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
 
   private void addAllGovernanceCheckList() {
     ConsistencyValidationResult result = this.consistencyValidationResult;
+
     addCheckListPanel(Language.get(MainDialog.class, "offer.title"), getString("consistency.offers.none"),
-      new ObjectTableModel<>(result.getInconsistentOffers(), new OfferTableProvider()));
+      new ObjectTableModel<>(result.getInconsistentOffers().stream().collect(Collectors.toList()), new OfferTableProvider()));
 
     addCheckListPanel(Language.get(MainDialog.class, "login.title"), getString("consistency.logins.none"),
-      new ObjectTableModel<>(result.getInconsistentLogins(), new LoginTableProvider()));
+      new ObjectTableModel<>(result.getInconsistentLogins().stream().collect(Collectors.toList()), new LoginTableProvider()));
 
     addCheckListPanel(Language.get(MainDialog.class, "entity.title"), getString("consistency.entities.none"),
-      new ObjectTableModel<>(result.getInconsistentEntities(), new EntityTableProvider()));
+      new ObjectTableModel<>(result.getInconsistentEntities().stream().collect(Collectors.toList()), new EntityTableProvider()));
 
     addCheckListPanel(Language.get(MainDialog.class, "authorization.title"), getString("consistency.authorizations.none"),
-      new ObjectTableModel<>(result.getInconsistentAuthorizations(), new AuthorizationTableProvider()));
+      new ObjectTableModel<>(result.getInconsistentAuthorizations().stream().collect(Collectors.toList()), new AuthorizationTableProvider()));
   }
 
   private void addAllExtensionCheckList() {

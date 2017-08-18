@@ -24,7 +24,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,8 +37,6 @@ import java.util.Set;
  * @author Tecgraf
  */
 public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
-
-  public static final String OPENBUS_COMPONENT_INTERFACE = "openbus.component.interface";
 
   /**
    * Construtor da ação.
@@ -128,7 +128,7 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
         for (ServiceOfferDesc offer : offers) {
           for (InterfaceWrapper interfaceInfo : interfaces) {
             for (ServiceProperty property : offer.properties) {
-              if (property.name.equals(OPENBUS_COMPONENT_INTERFACE) && property.value.equals(interfaceInfo.getName())) {
+              if (property.name.equals(OfferWrapper.OPENBUS_COMPONENT_INTERFACE) && property.value.equals(interfaceInfo.getName())) {
                 RegisteredEntity entity = Application.login().admin.getEntity(offer.ref.owner().entity);
                 consistencyValidationResult.getInconsistentAuthorizations()
                   .add(new AuthorizationWrapper(entity.describe(), interfaceInfo.getName()));
@@ -172,19 +172,35 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
       protected void doPerformTask() throws Exception {
         setProgressDialogEnabled(true);
         int i = 0;
-        for (InterfaceWrapper ifaceWrapper : interfaces) {
-          if (Application.login().extension.isExtensionCapable()) {
+        if (Application.login().extension.isExtensionCapable()) {
+          LinkedHashMap<String, List<String>> contractsMaybeBroken = new LinkedHashMap<>();
+          for (InterfaceWrapper ifaceWrapper : interfaces) {
             for (Contract contract : Application.login().extension.getContracts()) {
-              ContractWrapper wrapper = new ContractWrapper(contract);
-              // if this interface is the only one in contract, we must remove the contract!
-              String ifaceToRemove = ifaceWrapper.getName();
-              if ((wrapper.interfaces().size() == 1) && (ifaceToRemove.equals(wrapper.interfaces().get(0)))) {
-                consistencyValidationResult.getInconsistentContracts().put( wrapper.name(), wrapper);
+              ContractWrapper contractWrapper = new ContractWrapper(contract);
+              String iface = ifaceWrapper.getName();
+              // if the contract for this interface...
+              if (contractWrapper.interfaces().contains(iface)) {
+                // mark to futher analysis
+                if (contractsMaybeBroken.get(contractWrapper.name()) == null) {
+                  contractsMaybeBroken.put(contractWrapper.name(), new ArrayList<>());
+                }
+                contractsMaybeBroken.get(contractWrapper.name()).add(iface);
               }
             }
+            this.setProgressStatus(70*i/interfaces.size());
+            i++;
           }
-          this.setProgressStatus(100*i/interfaces.size());
-          i++;
+          i = 0;
+          for (Map.Entry<String, List<String>> entry : contractsMaybeBroken.entrySet()) {
+            Contract contract = Application.login().extension.getContractRegistry().get(entry.getKey());
+            ContractWrapper wrapper = new ContractWrapper(contract);
+            // if the contract will be wipe out
+            if (wrapper.interfaces().size() == entry.getValue().size()) {
+              consistencyValidationResult.getInconsistentContracts().put(wrapper.name(), wrapper);
+            }
+            this.setProgressStatus(70+(30*i/contractsMaybeBroken.entrySet().size()));
+            i++;
+          }
         }
       }
     };

@@ -24,11 +24,14 @@ import java.util.Vector;
  * @author Tecgraf
  */
 public class OfferWrapper {
+  public static final String OPENBUS_COMPONENT_INTERFACE = "openbus.component.interface";
   /** Objeto descritor da oferta */
   private ServiceOfferDesc desc;
 
   /** Identificador da entidade */
   private final String entity;
+  /** Identificador da oferta no registro de ofertas */
+  private final String id;
   /** Nome da interface */
   private final Vector<String> interfaces;
   /** Data da oferta */
@@ -48,7 +51,8 @@ public class OfferWrapper {
   public OfferWrapper(ServiceOfferDesc desc) {
     this.desc = desc;
     this.entity = getProperty(desc, "openbus.offer.entity");
-    this.interfaces = getProperties(desc, "openbus.component.interface");
+    this.id = getProperty(desc, "openbus.offer.id");
+    this.interfaces = getProperties(desc, OPENBUS_COMPONENT_INTERFACE);
     int year = Integer.parseInt(getProperty(desc, "openbus.offer.year"));
     // precisa decrementar o mes em 1
     int month =
@@ -119,8 +123,7 @@ public class OfferWrapper {
       return false;
     }
     OfferWrapper other = (OfferWrapper) o;
-    return entity.equals(other.entity) && interfaces.equals(other.interfaces) &&
-      date.equals(other.date);
+    return entity.equals(other.entity) && id.equals(other.id);
   }
 
   /**
@@ -130,7 +133,7 @@ public class OfferWrapper {
    */
   @Override
   public int hashCode() {
-    return entity.hashCode() ^ interfaces.hashCode() ^ date.hashCode();
+    return entity.hashCode() ^ id.hashCode();
   }
 
   /**

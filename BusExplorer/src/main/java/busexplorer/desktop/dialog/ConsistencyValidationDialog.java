@@ -97,8 +97,8 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
   }
 
   protected JPanel buildFields() {
-    setMinimumSize(new Dimension(500, 500));
-    setPreferredSize(new Dimension(750, 580));
+    setMinimumSize(new Dimension(500, 700));
+    setPreferredSize(new Dimension(750, 700));
     panel = new JPanel(new MigLayout("fill, flowy"));
 
     panel.add(new JLabel(getString("consistency.message")), "grow");

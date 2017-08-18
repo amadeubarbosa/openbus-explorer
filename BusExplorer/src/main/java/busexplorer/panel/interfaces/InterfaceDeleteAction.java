@@ -87,6 +87,13 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
     extensionDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
       getString("waiting.dependency.msg"), 2, 0, true, false);
 
+    BusExplorerTask<Void> contractDependencyCheckTask =
+      ContractDeleteAction.ExtensionDependencyCheckTask(consistencyValidationResult
+        .getInconsistentContracts().values(), consistencyValidationResult);
+
+    contractDependencyCheckTask.execute(parentWindow, getString("waiting.dependency.title"),
+      getString("waiting.dependency.msg"), 2, 0, true, false);
+
     BusExplorerTask<Void> deleteInterfaceTask =
       DeleteInterfaceTask(interfaces, getTablePanelComponent()::removeSelectedElements, removeFlags, consistencyValidationResult);
 
@@ -160,20 +167,15 @@ public class InterfaceDeleteAction extends OpenBusAction<InterfaceWrapper> {
       protected void doPerformTask() throws Exception {
         setProgressDialogEnabled(true);
         int i = 0;
-        for (InterfaceWrapper ifaceToRemove : interfaces) {
+        for (InterfaceWrapper ifaceWrapper : interfaces) {
           if (Application.login().extension.isExtensionCapable()) {
             for (Contract contract : Application.login().extension.getContracts()) {
               ContractWrapper wrapper = new ContractWrapper(contract);
               // if this interface is the only one in contract, we must remove the contract!
+              String ifaceToRemove = ifaceWrapper.getName();
               if ((wrapper.interfaces().size() == 1) && (ifaceToRemove.equals(wrapper.interfaces().get(0)))) {
                 consistencyValidationResult.getInconsistentContracts().put( wrapper.name(), wrapper);
-                break;
               }
-            }
-            // propagate dependency check if some contracts must be removed
-            if (!consistencyValidationResult.getInconsistentContracts().isEmpty()) {
-              ContractDeleteAction.ExtensionDependencyCheckTask(consistencyValidationResult
-                .getInconsistentContracts().values(), consistencyValidationResult);
             }
           }
           this.setProgressStatus(100*i/interfaces.size());

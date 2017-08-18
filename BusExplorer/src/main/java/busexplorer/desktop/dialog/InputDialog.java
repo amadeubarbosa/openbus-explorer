@@ -2,6 +2,7 @@ package busexplorer.desktop.dialog;
 
 import busexplorer.ApplicationIcons;
 import busexplorer.utils.Language;
+import com.sun.istack.internal.Nullable;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JButton;
@@ -205,13 +206,12 @@ public abstract class InputDialog extends JFrame {
   }
 
   private JPanel buildMainPane() {
-    JScrollPane scrolledMessageText = new JScrollPane(messageText);
-    scrolledMessageText.setViewportBorder(null);
-    scrolledMessageText.setBorder(null);
-    scrolledMessageText.setMinimumSize(new Dimension(160, 25));
-
     JPanel bottomPanel = new JPanel(new MigLayout("fill, flowy"));
-    bottomPanel.add(scrolledMessageText, "grow, push");
+    JScrollPane scrollPane = buildErrorMessagePane();
+    //scrollpane is optional
+    if (scrollPane != null) {
+      bottomPanel.add(scrollPane, "grow, push");
+    }
     bottomPanel.add(new JSeparator(JSeparator.HORIZONTAL),"grow");
     bottomPanel.add(this.buttons, "grow");
 
@@ -219,6 +219,14 @@ public abstract class InputDialog extends JFrame {
     panel.add(buildFields(),"grow");
     panel.add(bottomPanel, "grow, dock south");
     return panel;
+  }
+
+  protected @Nullable JScrollPane buildErrorMessagePane() {
+    JScrollPane scrolledMessageText = new JScrollPane(messageText);
+    scrolledMessageText.setViewportBorder(null);
+    scrolledMessageText.setBorder(null);
+    scrolledMessageText.setMinimumSize(new Dimension(160, 25));
+    return scrolledMessageText;
   }
 
   /**

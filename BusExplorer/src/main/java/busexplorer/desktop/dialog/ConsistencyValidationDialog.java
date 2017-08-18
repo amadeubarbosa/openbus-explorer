@@ -18,6 +18,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import java.awt.Dimension;
@@ -87,6 +88,10 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
     addCheckListPanel(Language.get(MainDialog.class, "extension.contract.title"), getString("consistency.contracts.none"),
       new ObjectTableModel<>(new ArrayList<>(result.getInconsistentContracts().values()),
         new ContractTableProvider()));
+  }
+
+  protected JScrollPane buildErrorMessagePane() {
+    return null;
   }
 
   protected JPanel buildFields() {

@@ -2,10 +2,12 @@ package busexplorer.desktop.dialog;
 
 import busexplorer.ApplicationIcons;
 import busexplorer.utils.Language;
+import busexplorer.utils.SwingUtilities;
 import net.miginfocom.swing.MigLayout;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,7 +27,7 @@ import java.util.Arrays;
  * do título através do uso de {@link Language}.
  *
  */
-public abstract class InputDialog extends JFrame {
+public abstract class InputDialog extends JDialog {
 
   /**
    * Botão de confirmação de dados.
@@ -76,7 +78,7 @@ public abstract class InputDialog extends JFrame {
    * @param title título da janela.
    */
   public InputDialog(Window parentWindow, String title) {
-    super(title);
+    super(parentWindow, title);
     init(parentWindow);
   }
 
@@ -90,11 +92,40 @@ public abstract class InputDialog extends JFrame {
   }
 
   public static int showConfirmDialog(Window parentWindow, String message, String title) {
-    Object[] options = new Object[] {
-      Language.get(InputDialog.class, "confirm.button"),
-      Language.get(FrameCancelAction.class, "name") };
-    return JOptionPane.showOptionDialog(parentWindow, message, title, JOptionPane.YES_NO_OPTION,
-      JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+    // using JOptionPane for best look and feel
+    JOptionPane optionPane = new JOptionPane(message, JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
+    JDialog dialog = optionPane.createDialog(parentWindow,title);
+    // specific YES NO buttons to support mnemonic on actions
+    JButton yes = new JButton();
+    yes.setAction(new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        optionPane.setValue(JOptionPane.YES_OPTION);
+        dialog.dispose();
+      }
+    });
+    yes.setText(Language.get(InputDialog.class, "confirm.button"));
+    yes.setMnemonic(Language.get(InputDialog.class, "confirm.button.mnemonic").charAt(0));
+
+    JButton no = new JButton();
+    no.setAction(new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        optionPane.setValue(JOptionPane.NO_OPTION);
+        dialog.dispose();
+      }
+    });
+    no.setText(Language.get(CancelAction.class, "name"));
+    no.setMnemonic(Language.get(CancelAction.class, "mnemonic").charAt(0));
+    // equalize buttons sizes
+    SwingUtilities.equalizeComponentSize(yes, no);
+    optionPane.setOptions(new Object[] { yes, no });
+    optionPane.setInitialValue(yes);
+    dialog.getRootPane().setDefaultButton(yes);
+    // show alternative JOptionPane dialog
+    dialog.setVisible(true);
+    // return the option choosed
+    return ((Integer)optionPane.getValue()).intValue();
   }
 
   /**
@@ -106,39 +137,13 @@ public abstract class InputDialog extends JFrame {
    * @return o painel criado.
    */
   public static JPanel buildButtonPanel(JButton... buttons) {
-    equalizeButtonSizes(buttons);
+    SwingUtilities.equalizeComponentSize(buttons);
     JPanel buttonPanel = new JPanel(new MigLayout("fill, insets 0 0 0 0","[grow][]"));
 
     for (JButton button : buttons) {
       buttonPanel.add(button, "gapleft push");
     }
     return buttonPanel;
-  }
-
-  /**
-   * Iguala o tamanho dos botões contidos no array passado como parâmetro.
-   *
-   * @param buttons o array com os botões
-   */
-  public static void equalizeButtonSizes(JButton[] buttons) {
-    Dimension maxSize = new Dimension(0, 0);
-    int i;
-
-    // Encontra maior dimensão
-    for (i = 0; i < buttons.length; ++i) {
-      maxSize.width =
-        Math.max(maxSize.width, buttons[i].getPreferredSize().width);
-      maxSize.height =
-        Math.max(maxSize.height, buttons[i].getPreferredSize().height);
-    }
-
-    // Atribui novos valores para "preferred" e "maximum size", uma vez que
-    // BoxLayout leva ambos os valores em consideração. */
-    for (i = 0; i < buttons.length; ++i) {
-      buttons[i].setPreferredSize((Dimension) maxSize.clone());
-      buttons[i].setMaximumSize((Dimension) maxSize.clone());
-      buttons[i].setMinimumSize((Dimension) maxSize.clone());
-    }
   }
 
   /**
@@ -166,15 +171,6 @@ public abstract class InputDialog extends JFrame {
    */
   public JButton getCancelButton() {
     return cancel;
-  }
-
-  /**
-   * Obtém a janela deste diálogo.
-   * 
-   * @return janela deste diálogo.
-   */
-  public JFrame getWindow() {
-    return this;
   }
 
   /**
@@ -236,6 +232,7 @@ public abstract class InputDialog extends JFrame {
   private JPanel buildButtons() {
     accept = new JButton(getString("confirm.button"));
     accept.setToolTipText(getString("confirm.tooltip"));
+    accept.setMnemonic(getString("confirm.button.mnemonic").charAt(0));
     accept.addActionListener(ev -> {
       if (acceptActionPerformed()) {
         cancelled = false;
@@ -245,13 +242,8 @@ public abstract class InputDialog extends JFrame {
 
     JRootPane rp = getRootPane();
     rp.setDefaultButton(accept);
-    cancel = new JButton(new FrameCancelAction(this) {
-      @Override
-      public void actionPerformed(ActionEvent ev) {
-        cancelled = true;
-        super.actionPerformed(ev);
-      }
-    });
+    cancel = new JButton(new CancelAction(this));
+    cancel.addActionListener(ev -> cancelled = true);
     cancel.setToolTipText(getString("cancel.tooltip"));
 
     return buildButtonPanel(accept, cancel);

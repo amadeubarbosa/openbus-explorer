@@ -1,12 +1,10 @@
 package busexplorer.desktop.dialog;
 
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
-import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
@@ -26,18 +24,12 @@ import java.util.List;
  * @author Tecgraf
  * @see JLabel
  */
-public class JMultilineLabel extends JComponent {
+public class JMultilineLabel extends JLabel {
   /*
    * @see
    * http://www.koders.com/java/fid9BE9B31AC9BED01828448BF91A61AFA5AE431E16.
    * aspx?s=JMultilineLabel#L8
    */
-
-  /**
-   * Configurações para renderizar o texto.
-   */
-  private static final FontRenderContext frc = new FontRenderContext(null,
-    true, false);
 
   /**
    * Texto a ser apresentado.
@@ -67,6 +59,8 @@ public class JMultilineLabel extends JComponent {
     margin = new Insets(0, 0, 0, 0);
     maxWidth = Integer.MAX_VALUE;
     justify = true;
+    setOpaque(true);
+    setFocusable(true);
   }
 
   /**
@@ -219,7 +213,6 @@ public class JMultilineLabel extends JComponent {
    */
   @Override
   protected void paintComponent(Graphics g) {
-    super.paintComponent(g);
     paintOrGetSize((Graphics2D) g, getWidth());
   }
 
@@ -253,7 +246,7 @@ public class JMultilineLabel extends JComponent {
       AttributedString as = new AttributedString(line);
       as.addAttribute(TextAttribute.FONT, getFont());
       AttributedCharacterIterator aci = as.getIterator();
-      LineBreakMeasurer lbm = new LineBreakMeasurer(aci, frc);
+      LineBreakMeasurer lbm = new LineBreakMeasurer(aci, getFontMetrics(getFont()).getFontRenderContext());
 
       while (lbm.getPosition() < aci.getEndIndex()) {
         TextLayout textLayout = lbm.nextLayout(width);

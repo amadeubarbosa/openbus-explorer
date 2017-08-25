@@ -211,6 +211,7 @@ public class LoginDialog extends JDialog {
     loginPanel.add(configPanel, BorderLayout.CENTER);
 
     buttonLogin = new JButton(Language.get(this.getClass(),"confirm.button"));
+    buttonLogin.setMnemonic(Language.get(this.getClass(),"confirm.button.mnemonic").charAt(0));
     buttonLogin.setToolTipText(Language.get(this.getClass(),"confirm.help"));
     buttonLogin.addActionListener(new LoginAction());
 

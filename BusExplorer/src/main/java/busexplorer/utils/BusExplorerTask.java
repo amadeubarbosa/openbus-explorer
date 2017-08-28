@@ -5,7 +5,6 @@ import busexplorer.desktop.dialog.ExceptionDialog;
 import busexplorer.exception.BusExplorerHandlingException;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.exception.handling.ExceptionHandler;
-import busexplorer.exception.handling.ExceptionType;
 import tecgraf.javautils.gui.Task;
 
 import java.awt.Dialog.ModalityType;
@@ -61,15 +60,9 @@ public abstract class BusExplorerTask<T> extends Task<T> {
   protected void handleError(Exception exception) {
     BusExplorerHandlingException handlingException =
       handler.process(exception, context);
-    if ((exception != null) &&
-      (ExceptionType.getType(exception) == ExceptionType.Unspecified)) {
-      ExceptionDialog.createDialog(parentWindow, taskTitle,
-        handlingException.getException(), "").setVisible(true);
-    } else {
-      ExceptionDialog.createDialog(parentWindow, taskTitle,
-        handlingException.getException(),
-        handlingException.getErrorMessage()).setVisible(true);
-    }
+    ExceptionDialog.createDialog(parentWindow, taskTitle,
+      handlingException.getException(),
+      handlingException.getErrorMessage()).setVisible(true);
   }
 
   /**

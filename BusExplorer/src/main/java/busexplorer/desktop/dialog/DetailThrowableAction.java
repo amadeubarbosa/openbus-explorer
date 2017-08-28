@@ -1,5 +1,6 @@
 package busexplorer.desktop.dialog;
 
+import busexplorer.ApplicationIcons;
 import busexplorer.utils.Language;
 
 import javax.swing.AbstractAction;
@@ -15,14 +16,14 @@ final class DetailThrowableAction extends AbstractAction {
 
   private final JDialog owner;
   private Throwable throwable;
-  private String[] additionalInfo;
 
-  protected DetailThrowableAction(JDialog owner, Throwable throwable, String[] additionalInfo) {
+  protected DetailThrowableAction(JDialog owner, Throwable throwable) {
     putValue(Action.NAME, getString("name"));
     putValue(Action.MNEMONIC_KEY, (int) getString("mnemonic").charAt(0));
+    putValue(Action.SMALL_ICON, ApplicationIcons.ICON_DEBUG_16);
+    putValue(Action.SHORT_DESCRIPTION, getString("tooltip"));
     this.owner = owner;
     this.throwable = throwable;
-    this.additionalInfo = additionalInfo;
   }
 
   /**
@@ -34,8 +35,7 @@ final class DetailThrowableAction extends AbstractAction {
       owner.dispose();
     }
     ExceptionDialog dialog =
-      ExceptionDialog.createDialog(this.owner, this.owner.getTitle(), this.throwable,
-        this.additionalInfo);
+      ExceptionDialog.createDialog(this.owner, this.owner.getTitle(), this.throwable);
     dialog.setVisible(true);
   }
 

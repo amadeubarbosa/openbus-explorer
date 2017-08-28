@@ -75,9 +75,19 @@ public class ApplicationIcons {
   public static final ImageIcon ICON_RESTART_16 = createImageIcon("Restart16.png");
 
   /**
+   * Depurar.
+   */
+  public static final ImageIcon ICON_DEBUG_16 = createImageIcon("Debug16.png");
+
+  /**
    * Propriedades.
    */
   public static final ImageIcon ICON_PROPS_16 = createImageIcon("Props16.png");
+
+  /**
+   * Copiar.
+   */
+  public static final ImageIcon ICON_COPY_16 = createImageIcon("Copy16.png");
 
   /**
    * Planilha.

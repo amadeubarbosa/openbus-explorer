@@ -153,10 +153,9 @@ public class BusExplorerExceptionHandler extends
         StringBuilder builder = new StringBuilder();
         RegisteredEntityDesc[] entities = ((InterfaceInUse) theException).entities;
         for (int i = 0; i < entities.length; i++) {
+          builder.append(" - ");
           builder.append(entities[i].id);
-          if (i+1 < entities.length) {
-            builder.append(" ,");
-          }
+          builder.append("\n");
         }
         exception.setErrorMessage(Language.get(this.getClass(),
           "interface.inuse", builder.toString()));
@@ -182,12 +181,11 @@ public class BusExplorerExceptionHandler extends
         for (int i = 0; i < offers.length; i++) {
           for (ServiceProperty prop : offers[i].properties) {
             if (prop.name.equals("openbus.offer.id")) {
+              builder.append(" - ");
               builder.append(prop.value);
+              builder.append("\n");
               break;
             }
-          }
-          if (i+1 < offers.length) {
-            builder.append(" ,");
           }
         }
         exception.setErrorMessage(Language.get(this.getClass(),

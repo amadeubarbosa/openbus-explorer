@@ -770,7 +770,9 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     oilLogLevelSpinner.addChangeListener(activateButtons);
 
     JPanel restoreDefaultsPanel = new JPanel(new MigLayout("align center"));
-    final JButton restoreDefaultsButton = new JButton(Language.get(MainDialog.class,"conf.restoredefaults.label"));
+    final JButton restoreDefaultsButton = new JButton(Language.get(MainDialog.class,"conf.restoredefaults"));
+    restoreDefaultsButton.setIcon(ApplicationIcons.ICON_RESTORE_16);
+    restoreDefaultsButton.setMnemonic(Language.get(MainDialog.class, "conf.restoredefaults.mnemonic").charAt(0));
     restoreDefaultsPanel.add(restoreDefaultsButton);
 
     final RefreshablePanel customPanel = new RefreshablePanel() {

@@ -24,12 +24,12 @@ public class ApplicationIcons {
   /**
    * Adição.
    */
-  public static final ImageIcon ICON_ADD_16 = createImageIcon("Add16.gif");
+  public static final ImageIcon ICON_ADD_16 = createImageIcon("Add16.png");
 
   /**
    * Edição.
    */
-  public static final ImageIcon ICON_EDIT_16 = createImageIcon("Edit16.gif");
+  public static final ImageIcon ICON_EDIT_16 = createImageIcon("Edit16.png");
 
   /**
    * Remoção.
@@ -41,13 +41,13 @@ public class ApplicationIcons {
    * Atualização.
    */
   public static final ImageIcon ICON_REFRESH_16 =
-    createImageIcon("Refresh16.gif");
+    createImageIcon("Refresh16.png");
 
   /**
    * Limpar.
    */
   public static final ImageIcon ICON_CLEAR_16 =
-    createImageIcon("Clear16.gif");
+    createImageIcon("Clear16.png");
 
   /**
    * Indicador de mais opções.
@@ -67,12 +67,17 @@ public class ApplicationIcons {
   /**
    * Validação.
    */
-  public static final ImageIcon ICON_VALIDATE_16 = createImageIcon("Validate16.gif");
+  public static final ImageIcon ICON_VALIDATE_16 = createImageIcon("Validate16.png");
 
   /**
    * Reiniciar.
    */
   public static final ImageIcon ICON_RESTART_16 = createImageIcon("Restart16.png");
+
+  /**
+   * Restaurar padrões.
+   */
+  public static final ImageIcon ICON_RESTORE_16 = createImageIcon("RestoreDefaults16.png");
 
   /**
    * Depurar.

@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import javax.swing.JTextField;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ItemEvent;
@@ -49,45 +48,41 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
     this.delegate = removalDelegate;
   }
 
-  private void addCheckListPanel(String title, String noValuesMessages, ObjectTableModel<?> tableModel) {
-    panel.add(new JLabel(title), "grow");
+  private void addCheckListPanel(String title, ObjectTableModel<?> tableModel) {
     if (!tableModel.getRows().isEmpty()) {
+      panel.add(new JLabel(title), "grow");
       RefreshablePanel pane = new TablePanelComponent<>(tableModel, new ArrayList<>(), false);
       pane.setPreferredSize(new Dimension(100, 150));
       panel.add(pane, "grow, push, pad 0 10 0 -10");
-    } else {
-      JLabel none = new JLabel(noValuesMessages);
-      none.setHorizontalAlignment(JTextField.CENTER);
-      panel.add(none, "grow");
     }
   }
 
   private void addAllGovernanceCheckList() {
     ConsistencyValidationResult result = this.consistencyValidationResult;
 
-    addCheckListPanel(Language.get(MainDialog.class, "offer.title"), getString("consistency.offers.none"),
+    addCheckListPanel(Language.get(MainDialog.class, "offer.title"),
       new ObjectTableModel<>(result.getInconsistentOffers().stream().collect(Collectors.toList()), new OfferTableProvider()));
 
-    addCheckListPanel(Language.get(MainDialog.class, "login.title"), getString("consistency.logins.none"),
+    addCheckListPanel(Language.get(MainDialog.class, "login.title"),
       new ObjectTableModel<>(result.getInconsistentLogins().stream().collect(Collectors.toList()), new LoginTableProvider()));
 
-    addCheckListPanel(Language.get(MainDialog.class, "entity.title"), getString("consistency.entities.none"),
+    addCheckListPanel(Language.get(MainDialog.class, "entity.title"),
       new ObjectTableModel<>(result.getInconsistentEntities().stream().collect(Collectors.toList()), new EntityTableProvider()));
 
-    addCheckListPanel(Language.get(MainDialog.class, "authorization.title"), getString("consistency.authorizations.none"),
+    addCheckListPanel(Language.get(MainDialog.class, "authorization.title"),
       new ObjectTableModel<>(result.getInconsistentAuthorizations().stream().collect(Collectors.toList()), new AuthorizationTableProvider()));
   }
 
   private void addAllExtensionCheckList() {
     ConsistencyValidationResult result = this.consistencyValidationResult;
-    addCheckListPanel(Language.get(MainDialog.class, "integration.title"), getString("consistency.integrations.none"),
+    addCheckListPanel(Language.get(MainDialog.class, "integration.title"),
       new ObjectTableModel<>(new ArrayList<>(result.getInconsistentIntegrations().values()), new IntegrationTableProvider()));
 
-    addCheckListPanel(Language.get(MainDialog.class, "extension.provider.title"), getString("consistency.providers.none"),
-        new ObjectTableModel<>(new ArrayList<>(result.getInconsistentProviders().values()),
+    addCheckListPanel(Language.get(MainDialog.class, "extension.provider.title"),
+      new ObjectTableModel<>(new ArrayList<>(result.getInconsistentProviders().values()),
           new ProviderTableProvider()));
 
-    addCheckListPanel(Language.get(MainDialog.class, "extension.contract.title"), getString("consistency.contracts.none"),
+    addCheckListPanel(Language.get(MainDialog.class, "extension.contract.title"),
       new ObjectTableModel<>(new ArrayList<>(result.getInconsistentContracts().values()),
         new ContractTableProvider()));
   }

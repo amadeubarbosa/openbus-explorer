@@ -1,5 +1,43 @@
 package busexplorer.desktop.dialog;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
+import java.util.function.Consumer;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import busexplorer.Application;
 import busexplorer.ApplicationIcons;
 import busexplorer.BusExplorerLogin;
@@ -54,6 +92,7 @@ import busexplorer.panel.entities.EntityEditAction;
 import busexplorer.panel.entities.EntityRefreshAction;
 import busexplorer.panel.entities.EntityTableProvider;
 import busexplorer.panel.entities.EntityWrapper;
+import busexplorer.panel.healing.ConsistencyReportPanel;
 import busexplorer.panel.integrations.IntegrationAddAction;
 import busexplorer.panel.integrations.IntegrationDeleteAction;
 import busexplorer.panel.integrations.IntegrationEditAction;
@@ -89,44 +128,6 @@ import net.miginfocom.swing.MigLayout;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.admin.BusAdminFacade;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Properties;
-import java.util.Vector;
-import java.util.function.Consumer;
 
 import static busexplorer.Application.APPLICATION_LOGIN;
 
@@ -257,6 +258,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     disconnect = new JButton(Language.get(this.getClass(),"disconnect"));
     disconnect.setEnabled(false);
     disconnect.setIcon(ApplicationIcons.ICON_LOGOUT_16);
+    disconnect.setMnemonic(Language.get(this.getClass(),"disconnect.mnemonic").charAt(0));
     disconnect.addActionListener(new ActionListener() {
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -312,7 +314,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     conceptsPanels.put("editor", initPanelEditor());
     for (String concept : conceptsPanels.keySet()) {
       String tabTitle = Language.get(MainDialog.class, concept + ".title");
-      String tabTooltip = Language.get(MainDialog.class, concept + ".toolTip");
+      String tabTooltip = Language.get(MainDialog.class, concept + ".tooltip");
       featuresPane.addTab(tabTitle, null,  conceptsPanels.get(concept), tabTooltip);
     }
 
@@ -360,9 +362,10 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     conceptsPanels.put("interface",     initPanelInterface());
     conceptsPanels.put("authorization", initPanelAuthorization());
     conceptsPanels.put("integration",   initExtensionEditor());
+    conceptsPanels.put("pending",       initPendingChecks());
     for (String concept : conceptsPanels.keySet()) {
       String tabTitle = Language.get(MainDialog.class,concept + ".title");
-      String tabTooltip = Language.get(MainDialog.class, concept + ".toolTip");
+      String tabTooltip = Language.get(MainDialog.class, concept + ".tooltip");
       editorPane.addTab(tabTitle, null,  conceptsPanels.get(concept), tabTooltip);
     }
     editorPane.addChangeListener(changeEvent -> {
@@ -381,33 +384,37 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     return editorPane;
   }
 
-    private JComponent initExtensionEditor() {
-        JTabbedPane editorPane = new JTabbedPane(JTabbedPane.LEFT);
-        HashMap<String, RefreshablePanel> conceptsPanels = new LinkedHashMap<>();
-        conceptsPanels.put("extension.overview", initPanelIntegrationOverview());
-        conceptsPanels.put("extension.consumer", initPanelIntegrationConsumer());
-        conceptsPanels.put("extension.provider", initPanelIntegrationProvider());
-        conceptsPanels.put("extension.contract", initPanelIntegrationContract());
-        for (String concept : conceptsPanels.keySet()) {
-            String tabTitle = Language.get(MainDialog.class, concept + ".title");
-            String tabTooltip = Language.get(MainDialog.class, concept + ".toolTip");
-            editorPane.addTab(tabTitle, null,  conceptsPanels.get(concept), tabTooltip);
-        }
-        editorPane.addChangeListener(changeEvent -> {
-            Component selected = editorPane.getSelectedComponent();
-            if (selected instanceof RefreshDelegate) {
-                ((RefreshDelegate) selected).refresh(null);
-            }
-        });
-        notifiers.add(isAdmin -> {
-          if (Application.login().extension.isExtensionCapable()) {
-            editorPane.setSelectedIndex(0);
-            ((RefreshablePanel) editorPane.getSelectedComponent()).refresh(null);
-          }
-        });
-
-        return editorPane;
+  private JComponent initExtensionEditor() {
+    JTabbedPane editorPane = new JTabbedPane(JTabbedPane.LEFT);
+    HashMap<String, RefreshablePanel> conceptsPanels = new LinkedHashMap<>();
+    conceptsPanels.put("extension.overview", initPanelIntegrationOverview());
+    conceptsPanels.put("extension.consumer", initPanelIntegrationConsumer());
+    conceptsPanels.put("extension.provider", initPanelIntegrationProvider());
+    conceptsPanels.put("extension.contract", initPanelIntegrationContract());
+    for (String concept : conceptsPanels.keySet()) {
+      String tabTitle = Language.get(MainDialog.class, concept + ".title");
+      String tabTooltip = Language.get(MainDialog.class, concept + ".tooltip");
+      editorPane.addTab(tabTitle, null,  conceptsPanels.get(concept), tabTooltip);
     }
+    editorPane.addChangeListener(changeEvent -> {
+      Component selected = editorPane.getSelectedComponent();
+      if (selected instanceof RefreshDelegate) {
+          ((RefreshDelegate) selected).refresh(null);
+      }
+    });
+    notifiers.add(isAdmin -> {
+      if (Application.login().extension.isExtensionCapable()) {
+        editorPane.setSelectedIndex(0);
+        ((RefreshablePanel) editorPane.getSelectedComponent()).refresh(null);
+      }
+    });
+
+    return editorPane;
+  }
+
+  private JComponent initPendingChecks() {
+    return new ConsistencyReportPanel(this);
+  }
 
   private RefreshablePanel initPanelIntegrationContract() {
     ObjectTableModel<ContractWrapper> model = new ObjectTableModel<>(new

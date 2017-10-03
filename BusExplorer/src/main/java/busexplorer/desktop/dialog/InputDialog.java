@@ -1,10 +1,12 @@
 package busexplorer.desktop.dialog;
 
-import busexplorer.ApplicationIcons;
-import busexplorer.utils.Language;
-import busexplorer.utils.SwingUtilities;
-import net.miginfocom.swing.MigLayout;
-
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -14,13 +16,11 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Arrays;
+
+import busexplorer.ApplicationIcons;
+import busexplorer.utils.Language;
+import busexplorer.utils.SwingUtilities;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Diálogo para entrada de dados com suporte embutido à internacionalização
@@ -117,6 +117,7 @@ public abstract class InputDialog extends JDialog {
     });
     no.setText(Language.get(CancelAction.class, "name"));
     no.setMnemonic(Language.get(CancelAction.class, "mnemonic").charAt(0));
+
     // equalize buttons sizes
     SwingUtilities.equalizeComponentSize(yes, no);
     optionPane.setOptions(new Object[] { yes, no });
@@ -244,7 +245,8 @@ public abstract class InputDialog extends JDialog {
     rp.setDefaultButton(accept);
     cancel = new JButton(new CancelAction(this));
     cancel.addActionListener(ev -> cancelled = true);
-    cancel.setToolTipText(getString("cancel.tooltip"));
+    cancel.setToolTipText(Language.get(CancelAction.class, "tooltip"));
+    cancel.setMnemonic(Language.get(CancelAction.class, "mnemonic").charAt(0));
 
     return buildButtonPanel(accept, cancel);
   }

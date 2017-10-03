@@ -1,8 +1,8 @@
 package busexplorer;
 
-import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.net.URL;
+import javax.swing.ImageIcon;
 
 /**
  * Local para imagens internas.
@@ -113,6 +113,16 @@ public class ApplicationIcons {
    * Cancelar.
    */
   public static final ImageIcon ICON_CANCEL_16 = createImageIcon("Cancel16.gif");
+
+  /**
+   * Pendências.
+   */
+  public static final ImageIcon ICON_HEALTHY_32 = createImageIcon("Healthy32.png");
+
+  /**
+   * Animação do carregamento.
+   */
+  public static final ImageIcon ICON_LOADING_32 = createImageIcon("Loading32.gif");
 
   /**
    * Caminho para recurso de imagens dentro do classpath

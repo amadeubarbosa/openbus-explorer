@@ -1,33 +1,5 @@
 package busexplorer.panel;
 
-import busexplorer.ApplicationIcons;
-import busexplorer.utils.Availability;
-import busexplorer.utils.AvailabilityRenderer;
-import busexplorer.utils.DateTimeRenderer;
-import busexplorer.utils.Language;
-import busexplorer.utils.StringVectorRenderer;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.GUIUtils;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.javautils.gui.table.ObjectTableProvider;
-import tecgraf.javautils.gui.table.SortableTable;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SortOrder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -44,6 +16,34 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SortOrder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Document;
+
+import busexplorer.ApplicationIcons;
+import busexplorer.utils.Availability;
+import busexplorer.utils.AvailabilityRenderer;
+import busexplorer.utils.DateTimeRenderer;
+import busexplorer.utils.Language;
+import busexplorer.utils.StringVectorRenderer;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.GUIUtils;
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+import tecgraf.javautils.gui.table.SortableTable;
 
 /**
  * Componente que define um painel com uma {@link SortableTable} e modulariza o
@@ -82,6 +82,8 @@ public class TablePanelComponent<T> extends RefreshablePanel {
   private boolean hasBtns = false;
   /** Indicador se é necessário painel de filtro sobre a tabela */
   private boolean hasFilter = true;
+  /** Indicador se é necessário painel de botões abaixo da tabela */
+  private boolean hasBtnsPanel = true;
   /** Ação de Refresh */
   private TablePanelActionInterface<T> refreshAction;
   /** Campo de filtro */
@@ -90,7 +92,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
   private JButton clearButton;
 
   /**
-   * Construtor
+   * Construtor a partir da lista de objetos e um {@link ObjectTableProvider} para controlar a exibição das colunas
    *
    * @param pInfo Lista com os dados da tabela.
    * @param pTableProvider Provedor de dados da tabela.
@@ -102,18 +104,36 @@ public class TablePanelComponent<T> extends RefreshablePanel {
   }
 
   /**
-   * Construtor.
-   *  @param pTableModel Modelo da tabela.
+   * Construtor com {@link ObjectTableModel} personalizado e opção de desativar filtro
+   *
+   * @param pTableModel Modelo da tabela.
    * @param actions Conjunto de ações relacionadas ao componente.
    * @param hasFilter Deve ser {@code true} caso se queira construir o painel contendo uma
    *                  barra de pesquisa para filtrar os resultados, ou {@code false} caso contrário.
    *                  Valor padrão é {@code true}.
    */
   public TablePanelComponent(ObjectTableModel<T> pTableModel,
-                             List<? extends TablePanelActionInterface<T>> actions, boolean hasFilter) {
+                               List<? extends TablePanelActionInterface<T>> actions, boolean hasFilter) {
+    this(pTableModel, actions, hasFilter, true);
+  }
+
+  /**
+   * Construtor com {@link ObjectTableModel} personalizado, opção de desativar filtro e painel de botões
+   *
+   * @param pTableModel Modelo da tabela.
+   * @param actions Conjunto de ações relacionadas ao componente.
+   * @param hasFilter Deve ser {@code true} caso se queira construir o painel contendo uma
+   *                  barra de pesquisa para filtrar os resultados, ou {@code false} caso contrário.
+   *                  Valor padrão é {@code true}.
+   * @param hasBtnsPanel Deve ser {@code true} caso se queira construir o painel contendo uma barra
+   *                       de botões para as ações, ou {@code false} caso contrário. Valor padrão é {@code true}.
+   */
+  public TablePanelComponent(ObjectTableModel<T> pTableModel,
+                             List<? extends TablePanelActionInterface<T>> actions, boolean hasFilter, boolean hasBtnsPanel) {
     createTable(pTableModel);
     processActions(actions);
     this.hasFilter = hasFilter;
+    this.hasBtnsPanel = hasBtnsPanel;
     init();
   }
 
@@ -212,7 +232,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
       this.add(getFilterPanel(), BorderLayout.NORTH);
     }
     this.add(getScrollPane(), BorderLayout.CENTER);
-    if (hasBtns) {
+    if (hasBtnsPanel && hasBtns) {
       this.add(getButtonsPanel(), BorderLayout.SOUTH);
     }
     this.validate();

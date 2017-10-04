@@ -1,5 +1,11 @@
 package busexplorer.panel.consumers;
 
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import busexplorer.Application;
 import busexplorer.desktop.dialog.ConsistencyValidationDialog;
 import busexplorer.desktop.dialog.InputDialog;
@@ -15,13 +21,8 @@ import busexplorer.utils.ConsistencyValidationResult;
 import busexplorer.utils.Language;
 import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import tecgraf.openbus.services.governance.v1_0.Consumer;
 import tecgraf.openbus.services.governance.v1_0.Integration;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.util.Collection;
 
 /**
  * Classe de ação para a remoção de uma entidade.
@@ -140,7 +141,8 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
         for (ConsumerWrapper consumer : consumers) {
           String consumerName = consumer.remote().name();
           for (Integration integration : Application.login().extension.getIntegrationRegistry().integrations()) {
-            if (integration.consumer().name().equals(consumerName)) {
+            Consumer c = integration.consumer();
+            if (c != null && c.name().equals(consumerName)) {
               consistencyValidationResult
                 .getInconsistentIntegrations().put(integration.id(), new IntegrationWrapper(integration));
             }

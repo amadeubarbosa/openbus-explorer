@@ -488,6 +488,15 @@ public class TablePanelComponent<T> extends RefreshablePanel {
   }
 
   /**
+   * Recupera a lista de elementos associados à tabela.
+   *
+   * @return o conjunto de elementos.
+   */
+  public List<T> getElements() {
+    return getTableModel().getRows();
+  }
+
+  /**
    * Recupera o elemento selecionado.
    * 
    * @return o elemento.

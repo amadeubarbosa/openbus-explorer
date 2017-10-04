@@ -7,16 +7,34 @@ import javax.swing.JFrame;
 
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.OpenBusAction;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.panel.providers.ProviderDeleteAction;
+import busexplorer.panel.providers.ProviderEditAction;
 import busexplorer.panel.providers.ProviderRefreshAction;
+import busexplorer.panel.providers.ProviderTableProvider;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
-public class ProvidersMissingFieldsRefreshAction extends ProviderRefreshAction {
-
-  public ProvidersMissingFieldsRefreshAction(JFrame parentWindow) {
+public class ProviderMissingBusQuery extends ProviderRefreshAction {
+  public ProviderMissingBusQuery(JFrame parentWindow) {
     super(parentWindow);
+  }
+
+  protected TablePanelComponent<ProviderWrapper> buildTableComponent() {
+    if (getTablePanelComponent() == null) {
+      ArrayList actions = new ArrayList<OpenBusAction>();
+      actions.add(new ProviderDeleteAction(parentWindow));
+      actions.add(new ProviderEditAction((JFrame) parentWindow));
+      actions.add(this);
+      this.setTablePanelComponent(new TablePanelComponent<>(
+        new ObjectTableModel<>(new ArrayList<>(), new ProviderTableProvider()),
+        actions, false, false));
+    }
+    return getTablePanelComponent();
   }
 
   @Override
@@ -28,10 +46,7 @@ public class ProvidersMissingFieldsRefreshAction extends ProviderRefreshAction {
         protected void doPerformTask() throws Exception {
           ArrayList<Provider> result = new ArrayList<>();
           for (Provider provider : Application.login().extension.getProviders()) {
-            if ((provider.contracts().length == 0) || provider.code().isEmpty()
-              || provider.busquery().isEmpty() || provider.manageroffice().isEmpty()
-              || provider.manager().length == 0 || provider.support().length == 0
-              || provider.supportoffice().isEmpty()) {
+            if (provider.busquery().isEmpty()) {
               result.add(provider);
             }
           }
@@ -46,7 +61,7 @@ public class ProvidersMissingFieldsRefreshAction extends ProviderRefreshAction {
         }
       };
 
-    task.execute(parentWindow, Language.get(ProviderRefreshAction.class, "waiting.title"),
-      Language.get(ProviderRefreshAction.class, "waiting.msg"), 2, 0);
+    task.execute(parentWindow, Language.get(this.getClass().getSuperclass(), "waiting.title"),
+      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0);
   }
 }

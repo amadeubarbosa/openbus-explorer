@@ -1,17 +1,17 @@
 package busexplorer.utils;
 
-import busexplorer.Application;
-import tecgraf.openbus.core.v2_1.services.ServiceFailure;
-import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
+import busexplorer.Application;
+import tecgraf.openbus.core.v2_1.services.ServiceFailure;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 public class BusQuery {
   final private String expression;
@@ -33,8 +33,8 @@ public class BusQuery {
     return true;
   }
 
-  public Map<RegisteredEntityDesc, List<String>> filterAuthorizations() throws ScriptException, ServiceFailure {
-    engine.put("auths", Application.login().admin.getAuthorizations());
+  public Map<RegisteredEntityDesc, List<String>> filterAuthorizations(Map<RegisteredEntityDesc, List<String>> authorizations) throws ScriptException, ServiceFailure {
+    engine.put("auths", authorizations);
     engine.put("expression", expression);
     engine.eval("var found = new java.util.HashMap(); " +
       "auths.forEach(function(key, value) {" +
@@ -48,8 +48,12 @@ public class BusQuery {
     return (Map<RegisteredEntityDesc, List<String>>) engine.get("found");
   }
 
-  public ArrayList<ServiceOfferDesc> filterOffers() throws ScriptException, ServiceFailure {
-    engine.put("offers", Application.login().admin.getOffers().toArray());
+  public Map<RegisteredEntityDesc, List<String>> filterAuthorizations() throws ScriptException, ServiceFailure {
+    return filterAuthorizations(Application.login().admin.getAuthorizations());
+  }
+
+  public ArrayList<ServiceOfferDesc> filterOffers(List<ServiceOfferDesc> offers) throws ScriptException, ServiceFailure {
+    engine.put("offers", offers);
     engine.put("expression", expression);
     //engine.eval("print('[DEBUG] expression: ', expression);");
     //engine.eval("print('[DEBUG] offers: ', offers.length);");
@@ -72,8 +76,12 @@ public class BusQuery {
     return (ArrayList<ServiceOfferDesc>) engine.get("found");
   }
 
-  public ArrayList<RegisteredEntityDesc> filterEntities() throws ScriptException, ServiceFailure {
-    engine.put("entities", Application.login().admin.getEntities());
+  public ArrayList<ServiceOfferDesc> filterOffers() throws ScriptException, ServiceFailure {
+    return filterOffers(Application.login().admin.getOffers());
+  }
+
+  public ArrayList<RegisteredEntityDesc> filterEntities(List<RegisteredEntityDesc> entities) throws ScriptException, ServiceFailure {
+    engine.put("entities", entities);
     engine.put("expression", expression);
     engine.eval("var found = new java.util.ArrayList(); " +
       "for (i =0; i < entities.length; i++) {" +
@@ -86,5 +94,9 @@ public class BusQuery {
       "  } " +
       "};");
     return (ArrayList<RegisteredEntityDesc>) engine.get("found");
+  }
+
+  public ArrayList<RegisteredEntityDesc> filterEntities() throws ScriptException, ServiceFailure {
+    return filterEntities(Application.login().admin.getEntities());
   }
 }

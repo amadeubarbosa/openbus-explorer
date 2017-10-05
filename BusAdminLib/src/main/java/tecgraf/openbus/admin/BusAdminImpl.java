@@ -1,5 +1,12 @@
 package tecgraf.openbus.admin;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.omg.CORBA.Object;
 import scs.core.IComponent;
 import scs.core.IComponentHelper;
@@ -31,13 +38,6 @@ import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.InterfaceReg
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.InvalidInterface;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * A classe implementa os comandos especificados na interface {@link BusAdminFacade}.
@@ -228,7 +228,7 @@ public class BusAdminImpl implements BusAdminFacade {
     RegisteredEntityDesc[] entitiesDesc =
       this.entityRegistry.getAuthorizedEntities();
     for (RegisteredEntityDesc entityDesc : entitiesDesc) {
-      map.put(entityDesc, Arrays.asList(entityDesc.ref.getGrantedInterfaces()));
+      map.put(entityDesc, new ArrayList(Arrays.asList(entityDesc.ref.getGrantedInterfaces())));
     }
     return map;
   }

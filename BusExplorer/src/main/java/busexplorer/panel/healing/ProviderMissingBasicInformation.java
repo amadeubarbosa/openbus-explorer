@@ -40,6 +40,9 @@ public class ProviderMissingBasicInformation extends ProviderRefreshAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    if (Application.login().extension.isExtensionCapable() == false) {
+      return;
+    }
     BusExplorerTask<List<ProviderWrapper>> task =
       new BusExplorerTask<List<ProviderWrapper>>(ExceptionContext.BusCore) {
 

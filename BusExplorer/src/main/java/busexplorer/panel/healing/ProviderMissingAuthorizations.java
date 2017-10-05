@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import javax.swing.JFrame;
 
 import busexplorer.Application;
@@ -20,7 +19,6 @@ import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.BusQuery;
 import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 import tecgraf.openbus.services.governance.v1_0.Contract;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
@@ -44,6 +42,9 @@ public class ProviderMissingAuthorizations extends ProviderRefreshAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    if (Application.login().extension.isExtensionCapable() == false) {
+      return;
+    }
     BusExplorerTask<List<ProviderWrapper>> task =
       new BusExplorerTask<List<ProviderWrapper>>(ExceptionContext.BusCore) {
 
@@ -52,11 +53,10 @@ public class ProviderMissingAuthorizations extends ProviderRefreshAction {
           ArrayList<Provider> result = new ArrayList<>();
           for (Provider provider : Application.login().extension.getProviders()) {
             if ((provider.busquery().isEmpty() == false) && (provider.contracts().length > 0)) {
-              ArrayList<String> authorizedInterfaces = new ArrayList<>();
-              BusQuery busQuery = new BusQuery(provider.busquery());
-              for (Map.Entry<RegisteredEntityDesc, List<String>> authorizations : busQuery.filterAuthorizations().entrySet()) {
-                authorizedInterfaces.addAll(authorizations.getValue());
-              }
+              ArrayList<String> authorizedInterfaces = new ArrayList();
+              new BusQuery(provider.busquery())
+                .filterAuthorizations().values()
+                .parallelStream().forEach(authorizedInterfaces::addAll);
               for (Contract contract : provider.contracts()) {
                 if (authorizedInterfaces.containsAll(Arrays.asList(contract.interfaces())) == false) {
                   //TODO: poderia apresentar na tabela apenas os contratos afetados pela falta de autorização

@@ -15,16 +15,14 @@ import busexplorer.panel.authorizations.AuthorizationDeleteAction;
 import busexplorer.panel.authorizations.AuthorizationRefreshAction;
 import busexplorer.panel.authorizations.AuthorizationTableProvider;
 import busexplorer.panel.authorizations.AuthorizationWrapper;
-import busexplorer.panel.entities.EntityWrapper;
+import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.BusQuery;
 import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
-import tecgraf.openbus.services.governance.v1_0.Provider;
 
-public class AuthorizationMissingProvider extends AuthorizationRefreshAction {
-  public AuthorizationMissingProvider(JFrame parentWindow) {
+public class AuthorizationMissingOffer extends AuthorizationRefreshAction {
+  public AuthorizationMissingOffer(JFrame parentWindow) {
     super(parentWindow);
   }
 
@@ -42,32 +40,26 @@ public class AuthorizationMissingProvider extends AuthorizationRefreshAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    if (Application.login().extension.isExtensionCapable() == false) {
-      return;
-    }
     BusExplorerTask<List<AuthorizationWrapper>> task =
       new BusExplorerTask<List<AuthorizationWrapper>>(ExceptionContext.BusCore) {
 
         @Override
         protected void doPerformTask() throws Exception {
           Map<RegisteredEntityDesc, List<String>> result = Application.login().admin.getAuthorizations();
-          List<Provider> providers = Application.login().extension.getProviders();
-          for (Iterator<Map.Entry<RegisteredEntityDesc, List<String>>> it = result.entrySet().iterator(); it.hasNext();) {
-            boolean found = false;
-            EntityWrapper entityGranted = new EntityWrapper(it.next().getKey());
-            for (Provider provider : providers) {
-              if (provider.busquery().isEmpty() == false) {
-                Map<RegisteredEntityDesc, List<String>> map = new BusQuery(provider.busquery()).filterAuthorizations(result);
-                for (RegisteredEntityDesc providerEntity : map.keySet()) {
-                  if (new EntityWrapper(providerEntity).equals(entityGranted)) {
-                    it.remove();
-                    found = true;
-                    break;
-                  }
+          ArrayList<OfferWrapper> offers = (ArrayList) OfferWrapper.convertToInfo(Application.login().admin.getOffers());
+          for (Iterator<Map.Entry<RegisteredEntityDesc, List<String>>> itAuths = result.entrySet().iterator(); itAuths.hasNext();) {
+            Map.Entry<RegisteredEntityDesc, List<String>> entryAuthorization = itAuths.next();
+            String entityName = entryAuthorization.getKey().id;
+            List<String> grantedInterfaces = entryAuthorization.getValue();
+            for (Iterator<OfferWrapper> itOffer = offers.iterator(); itOffer.hasNext();) {
+              OfferWrapper offer = itOffer.next();
+              if (entityName.equals(offer.getEntityId())) {
+                grantedInterfaces.removeAll(offer.getInterfaces());
+                itOffer.remove();
+                if (grantedInterfaces.isEmpty()) {
+                  itAuths.remove();
+                  break;
                 }
-              }
-              if (found) {
-                break;
               }
             }
           }

@@ -40,6 +40,9 @@ public class OfferMissingProvider extends OfferRefreshAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    if (Application.login().extension.isExtensionCapable() == false) {
+      return;
+    }
     BusExplorerTask<List<OfferWrapper>> task =
       new BusExplorerTask<List<OfferWrapper>>(ExceptionContext.BusCore) {
 

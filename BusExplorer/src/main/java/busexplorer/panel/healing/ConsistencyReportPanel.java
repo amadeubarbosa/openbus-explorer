@@ -1,6 +1,8 @@
 package busexplorer.panel.healing;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,6 +13,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 
 import busexplorer.ApplicationIcons;
 import busexplorer.exception.handling.ExceptionContext;
@@ -29,13 +33,14 @@ public class ConsistencyReportPanel extends RefreshablePanel {
   private final JPanel dataPane;
 
   public ConsistencyReportPanel(JFrame parentWindow) {
-    super(new MigLayout("flowy"));
+    super(new BorderLayout());
     this.parentWindow = parentWindow;
-    JPanel header = new JPanel();
+    JPanel header = new JPanel(new MigLayout("fill, flowy"));
 
     JLabel headingLabel = new JLabel(ApplicationIcons.ICON_HEALTHY_32);
     headingLabel.setText(getString("title"));
     header.add(headingLabel, "growx, push");
+    header.add(new JSeparator(JSeparator.HORIZONTAL), "grow");
 
     JButton refreshButton = new JButton();
     refreshButton.setAction(new AbstractAction() {
@@ -48,9 +53,13 @@ public class ConsistencyReportPanel extends RefreshablePanel {
     refreshButton.setToolTipText(Language.get(TablePanelComponent.class,
       "refresh.tooltip"));
     refreshButton.setIcon(ApplicationIcons.ICON_REFRESH_16);
-    this.add(header, "dock north");
+    this.add(header, BorderLayout.NORTH);
 
     this.uiComponents = new LinkedHashMap<>();
+    this.uiComponents.put(new JLabel(getString("label.integration.missing.basic")),
+      new IntegrationMissingBasicInformation(parentWindow).buildTableComponent());
+    this.uiComponents.put(new JLabel(getString("label.consumer.missing.basic")),
+      new ConsumerMissingBasicInformation(parentWindow).buildTableComponent());
     this.uiComponents.put(new JLabel(getString("label.provider.missing.basic")),
       new ProviderMissingBasicInformation(parentWindow).buildTableComponent());
     this.uiComponents.put(new JLabel(getString("label.provider.missing.contracts")),
@@ -61,6 +70,8 @@ public class ConsistencyReportPanel extends RefreshablePanel {
       new ProviderMissingAuthorizations(parentWindow).buildTableComponent());
     this.uiComponents.put(new JLabel(getString("label.authorization.missing.provider")),
       new AuthorizationMissingProvider(parentWindow).buildTableComponent());
+    this.uiComponents.put(new JLabel(getString("label.authorization.missing.offer")),
+      new AuthorizationMissingOffer(parentWindow).buildTableComponent());
     this.uiComponents.put(new JLabel(getString("label.offer.missing.provider")),
       new OfferMissingProvider(parentWindow).buildTableComponent());
 
@@ -74,12 +85,16 @@ public class ConsistencyReportPanel extends RefreshablePanel {
 
     this.cards = new JPanel(new CardLayout());
     this.cards.add(loadingPane);
-    this.cards.add(dataPane);
+    JScrollPane scroll = new JScrollPane(dataPane);
+    scroll.setMaximumSize(this.getSize());
+    scroll.setViewportBorder(null);
+    scroll.setBorder(null);
+    this.cards.add(scroll);
 
-    this.add(cards, "dock center");
+    this.add(cards, BorderLayout.CENTER);
     JPanel refreshPane = new JPanel(new MigLayout("align center"));
     refreshPane.add(refreshButton);
-    this.add(refreshPane, "dock south");
+    this.add(refreshPane, BorderLayout.SOUTH);
   }
 
   @Override
@@ -100,11 +115,18 @@ public class ConsistencyReportPanel extends RefreshablePanel {
           uiElements.stream().forEach(entry -> {
             JLabel labelComponent = entry.getKey();
             TablePanelComponent<?> tableComponent = entry.getValue();
+            tableComponent.setPreferredSize(new Dimension(400, 100));
             if (tableComponent.getElements().isEmpty() == false) {
-              ConsistencyReportPanel.this.dataPane.add(labelComponent, "grow");
+              ConsistencyReportPanel.this.dataPane.add(labelComponent, "grow, pad 0 10 0 -10");
               ConsistencyReportPanel.this.dataPane.add(tableComponent, "grow, push, pad 0 10 0 -10");
             }
           });
+          if (ConsistencyReportPanel.this.dataPane.getComponents().length == 0) {
+            JLabel okay = new JLabel(getString("label.everything.okay"));
+            okay.setIcon(ApplicationIcons.ICON_VALIDATE_16);
+            okay.setHorizontalAlignment(JLabel.CENTER);
+            ConsistencyReportPanel.this.dataPane.add(okay, "grow");
+          }
           cardLayoutManager.last(ConsistencyReportPanel.this.cards);
         }
       }

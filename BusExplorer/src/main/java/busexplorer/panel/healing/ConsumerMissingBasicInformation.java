@@ -9,29 +9,30 @@ import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.TablePanelComponent;
+import busexplorer.panel.consumers.ConsumerRefreshAction;
+import busexplorer.panel.consumers.ConsumerTableProvider;
+import busexplorer.panel.consumers.ConsumerWrapper;
 import busexplorer.panel.providers.ProviderDeleteAction;
 import busexplorer.panel.providers.ProviderEditAction;
-import busexplorer.panel.providers.ProviderRefreshAction;
-import busexplorer.panel.providers.ProviderTableProvider;
-import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.services.governance.v1_0.Provider;
+import tecgraf.openbus.services.governance.v1_0.Consumer;
 
-public class ProviderMissingContracts extends ProviderRefreshAction {
-  public ProviderMissingContracts(JFrame parentWindow) {
+public class ConsumerMissingBasicInformation extends ConsumerRefreshAction {
+
+  public ConsumerMissingBasicInformation(JFrame parentWindow) {
     super(parentWindow);
   }
 
-  protected TablePanelComponent<ProviderWrapper> buildTableComponent() {
+  protected TablePanelComponent<ConsumerWrapper> buildTableComponent() {
     if (getTablePanelComponent() == null) {
       ArrayList actions = new ArrayList<OpenBusAction>();
       actions.add(new ProviderDeleteAction(parentWindow));
       actions.add(new ProviderEditAction((JFrame) parentWindow));
       actions.add(this);
       this.setTablePanelComponent(new TablePanelComponent<>(
-        new ObjectTableModel<>(new ArrayList<>(), new ProviderTableProvider()),
+        new ObjectTableModel<>(new ArrayList<>(), new ConsumerTableProvider()),
         actions, false, false));
     }
     return getTablePanelComponent();
@@ -42,18 +43,19 @@ public class ProviderMissingContracts extends ProviderRefreshAction {
     if (Application.login().extension.isExtensionCapable() == false) {
       return;
     }
-    BusExplorerTask<List<ProviderWrapper>> task =
-      new BusExplorerTask<List<ProviderWrapper>>(ExceptionContext.BusCore) {
+    BusExplorerTask<List<ConsumerWrapper>> task =
+      new BusExplorerTask<List<ConsumerWrapper>>(ExceptionContext.BusCore) {
 
         @Override
         protected void doPerformTask() throws Exception {
-          ArrayList<Provider> result = new ArrayList<>();
-          for (Provider provider : Application.login().extension.getProviders()) {
-            if (provider.contracts().length == 0) {
-              result.add(provider);
+          ArrayList<Consumer> result = new ArrayList<>();
+          for (Consumer consumer : Application.login().extension.getConsumers()) {
+            if (consumer.code().isEmpty() || consumer.manageroffice().isEmpty() || consumer.supportoffice().isEmpty()
+              || consumer.manager().length == 0 || consumer.support().length == 0) {
+              result.add(consumer);
             }
           }
-          setResult(ProviderWrapper.convertToInfo(result));
+          setResult(ConsumerWrapper.convertToInfo(result));
         }
 
         @Override

@@ -66,6 +66,12 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.japura</groupId>
+      <artifactId>japura-gui</artifactId>
+      <version>7.5.2</version>
+    </dependency>
+
+    <dependency>
       <groupId>br.puc-rio.tecgraf.openbus</groupId>
       <artifactId>openbus-sdk-core</artifactId>
     </dependency>

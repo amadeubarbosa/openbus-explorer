@@ -48,12 +48,16 @@ public class ConsumerMissingBasicInformation extends ConsumerRefreshAction {
 
         @Override
         protected void doPerformTask() throws Exception {
+          int i = 0;
           ArrayList<Consumer> result = new ArrayList<>();
-          for (Consumer consumer : Application.login().extension.getConsumers()) {
+          List<Consumer> consumers = Application.login().extension.getConsumers();
+          for (Consumer consumer : consumers) {
             if (consumer.code().isEmpty() || consumer.manageroffice().isEmpty() || consumer.supportoffice().isEmpty()
               || consumer.manager().length == 0 || consumer.support().length == 0) {
               result.add(consumer);
             }
+            setProgressStatus(100*i/consumers.size());
+            i++;
           }
           setResult(ConsumerWrapper.convertToInfo(result));
         }
@@ -67,6 +71,6 @@ public class ConsumerMissingBasicInformation extends ConsumerRefreshAction {
       };
 
     task.execute(parentWindow, Language.get(this.getClass().getSuperclass(), "waiting.title"),
-      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0);
+      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0, true, false);
   }
 }

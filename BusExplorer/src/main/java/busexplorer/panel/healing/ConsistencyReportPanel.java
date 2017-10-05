@@ -116,7 +116,12 @@ public class ConsistencyReportPanel extends RefreshablePanel {
     new BusExplorerTask<Void>(ExceptionContext.Service) {
       @Override
       protected void doPerformTask() throws Exception {
-        uiElements.stream().forEach(entry -> entry.getValue().refresh(event));
+        int i = 0;
+        for (Map.Entry<String, TablePanelComponent> element : uiElements) {
+          element.getValue().refresh(event);
+          this.setProgressStatus(100*i/uiElements.size());
+          i++;
+        }
       }
 
       @Override
@@ -140,7 +145,7 @@ public class ConsistencyReportPanel extends RefreshablePanel {
           }
         }
       }
-    }.execute(this.parentWindow, getString("waiting.title"), getString("waiting.msg"), 2, 0);
+    }.execute(this.parentWindow, getString("waiting.title"), getString("waiting.msg"), 2, 0, true, false);
   }
 
   private String getString(String key) {

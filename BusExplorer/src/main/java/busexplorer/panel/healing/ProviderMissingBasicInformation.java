@@ -48,12 +48,16 @@ public class ProviderMissingBasicInformation extends ProviderRefreshAction {
 
         @Override
         protected void doPerformTask() throws Exception {
+          int i = 0;
           ArrayList<Provider> result = new ArrayList<>();
-          for (Provider provider : Application.login().extension.getProviders()) {
+          List<Provider> providers = Application.login().extension.getProviders();
+          for (Provider provider : providers) {
             if (provider.code().isEmpty() || provider.manageroffice().isEmpty() || provider.supportoffice().isEmpty()
               || provider.manager().length == 0 || provider.support().length == 0) {
               result.add(provider);
             }
+            setProgressStatus(100*i/providers.size());
+            i++;
           }
           setResult(ProviderWrapper.convertToInfo(result));
         }
@@ -67,6 +71,6 @@ public class ProviderMissingBasicInformation extends ProviderRefreshAction {
       };
 
     task.execute(parentWindow, Language.get(this.getClass().getSuperclass(), "waiting.title"),
-      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0);
+      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0, true, false);
   }
 }

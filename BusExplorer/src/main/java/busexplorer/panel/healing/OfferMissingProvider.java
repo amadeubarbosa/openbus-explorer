@@ -1,6 +1,8 @@
 package busexplorer.panel.healing;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +13,7 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.offers.OfferDeleteAction;
+import busexplorer.panel.offers.OfferPropertiesAction;
 import busexplorer.panel.offers.OfferRefreshAction;
 import busexplorer.panel.offers.OfferTableProvider;
 import busexplorer.panel.offers.OfferWrapper;
@@ -30,10 +33,20 @@ public class OfferMissingProvider extends OfferRefreshAction {
     if (getTablePanelComponent() == null) {
       ArrayList actions = new ArrayList<OpenBusAction>();
       actions.add(new OfferDeleteAction((JFrame) parentWindow));
+      final OpenBusAction<?> offerPropertiesAction = new OfferPropertiesAction(parentWindow);
+      actions.add(offerPropertiesAction);
       actions.add(this);
       this.setTablePanelComponent(new TablePanelComponent<>(
         new ObjectTableModel<>(new ArrayList<>(), new OfferTableProvider()),
         actions, false, false));
+      this.getTablePanelComponent().addTableMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseClicked(MouseEvent mouseEvent) {
+          if (mouseEvent.getClickCount() == 2) {
+            offerPropertiesAction.actionPerformed(null);
+          }
+        }
+      });
     }
     return getTablePanelComponent();
   }
@@ -48,7 +61,9 @@ public class OfferMissingProvider extends OfferRefreshAction {
 
         @Override
         protected void doPerformTask() throws Exception {
+          int i = 0;
           List<ServiceOfferDesc> result = Application.login().admin.getOffers();
+          int size = result.size();
           List<Provider> providers = Application.login().extension.getProviders();
           for (Iterator<ServiceOfferDesc> it = result.iterator(); it.hasNext();) {
             boolean found = false;
@@ -67,6 +82,8 @@ public class OfferMissingProvider extends OfferRefreshAction {
                 break;
               }
             }
+            setProgressStatus(100*i/size);
+            i++;
           }
 
           setResult(OfferWrapper.convertToInfo(result));
@@ -81,6 +98,6 @@ public class OfferMissingProvider extends OfferRefreshAction {
       };
 
     task.execute(parentWindow, Language.get(this.getClass().getSuperclass(), "waiting.title"),
-      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0);
+      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0, true, false);
   }
 }

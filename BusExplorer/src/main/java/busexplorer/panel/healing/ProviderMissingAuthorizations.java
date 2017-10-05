@@ -50,8 +50,10 @@ public class ProviderMissingAuthorizations extends ProviderRefreshAction {
 
         @Override
         protected void doPerformTask() throws Exception {
+          int i = 0;
           ArrayList<Provider> result = new ArrayList<>();
-          for (Provider provider : Application.login().extension.getProviders()) {
+          List<Provider> providers = Application.login().extension.getProviders();
+          for (Provider provider : providers) {
             if ((provider.busquery().isEmpty() == false) && (provider.contracts().length > 0)) {
               ArrayList<String> authorizedInterfaces = new ArrayList();
               new BusQuery(provider.busquery())
@@ -66,6 +68,8 @@ public class ProviderMissingAuthorizations extends ProviderRefreshAction {
                 }
               }
             }
+            setProgressStatus(100*i/providers.size());
+            i++;
           }
           setResult(ProviderWrapper.convertToInfo(result));
         }
@@ -79,6 +83,6 @@ public class ProviderMissingAuthorizations extends ProviderRefreshAction {
       };
 
     task.execute(parentWindow, Language.get(this.getClass().getSuperclass(), "waiting.title"),
-      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0);
+      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0, true, false);
   }
 }

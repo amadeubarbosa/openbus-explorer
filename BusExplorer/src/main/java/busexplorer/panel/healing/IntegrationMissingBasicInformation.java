@@ -48,11 +48,15 @@ public class IntegrationMissingBasicInformation extends IntegrationRefreshAction
 
         @Override
         protected void doPerformTask() throws Exception {
+          int i = 0;
           ArrayList<Integration> result = new ArrayList<>();
-          for (Integration integration : Application.login().extension.getIntegrations()) {
+          List<Integration> integrations = Application.login().extension.getIntegrations();
+          for (Integration integration : integrations) {
             if (integration.consumer() == null || integration.provider() == null || integration.contracts().length == 0) {
               result.add(integration);
             }
+            setProgressStatus(100*i/integrations.size());
+            i++;
           }
           setResult(IntegrationWrapper.convertToInfo(result));
         }
@@ -66,6 +70,6 @@ public class IntegrationMissingBasicInformation extends IntegrationRefreshAction
       };
 
     task.execute(parentWindow, Language.get(this.getClass().getSuperclass(), "waiting.title"),
-      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0);
+      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0, true, false);
   }
 }

@@ -50,7 +50,9 @@ public class AuthorizationMissingProvider extends AuthorizationRefreshAction {
 
         @Override
         protected void doPerformTask() throws Exception {
+          int i = 0;
           Map<RegisteredEntityDesc, List<String>> result = Application.login().admin.getAuthorizations();
+          int size = result.size();
           List<Provider> providers = Application.login().extension.getProviders();
           for (Iterator<Map.Entry<RegisteredEntityDesc, List<String>>> it = result.entrySet().iterator(); it.hasNext();) {
             boolean found = false;
@@ -70,6 +72,8 @@ public class AuthorizationMissingProvider extends AuthorizationRefreshAction {
                 break;
               }
             }
+            setProgressStatus(100*i/size);
+            i++;
           }
           setResult(AuthorizationWrapper.convertToInfo(result));
         }
@@ -83,6 +87,6 @@ public class AuthorizationMissingProvider extends AuthorizationRefreshAction {
       };
 
     task.execute(parentWindow, Language.get(this.getClass().getSuperclass(), "waiting.title"),
-      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0);
+      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0, true, false);
   }
 }

@@ -45,7 +45,9 @@ public class AuthorizationMissingOffer extends AuthorizationRefreshAction {
 
         @Override
         protected void doPerformTask() throws Exception {
+          int i = 0;
           Map<RegisteredEntityDesc, List<String>> result = Application.login().admin.getAuthorizations();
+          int size = result.size();
           ArrayList<OfferWrapper> offers = (ArrayList) OfferWrapper.convertToInfo(Application.login().admin.getOffers());
           for (Iterator<Map.Entry<RegisteredEntityDesc, List<String>>> itAuths = result.entrySet().iterator(); itAuths.hasNext();) {
             Map.Entry<RegisteredEntityDesc, List<String>> entryAuthorization = itAuths.next();
@@ -62,6 +64,8 @@ public class AuthorizationMissingOffer extends AuthorizationRefreshAction {
                 }
               }
             }
+            setProgressStatus(100*i/size);
+            i++;
           }
           setResult(AuthorizationWrapper.convertToInfo(result));
         }
@@ -75,6 +79,6 @@ public class AuthorizationMissingOffer extends AuthorizationRefreshAction {
       };
 
     task.execute(parentWindow, Language.get(this.getClass().getSuperclass(), "waiting.title"),
-      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0);
+      Language.get(this.getClass().getSuperclass(), "waiting.msg"), 2, 0, true, false);
   }
 }

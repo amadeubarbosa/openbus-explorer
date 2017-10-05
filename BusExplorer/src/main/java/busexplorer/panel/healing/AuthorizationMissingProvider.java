@@ -42,6 +42,7 @@ public class AuthorizationMissingProvider extends AuthorizationRefreshAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    getTablePanelComponent().getElements().clear();
     if (Application.login().extension.isExtensionCapable() == false) {
       return;
     }

@@ -53,6 +53,7 @@ public class OfferMissingProvider extends OfferRefreshAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    getTablePanelComponent().getElements().clear();
     if (Application.login().extension.isExtensionCapable() == false) {
       return;
     }

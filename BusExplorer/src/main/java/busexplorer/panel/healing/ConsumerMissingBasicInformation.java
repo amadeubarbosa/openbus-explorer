@@ -40,6 +40,7 @@ public class ConsumerMissingBasicInformation extends ConsumerRefreshAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    getTablePanelComponent().getElements().clear();
     if (Application.login().extension.isExtensionCapable() == false) {
       return;
     }

@@ -40,6 +40,7 @@ public class AuthorizationMissingOffer extends AuthorizationRefreshAction {
 
   @Override
   public void actionPerformed(ActionEvent e) {
+    getTablePanelComponent().getElements().clear();
     BusExplorerTask<List<AuthorizationWrapper>> task =
       new BusExplorerTask<List<AuthorizationWrapper>>(ExceptionContext.BusCore) {
 

@@ -9,11 +9,11 @@ import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.TablePanelComponent;
+import busexplorer.panel.consumers.ConsumerDeleteAction;
+import busexplorer.panel.consumers.ConsumerEditAction;
 import busexplorer.panel.consumers.ConsumerRefreshAction;
 import busexplorer.panel.consumers.ConsumerTableProvider;
 import busexplorer.panel.consumers.ConsumerWrapper;
-import busexplorer.panel.providers.ProviderDeleteAction;
-import busexplorer.panel.providers.ProviderEditAction;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableModel;
@@ -28,8 +28,8 @@ public class ConsumerMissingBasicInformation extends ConsumerRefreshAction {
   protected TablePanelComponent<ConsumerWrapper> buildTableComponent() {
     if (getTablePanelComponent() == null) {
       ArrayList actions = new ArrayList<OpenBusAction>();
-      actions.add(new ProviderDeleteAction(parentWindow));
-      actions.add(new ProviderEditAction((JFrame) parentWindow));
+      actions.add(new ConsumerDeleteAction((JFrame) parentWindow));
+      actions.add(new ConsumerEditAction((JFrame) parentWindow));
       actions.add(this);
       this.setTablePanelComponent(new TablePanelComponent<>(
         new ObjectTableModel<>(new ArrayList<>(), new ConsumerTableProvider()),

@@ -48,7 +48,7 @@ public class IntegrationMissingBasicInformation extends IntegrationRefreshAction
       actions.add(this);
       this.setTablePanelComponent(new TablePanelComponent<>(
         new ObjectTableModel<>(new ArrayList<>(), new IntegrationTableProvider()),
-        actions, false, false));
+        actions, false, true));
     }
     return getTablePanelComponent();
   }

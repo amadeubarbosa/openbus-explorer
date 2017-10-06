@@ -54,7 +54,7 @@ public class OfferMissingProvider extends OfferRefreshAction {
       actions.add(this);
       this.setTablePanelComponent(new TablePanelComponent<>(
         new ObjectTableModel<>(new ArrayList<>(), new OfferTableProvider()),
-        actions, false, false));
+        actions, false, true));
       this.getTablePanelComponent().addTableMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent mouseEvent) {

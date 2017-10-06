@@ -51,7 +51,7 @@ public class ProviderMissingAuthorizations extends ProviderRefreshAction {
       actions.add(this);
       this.setTablePanelComponent(new TablePanelComponent<>(
         new ObjectTableModel<>(new ArrayList<>(), new ProviderTableProvider()),
-        actions, false, false));
+        actions, false, true));
     }
     return getTablePanelComponent();
   }

@@ -47,7 +47,7 @@ public class ConsumerMissingBasicInformation extends ConsumerRefreshAction {
       actions.add(this);
       this.setTablePanelComponent(new TablePanelComponent<>(
         new ObjectTableModel<>(new ArrayList<>(), new ConsumerTableProvider()),
-        actions, false, false));
+        actions, false, true));
     }
     return getTablePanelComponent();
   }

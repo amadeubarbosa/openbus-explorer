@@ -1,11 +1,5 @@
 package busexplorer.panel.healing;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import javax.swing.JFrame;
-
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
@@ -22,9 +16,31 @@ import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.services.governance.v1_0.Contract;
 import tecgraf.openbus.services.governance.v1_0.Provider;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+
 public class ProviderMissingAuthorizations extends ProviderRefreshAction {
+
+  private Consumer<TablePanelComponent> updateReportHook = null;
+
   public ProviderMissingAuthorizations(JFrame parentWindow) {
     super(parentWindow);
+  }
+
+  /**
+   * Construtor opcional que permite um tratador que será disparado quando
+   * não houver mais elementos na tabela desse tipo de pendência.
+   *
+   * @param parentWindow Frame de onde a ação será disparada
+   * @param updateReportHook Tarefa de atualização do relatório de pendências quando a situação for normalizada
+   */
+  public ProviderMissingAuthorizations(JFrame parentWindow, Consumer<TablePanelComponent> updateReportHook) {
+    this(parentWindow);
+    this.updateReportHook = updateReportHook;
   }
 
   protected TablePanelComponent<ProviderWrapper> buildTableComponent() {
@@ -78,7 +94,12 @@ public class ProviderMissingAuthorizations extends ProviderRefreshAction {
         @Override
         protected void afterTaskUI() {
           if (getStatus()) {
-            getTablePanelComponent().setElements(getResult());
+            TablePanelComponent tablePanelComponent = getTablePanelComponent();
+            if (getResult().isEmpty() && updateReportHook != null && tablePanelComponent.getParent() != null) {
+              updateReportHook.accept(tablePanelComponent);
+            } else {
+              tablePanelComponent.setElements(getResult());
+            }
           }
         }
       };

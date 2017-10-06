@@ -1,10 +1,5 @@
 package busexplorer.panel.healing;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JFrame;
-
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
@@ -19,10 +14,30 @@ import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.services.governance.v1_0.Integration;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 public class IntegrationMissingBasicInformation extends IntegrationRefreshAction {
+
+  private Consumer<TablePanelComponent> updateReportHook = null;
 
   public IntegrationMissingBasicInformation(JFrame parentWindow) {
     super(parentWindow);
+  }
+
+  /**
+   * Construtor opcional que permite um tratador que será disparado quando
+   * não houver mais elementos na tabela desse tipo de pendência.
+   *
+   * @param parentWindow Frame de onde a ação será disparada
+   * @param updateReportHook Tarefa de atualização do relatório de pendências quando a situação for normalizada
+   */
+  public IntegrationMissingBasicInformation(JFrame parentWindow, Consumer<TablePanelComponent> updateReportHook) {
+    this(parentWindow);
+    this.updateReportHook = updateReportHook;
   }
 
   protected TablePanelComponent<IntegrationWrapper> buildTableComponent() {
@@ -65,7 +80,12 @@ public class IntegrationMissingBasicInformation extends IntegrationRefreshAction
         @Override
         protected void afterTaskUI() {
           if (getStatus()) {
-            getTablePanelComponent().setElements(getResult());
+            TablePanelComponent tablePanelComponent = getTablePanelComponent();
+            if (getResult().isEmpty() && updateReportHook != null && tablePanelComponent.getParent() != null) {
+              updateReportHook.accept(tablePanelComponent);
+            } else {
+              tablePanelComponent.setElements(getResult());
+            }
           }
         }
       };

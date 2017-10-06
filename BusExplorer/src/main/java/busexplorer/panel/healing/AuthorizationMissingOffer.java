@@ -1,12 +1,5 @@
 package busexplorer.panel.healing;
 
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import javax.swing.JFrame;
-
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
@@ -21,9 +14,32 @@ import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableModel;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
 public class AuthorizationMissingOffer extends AuthorizationRefreshAction {
+
+  private Consumer<TablePanelComponent> updateReportHook = null;
+
   public AuthorizationMissingOffer(JFrame parentWindow) {
     super(parentWindow);
+  }
+
+  /**
+   * Construtor opcional que permite um tratador que será disparado quando
+   * não houver mais elementos na tabela desse tipo de pendência.
+   *
+   * @param parentWindow Frame de onde a ação será disparada
+   * @param updateReportHook Tarefa de atualização do relatório de pendências quando a situação for normalizada
+   */
+  public AuthorizationMissingOffer(JFrame parentWindow, Consumer<TablePanelComponent> updateReportHook) {
+    this(parentWindow);
+    this.updateReportHook = updateReportHook;
   }
 
   protected TablePanelComponent<AuthorizationWrapper> buildTableComponent() {
@@ -74,7 +90,12 @@ public class AuthorizationMissingOffer extends AuthorizationRefreshAction {
         @Override
         protected void afterTaskUI() {
           if (getStatus()) {
-            getTablePanelComponent().setElements(getResult());
+            TablePanelComponent tablePanelComponent = getTablePanelComponent();
+            if (getResult().isEmpty() && updateReportHook != null && tablePanelComponent.getParent() != null) {
+              updateReportHook.accept(tablePanelComponent);
+            } else {
+              tablePanelComponent.setElements(getResult());
+            }
           }
         }
       };

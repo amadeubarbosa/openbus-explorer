@@ -22,7 +22,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.util.Arrays;
+
+import static busexplorer.utils.StringUtilities.splitOmmitEmpty;
 
 /**
  * Diálogo de adição/edição de consumidores que será responsável pela manutenção
@@ -86,8 +87,8 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
           consumer.code(codeTextField.getText().trim());
           consumer.supportoffice(supportOfficeTextField.getText().trim());
           consumer.manageroffice(managerOfficeTextField.getText().trim());
-          consumer.support(supportTextField.getText().trim().split(","));
-          consumer.manager(managerTextField.getText().trim().split(","));
+          consumer.support(splitOmmitEmpty(supportTextField.getText(),",").toArray(new String[0]));
+          consumer.manager(splitOmmitEmpty(managerTextField.getText(),",").toArray(new String[0]));
           consumer.busquery(queryTextField.getText().trim());
           editingConsumer = new ConsumerWrapper(consumer);
         } else {
@@ -100,8 +101,8 @@ public class ConsumerInputDialog extends BusExplorerAbstractInputDialog {
           editingConsumer.code(codeTextField.getText().trim());
           editingConsumer.supportoffice(supportOfficeTextField.getText().trim());
           editingConsumer.manageroffice(managerOfficeTextField.getText().trim());
-          editingConsumer.support(Arrays.asList(supportTextField.getText().trim().split(",")));
-          editingConsumer.manager(Arrays.asList(managerTextField.getText().trim().split(",")));
+          editingConsumer.support(splitOmmitEmpty(supportTextField.getText(),","));
+          editingConsumer.manager(splitOmmitEmpty(managerTextField.getText(),","));
           editingConsumer.busquery(queryTextField.getText().trim());
         }
       }

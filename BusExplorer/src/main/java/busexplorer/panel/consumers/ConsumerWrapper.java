@@ -78,7 +78,7 @@ public class ConsumerWrapper {
   }
 
   public void support(List<String> updated) {
-    this.remote.support((String[]) updated.toArray());
+    this.remote.support(updated.toArray(new String[0]));
     this.support = updated;
   }
 
@@ -87,7 +87,7 @@ public class ConsumerWrapper {
   }
 
   public void manager(List<String> updated) {
-    this.remote.manager((String[]) updated.toArray());
+    this.remote.manager(updated.toArray(new String[0]));
     this.manager = updated;
   }
 

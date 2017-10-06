@@ -25,9 +25,10 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.util.Arrays;
 import java.util.List;
 import java.util.TreeMap;
+
+import static busexplorer.utils.StringUtilities.splitOmmitEmpty;
 
 /**
  * Diálogo de adição/edição de provedores que será responsável pela manutenção
@@ -103,8 +104,8 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
           provider.code(codeTextField.getText().trim());
           provider.supportoffice(supportOfficeTextField.getText().trim());
           provider.manageroffice(managerOfficeTextField.getText().trim());
-          provider.support(supportTextField.getText().trim().split(","));
-          provider.manager(managerTextField.getText().trim().split(","));
+          provider.support(splitOmmitEmpty(supportTextField.getText(),",").toArray(new String[0]));
+          provider.manager(splitOmmitEmpty(managerTextField.getText(),",").toArray(new String[0]));
           provider.busquery(queryTextField.getText().trim());
           contractList.getSelectedValuesList().forEach(provider::addContract);
           editingProvider = new ProviderWrapper(provider);
@@ -118,8 +119,8 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
           editingProvider.code(codeTextField.getText().trim());
           editingProvider.supportoffice(supportOfficeTextField.getText().trim());
           editingProvider.manageroffice(managerOfficeTextField.getText().trim());
-          editingProvider.support(Arrays.asList(supportTextField.getText().trim().split(",")));
-          editingProvider.manager(Arrays.asList(managerTextField.getText().trim().split(",")));
+          editingProvider.support(splitOmmitEmpty(supportTextField.getText(),","));
+          editingProvider.manager(splitOmmitEmpty(managerTextField.getText(),","));
           editingProvider.busquery(queryTextField.getText().trim());
           editingProvider.contracts(contractList.getSelectedValuesList());
         }

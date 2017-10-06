@@ -1,5 +1,6 @@
 package busexplorer.desktop.dialog;
 
+import busexplorer.Application;
 import busexplorer.ApplicationIcons;
 import busexplorer.BusExplorerLogin;
 import busexplorer.exception.handling.ExceptionContext;
@@ -9,8 +10,10 @@ import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
+import tecgraf.javautils.gui.GBC;
 
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -24,6 +27,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.GridBagLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -256,6 +260,16 @@ public class LoginDialog extends JDialog {
     buttonsBox.add(buttonLogin);
     loginPanel.add(buttonsBox, BorderLayout.SOUTH);
 
+    JPanel leftBox = new JPanel(new GridBagLayout());
+    leftBox.add(new JLabel(new ImageIcon(ApplicationIcons.BUSEXPLORER_LIST[ApplicationIcons.BUSEXPLORER_LIST.length-1])));
+    String[] version = Application.version();
+    JLabel apiVersion = new JLabel(version[0]);
+    apiVersion.setFont(new Font(apiVersion.getFont().getFontName(), Font.PLAIN, (int)(apiVersion.getFont().getSize()*1.5)));
+    leftBox.add(apiVersion, new GBC(0,1).insets(10));
+    JLabel appVersion = new JLabel(version[1]);
+    appVersion.setFont(new Font(appVersion.getFont().getFontName(), Font.PLAIN, (int)(appVersion.getFont().getSize()*1.2)));
+    leftBox.add(appVersion, new GBC(0,2).insets(10));
+    loginPanel.add(leftBox, BorderLayout.WEST);
     setContentPane(loginPanel);
     getRootPane().setDefaultButton(buttonLogin);
 

@@ -134,4 +134,17 @@ public class Application {
     return login;
   }
 
+  /** Recupera as duas partes da versão da aplicação.
+   *
+   * @return um array contendo no primeiro elemento vX.Y e no segundo elemento Z.W-ANYSTR,
+   * considerando que a versão da aplicação seja Dado o exemplo vX.Y-Z.W-ANYSTR.
+   */
+  public static String[] version() {
+    String versionString = Language.get(Application.class, "version");
+    int delimiter = versionString.indexOf("-");
+    String[] version = new String[2];
+    version[0] = versionString.substring(0, delimiter);
+    version[1] = versionString.substring(delimiter+1);
+    return version;
+  }
 }

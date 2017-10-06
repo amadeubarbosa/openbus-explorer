@@ -1,8 +1,8 @@
 package busexplorer;
 
+import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.net.URL;
-import javax.swing.ImageIcon;
 
 /**
  * Local para imagens internas.
@@ -18,7 +18,8 @@ public class ApplicationIcons {
     new Image[]{
       createImageIcon("BusExplorer16.png").getImage(),
       createImageIcon("BusExplorer32.png").getImage(),
-      createImageIcon("BusExplorer48.png").getImage()
+      createImageIcon("BusExplorer48.png").getImage(),
+      createImageIcon("BusExplorer96.png").getImage()
     };
 
   /**

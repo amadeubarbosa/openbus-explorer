@@ -62,6 +62,8 @@ public class BusExplorerLogin {
    *
    * @see BusAddress#checkBusReference()
    * @see BusAddress#checkBusVersion()
+   *
+   * @throws InvalidName caso o ORB do OpenBus SDK Java não possua referência para {@link OpenBusContext}
    */
   public BusExplorerLogin(BusAddress address, String entity, String domain) throws InvalidName {
     address.checkBusVersion();

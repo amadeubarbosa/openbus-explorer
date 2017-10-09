@@ -3,8 +3,10 @@ package busexplorer.exception;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.exception.handling.ExceptionHandler;
 import busexplorer.exception.handling.ExceptionType;
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
+import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
+import org.omg.CORBA.TRANSIENT;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.access_control.FailedLoginAttemptDomain;
 import tecgraf.openbus.core.v2_1.services.access_control.InvalidRemoteCode;
@@ -12,6 +14,11 @@ import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
 import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
 import tecgraf.openbus.core.v2_1.services.access_control.UnknownBusCode;
 import tecgraf.openbus.core.v2_1.services.access_control.UnverifiedLoginCode;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.AuthorizationInUse;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.InterfaceInUse;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 /**
  * Tratador de exceções padrão para os demos.
@@ -33,17 +40,17 @@ public class BusExplorerExceptionHandler extends
       case AccessDenied:
         switch (context) {
           case LoginByPassword:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "access.denied.password"));
             break;
 
           case LoginByPrivateKey:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "access.denied.key"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "access.denied"));
             break;
         }
@@ -53,34 +60,34 @@ public class BusExplorerExceptionHandler extends
         TooManyAttempts tooMany = (TooManyAttempts) theException;
         switch (tooMany.domain.value()) {
           case FailedLoginAttemptDomain._ADDRESS:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "too.many.attempts.address", tooMany.penaltyTime));
             break;
           case FailedLoginAttemptDomain._ENTITY:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "too.many.attempts.entity", tooMany.penaltyTime));
             break;
           case FailedLoginAttemptDomain._VALIDATOR:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "too.many.attempts.validator", tooMany.penaltyTime));
             break;
         }
         break;
 
       case UnknownDomain:
-        exception.setErrorMessage(Utils.getString(this.getClass(),
+        exception.setErrorMessage(Language.get(this.getClass(),
           "unknown.domain"));
         break;
 
       case ServiceFailure:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "service.failure.core", ((ServiceFailure) theException).message));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "service.failure", ((ServiceFailure) theException).message));
             break;
         }
@@ -89,12 +96,12 @@ public class BusExplorerExceptionHandler extends
       case UnauthorizedOperation:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "unauthorized.operation.core"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "unauthorized.operation"));
             break;
         }
@@ -103,12 +110,12 @@ public class BusExplorerExceptionHandler extends
       case EntityAlreadyRegistered:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "entity.already.registered.core"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "entity.already.registered"));
             break;
         }
@@ -117,12 +124,12 @@ public class BusExplorerExceptionHandler extends
       case EntityCategoryAlreadyExists:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "category.already.exists.core"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "category.already.exists"));
             break;
         }
@@ -131,68 +138,71 @@ public class BusExplorerExceptionHandler extends
       case InvalidCertificate:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "invalid.certificate.core"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "invalid.certificate"));
             break;
         }
         break;
 
       case InterfaceInUse:
-        switch (context) {
-          case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
-              "interface.inuse.core"));
-            break;
-
-          default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
-              "interface.inuse"));
-            break;
+        StringBuilder builder = new StringBuilder();
+        RegisteredEntityDesc[] entities = ((InterfaceInUse) theException).entities;
+        for (int i = 0; i < entities.length; i++) {
+          builder.append(" - ");
+          builder.append(entities[i].id);
+          builder.append("\n");
         }
+        exception.setErrorMessage(Language.get(this.getClass(),
+          "interface.inuse", builder.toString()));
         break;
 
       case InvalidInterface:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "invalid.interface.core"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "invalid.interface"));
             break;
         }
         break;
 
       case AuthorizationInUse:
-        switch (context) {
-          case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
-              "authorization.inuse.core"));
-            break;
-
-          default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
-              "authorization.inuse"));
-            break;
+        builder = new StringBuilder();
+        ServiceOfferDesc[] offers = ((AuthorizationInUse) theException).offers;
+        for (int i = 0; i < offers.length; i++) {
+          for (ServiceProperty prop : offers[i].properties) {
+            if (prop.name.equals("openbus.offer.id")) {
+              builder.append(" - ");
+              builder.append(prop.value);
+              builder.append("\n");
+              break;
+            }
+          }
         }
+        exception.setErrorMessage(Language.get(this.getClass(),
+          "authorization.inuse", builder.toString()));
         break;
 
       case OBJECT_NOT_EXIST:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+          case LoginByPassword:
+          case LoginByPrivateKey:
+            exception.setErrorMessage(Language.get(this.getClass(),
               "not.exist.core"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "not.exist"));
             break;
         }
@@ -201,12 +211,14 @@ public class BusExplorerExceptionHandler extends
       case TRANSIENT:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+          case LoginByPassword:
+          case LoginByPrivateKey:
+            exception.setErrorMessage(Language.get(this.getClass(),
               "transient.core"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "transient"));
             break;
         }
@@ -215,12 +227,14 @@ public class BusExplorerExceptionHandler extends
       case COMM_FAILURE:
         switch (context) {
           case BusCore:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+          case LoginByPassword:
+          case LoginByPrivateKey:
+            exception.setErrorMessage(Language.get(this.getClass(),
               "comm.failure.core"));
             break;
 
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "comm.failure"));
         }
         break;
@@ -231,22 +245,22 @@ public class BusExplorerExceptionHandler extends
           case Service:
             switch (noPermission.minor) {
               case NoLoginCode.value:
-                exception.setErrorMessage(Utils.getString(this.getClass(),
+                exception.setErrorMessage(Language.get(this.getClass(),
                   "no.permission.no.login"));
                 break;
 
               case UnknownBusCode.value:
-                exception.setErrorMessage(Utils.getString(this.getClass(),
-                  "unknown.bus"));
+                exception.setErrorMessage(Language.get(this.getClass(),
+                  "no.permission.unknown.bus"));
                 break;
 
               case UnverifiedLoginCode.value:
-                exception.setErrorMessage(Utils.getString(this.getClass(),
-                  "unverified.login"));
+                exception.setErrorMessage(Language.get(this.getClass(),
+                  "no.permission.unverified.login"));
                 break;
 
               case InvalidRemoteCode.value:
-                exception.setErrorMessage(Utils.getString(this.getClass(),
+                exception.setErrorMessage(Language.get(this.getClass(),
                   "no.permission.invalid.remote"));
                 break;
             }
@@ -254,33 +268,33 @@ public class BusExplorerExceptionHandler extends
 
           default:
             if (noPermission.minor == NoLoginCode.value) {
-              exception.setErrorMessage(Utils.getString(this.getClass(),
+              exception.setErrorMessage(Language.get(this.getClass(),
                 "no.permission.no.login"));
             }
             else {
-              exception.setErrorMessage(Utils.getString(this.getClass(),
-                "no.permission.unspected", noPermission.minor));
+              exception.setErrorMessage(Language.get(this.getClass(),
+                "no.permission.unexpected", noPermission.minor));
             }
             break;
         }
         break;
 
       case InvalidName:
-        // Este erro nunca deveria ocorrer se o código foi bem escrito
-        exception.setErrorMessage(Utils.getString(this.getClass(),
-          "corba.invalid.name", theException.getMessage()));
-        System.exit(1);
+        // Esse erro sobre a configuração do POA só ocorre por falha no SDK
+        exception.setErrorMessage(Language.get(this.getClass(),
+            "unspecified", theException.getClass().getName(),
+                theException.getMessage()));
         break;
 
       case IncompatibleBus:
         switch (context) {
           case LoginByPassword:
           case LoginByPrivateKey:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "incompatible.bus.login", theException.getMessage()));
             break;
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "incompatible.bus", theException.getMessage()));
             break;
         }
@@ -288,12 +302,26 @@ public class BusExplorerExceptionHandler extends
 
       case IllegalArgumentException:
         switch (context) {
+          case LoginByPrivateKey:
           case LoginByPassword:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
-              "illegal.argument.login", theException.getMessage()));
+            Throwable cause = theException.getCause();
+            if ((cause != null) &&
+                ( cause instanceof COMM_FAILURE ||
+                  cause instanceof TRANSIENT ||
+                  cause instanceof NO_PERMISSION )) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(Language.get(this.getClass(),
+                        "illegal.address", theException.getMessage()));
+                sb.append("\n\n");
+                sb.append(cause.getMessage());
+                exception.setErrorMessage(sb.toString());
+            } else {
+              exception.setErrorMessage(Language.get(this.getClass(),
+                "illegal.wrong.address", theException.getMessage()));
+            }
             break;
           default:
-            exception.setErrorMessage(Utils.getString(this.getClass(),
+            exception.setErrorMessage(Language.get(this.getClass(),
               "illegal.argument", theException.getMessage()));
             break;
         }
@@ -301,9 +329,14 @@ public class BusExplorerExceptionHandler extends
 
       case Unspecified:
       default:
-        exception.setErrorMessage(Utils.getString(this.getClass(),
-          "unspecified", theException.getClass().getName(), theException
-            .getMessage()));
+        if (theException != null) {
+          exception.setErrorMessage(Language.get(this.getClass(),
+            "unspecified", theException.getClass().getName(), theException
+              .getMessage()));
+        } else {
+          exception.setErrorMessage(Language.get(this.getClass(),
+            "javaerror"));
+        }
         break;
     }
   }

@@ -1,5 +1,6 @@
 package busexplorer.panel;
 
+import java.awt.LayoutManager;
 import javax.swing.JPanel;
 
 /**
@@ -9,4 +10,10 @@ import javax.swing.JPanel;
  * @author Tecgraf
  */
 public abstract class RefreshablePanel extends JPanel implements RefreshDelegate {
+  public RefreshablePanel() {
+    super();
+  }
+  public RefreshablePanel(LayoutManager layout) {
+    super(layout);
+  }
 }

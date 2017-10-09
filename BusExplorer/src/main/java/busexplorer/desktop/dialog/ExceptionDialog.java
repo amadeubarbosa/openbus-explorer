@@ -1,38 +1,38 @@
 package busexplorer.desktop.dialog;
 
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
+import busexplorer.ApplicationIcons;
+import busexplorer.utils.Language;
+import busexplorer.utils.SwingUtilities;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.javautils.gui.GUIUtils;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.UIManager;
 import javax.swing.tree.TreeSelectionModel;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Vector;
 
 /**
  * Janela que exibe o detalhamento de uma exceção.
- * 
+ *
  * @author Tecgraf PUC-Rio
  */
 public abstract class ExceptionDialog extends JDialog {
@@ -43,36 +43,15 @@ public abstract class ExceptionDialog extends JDialog {
   protected final Throwable _throwable;
 
   /**
-   * Conjunto de informações adicionais que serão mostradas na janela de erro e
-   * incluídas em um possível email ao administrador.
-   */
-  protected String[] additionalInfo;
-
-  /**
-   * Construtor auxiliar com <code>JDialog</code>.
-   * 
+   * Construtor auxiliar com <code>JFrame</code>.
+   *
    * @param owner a janela pai
    * @param title o título
    * @param throwable o erro ou exceção
    */
   protected ExceptionDialog(Window owner, String title, Throwable throwable) {
-    this(owner, title, throwable, null);
-  }
-
-  /**
-   * Construtor auxiliar com <code>JFrame</code>.
-   * 
-   * @param owner a janela pai
-   * @param title o título
-   * @param throwable o erro ou exceção
-   * @param additionalInfo - lista de informações adicionais que serão mostradas
-   *        na janela de erro e incluídas em um possível email.
-   */
-  protected ExceptionDialog(Window owner, String title, Throwable throwable,
-    String[] additionalInfo) {
     super(owner, title);
     this._throwable = throwable;
-    this.additionalInfo = additionalInfo;
     setWindowClosingMethod();
   }
 
@@ -92,9 +71,53 @@ public abstract class ExceptionDialog extends JDialog {
   }
 
   /**
+   * Método estático de criação de um diálogo com base em parâmetros passados
+   * pelo módulo-cliente para uso sem construtor.<br>
+   * É criado um {@link JOptionPane} com mensagem do tipo {@link JOptionPane#ERROR_MESSAGE}
+   * e botão adicional para o usuário ter mais detalhes sobre o erro/exceção.<br>
+   * O uso de {@link JOptionPane} garante a apresentação adequada nas diferentes plataformas.
+   *
+   * @param window a janela-mãe.
+   * @param title o título.
+   * @param throwable a exceção
+   * @param message mensagem a ser apresentada ao usuário
+   * @return um dialogo de erro.
+   */
+  public static JDialog createDialog(final Window window,
+    final String title, final Throwable throwable, String message) {
+    JOptionPane optionPane = new JOptionPane();
+    optionPane.setMessageType(JOptionPane.ERROR_MESSAGE);
+    optionPane.setMessage(createComponents(message));
+
+    JDialog dialog = optionPane.createDialog(window, title);
+    Vector<JButton> buttons = new Vector<>();
+    if (throwable != null) {
+      buttons.add(new JButton(new DetailThrowableAction(dialog, throwable)));
+    }
+    if (message != null && !message.isEmpty()) {
+      JButton copy = new JButton(ApplicationIcons.ICON_COPY_16);
+      copy.setToolTipText(Language.get(ExceptionDialog.class, "copy.tooltip"));
+      copy.setText(Language.get(ExceptionDialog.class, "copy.name"));
+      copy.setMnemonic(Language.get(ExceptionDialog.class, "copy.mnemonic").charAt(0));
+      copy.addActionListener(al -> {
+        StringSelection stringSelection = new StringSelection(message);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
+      });
+      buttons.add(copy);
+    }
+    buttons.add(new JButton(new CloseAction(dialog)));
+    JButton[] options = buttons.toArray(new JButton[]{});
+    SwingUtilities.equalizeComponentSize(options);
+    optionPane.setOptions(options);
+    dialog.pack();
+    dialog.getRootPane().setDefaultButton(options[0]);
+    return dialog;
+  }
+
+  /**
    * Método estático de criação de um diálogo <b>detalhado</b> com base em
    * parâmetros passados pelo módulo-cliente para uso sem construtor.
-   * 
+   *
    * @param window a janela-mãe.
    * @param title o título.
    * @param throwable a exceção.
@@ -102,81 +125,30 @@ public abstract class ExceptionDialog extends JDialog {
    */
   public static ExceptionDialog createDialog(final Window window,
     final String title, final Throwable throwable) {
-    return createDialog(window, title, throwable, (String[]) null);
+    return new DetailedExceptionDialog(window, title, throwable);
   }
 
-  /**
-   * Método estático de criação de um diálogo com base em parâmetros passados
-   * pelo módulo-cliente para uso sem construtor.<br>
-   * É criado um ExceptionDialog <b>simplificado</b> pois o foco deste é
-   * apresentar a mensagem ao usuário. Caso o usuário queira saber mais sobre o
-   * erro/exceção, este diálogo apresenta uma opção para detalhar.
-   * 
-   * @param window a janela-mãe.
-   * @param title o título.
-   * @param throwable a exceção.
-   * @param message mensagem a ser apresentada ao usuário
-   * @return um dialogo de erro.
-   */
-  public static ExceptionDialog createDialog(final Window window,
-    final String title, final Throwable throwable, String message) {
-    return createDialog(window, title, throwable, message, null);
-  }
-
-  /**
-   * Método estático de criação de um diálogo <b>detalhado</b> com base em
-   * parâmetros passados pelo módulo-cliente para uso sem construtor.
-   * 
-   * @param window a janela-mãe.
-   * @param title o título.
-   * @param throwable a exceção.
-   * @param additionalInfo - lista de informações adicionais que serão mostradas
-   *        na janela de erro e incluídas em um possível email.
-   * @return um dialogo de erro.
-   */
-  public static ExceptionDialog createDialog(final Window window,
-    final String title, final Throwable throwable, String[] additionalInfo) {
-    return new DetailedExceptionDialog(window, title, throwable, additionalInfo);
-  }
-
-  /**
-   * Método estático de criação de um diálogo com base em parâmetros passados
-   * pelo módulo-cliente para uso sem construtor.<br>
-   * É criado um ExceptionDialog <b>simplificado</b> pois o foco deste é
-   * apresentar a mensagem ao usuário. Caso o usuário queira saber mais sobre o
-   * erro/exceção, este diálogo apresenta uma opção para detalhar.
-   * 
-   * @param window a janela-mãe.
-   * @param title o título.
-   * @param throwable a exceção.
-   * @param message mensagem a ser apresentada ao usuário
-   * @param additionalInfo - lista de informações adicionais que serão mostradas
-   *        na janela de erro e incluídas em um possível email.
-   * @return um dialogo de erro.
-   */
-  public static ExceptionDialog createDialog(final Window window,
-    final String title, final Throwable throwable, String message,
-    String[] additionalInfo) {
-    return new SimpleExceptionDialog(window, title, throwable, message,
-      additionalInfo);
-  }
-
-  /**
-   * Ajuste de um conjunto de elementos de interface para o mesmo tamanho.
-   * 
-   * @param comps os widgets que serão ajustados.
-   */
-  public static void adjustEqualSizes(JComponent... comps) {
-    final Dimension dim = new Dimension(0, 0);
-    for (JComponent comp : comps) {
-      final Dimension pref = comp.getPreferredSize();
-      final double h = Math.max(dim.getHeight(), pref.getHeight());
-      final double w = Math.max(dim.getWidth(), pref.getWidth());
-      dim.setSize(w, h);
+  private static JPanel createComponents(String message) {
+    JPanel mainPanel = new JPanel(new MigLayout("fill, flowy"));
+    if (message == null || message.isEmpty()) {
+      mainPanel.add(new JLabel(Language.get(ExceptionDialog.class, "executionError")));
+      mainPanel.add(new JLabel(Language.get(ExceptionDialog.class, "contactError")));
+    } else {
+      if (message.startsWith("<html>")) {
+        JLabel label = new JLabel(message);
+        mainPanel.add(label, "grow");
+      } else {
+        JMultilineLabel label = new JMultilineLabel();
+        label.setMaxWidth(400);
+        label.setJustified(false);
+        label.setText(message);
+        JScrollPane js = new JScrollPane(label);
+        js.setViewportBorder(null);
+        js.setBorder(null);
+        mainPanel.add(js, "grow");
+      }
     }
-    for (JComponent comp : comps) {
-      comp.setPreferredSize(dim);
-    }
+    return mainPanel;
   }
 
   /**
@@ -188,7 +160,7 @@ public abstract class ExceptionDialog extends JDialog {
 
   /**
    * Centralização
-   * 
+   *
    * @param window a janela de referência para centralização
    */
   public void center(Window window) {
@@ -235,7 +207,7 @@ public abstract class ExceptionDialog extends JDialog {
    * Classe que modela um diálogo <b>detalhado</b> de exibição de um
    * erro/exceção detectado no sistema. Este diálogo apresenta a pilha do
    * erro/exceção para o usuário.
-   * 
+   *
    * @see ExceptionDialog diálogo que apresenta um erro/exceção, detectado no
    *      sistema, para o usuário.
    */
@@ -270,16 +242,15 @@ public abstract class ExceptionDialog extends JDialog {
 
     /**
      * Construtor auxiliar com <code>JDialog</code>.
-     * 
+     *
      * @param owner a janela pai
      * @param title o título
      * @param throwable o erro ou exceção
-     * @param additionalInfo - lista de informações adicionais que serão
-     *        mostradas na janela de erro e incluídas em um possível email.
      */
     public DetailedExceptionDialog(final Window owner, final String title,
-      final Throwable throwable, String[] additionalInfo) {
-      super(owner, title, throwable, additionalInfo);
+      final Throwable throwable) {
+      super(owner, title, throwable);
+      setModal(true);
       createComponents();
     }
 
@@ -287,7 +258,7 @@ public abstract class ExceptionDialog extends JDialog {
      * Método interno de construção da inteface gráfica.
      */
     private void createComponents() {
-
+      setMinimumSize(new Dimension(750, 550));
       // Define a cor que será utilizada como cor de fundo para componentes
       // inativos
       Color inactiveColor =
@@ -295,7 +266,7 @@ public abstract class ExceptionDialog extends JDialog {
 
       // Cria uma árvore de erros/exceções
       final JLabel troubleTreeLabel = new
-        JLabel(Utils.getString(this.getClass(), "exceptionTree"));
+        JLabel(Language.get(this.getClass(), "exceptionTree"));
       this._throwableTree = new JTree(new ThrowableTreeNode(this._throwable));
       this._throwableTree.addTreeSelectionListener(e -> updateFields());
       this._throwableTree.getSelectionModel().setSelectionMode(
@@ -307,7 +278,7 @@ public abstract class ExceptionDialog extends JDialog {
 
       // Cria a área p/ mostrar a mensagem da exceção selecionada na árvore
       final JLabel messageLabel = new
-        JLabel(Utils.getString(this.getClass(), "exceptionMessage"));
+        JLabel(Language.get(this.getClass(), "exceptionMessage"));
       this._messageTextArea =
         new JTextArea(this._throwable.getLocalizedMessage());
       this._messageTextArea.setColumns(_MESSAGE_COLUMNS);
@@ -317,7 +288,7 @@ public abstract class ExceptionDialog extends JDialog {
 
       // Cria a área p/ mostrar a stack da exceção
       final JLabel stackTraceLabel = new
-        JLabel(Utils.getString(this.getClass(), "stackTrace"));
+        JLabel(Language.get(this.getClass(), "stackTrace"));
       this._stackTraceTextArea =
         new JTextArea(getStackTraceText(this._throwable.getStackTrace()));
       this._stackTraceTextArea.setColumns(_STACK_TRACE_COLUMNS);
@@ -357,14 +328,14 @@ public abstract class ExceptionDialog extends JDialog {
 
     /**
      * Criação do painel de botões.
-     * 
+     *
      * @return o painel.
      */
     private JPanel createButtonPanel() {
       final JPanel panel = new JPanel();
       final JButton closeButton = new JButton(new CloseAction(this));
 
-      adjustEqualSizes(new JButton[] { closeButton });
+      SwingUtilities.equalizeComponentSize(new JButton[] { closeButton });
 
       panel.add(closeButton);
       return panel;
@@ -388,7 +359,7 @@ public abstract class ExceptionDialog extends JDialog {
 
     /**
      * Busca de uma string que representa a pilha de execução.
-     * 
+     *
      * @param stackTrace a pilha.
      * @return uma string.
      */
@@ -398,218 +369,6 @@ public abstract class ExceptionDialog extends JDialog {
         text += aStackTrace + "\n";
       }
       return text;
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
-
-  /**
-   * Classe que modela um diálogo <b>simplificado</b> de exibição de um
-   * erro/exceção detectado no sistema. Este diálogo apresenta uma mensagem do
-   * sistema para o usuário e dá a possibilidade de abrir um
-   * DetailedExceptionDialog.
-   * 
-   * @see ExceptionDialog diálogo que apresenta um erro/exceção, detectado no
-   *      sistema, para o usuário.
-   * @see DetailedExceptionDialog diálogo que detalha o erro/exceção
-   */
-  private static final class SimpleExceptionDialog extends ExceptionDialog {
-
-    /**
-     * Construtor auxiliar com <code>JDialog</code>.
-     * 
-     * @param owner a janela pai
-     * @param title o título
-     * @param message as mensagens de erro
-     * @param throwable o erro ou exceção
-     * @param additionalInfo - lista de informações adicionais que serão
-     *        mostradas na janela de erro e incluídas em um possível email.
-     */
-    public SimpleExceptionDialog(final Window owner, final String title,
-      final Throwable throwable, final String message,
-      final String[] additionalInfo) {
-      super(owner, title, throwable, additionalInfo);
-      buildGui(message);
-    }
-
-    /**
-     * Inicialização interna do diálogo.
-     * 
-     * @param message mensagem que deve aparecer no diálogo.
-     */
-    private void buildGui(String message) {
-      getContentPane().setLayout(new BorderLayout());
-      getContentPane().add(makeIconPanel(), BorderLayout.WEST);
-      getContentPane().add(makeMainPanel(message), BorderLayout.CENTER);
-      pack();
-      center();
-    }
-
-    /**
-     * Cria o painel que contém o ícone de erro
-     * 
-     * @return o painel
-     */
-    private JPanel makeIconPanel() {
-      JPanel panel = new JPanel();
-      panel.add(new JLabel(UIManager.getIcon("OptionPane.errorIcon")));
-
-      return panel;
-    }
-
-    /**
-     * Cria o painel principal
-     * 
-     * @param message mensagem a ser exibida
-     * @return o painel
-     */
-    private JPanel makeMainPanel(String message) {
-
-      JPanel mainPanel = new JPanel(new GridBagLayout());
-      GridBagConstraints c = new GridBagConstraints();
-      c.insets = new Insets(12, 12, 11, 11);
-      c.anchor = GridBagConstraints.CENTER;
-      c.weightx = 1;
-      c.weighty = 1;
-      mainPanel.add(makeInfoPanel(message), c);
-      c.gridy = 1;
-      c.anchor = GridBagConstraints.SOUTHEAST;
-      c.insets = new Insets(17, 12, 11, 11);
-      mainPanel.add(makeButtonsPanel(), c);
-
-      return mainPanel;
-    }
-
-    /**
-     * Cria o painel que contém a mensagem de erro
-     * 
-     * @param message mensagem a ser exibida
-     * @return o painel
-     */
-    private JPanel makeInfoPanel(String message) {
-
-      JPanel panel = new JPanel(new GridBagLayout());
-      GridBagConstraints c = new GridBagConstraints();
-      c.insets = new Insets(0, 0, 0, 0);
-
-      c.fill = GridBagConstraints.HORIZONTAL;
-      if (message == null || message.isEmpty() || message.startsWith("<html>")) {
-        JLabel label = new JLabel(message);
-        panel.add(label, c);
-      }
-      else {
-        JMultilineLabel label = new JMultilineLabel();
-        label.setMaxWidth(550);
-        label.setJustified(false);
-        label.setText(message);
-        panel.add(label, c);
-      }
-
-      c.gridy = 1;
-      c.insets = new Insets(12, 0, 0, 0);
-      JLabel jwhere = new JLabel(Utils.getString(this.getClass(),
-        "executionError"));
-      panel.add(jwhere, c);
-      c.gridy = 2;
-      c.insets = new Insets(0, 0, 0, 0);
-      panel.add(new JLabel(Utils.getString(this.getClass(), "contactError")),
-        c);
-      return panel;
-    }
-
-    /**
-     * Cria o painel com os botões
-     * 
-     * @return o painel
-     */
-    private JPanel makeButtonsPanel() {
-      final JPanel panel = new JPanel();
-      final JButton detailButton = new JButton(new DetailThrowableAction(this));
-      final JButton closeButton = new JButton(new CloseAction(this));
-
-      adjustEqualSizes(new JButton[] { detailButton, closeButton });
-
-      panel.add(detailButton);
-      panel.add(closeButton);
-      return panel;
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
-
-  /**
-   * Ação que ao ser requisitada fecha a janela corrente.
-   */
-  class CloseAction extends AbstractAction {
-
-    /**
-     * Janela corrente que contém esta ação amarrada a um de seus componentes.
-     */
-    protected ExceptionDialog owner;
-
-    /**
-     * Construtor
-     * 
-     * @param owner janela corrente
-     */
-    protected CloseAction(ExceptionDialog owner) {
-      this(owner, LNG.get(ExceptionDialog.class.getSimpleName() + ".close"));
-    }
-
-    /**
-     * Construtor
-     * 
-     * @param owner janela corrente
-     * @param text texto.
-     */
-    protected CloseAction(ExceptionDialog owner, String text) {
-      super(text);
-      this.owner = owner;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      this.owner.dispose();
-    }
-  }
-
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
-  //----------------------------------------------------------------------------
-
-  /**
-   * Ação que ao ser requisitada abre um diálogo detalhando o erro/exceção
-   * apresentado pela janela corrente. Em seguida fecha a janela corrente.
-   */
-  final class DetailThrowableAction extends CloseAction {
-
-    /**
-     * Construtor
-     * 
-     * @param owner janela corrente
-     */
-    protected DetailThrowableAction(ExceptionDialog owner) {
-      super(owner, LNG.get(ExceptionDialog.class.getSimpleName() +
-        ".errorDetails"));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      super.actionPerformed(e);
-      ExceptionDialog dialog =
-        ExceptionDialog.createDialog(owner, owner.getTitle(), owner._throwable,
-          owner.additionalInfo);
-      dialog.setVisible(true);
     }
   }
 }

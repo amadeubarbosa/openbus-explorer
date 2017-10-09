@@ -1,31 +1,5 @@
 package busexplorer.panel;
 
-import busexplorer.ApplicationIcons;
-import busexplorer.utils.DateTimeRenderer;
-import busexplorer.utils.StringVectorRenderer;
-import busexplorer.utils.Utils;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.GUIUtils;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.javautils.gui.table.ObjectTableProvider;
-import tecgraf.javautils.gui.table.SortableTable;
-
-import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JViewport;
-import javax.swing.ListSelectionModel;
-import javax.swing.RowFilter;
-import javax.swing.SortOrder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.text.Document;
 import java.awt.BorderLayout;
 import java.awt.GridBagLayout;
 import java.awt.Point;
@@ -42,6 +16,34 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.AbstractAction;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.SortOrder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.text.Document;
+
+import busexplorer.ApplicationIcons;
+import busexplorer.utils.Availability;
+import busexplorer.utils.AvailabilityRenderer;
+import busexplorer.utils.DateTimeRenderer;
+import busexplorer.utils.Language;
+import busexplorer.utils.StringVectorRenderer;
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.GUIUtils;
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+import tecgraf.javautils.gui.table.SortableTable;
 
 /**
  * Componente que define um painel com uma {@link SortableTable} e modulariza o
@@ -80,6 +82,8 @@ public class TablePanelComponent<T> extends RefreshablePanel {
   private boolean hasBtns = false;
   /** Indicador se é necessário painel de filtro sobre a tabela */
   private boolean hasFilter = true;
+  /** Indicador se é necessário painel de botões abaixo da tabela */
+  private boolean hasBtnsPanel = true;
   /** Ação de Refresh */
   private TablePanelActionInterface<T> refreshAction;
   /** Campo de filtro */
@@ -88,7 +92,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
   private JButton clearButton;
 
   /**
-   * Construtor
+   * Construtor a partir da lista de objetos e um {@link ObjectTableProvider} para controlar a exibição das colunas
    *
    * @param pInfo Lista com os dados da tabela.
    * @param pTableProvider Provedor de dados da tabela.
@@ -100,18 +104,36 @@ public class TablePanelComponent<T> extends RefreshablePanel {
   }
 
   /**
-   * Construtor.
-   *  @param pTableModel Modelo da tabela.
+   * Construtor com {@link ObjectTableModel} personalizado e opção de desativar filtro
+   *
+   * @param pTableModel Modelo da tabela.
    * @param actions Conjunto de ações relacionadas ao componente.
    * @param hasFilter Deve ser {@code true} caso se queira construir o painel contendo uma
    *                  barra de pesquisa para filtrar os resultados, ou {@code false} caso contrário.
    *                  Valor padrão é {@code true}.
    */
   public TablePanelComponent(ObjectTableModel<T> pTableModel,
-                             List<? extends TablePanelActionInterface<T>> actions, boolean hasFilter) {
+                               List<? extends TablePanelActionInterface<T>> actions, boolean hasFilter) {
+    this(pTableModel, actions, hasFilter, true);
+  }
+
+  /**
+   * Construtor com {@link ObjectTableModel} personalizado, opção de desativar filtro e painel de botões
+   *
+   * @param pTableModel Modelo da tabela.
+   * @param actions Conjunto de ações relacionadas ao componente.
+   * @param hasFilter Deve ser {@code true} caso se queira construir o painel contendo uma
+   *                  barra de pesquisa para filtrar os resultados, ou {@code false} caso contrário.
+   *                  Valor padrão é {@code true}.
+   * @param hasBtnsPanel Deve ser {@code true} caso se queira construir o painel contendo uma barra
+   *                       de botões para as ações, ou {@code false} caso contrário. Valor padrão é {@code true}.
+   */
+  public TablePanelComponent(ObjectTableModel<T> pTableModel,
+                             List<? extends TablePanelActionInterface<T>> actions, boolean hasFilter, boolean hasBtnsPanel) {
     createTable(pTableModel);
     processActions(actions);
     this.hasFilter = hasFilter;
+    this.hasBtnsPanel = hasBtnsPanel;
     init();
   }
 
@@ -127,6 +149,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
     table.sort(0, SortOrder.ASCENDING);
     table.setDefaultRenderer(Vector.class, new StringVectorRenderer());
     table.setDefaultRenderer(Date.class, new DateTimeRenderer());
+    table.setDefaultRenderer(Availability.class, new AvailabilityRenderer());
     table.getSelectionModel().addListSelectionListener(
       new TableSelectionListener(table));
 
@@ -150,7 +173,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
 
           addBtn = new JButton(action);
           addBtn
-            .setToolTipText(Utils.getString(this.getClass(), "add.tooltip"));
+            .setToolTipText(Language.get(this.getClass(), "add.tooltip"));
           addBtn.setIcon(ApplicationIcons.ICON_ADD_16);
           hasBtns = true;
           break;
@@ -160,7 +183,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
           removeAction.setEnabled(false);
 
           removeBtn = new JButton(action);
-          removeBtn.setToolTipText(Utils.getString(this.getClass(),
+          removeBtn.setToolTipText(Language.get(this.getClass(),
             "remove.tooltip"));
           removeBtn.setIcon(ApplicationIcons.ICON_DELETE_16);
           hasBtns = true;
@@ -171,7 +194,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
           editAction.setEnabled(false);
 
           editBtn = new JButton(action);
-          editBtn.setToolTipText(Utils.getString(this.getClass(),
+          editBtn.setToolTipText(Language.get(this.getClass(),
             "edit.tooltip"));
           editBtn.setIcon(ApplicationIcons.ICON_EDIT_16);
           hasBtns = true;
@@ -209,7 +232,7 @@ public class TablePanelComponent<T> extends RefreshablePanel {
       this.add(getFilterPanel(), BorderLayout.NORTH);
     }
     this.add(getScrollPane(), BorderLayout.CENTER);
-    if (hasBtns) {
+    if (hasBtnsPanel && hasBtns) {
       this.add(getButtonsPanel(), BorderLayout.SOUTH);
     }
     this.validate();
@@ -225,27 +248,27 @@ public class TablePanelComponent<T> extends RefreshablePanel {
     final JPanel panel = new JPanel(new GridBagLayout());
     GBC gbc = new GBC(0, 0).west().insets(10, 10, 10, 0);
     final JLabel filterLabel =
-      new JLabel(Utils.getString(this.getClass(), "filter.label"));
+      new JLabel(Language.get(this.getClass(), "filter.label"));
     panel.add(filterLabel, gbc);
 
     filterText = new JTextField();
     gbc = new GBC(1, 0).insets(10).horizontal().filly();
     panel.add(filterText, gbc);
-    filterText.setToolTipText(Utils
-      .getString(this.getClass(), "filter.tooltip"));
+    filterText.setToolTipText(Language
+      .get(this.getClass(), "filter.tooltip"));
 
-    clearButton = new JButton(Utils.getString(this.getClass(), "filter.clear"));
+    clearButton = new JButton(Language.get(this.getClass(), "filter.clear"));
     gbc = new GBC(2, 0).east().insets(10, 0, 10, 10);
-    clearButton.setToolTipText(Utils.getString(this.getClass(),
+    clearButton.setToolTipText(Language.get(this.getClass(),
       "filter.clear.tooltip"));
     clearButton.setIcon(ApplicationIcons.ICON_CLEAR_16);
     panel.add(clearButton, gbc);
 
     JButton refreshButton =
-      new JButton(Utils.getString(this.getClass(), "refresh"));
+      new JButton(Language.get(this.getClass(), "refresh"));
     refreshButton.setAction(refreshAction);
     gbc = new GBC(3, 0).east().insets(10, 0, 10, 10);
-    refreshButton.setToolTipText(Utils.getString(this.getClass(),
+    refreshButton.setToolTipText(Language.get(this.getClass(),
       "refresh.tooltip"));
     refreshButton.setIcon(ApplicationIcons.ICON_REFRESH_16);
     panel.add(refreshButton, gbc);
@@ -462,6 +485,15 @@ public class TablePanelComponent<T> extends RefreshablePanel {
     ObjectTableModel<T> model = getTableModel();
     model.setRows(objects);
     table.adjustSize();
+  }
+
+  /**
+   * Recupera a lista de elementos associados à tabela.
+   *
+   * @return o conjunto de elementos.
+   */
+  public List<T> getElements() {
+    return getTableModel().getRows();
   }
 
   /**

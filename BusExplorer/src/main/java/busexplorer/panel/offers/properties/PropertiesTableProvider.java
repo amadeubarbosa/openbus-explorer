@@ -1,6 +1,6 @@
 package busexplorer.panel.offers.properties;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
@@ -23,8 +23,8 @@ public class PropertiesTableProvider implements
   @Override
   public String[] getColumnNames() {
     return new String[]
-      { Utils.getString(this.getClass(), "name"),
-          Utils.getString(this.getClass(), "value") };
+      { Language.get(this.getClass(), "name"),
+          Language.get(this.getClass(), "value") };
   }
 
   /**

@@ -3,7 +3,7 @@ package busexplorer.panel.offers.properties;
 import busexplorer.panel.TablePanelActionInterface;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.panel.offers.OfferWrapper;
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.GBC;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
@@ -22,20 +22,18 @@ import java.util.List;
  * @author Tecgraf
  */
 public class PropertiesDialog extends JDialog {
-
   /**
    * Oferta sendo visualizada.
    */
-  private OfferWrapper offer;
+  private final OfferWrapper offer;
 
   /**
    * Construtor.
-   * 
-   * @param owner janela pai
+   *  @param owner janela pai
    * @param offer oferta sendo visualizada
    */
   public PropertiesDialog(Window owner, OfferWrapper offer) {
-    super(owner, Utils.getString(PropertiesDialog.class, "title"),
+    super(owner, Language.get(PropertiesDialog.class, "title"),
       JDialog.ModalityType.APPLICATION_MODAL);
     this.offer = offer;
     initPanel();
@@ -57,7 +55,7 @@ public class PropertiesDialog extends JDialog {
             TablePanelComponent<ServiceProperty>(props, provider, actions);
     panel.add(propertiesPanel, new GBC(0, 0).both());
 
-    JButton closeButton = new JButton(Utils.getString(PropertiesDialog.class,
+    JButton closeButton = new JButton(Language.get(PropertiesDialog.class,
       "button.close"));
     closeButton.addActionListener(e -> dispose());
     panel.add(closeButton, new GBC(0, 1).none().east().insets(9, 9, 9, 9));

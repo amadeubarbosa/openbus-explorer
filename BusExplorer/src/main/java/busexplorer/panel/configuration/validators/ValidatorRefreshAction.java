@@ -5,8 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -22,13 +20,11 @@ public class ValidatorRefreshAction extends OpenBusAction<ValidatorWrapper> {
 
   /**
    * Construtor.
+   *  @param parentWindow janela pai.
    *
-   * @param parentWindow janela pai.
-   * @param admin biblioteca de administração.
    */
-  public ValidatorRefreshAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin,
-    LNG.get(ValidatorRefreshAction.class.getSimpleName() + ".name"));
+  public ValidatorRefreshAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -45,12 +41,11 @@ public class ValidatorRefreshAction extends OpenBusAction<ValidatorWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ValidatorWrapper>> task =
-      new BusExplorerTask<List<ValidatorWrapper>>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ValidatorWrapper>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
-        setResult(ValidatorWrapper.convertToInfo(admin.getPasswordValidators()));
+      protected void doPerformTask() throws Exception {
+        setResult(ValidatorWrapper.convertToInfo(Application.login().admin.getPasswordValidators()));
       }
 
       @Override
@@ -62,7 +57,7 @@ public class ValidatorRefreshAction extends OpenBusAction<ValidatorWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

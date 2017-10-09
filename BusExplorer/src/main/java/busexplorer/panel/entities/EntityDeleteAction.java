@@ -1,12 +1,11 @@
 package busexplorer.panel.entities;
 
 import busexplorer.Application;
+import busexplorer.desktop.dialog.InputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
 
 import javax.swing.JFrame;
@@ -23,13 +22,11 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin instância do busadmin
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public EntityDeleteAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(EntityDeleteAction.class.getSimpleName()
-      + ".name"));
+  public EntityDeleteAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -53,21 +50,16 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    int option =
-      JOptionPane.showConfirmDialog(parentWindow, getString("confirm.msg"),
-        getString("confirm.title"), JOptionPane.YES_NO_OPTION,
-        JOptionPane.QUESTION_MESSAGE);
-
-    if (option != JOptionPane.YES_OPTION) {
+    if (InputDialog.showConfirmDialog(parentWindow,
+      getString("confirm.msg"),
+      getString("confirm.title")) != JOptionPane.YES_OPTION) {
       return;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
         @Override
-        protected void performTask() throws Exception {
+        protected void doPerformTask() throws Exception {
           List<EntityWrapper> entities = getTablePanelComponent().getSelectedElements();
           for (EntityWrapper entity : entities) {
             RegisteredEntity ref = entity.getDescriptor().ref;
@@ -84,6 +76,6 @@ public class EntityDeleteAction extends OpenBusAction<EntityWrapper> {
       };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

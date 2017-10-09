@@ -1,12 +1,10 @@
 package busexplorer.panel.offers.properties;
 
-import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOffer;
 import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceProperty;
 
@@ -33,8 +31,7 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
    * @param offer oferta cujas propriedades serão exibidas
    */
   public PropertiesRefreshAction(Window parentWindow, OfferWrapper offer) {
-    super(parentWindow, null, Utils.getString(PropertiesRefreshAction.class,
-      "name"));
+    super(parentWindow);
     this.offer = offer.getDescriptor().ref;
   }
 
@@ -52,11 +49,10 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ServiceProperty>> task =
-      new BusExplorerTask<List<ServiceProperty>>(
-        Application.exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ServiceProperty>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         setResult(Arrays.asList(offer.describe().properties));
       }
 
@@ -69,7 +65,7 @@ public class PropertiesRefreshAction extends OpenBusAction<ServiceProperty> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

@@ -5,8 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -22,13 +20,11 @@ public class InterfaceRefreshAction extends OpenBusAction<InterfaceWrapper> {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow janela pai.
-   * @param admin biblioteca de administração.
+   *  @param parentWindow janela pai.
+   *
    */
-  public InterfaceRefreshAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin,
-      LNG.get(InterfaceRefreshAction.class.getSimpleName() + ".name"));
+  public InterfaceRefreshAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -45,24 +41,23 @@ public class InterfaceRefreshAction extends OpenBusAction<InterfaceWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<InterfaceWrapper>> task =
-      new BusExplorerTask<List<InterfaceWrapper>>(
-        Application.exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<List<InterfaceWrapper>>(ExceptionContext.BusCore) {
 
-      @Override
-      protected void performTask() throws Exception {
-        setResult(InterfaceWrapper.convertToInfo(admin.getInterfaces()));
-      }
-
-      @Override
-      protected void afterTaskUI() {
-        if (getStatus()) {
-          getTablePanelComponent().setElements(getResult());
+        @Override
+        protected void doPerformTask() throws Exception {
+          setResult(InterfaceWrapper.convertToInfo(Application.login().admin.getInterfaces()));
         }
-      }
-    };
+
+        @Override
+        protected void afterTaskUI() {
+          if (getStatus()) {
+            getTablePanelComponent().setElements(getResult());
+          }
+        }
+      };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

@@ -5,16 +5,18 @@ import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategory;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
 
 /**
@@ -27,7 +29,7 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
   private JLabel categoryIDLabel;
   private JTextField categoryIDField;
   private JLabel categoryNameLabel;
-  private JTextField categoryNameField;
+  private JTextArea categoryNameField;
 
   private TablePanelComponent<CategoryWrapper> panel;
 
@@ -35,15 +37,12 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição/edição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public CategoryInputDialog(Window parentWindow, TablePanelComponent<CategoryWrapper>
-    panel, BusAdmin admin) {
-    super(parentWindow, LNG.get(CategoryInputDialog.class.getSimpleName() +
-      ".title"), admin);
+    panel) {
+    super(parentWindow);
     this.panel = panel;
   }
 
@@ -53,16 +52,14 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
       EntityCategory category;
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         if (editingCategory == null) {
-          category = admin.createCategory(getCategoryID(), getCategoryName());
+          category = Application.login().admin.createCategory(getCategoryID(), getCategoryName());
         } else {
           category = editingCategory.getDescriptor().ref;
           category.setName(getCategoryName());
@@ -78,8 +75,8 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
     return task.getStatus();
   }
 
@@ -87,23 +84,44 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(5).west();
+  public JPanel buildFields() {
+    setMinimumSize(new Dimension(300, 300));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     categoryIDLabel =
-      new JLabel(LNG.get("CategoryInputDialog.categoryID.label"));
-    panel.add(categoryIDLabel, new GBC(baseGBC).gridy(0).none());
+      new JLabel(Language.get(this.getClass(),"categoryID.label"));
+    panel.add(categoryIDLabel,"grow");
 
     categoryIDField = new JTextField(30);
-    panel.add(categoryIDField, new GBC(baseGBC).gridy(1).horizontal());
+    categoryIDField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (categoryIDField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(CategoryInputDialog.class,
+            "error.validation.name"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+      }
+    });
+    panel.add(categoryIDField, "grow");
 
     categoryNameLabel =
-      new JLabel(LNG.get("CategoryInputDialog.categoryName.label"));
-    panel.add(categoryNameLabel, new GBC(baseGBC).gridy(2).none());
+      new JLabel(Language.get(this.getClass(),"categoryName.label"));
+    panel.add(categoryNameLabel, "grow");
 
-    categoryNameField = new JTextField(30);
-    panel.add(categoryNameField, new GBC(baseGBC).gridy(3).horizontal());
+    categoryNameField = new JTextArea(5, 20);
+    categoryNameField.setLineWrap(true);
+    panel.add(new JScrollPane(categoryNameField), "grow, push");
 
     return panel;
   }
@@ -113,11 +131,9 @@ public class CategoryInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    String categoryID = categoryIDField.getText();
-
-    if (categoryID.equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
-        "error.validation.emptyID"));
+    if (categoryIDField.getText().trim().isEmpty()) {
+      setErrorMessage(Language.get(this.getClass(),
+        "error.validation.name"));
       return false;
     }
 

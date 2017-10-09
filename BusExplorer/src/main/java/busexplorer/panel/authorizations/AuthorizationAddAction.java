@@ -5,9 +5,8 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
 import tecgraf.javautils.gui.StandardDialogs;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 import javax.swing.JFrame;
@@ -25,13 +24,11 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public AuthorizationAddAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin,
-      LNG.get(AuthorizationAddAction.class.getSimpleName() + ".name"));
+  public AuthorizationAddAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -55,15 +52,13 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application
-        .exceptionHandler(), ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task = new BusExplorerTask<Void>(ExceptionContext.BusCore) {
       List<String> entitiesIDList = null;
       List<String> interfacesList = null;
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
+        BusAdminFacade admin = Application.login().admin;
         entitiesIDList = new LinkedList<>();
         List<RegisteredEntityDesc> entitiesDescList = admin.getEntities();
         interfacesList = admin.getInterfaces();
@@ -87,13 +82,13 @@ public class AuthorizationAddAction extends OpenBusAction<AuthorizationWrapper> 
           }
           else {
             new AuthorizationInputDialog(AuthorizationAddAction.this.parentWindow,
-              getTablePanelComponent(), admin, entitiesIDList,
+              getTablePanelComponent(), entitiesIDList,
               interfacesList).showDialog();
           }
         }
       }
     };
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 }

@@ -8,18 +8,22 @@ import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
 import tecgraf.openbus.Connection;
+import tecgraf.openbus.OnReloginCallback;
 import tecgraf.openbus.OpenBusContext;
-import tecgraf.openbus.admin.BusAdmin;
+import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.admin.BusAdminImpl;
 import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_1.services.access_control.AccessDenied;
+import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
 import tecgraf.openbus.core.v2_1.services.access_control.NoLoginCode;
 import tecgraf.openbus.core.v2_1.services.access_control.TooManyAttempts;
 import tecgraf.openbus.core.v2_1.services.access_control.UnknownDomain;
 import tecgraf.openbus.core.v2_1.services.access_control.WrongEncoding;
 import tecgraf.openbus.exception.AlreadyLoggedIn;
+import tecgraf.openbus.extension.BusExtensionFacade;
+import tecgraf.openbus.extension.BusExtensionImpl;
 
 /**
  * Trata, analisa e armazena dados de login no barramento.
@@ -28,36 +32,130 @@ import tecgraf.openbus.exception.AlreadyLoggedIn;
  */
 public class BusExplorerLogin {
   /** Entidade. */
-  public final String entity;
+  public final LoginInfo info;
   /** Endereço. */
   public final BusAddress address;
+  /** Domínio de autenticação */
+  public final String domain;
   /** Instância de administração do baramento. */
-  private final BusAdminImpl admin;
+  public BusAdminFacade admin;
+  /** Instância da fachada de extensão a governança. */
+  public BusExtensionFacade extension;
+  /** Tentativas de login */
+  private static final short MAX_RETRIES = 3;
+  /** Contexto de conexões OpenBus */
+  private final OpenBusContext context;
   /** Indica se o login possui permissões administrativas. */
   private boolean adminRights = false;
-  /** Contexto de conexões OpenBus */
-  private OpenBusContext context;
   /** Conexão com o barramento */
   private Connection conn;
+  /** Callback de Relogin do OpenBus SDK Java que pode ser customizada pela aplicação */
+  private OnReloginCallback onReloginCallback;
 
   /**
-   * Construtor
+   * Construtor para o objeto que representa o login no barramento.
+   * É realizada a validação do endereço usando os métodos fornecidos no {@link BusAddress}.
    *
-   * @param admin Instância de administração do barramento.
-   * @param entity Entidade.
-   * @param address endereço do barramento.
+   * @param address endereço do barramento
+   * @param entity entidade a ser autenticada no barramento
+   * @param domain domínio de autenticação para autenticar a entidade no barramento
+   *
+   * @see BusAddress#checkBusReference()
+   * @see BusAddress#checkBusVersion()
    */
-  public BusExplorerLogin(BusAdmin admin, String entity, BusAddress
-    address) {
-    this.admin = (BusAdminImpl)admin;
-    this.entity = entity;
+  public BusExplorerLogin(BusAddress address, String entity, String domain) throws InvalidName {
+    address.checkBusVersion();
+    address.checkBusReference();
+
+    this.info = new LoginInfo();
+    this.info.entity = entity;
     this.address = address;
+    this.domain = domain;
+    this.context = (OpenBusContext) ORBInitializer.initORB()
+      .resolve_initial_references("OpenBusContext");
+  }
+
+  /** Permite a personalização da {@link OnReloginCallback} presente no OpenBus SDK Java
+   *  e garante o comportamento necessário para atualizar as informações armazenadas no {@link BusExplorerLogin}.
+   *
+   *  @param callback implementação personalizada do {@link OnReloginCallback}
+   */
+  public void onRelogin(OnReloginCallback callback) {
+    this.onReloginCallback = callback;
+  }
+
+  /**
+   * Realiza o login no barramento usando a senha fornecida nessa chamada.
+   *
+   * @param password Senha.
+   *
+   * @throws AccessDenied caso as credenciais (entidade ou senha) não sejam válidas
+   * @throws AlreadyLoggedIn caso a conexão com o barramento já esteja autenticada
+   * @throws IllegalArgumentException caso não seja possível determinar o {@code corbaloc} do endereço do barramento
+   * @throws ServiceFailure caso não seja possível acessar o serviço remoto
+   * @throws TooManyAttempts caso tenham havido muitas tentativas repetidas de autenticação por senha no barramento com a mesma entidade
+   * @throws UnknownDomain caso o domínio de autenticação não seja conhecido pelo barramento
+   * @throws WrongEncoding caso tenha havido um erro na codificação do handshake do protocolo OpenBus (pode ser um erro interno na biblioteca do OpenBus SDK Java)
+   */
+  public void doLogin(String password) throws WrongEncoding, AlreadyLoggedIn, ServiceFailure, UnknownDomain, TooManyAttempts, AccessDenied {
+    Object reference = getORB().string_to_object(address.toIOR());
+    conn = context.connectByReference(reference);
+    context.defaultConnection(conn);
+
+    boolean done = false;
+    Exception lastFailure = null;
+    for (short i = 0; i < MAX_RETRIES; i++) {
+      try {
+        conn.loginByPassword(info.entity, password.getBytes(), domain);
+        conn.onReloginCallback((connection, oldLogin) -> {
+          BusExplorerLogin.this.info.id = connection.login().id;
+          try {
+            BusExplorerLogin.this.checkAdminRights();
+          } catch (ServiceFailure e) {
+            //TODO: a OnReloginCallback não aceita exceções, exibir outro diálogo?
+          }
+          if (onReloginCallback != null) {
+            onReloginCallback.onRelogin(connection, oldLogin);
+          }
+        });
+        info.id = conn.login().id;
+        admin = new BusAdminImpl(reference);
+        extension = new BusExtensionImpl(conn.offerRegistry());
+        checkAdminRights();
+        done = true;
+        break;
+      }
+      catch (TRANSIENT | COMM_FAILURE e) {
+        // retentar
+        lastFailure = e;
+      }
+      catch (NO_PERMISSION e) {
+        if (e.minor != NoLoginCode.value) {
+          throw e;
+        }
+        // retentar
+        lastFailure = e;
+      }
+      catch (Exception e) {
+        logout();
+        throw e;
+      }
+
+      try {
+        Thread.sleep(250);
+      }
+      catch (InterruptedException ignored) {}
+    }
+
+    if (!done) {
+      throw new IllegalArgumentException(address.toIOR(), lastFailure);
+    }
   }
 
   /**
    * Indica se o usuário autenticado no momento possui permissão de
    * administração.
-   * 
+   *
    * @return <code>true</code> se possui permissão de administração e
    *         <code>false</code> caso contrário. Se o login não foi realizado, o
    *         retorno será <code>false</code>.
@@ -96,94 +194,18 @@ public class BusExplorerLogin {
   }
 
   /**
-   * Obtém as facetas de administração do barramento.
-   */
-  private void getAdminFacets() {
-    ORB orb = conn.ORB();
-    switch (address.getType()) {
-      case Address:
-        admin.getAdminFacets(address.getHost(), address.getPort(), orb);
-        break;
-      case Reference:
-        Object ref = orb.string_to_object(address.getIOR());
-        admin.getAdminFacets(ref);
-        break;
-      default:
-        throw new IllegalStateException(
-          "Informações sobre barramento inválidas");
-    }
-  }
-
-  /**
    * Obtém o contexto da comunicação com o barramento.
    * @return o contexto da biblioteca do OpenBus.
    */
   public OpenBusContext getOpenBusContext() {
-    return this.context;
+    return context;
   }
 
   /**
-   * Realiza o login.
-   *
-   * @param login Informações de login.
-   * @param password Senha.
-   * @param domain Domínio
-   *
-   * @throws AccessDenied caso as credenciais (entidade ou senha) não sejam válidas
-   * @throws AlreadyLoggedIn caso a conexão com o barramento já esteja autenticada
-   * @throws IllegalArgumentException caso não seja possível determinar o {@code corbaloc} do endereço do barramento
-   * @throws InvalidName caso tenha havido um erro interno na biblioteca do OpenBus SDK Java
-   * @throws ServiceFailure caso não seja possível acessar o serviço remoto
-   * @throws TooManyAttempts caso tenham havido muitas tentativas repetidas de autenticação por senha no barramento com a mesma entidade
-   * @throws UnknownDomain caso o domínio de autenticação não seja conhecido pelo barramento
-   * @throws WrongEncoding caso tenha havido um erro na codificação do handshake do protocolo OpenBus (pode ser um erro interno na biblioteca do OpenBus SDK Java)
+   * Obtém o ORB associado ao contexto da comunicação com o barramento.
+   * @return a instância de {@link ORB} obtida através do {@link OpenBusContext#ORB()}
    */
-  public static void doLogin(BusExplorerLogin login, String password,
-    String domain) throws InvalidName, WrongEncoding, AlreadyLoggedIn, ServiceFailure, UnknownDomain, TooManyAttempts, AccessDenied {
-    ORB orb = ORBInitializer.initORB();
-    login.context = (OpenBusContext) orb.resolve_initial_references
-      ("OpenBusContext");
-    switch (login.address.getType()) {
-      case Address:
-        login.conn = login.context.connectByAddress(login.address.getHost(),
-          login.address.getPort());
-        break;
-      case Reference:
-        Object ref = orb.string_to_object(login.address.getIOR());
-        login.conn = login.context.connectByReference(ref);
-        break;
-      default:
-        throw new IllegalStateException(
-          "Informações inválidas sobre o barramento.");
-    }
-
-    login.context.defaultConnection(login.conn);
-
-    for (int i = 0; i < 3; i++) {
-      try {
-        login.conn.loginByPassword(login.entity, password.getBytes(), domain);
-        login.getAdminFacets();
-        login.checkAdminRights();
-        break;
-      }
-      catch (TRANSIENT | COMM_FAILURE e) {
-        // retentar
-      }
-      catch (NO_PERMISSION e) {
-        if (e.minor != NoLoginCode.value) {
-          throw e;
-        }
-        // retentar
-      }
-      catch (Exception e) {
-        login.logout();
-        throw e;
-      }
-
-      try {
-        Thread.sleep(250);
-      }
-      catch (InterruptedException ignored) {}
-    }
+  public ORB getORB() {
+    return getOpenBusContext().ORB();
   }
 }

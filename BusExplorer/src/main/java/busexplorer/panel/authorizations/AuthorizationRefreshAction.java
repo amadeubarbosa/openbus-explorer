@@ -5,8 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -23,13 +21,11 @@ public class AuthorizationRefreshAction extends
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow janela pai.
-   * @param admin biblioteca de administração.
+   *  @param parentWindow janela pai.
+   *
    */
-  public AuthorizationRefreshAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin,
-      LNG.get(AuthorizationRefreshAction.class.getSimpleName() + ".name"));
+  public AuthorizationRefreshAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -45,13 +41,12 @@ public class AuthorizationRefreshAction extends
    */
   @Override
   public void actionPerformed(ActionEvent e) {
-    BusExplorerTask<List<AuthorizationWrapper>> task =
-      new BusExplorerTask<List<AuthorizationWrapper>>(
-        Application.exceptionHandler(), ExceptionContext.BusCore) {
+    BusExplorerTask<List<AuthorizationWrapper>> task = new BusExplorerTask<List<AuthorizationWrapper>>(
+      ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
-        setResult(AuthorizationWrapper.convertToInfo(admin.getAuthorizations()));
+      protected void doPerformTask() throws Exception {
+        setResult(AuthorizationWrapper.convertToInfo(Application.login().admin.getAuthorizations()));
       }
 
       @Override
@@ -63,7 +58,7 @@ public class AuthorizationRefreshAction extends
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

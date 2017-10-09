@@ -3,8 +3,6 @@ package busexplorer.panel.interfaces;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -19,13 +17,11 @@ public class InterfaceAddAction extends OpenBusAction<InterfaceWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public InterfaceAddAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(InterfaceAddAction.class.getSimpleName()
-      + ".name"));
+  public InterfaceAddAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -49,8 +45,8 @@ public class InterfaceAddAction extends OpenBusAction<InterfaceWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    new InterfaceInputDialog(parentWindow, getTablePanelComponent(),
-      admin).showDialog();
+    new InterfaceInputDialog(parentWindow, getTablePanelComponent()
+    ).showDialog();
   }
 
 }

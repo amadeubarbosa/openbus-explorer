@@ -5,15 +5,16 @@ import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
+import tecgraf.openbus.admin.BusAdminFacade;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +35,12 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição/edição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public AdminInputDialog(Window parentWindow, TablePanelComponent<AdminWrapper>
-    panel, BusAdmin admin) {
-    super(parentWindow, LNG.get(AdminInputDialog.class.getSimpleName() +
-      ".title"), admin);
+    panel) {
+    super(parentWindow);
     this.panel = panel;
   }
 
@@ -55,13 +53,12 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
     final List<String> grantTo = new ArrayList<String>();
     grantTo.add(adminNameField.getText());
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
+        BusAdminFacade admin = Application.login().admin;
         if (editingAdministrator == null) {
           admin.grantAdminTo(grantTo);
         } else {
@@ -81,8 +78,8 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
     return task.getStatus();
   }
 
@@ -90,16 +87,36 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(3).west();
+  public JPanel buildFields() {
+    setMinimumSize(new Dimension(330, 180));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     adminNameLabel =
-      new JLabel(LNG.get("AdminInputDialog.adminName.label"));
-    panel.add(adminNameLabel, new GBC(baseGBC).gridy(0).none());
+      new JLabel(Language.get(this.getClass(),"adminName.label"));
+    panel.add(adminNameLabel, "grow");
 
     adminNameField = new JTextField(30);
-    panel.add(adminNameField, new GBC(baseGBC).gridy(1).horizontal());
+    adminNameField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (adminNameField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(AdminInputDialog.class,
+            "error.validation.emptyID"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+      }
+    });
+    panel.add(adminNameField, "grow, push");
 
     return panel;
   }
@@ -109,10 +126,8 @@ public class AdminInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    String administrator = adminNameField.getText();
-
-    if (administrator.equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
+    if (adminNameField.getText().trim().isEmpty()) {
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyID"));
       return false;
     }

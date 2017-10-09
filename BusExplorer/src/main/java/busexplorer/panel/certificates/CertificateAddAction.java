@@ -3,8 +3,6 @@ package busexplorer.panel.certificates;
 import busexplorer.Application;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
@@ -19,13 +17,11 @@ public class CertificateAddAction extends OpenBusAction<CertificateWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public CertificateAddAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin,
-      LNG.get(CertificateAddAction.class.getSimpleName() + ".name"));
+  public CertificateAddAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -49,8 +45,7 @@ public class CertificateAddAction extends OpenBusAction<CertificateWrapper> {
    */
   @Override
   public void actionPerformed(ActionEvent arg0) {
-    new CertificateInputDialog(parentWindow, getTablePanelComponent(),
-      admin).showDialog();
+    new CertificateInputDialog(parentWindow, getTablePanelComponent()).showDialog();
   }
 
 }

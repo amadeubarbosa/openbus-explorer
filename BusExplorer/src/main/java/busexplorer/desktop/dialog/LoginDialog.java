@@ -8,11 +8,12 @@ import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusAddress.AddressType;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConfigurationProperties;
-import tecgraf.javautils.core.lng.LNG;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
 import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -44,6 +45,8 @@ import java.util.Vector;
 public class LoginDialog extends JDialog {
   /** Combo box de barramentos pré-configurados */
   private JComboBox comboBus;
+  /** Combo box de domínios pré-configurados */
+  private JComboBox comboDomain;
   /** Campo de texto para o endereço do barramento */
   private JTextField fieldAddress;
   /** Campo de texto para o nome do usuário (entidade do barramento). */
@@ -56,19 +59,14 @@ public class LoginDialog extends JDialog {
   private JButton buttonLogin;
   /** Informações de login */
   private BusExplorerLogin login;
-  /** Referência para a biblioteca de administração */
-  private BusAdmin admin;
 
   /**
    * Construtor do diálogo.
-   * 
-   * @param owner janela pai.
-   * @param admin biblioteca de administração
+   *  @param owner janela pai.
+   *
    */
-  public LoginDialog(Window owner, BusAdmin admin) {
-    super(owner, LNG.get("LoginDialog.title") + " - "
-      + LNG.get("Application.title"), JDialog.ModalityType.APPLICATION_MODAL);
-    this.admin = admin;
+  public LoginDialog(Window owner) {
+    super(owner, Language.get(LoginDialog.class, "title"), JDialog.ModalityType.APPLICATION_MODAL);
     buildDialog();
   }
 
@@ -105,14 +103,10 @@ public class LoginDialog extends JDialog {
     JPanel loginPanel = new JPanel(new BorderLayout());
     loginPanel.setBorder(new EmptyBorder(6, 6, 6, 6));
 
-    JPanel configPanel = new JPanel();
-
-    GridBagLayout configLayout = new GridBagLayout();
-    configLayout.columnWidths = new int[] { 300 };
-    configPanel.setLayout(configLayout);
+    JPanel configPanel = new JPanel(new MigLayout("fill, flowy"));
 
     TitledBorder configBorder =
-      new TitledBorder(null, LNG.get("LoginDialog.config.label"));
+      new TitledBorder(null, Language.get(this.getClass(),"config.label"));
     configPanel.setBorder(configBorder);
 
     final Font FONT_LABEL = new Font("Dialog", Font.PLAIN, 12);
@@ -122,6 +116,7 @@ public class LoginDialog extends JDialog {
 
     ConfigurationProperties configProps = new ConfigurationProperties();
     final Vector<BusAddress> busVector = new Vector<>();
+    final Vector<Vector<String>> busDomain = new Vector<>();
 
     for (int i = 1;; i++) {
       String busPrefix = "bus" + i + ".";
@@ -130,17 +125,26 @@ public class LoginDialog extends JDialog {
       if (description == null || address == null) {
         break;
       }
+      busDomain.add(new Vector<>());
+      for (int j = 1;; j++) {
+        String domain = configProps.getProperty(busPrefix + "domain" + j);
+        if (domain == null) {
+          break;
+        }
+        busDomain.get(i-1).add(domain);
+      }
       busVector.add(BusAddress.toAddress(description, address));
     }
 
-    fieldAddress = new JTextField();
+    fieldAddress = new JTextField(30);
 
     if (!busVector.isEmpty()) {
       busVector.add(BusAddress.UNSPECIFIED_ADDRESS);
+      busDomain.add(new Vector<>());
 
-      JLabel labelBus = new JLabel(LNG.get("LoginDialog.bus.label"));
+      JLabel labelBus = new JLabel(Language.get(this.getClass(),"bus.label"));
       labelBus.setFont(FONT_LABEL);
-      configPanel.add(labelBus, new GBC(0, 0).horizontal().insets(6, 6, 3, 6));
+      configPanel.add(labelBus, "grow");
 
       comboBus = new JComboBox<>(busVector);
       comboBus.addItemListener(e -> {
@@ -155,14 +159,14 @@ public class LoginDialog extends JDialog {
           fieldUser.requestFocus();
         }
       });
-      configPanel.add(comboBus, new GBC(0, 1).horizontal().insets(0, 6, 6, 9));
+      configPanel.add(comboBus, "grow");
     }
 
-    JLabel labelHost = new JLabel(LNG.get("LoginDialog.host.label"));
+    JLabel labelHost = new JLabel(Language.get(this.getClass(),"host.label"));
     labelHost.setFont(FONT_LABEL);
-    configPanel.add(labelHost, new GBC(0, 2).west().insets(6, 6, 3, 6));
+    configPanel.add(labelHost, "grow");
 
-    fieldAddress.setToolTipText(LNG.get("LoginDialog.host.help"));
+    fieldAddress.setToolTipText(Language.get(this.getClass(),"host.help"));
     fieldAddress.addFocusListener(selectAllTextListener);
     fieldAddress.getDocument().addDocumentListener(enableLoginListener);
     fieldAddress.setFocusable(true);
@@ -170,48 +174,85 @@ public class LoginDialog extends JDialog {
       fieldAddress.setEnabled(false);
     }
     configPanel
-      .add(fieldAddress, new GBC(0, 3).horizontal().insets(0, 6, 6, 9));
+      .add(fieldAddress, "grow");
 
-    JLabel labelUser = new JLabel(LNG.get("LoginDialog.user.label"));
+    JLabel labelUser = new JLabel(Language.get(this.getClass(),"user.label"));
     labelUser.setFont(FONT_LABEL);
-    configPanel.add(labelUser, new GBC(0, 4).west().insets(6, 6, 3, 6));
+    configPanel.add(labelUser, "grow");
 
     fieldUser = new JTextField();
-    fieldUser.setToolTipText(LNG.get("LoginDialog.user.help"));
+    fieldUser.setToolTipText(Language.get(this.getClass(),"user.help"));
     fieldUser.addFocusListener(selectAllTextListener);
     fieldUser.getDocument().addDocumentListener(enableLoginListener);
     fieldUser.setFocusable(true);
-    configPanel.add(fieldUser, new GBC(0, 5).horizontal().insets(0, 6, 6, 9));
+    configPanel.add(fieldUser, "grow");
 
-    JLabel labelPassword = new JLabel(LNG.get("LoginDialog.password.label"));
+    JLabel labelPassword = new JLabel(Language.get(this.getClass(),"password.label"));
     labelPassword.setFont(FONT_LABEL);
-    configPanel.add(labelPassword, new GBC(0, 6).west().insets(6, 6, 3, 6));
+    configPanel.add(labelPassword, "grow");
 
     fieldPassword = new JPasswordField();
-    fieldPassword.setToolTipText(LNG.get("LoginDialog.password.help"));
+    fieldPassword.setToolTipText(Language.get(this.getClass(),"password.help"));
     fieldPassword.addFocusListener(selectAllTextListener);
     fieldPassword.setFocusable(true);
-    configPanel.add(fieldPassword, new GBC(0, 7).horizontal()
-      .insets(0, 6, 6, 9));
+    configPanel.add(fieldPassword, "grow");
 
-    JLabel labelDomain = new JLabel(LNG.get("LoginDialog.domain.label"));
+    JPanel domainPanel = new JPanel(new MigLayout("ins 0, fill","[][]","[]"));
+    JLabel labelDomain = new JLabel(Language.get(this.getClass(),"domain.label"));
     labelDomain.setFont(FONT_LABEL);
-    configPanel.add(labelDomain, new GBC(0, 8).west().insets(6, 6, 3, 6));
+    domainPanel.add(labelDomain, "grow, wrap");
 
     fieldDomain = new JTextField();
-    fieldDomain.setToolTipText(LNG.get("LoginDialog.domain.help"));
+    fieldDomain.setToolTipText(Language.get(this.getClass(),"domain.help"));
     fieldDomain.addFocusListener(selectAllTextListener);
     fieldDomain.setFocusable(true);
-    configPanel.add(fieldDomain, new GBC(0, 9).horizontal().insets(0, 6, 6, 9));
+    domainPanel.add(fieldDomain, "grow, push");
+    comboDomain = new JComboBox<String>();
+    comboDomain.setEnabled(false);
+    domainPanel.add(comboDomain, "grow");
+    configPanel.add(domainPanel, "grow");
 
     loginPanel.add(configPanel, BorderLayout.CENTER);
 
-    buttonLogin = new JButton(LNG.get("LoginDialog.confirm.button"));
-    buttonLogin.setToolTipText(LNG.get("LoginDialog.confirm.help"));
+    buttonLogin = new JButton(Language.get(this.getClass(),"confirm.button"));
+    buttonLogin.setMnemonic(Language.get(this.getClass(),"confirm.button.mnemonic").charAt(0));
+    buttonLogin.setToolTipText(Language.get(this.getClass(),"confirm.help"));
     buttonLogin.addActionListener(new LoginAction());
 
     buttonLogin.setIcon(ApplicationIcons.ICON_LOGIN_16);
     buttonLogin.setEnabled(false);
+
+    if (!busDomain.isEmpty()) {
+      comboBus.addItemListener(listener -> {
+        comboDomain.removeAllItems();
+        BusAddress selectedBus = (BusAddress) comboBus.getSelectedItem();
+        for (String d : busDomain.get(busVector.indexOf(selectedBus))) {
+          comboDomain.addItem(d);
+        }
+        if (comboDomain.getItemCount() == 0) {
+          comboDomain.setEnabled(false);
+          fieldDomain.setEnabled(true);
+        } else {
+          comboDomain.setEnabled(true);
+        }
+      });
+      comboDomain.addItemListener(listener -> {
+        String selected = (String) comboDomain.getSelectedItem();
+        fieldDomain.setText(selected);
+        fieldDomain.setEnabled(false);
+        buttonLogin.requestFocus();
+      });
+      // first presentation
+      for (String d : busDomain.get(busVector.indexOf(busVector.get(0)))) {
+        comboDomain.addItem(d);
+      }
+      if (comboDomain.getItemCount() == 0) {
+        comboDomain.setEnabled(false);
+        fieldDomain.setEnabled(true);
+      } else {
+        comboDomain.setEnabled(true);
+      }
+    }
 
     Box buttonsBox = Box.createHorizontalBox();
     buttonsBox.setBorder(new EmptyBorder(9, 3, 3, 3));
@@ -219,6 +260,16 @@ public class LoginDialog extends JDialog {
     buttonsBox.add(buttonLogin);
     loginPanel.add(buttonsBox, BorderLayout.SOUTH);
 
+    JPanel leftBox = new JPanel(new GridBagLayout());
+    leftBox.add(new JLabel(new ImageIcon(ApplicationIcons.BUSEXPLORER_LIST[ApplicationIcons.BUSEXPLORER_LIST.length-1])));
+    String[] version = Application.version();
+    JLabel apiVersion = new JLabel(version[0]);
+    apiVersion.setFont(new Font(apiVersion.getFont().getFontName(), Font.PLAIN, (int)(apiVersion.getFont().getSize()*1.5)));
+    leftBox.add(apiVersion, new GBC(0,1).insets(10));
+    JLabel appVersion = new JLabel(version[1]);
+    appVersion.setFont(new Font(appVersion.getFont().getFontName(), Font.PLAIN, (int)(appVersion.getFont().getSize()*1.2)));
+    leftBox.add(appVersion, new GBC(0,2).insets(10));
+    loginPanel.add(leftBox, BorderLayout.WEST);
     setContentPane(loginPanel);
     getRootPane().setDefaultButton(buttonLogin);
 
@@ -313,14 +364,13 @@ public class LoginDialog extends JDialog {
     @Override
     public void actionPerformed(ActionEvent event) {
 
-      BusExplorerTask<Object> task =
-        new BusExplorerTask<Object>(Application.exceptionHandler(),
-          ExceptionContext.LoginByPassword) {
+      BusExplorerTask<Void> task =
+        new BusExplorerTask<Void>(ExceptionContext.LoginByPassword) {
 
           BusExplorerLogin theLogin;
 
           @Override
-          protected void performTask() throws Exception {
+          protected void doPerformTask() throws Exception {
             BusAddress address;
             if (comboBus == null) {
               address =
@@ -334,11 +384,11 @@ public class LoginDialog extends JDialog {
             }
 
             String entity = fieldUser.getText().trim();
-            String password = new String(fieldPassword.getPassword());
             String domain = fieldDomain.getText().trim();
+            String password = new String(fieldPassword.getPassword());
 
-            theLogin = new BusExplorerLogin(admin, entity, address);
-            BusExplorerLogin.doLogin(theLogin, password, domain);
+            theLogin = new BusExplorerLogin(address, entity, domain);
+            theLogin.doLogin(password);
           }
 
           @Override
@@ -356,8 +406,9 @@ public class LoginDialog extends JDialog {
           }
         };
 
-      task.execute(LoginDialog.this, LNG.get("LoginDialog.waiting.title"), LNG
-        .get("LoginDialog.waiting.msg"));
+      task.execute(LoginDialog.this,
+        Language.get(LoginDialog.class,"waiting.title"),
+        Language.get(LoginDialog.class, "waiting.msg"), 2, 0);
     }
   }
 

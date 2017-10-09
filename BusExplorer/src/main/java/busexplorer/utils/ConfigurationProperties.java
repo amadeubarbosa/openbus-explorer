@@ -27,11 +27,11 @@ public class ConfigurationProperties extends Properties {
       load(configStream);
     }
     catch (FileNotFoundException e) {
-      System.err.println(Utils.getString(ConfigurationProperties.class,
+      System.err.println(Language.get(this.getClass(),
         "warning.configFileNotFound"));
     }
     catch (IOException e) {
-      System.err.println(Utils.getString(ConfigurationProperties.class,
+      System.err.println(Language.get(this.getClass(),
         "warning.configFileLoadFailure"));
     }
   }

@@ -5,8 +5,6 @@ import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.admin.BusAdmin;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.EntityCategoryDesc;
 
 import javax.swing.JFrame;
@@ -22,13 +20,11 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
 
   /**
    * Construtor da ação.
-   * 
-   * @param parentWindow janela mãe do diálogo que a ser criado pela ação
-   * @param admin biblioteca de administração
+   *  @param parentWindow janela mãe do diálogo que a ser criado pela ação
+   *
    */
-  public EntityEditAction(JFrame parentWindow, BusAdmin admin) {
-    super(parentWindow, admin, LNG.get(EntityEditAction.class.getSimpleName()
-      + ".name"));
+  public EntityEditAction(JFrame parentWindow) {
+    super(parentWindow);
   }
 
   /**
@@ -53,12 +49,11 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     BusExplorerTask<List<EntityCategoryDesc>> task =
-      new BusExplorerTask<List<EntityCategoryDesc>>(
-        Application.exceptionHandler(), ExceptionContext.BusCore) {
+      new BusExplorerTask<List<EntityCategoryDesc>>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
-        setResult(admin.getCategories());
+      protected void doPerformTask() throws Exception {
+        setResult(Application.login().admin.getCategories());
       }
 
       @Override
@@ -66,7 +61,7 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
         if (getStatus()) {
           EntityInputDialog dialog =
             new EntityInputDialog(EntityEditAction.this.parentWindow,
-              getTablePanelComponent(), admin, getResult());
+              getTablePanelComponent(), getResult());
           dialog.showDialog();
           EntityWrapper entity = getTablePanelComponent().getSelectedElement();
           dialog.setEditionMode(entity);
@@ -75,7 +70,7 @@ public class EntityEditAction extends OpenBusAction<EntityWrapper> {
     };
 
     task.execute(parentWindow, getString("waiting.title"),
-      getString("waiting.msg"));
+      getString("waiting.msg"), 2, 0);
   }
 
 }

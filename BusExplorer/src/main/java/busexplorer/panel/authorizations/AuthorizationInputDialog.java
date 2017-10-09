@@ -5,20 +5,17 @@ import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
 import java.awt.Window;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,18 +38,15 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    * @param entitiesIDList Lista de entidades.
    * @param interfacesList Lista de interfaces.
    */
   public AuthorizationInputDialog(Window parentWindow,
-                                  TablePanelComponent<AuthorizationWrapper> panel, BusAdmin admin, List<String>
-    entitiesIDList, List<String> interfacesList) {
-    super(parentWindow, LNG.get(AuthorizationInputDialog.class.getSimpleName() +
-      ".title") , admin);
+                                  TablePanelComponent<AuthorizationWrapper> panel, List<String>
+                                    entitiesIDList, List<String> interfacesList) {
+    super(parentWindow);
 
     this.panel = panel;
 
@@ -72,17 +66,14 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    BusExplorerTask<Object> task =
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
-
+    BusExplorerTask<Void> task = new BusExplorerTask<Void>(ExceptionContext.BusCore) {
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         String entityID = getEntityID();
         String[] selectedInterfaces = getSelectedInterfaces();
 
         for (String selectedInterface : selectedInterfaces) {
-          admin.setAuthorization(entityID, selectedInterface);
+          Application.login().admin.setAuthorization(entityID, selectedInterface);
         }
       }
 
@@ -101,8 +92,8 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
 
     return task.getStatus();
   }
@@ -111,23 +102,28 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
+  public JPanel buildFields() {
+    setMinimumSize(new Dimension(550,350));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     entityIDLabel =
-      new JLabel(Utils.getString(this.getClass(), "entityID.label"));
-    panel.add(entityIDLabel, new GBC(0, 0).insets(5).none().west());
+      new JLabel(Language.get(this.getClass(), "entityID.label"));
+    panel.add(entityIDLabel, "grow");
 
     entityIDCombo = new JComboBox<>(entitiesIDList.toArray());
-    panel.add(entityIDCombo, new GBC(0, 1).insets(5).horizontal().west());
+    panel.add(entityIDCombo, "grow");
 
     interfacesLabel =
-      new JLabel(Utils.getString(this.getClass(), "interfaces.label"));
-    panel.add(interfacesLabel, new GBC(0, 2).insets(5).none().west());
+      new JLabel(Language.get(this.getClass(), "interfaces.label"));
+    panel.add(interfacesLabel, "grow");
 
     interfacesScrollList = new JList<>(interfacesList.toArray());
-    panel.add(new JScrollPane(interfacesScrollList),
-      new GBC(0, 3).insets(5).both().west());
+    interfacesScrollList.addListSelectionListener(listener -> {
+      if ((listener.getFirstIndex() != -1) && (listener.getLastIndex() != -1)) {
+        clearErrorMessage();
+      }
+    });
+    panel.add(new JScrollPane(interfacesScrollList),"grow, push");
       
     return panel;
   }
@@ -138,7 +134,7 @@ public class AuthorizationInputDialog extends BusExplorerAbstractInputDialog {
   @Override
   public boolean hasValidFields() {
     if (interfacesScrollList.isSelectionEmpty()) {
-      setErrorMessage(Utils.getString(this.getClass(),
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyInterfaces"));
       return false;
     }

@@ -5,21 +5,19 @@ import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.TablePanelComponent;
 import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
 import org.apache.commons.io.FileUtils;
-import tecgraf.javautils.core.lng.LNG;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.openbus.admin.BusAdmin;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.Dimension;
 import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
 /**
@@ -39,15 +37,12 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
 
   /**
    * Construtor.
-   * 
-   * @param parentWindow Janela mãe do Diálogo.
+   *  @param parentWindow Janela mãe do Diálogo.
    * @param panel Painel a ser atualizado após a adição/edição.
-   * @param admin Acesso às funcionalidade de administração do barramento.
    */
   public CertificateInputDialog(Window parentWindow,
-                                TablePanelComponent<CertificateWrapper> panel, BusAdmin admin) {
-    super(parentWindow, LNG.get(CertificateInputDialog.class.getSimpleName() +
-      ".title"), admin);
+                                TablePanelComponent<CertificateWrapper> panel) {
+    super(parentWindow);
     this.panel = panel;
   }
 
@@ -60,15 +55,14 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
       return false;
     }
 
-    BusExplorerTask<Object> task = 
-      new BusExplorerTask<Object>(Application.exceptionHandler(),
-        ExceptionContext.BusCore) {
+    BusExplorerTask<Void> task =
+      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       @Override
-      protected void performTask() throws Exception {
+      protected void doPerformTask() throws Exception {
         File certificateFile = new File(getCertificatePath());
         byte[] certificate = FileUtils.readFileToByteArray(certificateFile);
-        admin.registerCertificate(getIdentifier(), certificate);
+        Application.login().admin.registerCertificate(getIdentifier(), certificate);
       }
 
       @Override
@@ -80,8 +74,8 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
       }
     };
 
-    task.execute(this, Utils.getString(this.getClass(), "waiting.title"),
-      Utils.getString(this.getClass(), "waiting.msg"));
+    task.execute(this, Language.get(this.getClass(), "waiting.title"),
+      Language.get(this.getClass(), "waiting.msg"));
     return task.getStatus();
   }
 
@@ -89,33 +83,56 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    * {@inheritDoc}
    */
   @Override
-  protected JPanel buildFields() {
-    JPanel panel = new JPanel(new GridBagLayout());
-    GBC baseGBC = new GBC().gridx(0).insets(5).west();
+  public JPanel buildFields() {
+    setMinimumSize(new Dimension(380,240));
+    JPanel panel = new JPanel(new MigLayout("fill, flowy"));
 
     identifierLabel =
-      new JLabel(LNG.get("CertificateInputDialog.identifier.label"));
-    panel.add(identifierLabel, new GBC(baseGBC).gridy(0).none());
+      new JLabel(Language.get(this.getClass(),"identifier.label"));
+    panel.add(identifierLabel, "grow");
 
     identifierField = new JTextField(30);
-    panel.add(identifierField, new GBC(baseGBC).gridy(1).horizontal());
+    identifierField.getDocument().addDocumentListener(new DocumentListener() {
+      @Override
+      public void insertUpdate(DocumentEvent documentEvent) {
+        if (identifierField.getText().trim().isEmpty()) {
+          setErrorMessage(Language.get(CertificateInputDialog.class,
+            "error.validation.name"));
+        } else {
+          clearErrorMessage();
+        }
+      }
+
+      @Override
+      public void removeUpdate(DocumentEvent documentEvent) {
+        this.insertUpdate(documentEvent); //no difference
+      }
+
+      @Override
+      public void changedUpdate(DocumentEvent documentEvent) {
+      }
+    });
+    panel.add(identifierField,"grow");
 
     certificateLabel =
-      new JLabel(LNG.get("CertificateInputDialog.certificate.label"));
-    panel.add(certificateLabel, new GBC(baseGBC).gridy(2).none());
+      new JLabel(Language.get(this.getClass(),"certificate.label"));
+    panel.add(certificateLabel, "grow");
 
-    JPanel certificatePane = new JPanel(new GridBagLayout());
+    JPanel certificatePane = new JPanel(new MigLayout("","[grow][]"));
 
-    certificateField = new JTextField();
+    certificateField = new JTextField(30);
     certificateField.setEditable(false);
-    certificatePane.add(certificateField, new GBC(0, 0).right(5).horizontal());
+    certificatePane.add(certificateField, "growx");
 
     certificateButton =
-      new JButton(LNG.get("CertificateInputDialog.certificate.search"));
-    certificateButton.addActionListener(e -> chooseCertificateFile());
-    certificatePane.add(certificateButton, new GBC(1, 0).east());
+      new JButton(Language.get(this.getClass(),"certificate.search"));
+    certificateButton.addActionListener(e -> {
+      chooseCertificateFile();
+      clearErrorMessage();
+    });
+    certificatePane.add(certificateButton, "dock east");
 
-    panel.add(certificatePane, new GBC(baseGBC).gridy(3).horizontal());
+    panel.add(certificatePane, "grow, push");
 
     return panel;
   }
@@ -125,14 +142,14 @@ public class CertificateInputDialog extends BusExplorerAbstractInputDialog {
    */
   @Override
   public boolean hasValidFields() {
-    if (getIdentifier().equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
-        "error.validation.emptyID"));
+    if (getIdentifier().trim().isEmpty()) {
+      setErrorMessage(Language.get(this.getClass(),
+        "error.validation.name"));
       return false;
     }
 
-    if (getCertificatePath().equals("")) {
-      setErrorMessage(Utils.getString(this.getClass(),
+    if (getCertificatePath().isEmpty()) {
+      setErrorMessage(Language.get(this.getClass(),
         "error.validation.emptyPath"));
       return false;
     }

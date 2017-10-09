@@ -1,6 +1,6 @@
 package busexplorer.panel.certificates;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 /**
@@ -19,7 +19,7 @@ public class CertificateTableProvider implements
    */
   @Override
   public String[] getColumnNames() {
-    return new String[] { Utils.getString(this.getClass(), "entity") };
+    return new String[] { Language.get(this.getClass(), "entity") };
   }
 
   /**

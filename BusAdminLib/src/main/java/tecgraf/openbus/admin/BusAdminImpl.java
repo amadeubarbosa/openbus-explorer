@@ -1,12 +1,16 @@
 package tecgraf.openbus.admin;
 
-import org.omg.CORBA.ORB;
-import org.omg.CORBA.Object;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
+import org.omg.CORBA.Object;
 import scs.core.IComponent;
 import scs.core.IComponentHelper;
 import tecgraf.javautils.core.lng.LNG;
-import tecgraf.openbus.core.v2_1.BusObjectKey;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
 import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
@@ -35,20 +39,14 @@ import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.InvalidInter
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntity;
 import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * A classe implementa os comandos especificados na interface
- * {@link BusAdmin}.
+ * A classe implementa os comandos especificados na interface {@link BusAdminFacade}.
  *
  * @author Tecgraf
  */
-public class BusAdminImpl implements BusAdmin {
+public class BusAdminImpl implements BusAdminFacade {
+  /** Endereço do barramento. */
+  private final Object reference;
   /** Registro de entidades do barramento. */
   private EntityRegistry entityRegistry;
   /** Registro de certificados do barramento. */
@@ -63,30 +61,16 @@ public class BusAdminImpl implements BusAdmin {
   private Configuration configuration = null;
 
   /**
-   * Construtor da classe.
+   * Construtor da biblioteca de administração a partir de uma referência para o barramento.
+   *
+   * @param reference objeto remoto para o {@link IComponent} do barramento.
+   *
+   * @throws IncompatibleBus caso não seja possível encontrar as interfaces
+   *                         de administração do barramento na referência fornecida.
    */
-  public BusAdminImpl() {
-  }
-
-  /**
-   * Obtém as referências para facetas de administração do barramento.
-   * 
-   * @param host Host do barramento
-   * @param port Porta do barramento
-   * @param orb ORB do barramento
-   */
-  public void getAdminFacets(String host, int port, ORB orb) {
-    org.omg.CORBA.Object ref = buildCorbaLoc(host, port, orb);
-    obtainRegistries(ref);
-  }
-
-  /**
-   * Obtém as referências para facetas de administração do barramento.
-   * 
-   * @param ref Referência de um barramento
-   */
-  public void getAdminFacets(Object ref) {
-    obtainRegistries(ref);
+  public BusAdminImpl(Object reference) {
+    this.reference = reference;
+    this.setRegistries();
   }
 
   /*
@@ -144,6 +128,13 @@ public class BusAdminImpl implements BusAdmin {
     EntityCategory category = this.entityRegistry.getEntityCategory(categoryID);
     return category.registerEntity(entityID, entityName);
   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public RegisteredEntity getEntity(String entityID) throws ServiceFailure {
+    return this.entityRegistry.getEntity(entityID);
+  }
 
   /**
    * {@inheritDoc}
@@ -151,7 +142,7 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public boolean removeEntity(String entityID) throws ServiceFailure,
     UnauthorizedOperation {
-    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    RegisteredEntity entity = this.getEntity(entityID);
     if (entity != null) {
       entity.remove();
       return true;
@@ -237,7 +228,7 @@ public class BusAdminImpl implements BusAdmin {
     RegisteredEntityDesc[] entitiesDesc =
       this.entityRegistry.getAuthorizedEntities();
     for (RegisteredEntityDesc entityDesc : entitiesDesc) {
-      map.put(entityDesc, Arrays.asList(entityDesc.ref.getGrantedInterfaces()));
+      map.put(entityDesc, new ArrayList(Arrays.asList(entityDesc.ref.getGrantedInterfaces())));
     }
     return map;
   }
@@ -248,7 +239,7 @@ public class BusAdminImpl implements BusAdmin {
   @Override
   public boolean setAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface {
-    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    RegisteredEntity entity = this.getEntity(entityID);
     return entity.grantInterface(interfaceName);
   }
 
@@ -259,7 +250,7 @@ public class BusAdminImpl implements BusAdmin {
   public void revokeAuthorization(String entityID, String interfaceName)
     throws ServiceFailure, UnauthorizedOperation, InvalidInterface,
     AuthorizationInUse {
-    RegisteredEntity entity = this.entityRegistry.getEntity(entityID);
+    RegisteredEntity entity = this.getEntity(entityID);
     entity.revokeInterface(interfaceName);
   }
 
@@ -413,22 +404,19 @@ public class BusAdminImpl implements BusAdmin {
    */
 
   /**
-   * {@inheritDoc}
+   * Obtém a referência para o barramento, tipicamente um {@link IComponent}
+   *
+   * @return instância de {@link org.omg.CORBA.Object} da referência inicial para o barramento
    */
-  private static org.omg.CORBA.Object buildCorbaLoc(String host, int port,
-    ORB orb) {
-    String str =
-      String.format("corbaloc::1.0@%s:%d/%s", host, port, BusObjectKey.value);
-    return orb.string_to_object(str);
+  public Object getBusReference() {
+    return reference;
   }
 
   /**
-   * Obtém as facetas de administração do barramento.
-   * 
-   * @param obj referência para o barramento
+   * Preenche os objetos locais das referências das facetas de administração do barramento.
    */
-  private void obtainRegistries(Object obj) {
-    IComponent iComponent = IComponentHelper.narrow(obj);
+  private void setRegistries() {
+    IComponent iComponent = IComponentHelper.narrow(getBusReference());
     if (iComponent == null) {
       throw new IncompatibleBus(
         LNG.get("IncompatibleBus.missing.icomponent"));
@@ -478,7 +466,6 @@ public class BusAdminImpl implements BusAdmin {
       iComponent.getFacet(ConfigurationHelper.id());
     if (configurationObj != null) {
       this.configuration = ConfigurationHelper.narrow(configurationObj);
-
     }
   }
 }

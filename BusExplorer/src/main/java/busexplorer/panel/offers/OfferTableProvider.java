@@ -1,6 +1,7 @@
 package busexplorer.panel.offers;
 
-import busexplorer.utils.Utils;
+import busexplorer.utils.Availability;
+import busexplorer.utils.Language;
 import tecgraf.javautils.gui.table.ObjectTableProvider;
 
 import java.util.Date;
@@ -21,8 +22,12 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
   private static final int VERSION = 2;
   /** Índice da coluna Interface */
   private static final int INTERFACE = 3;
+  /** Índice da coluna Endpoints */
+  private static final int ENDPOINTS = 4;
   /** Índice da coluna Data */
-  private static final int DATE = 4;
+  private static final int DATE = 5;
+  /** Índice da coluna Disponibilidade */
+  private static final int STATUS = 6;
 
   /**
    * {@inheritDoc}
@@ -30,11 +35,14 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
   @Override
   public String[] getColumnNames() {
     return new String[]
-      { Utils.getString(this.getClass(), "entity"),
-          Utils.getString(this.getClass(), "name"),
-          Utils.getString(this.getClass(), "version"),
-          Utils.getString(this.getClass(), "interface"),
-          Utils.getString(this.getClass(), "date") };
+      { Language.get(this.getClass(), "entity"),
+          Language.get(this.getClass(), "name"),
+          Language.get(this.getClass(), "version"),
+          Language.get(this.getClass(), "interface"),
+          Language.get(this.getClass(), "endpoints"),
+          Language.get(this.getClass(), "date"),
+          Language.get(this.getClass(), "status")
+      };
   }
 
   /**
@@ -42,7 +50,10 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
    */
   @Override
   public Class<?>[] getColumnClasses() {
-    Class<?>[] colClasses = { String.class, String.class, String.class, Vector.class, Date.class };
+    Class<?>[] colClasses = {
+        String.class, String.class, String.class,
+        Vector.class, Vector.class, Date.class, Availability.class
+    };
     return colClasses;
   }
 
@@ -62,6 +73,10 @@ public class OfferTableProvider implements ObjectTableProvider<OfferWrapper> {
     	return row.getName();
       case VERSION:
       	return row.getVersion();
+      case ENDPOINTS:
+        return row.getEndpoints();
+      case STATUS:
+        return row.getStatus();
       default:
         break;
     }

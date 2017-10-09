@@ -4,7 +4,7 @@
   <groupId>br.puc-rio.tecgraf.openbus</groupId>
   <artifactId>busexplorer-2.1-parent</artifactId>
   <packaging>pom</packaging>
-  <version>2017.2-SNAPSHOT</version>
+  <version>2017.2</version>
 
   <name>OpenBus 2.1 - BusAdminLib e BusExplorer</name>
   <url>http://www.tecgraf.puc-rio.br/openbus</url>
@@ -39,7 +39,7 @@
     <connection>scm:git:https://git.tecgraf.puc-rio.br/openbus/openbus-explorer.git</connection>
     <developerConnection>scm:git:https://git.tecgraf.puc-rio.br/openbus/openbus-explorer.git</developerConnection>
     <url>https://git.tecgraf.puc-rio.br/openbus/openbus-explorer</url>
-    <tag>HEAD</tag>
+    <tag>02_01-2017_02</tag>
   </scm>
 
   <modules>
@@ -112,7 +112,7 @@
       <dependency>
         <groupId>br.puc-rio.tecgraf.openbus</groupId>
         <artifactId>openbus-governance-service</artifactId>
-        <version>${governance.version}</version>
+        <version>1.0.0</version>
       </dependency>
 
       <dependency>

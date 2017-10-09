@@ -26,7 +26,7 @@ public abstract class BusExplorerTask<T> extends Task<T> {
   private ExceptionContext context;
 
   /**
-   * Construtor para garantir o uso do {@link ExceptionHandler<BusExplorerHandlingException>}
+   * Construtor para garantir o uso do {@link ExceptionHandler}
    * definido na {@link Application#exceptionHandler()}.
    *
    * @param context Contexto das exceções recebidas.

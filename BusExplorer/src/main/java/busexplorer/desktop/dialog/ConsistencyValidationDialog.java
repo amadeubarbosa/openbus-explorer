@@ -152,6 +152,9 @@ public class ConsistencyValidationDialog extends BusExplorerAbstractInputDialog 
 
     /**
      * Flag para remoção das integrações
+     *
+     * @return {@code true} quando o usuário escolhe remover todos os dados de governança
+     *   ou {@code false} quando opta por remover apenas os dados do evento original de remoção.
      */
     public boolean isFullyGovernanceRemoval() {
       return fullyGovernanceRemoval;

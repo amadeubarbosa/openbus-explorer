@@ -15,6 +15,8 @@
 
   <properties>
     <application.niceversion>v2.1-${project.version}</application.niceversion>
+    <application.jfxversion>2017.3</application.jfxversion>
+    <application.jfxname>BusExplorer</application.jfxname>
   </properties>
 
   <build>
@@ -54,8 +56,8 @@
         <version>8.8.3</version>
         <configuration>
           <vendor>Instituto Tecgraf/PUC-Rio</vendor>
-          <appName>BusExplorer</appName>
-          <nativeReleaseVersion>1.3.0</nativeReleaseVersion>
+          <appName>${application.jfxname}</appName>
+          <nativeReleaseVersion>${application.jfxversion}</nativeReleaseVersion>
           <mainClass>busexplorer.Application</mainClass>
           <needShortcut>true</needShortcut>
           <needMenu>true</needMenu>

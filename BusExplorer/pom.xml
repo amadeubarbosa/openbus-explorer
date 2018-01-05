@@ -4,7 +4,7 @@
   <parent>
     <groupId>br.puc-rio.tecgraf.openbus</groupId>
     <artifactId>busexplorer-2.1-parent</artifactId>
-    <version>2017.3-SNAPSHOT</version>
+    <version>2018.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>busexplorer-2.1</artifactId>
@@ -15,7 +15,7 @@
 
   <properties>
     <application.niceversion>v2.1-${project.version}</application.niceversion>
-    <application.jfxversion>2017.3</application.jfxversion>
+    <application.jfxversion>2018.1</application.jfxversion>
     <application.jfxname>BusExplorer</application.jfxname>
   </properties>
 

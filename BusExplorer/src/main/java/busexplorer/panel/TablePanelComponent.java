@@ -1,21 +1,5 @@
 package busexplorer.panel;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagLayout;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Vector;
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -32,6 +16,28 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.text.Document;
+import java.awt.BorderLayout;
+import java.awt.GridBagLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Vector;
+
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.GUIUtils;
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.javautils.gui.table.ObjectTableProvider;
+import tecgraf.javautils.gui.table.SortableTable;
 
 import busexplorer.ApplicationIcons;
 import busexplorer.utils.Availability;
@@ -39,11 +45,6 @@ import busexplorer.utils.AvailabilityRenderer;
 import busexplorer.utils.DateTimeRenderer;
 import busexplorer.utils.Language;
 import busexplorer.utils.StringVectorRenderer;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.GUIUtils;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.javautils.gui.table.ObjectTableProvider;
-import tecgraf.javautils.gui.table.SortableTable;
 
 /**
  * Componente que define um painel com uma {@link SortableTable} e modulariza o
@@ -331,9 +332,10 @@ public class TablePanelComponent<T> extends RefreshablePanel {
    * do campo é usado como <code>".*texto.*"</code>.
    */
   private void filterTableContent() {
-    final String text = filterText.getText();
+    String text = filterText.getText();
+    text = text.replaceFirst("^\\*","");
     if (text.length() > 0) {
-      table.setRowFilter(RowFilter.regexFilter(".*" + text + ".*"));
+      table.setRowFilter(RowFilter.regexFilter("(?i).*" + text + ".*"));
     }
     else {
       table.setRowFilter(null);

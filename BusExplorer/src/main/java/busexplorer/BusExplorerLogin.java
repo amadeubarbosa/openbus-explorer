@@ -1,17 +1,19 @@
 package busexplorer;
 
-import busexplorer.utils.BusAddress;
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
+
 import tecgraf.openbus.Connection;
 import tecgraf.openbus.OnReloginCallback;
 import tecgraf.openbus.OpenBusContext;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.admin.BusAdminImpl;
+import tecgraf.openbus.admin.BusAuditFacade;
+import tecgraf.openbus.admin.BusAuditImpl;
 import tecgraf.openbus.core.ORBInitializer;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
 import tecgraf.openbus.core.v2_1.services.UnauthorizedOperation;
@@ -24,6 +26,8 @@ import tecgraf.openbus.core.v2_1.services.access_control.WrongEncoding;
 import tecgraf.openbus.exception.AlreadyLoggedIn;
 import tecgraf.openbus.extension.BusExtensionFacade;
 import tecgraf.openbus.extension.BusExtensionImpl;
+
+import busexplorer.utils.BusAddress;
 
 /**
  * Trata, analisa e armazena dados de login no barramento.
@@ -39,6 +43,8 @@ public class BusExplorerLogin {
   public final String domain;
   /** Instância de administração do baramento. */
   public BusAdminFacade admin;
+  /** Instância de configuração da auditoria. */
+  public BusAuditFacade audit;
   /** Instância da fachada de extensão a governança. */
   public BusExtensionFacade extension;
   /** Tentativas de login */
@@ -122,6 +128,7 @@ public class BusExplorerLogin {
         });
         info.id = conn.login().id;
         admin = new BusAdminImpl(reference);
+        audit = new BusAuditImpl(reference, conn);
         extension = new BusExtensionImpl(conn.offerRegistry());
         checkAdminRights();
         done = true;

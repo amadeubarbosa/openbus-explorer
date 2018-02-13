@@ -1,5 +1,17 @@
 package busexplorer.desktop.dialog;
 
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -21,22 +33,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.function.Consumer;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JSpinner;
-import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-import javax.swing.border.EtchedBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+
+import tecgraf.javautils.gui.GBC;
+import tecgraf.javautils.gui.table.ObjectTableModel;
 
 import busexplorer.Application;
 import busexplorer.ApplicationIcons;
@@ -125,10 +124,6 @@ import busexplorer.utils.BusAddress;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
 import net.miginfocom.swing.MigLayout;
-import tecgraf.javautils.gui.GBC;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.admin.BusAdminFacade;
-
 import static busexplorer.Application.APPLICATION_LOGIN;
 
 /**
@@ -231,7 +226,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    * Constrói os componentes da janela.
    */
   private void buildDialog() {
-    setMinimumSize(new Dimension(800, 600));
+    setMinimumSize(new Dimension(980, 700));
     setLocationByPlatform(true);
     setLayout(new BorderLayout(0, 0));
     addWindowListener(new WindowAdapter() {
@@ -647,134 +642,8 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
             new TablePanelComponent<ValidatorWrapper>(new ObjectTableModel<ValidatorWrapper>(new LinkedList<ValidatorWrapper>(),
                     new ValidatorTableProvider()), validatorActionsVector, false);
 
-    JPanel settingsPanel = new JPanel(new MigLayout("wrap 2","[grow][]", "[][][][]"));
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.busloglevel")), "grow");
-    final JSpinner busLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
-    busLogLevelSpinner.setToolTipText(Language.get(MainDialog.class,"conf.busloglevel.tooltip"));
-    settingsPanel.add(busLogLevelSpinner,"grow");
-
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.oilloglevel")),"grow");
-    final JSpinner oilLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 6, 1));
-    oilLogLevelSpinner.setToolTipText(Language.get(MainDialog.class,"conf.oilloglevel.tooltip"));
-    settingsPanel.add(oilLogLevelSpinner,"grow");
-
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.maxchannels")),"grow");
-    final JSpinner maxChannelsSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 1024, 1));
-    maxChannelsSpinner.setToolTipText(Language.get(MainDialog.class,"conf.maxchannels.tooltip"));
-    settingsPanel.add(maxChannelsSpinner,"grow");
-
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.maxcachesize")), "grow");
-    final JSpinner maxCacheSizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-    maxCacheSizeSpinner.setToolTipText(Language.get(MainDialog.class,"conf.maxcachesize.tooltip"));
-    settingsPanel.add(maxCacheSizeSpinner, "grow");
-
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class,"conf.timeout")), "grow");
-    final JSpinner timeoutSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
-    timeoutSpinner.setToolTipText(Language.get(MainDialog.class,"conf.timeout.tooltip"));
-    settingsPanel.add(timeoutSpinner, "grow");
-
-    final JButton cancelButton = new JButton(Language.get(MainDialog.class,"conf.cancel"));
-    cancelButton.setToolTipText(Language.get(MainDialog.class,"conf.cancel.tooltip"));
-    cancelButton.setIcon(ApplicationIcons.ICON_CANCEL_16);
-    cancelButton.setEnabled(false);
-
-    final JButton applyButton = new JButton(Language.get(MainDialog.class,"conf.apply"));
-    applyButton.setIcon(ApplicationIcons.ICON_VALIDATE_16);
-    applyButton.setEnabled(false);
-    applyButton.setToolTipText(Language.get(MainDialog.class,"conf.apply.tooltip"));
-
-    // force a different disabled text color to make spinner values visible
-    // even if user is not allowed to edit
-    for (Component c : settingsPanel.getComponents()) {
-      if (c instanceof JSpinner) {
-        JSpinner spinner = (JSpinner) c;
-        ((JSpinner.NumberEditor) spinner.getEditor())
-          .getTextField().setDisabledTextColor(UIManager.getColor("TextField.foreground"));
-      }
-    }
-
-    settingsPanel.add(cancelButton,"gapleft push");
-    settingsPanel.add(applyButton,"gapleft push");
-
-    final BusExplorerTask<Void> getBasicConfFromBusTask =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
-
-        int maxChannels = 0;
-        int maxCacheSize = 0;
-        int timeout = 0;
-        int busLogLevel = 0;
-        int oilLogLevel = 0;
-
-        @Override
-        protected void doPerformTask() throws Exception {
-          BusAdminFacade admin = Application.login().admin;
-          maxChannels = admin.getMaxChannels();
-          maxCacheSize = admin.getMaxCacheSize();
-          timeout = admin.getCallsTimeout();
-          busLogLevel = admin.getLogLevel();
-          oilLogLevel = admin.getOilLogLevel();
-        }
-
-        @Override
-        protected void afterTaskUI() {
-          if (getStatus()) {
-            busLogLevelSpinner.setValue(busLogLevel);
-            oilLogLevelSpinner.setValue(oilLogLevel);
-            maxChannelsSpinner.setValue(maxChannels);
-            maxCacheSizeSpinner.setValue(maxCacheSize);
-            timeoutSpinner.setValue(timeout);
-            applyButton.setEnabled(false);
-            cancelButton.setEnabled(false);
-          }
-        }
-      };
-    final BusExplorerTask<Void> sendBasicConfToBusTask =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
-
-        @Override
-        protected void doPerformTask() throws Exception {
-          BusAdminFacade admin = Application.login().admin;
-          admin.setMaxChannels(((SpinnerNumberModel) maxChannelsSpinner.getModel()).getNumber().intValue());
-          admin.setMaxCacheSize(((SpinnerNumberModel) maxCacheSizeSpinner.getModel()).getNumber().intValue());
-          admin.setCallsTimeout(((SpinnerNumberModel) timeoutSpinner.getModel()).getNumber().intValue());
-          admin.setLogLevel(((SpinnerNumberModel) busLogLevelSpinner.getModel()).getNumber().shortValue());
-          admin.setOilLogLevel(((SpinnerNumberModel) oilLogLevelSpinner.getModel()).getNumber().shortValue());
-        }
-
-        @Override
-        protected void afterTaskUI() {
-          applyButton.setEnabled(false);
-          cancelButton.setEnabled(false);
-        }
-      };
-    applyButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent) {
-        sendBasicConfToBusTask.execute(MainDialog.this,
-          Language.get(MainDialog.class,"conf.apply.waiting.title"),
-          Language.get(MainDialog.class,"conf.apply.waiting.msg"));
-      }
-    });
-    cancelButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent) {
-        getBasicConfFromBusTask.execute(MainDialog.this,
-          Language.get(MainDialog.class,"conf.apply.waiting.title"),
-          Language.get(MainDialog.class,"conf.apply.waiting.msg"));
-      }
-    });
-    ChangeListener activateButtons = new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent changeEvent) {
-        applyButton.setEnabled(true);
-        cancelButton.setEnabled(true);
-      }
-    };
-    maxChannelsSpinner.addChangeListener(activateButtons);
-    maxCacheSizeSpinner.addChangeListener(activateButtons);
-    timeoutSpinner.addChangeListener(activateButtons);
-    busLogLevelSpinner.addChangeListener(activateButtons);
-    oilLogLevelSpinner.addChangeListener(activateButtons);
+    BasicSettingsPanel busSettings = BasicSettingsPanel.create(this);
+    AuditSettingsPanel auditSettings = AuditSettingsPanel.create(this);
 
     JPanel restoreDefaultsPanel = new JPanel(new MigLayout("align center"));
     final JButton restoreDefaultsButton = new JButton(Language.get(MainDialog.class,"conf.restoredefaults"));
@@ -787,63 +656,61 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       public void refresh(ActionEvent event) {
         adminsPanel.refresh(event);
         validatorsPanel.refresh(event);
-        getBasicConfFromBusTask.execute(MainDialog.this,
+        busSettings.getRetrieveTask().execute(MainDialog.this,
           Language.get(MainDialog.class,"conf.waiting.title"),
           Language.get(MainDialog.class,"conf.waiting.msg"));
+        auditSettings.getRetrieveTask().execute(MainDialog.this,
+          Language.get(MainDialog.class,"conf.audit.waiting.title"),
+          Language.get(MainDialog.class,"conf.audit.waiting.msg"));
         }
     };
 
-    restoreDefaultsButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent actionEvent) {
-        BusExplorerTask<Void> task =
-          new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    restoreDefaultsButton.addActionListener(actionEvent -> {
+      BusExplorerTask<Void> task =
+        new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
-            @Override
-            protected void doPerformTask() throws Exception {
-              Application.login().admin.reloadConfigsFile();
+          @Override
+          protected void doPerformTask() throws Exception {
+            Application.login().admin.reloadConfigsFile();
+          }
+
+          @Override
+          protected void afterTaskUI() {
+            if (getStatus()) {
+              customPanel.refresh(null);
             }
+          }
+        };
 
-            @Override
-            protected void afterTaskUI() {
-              if (getStatus()) {
-                customPanel.refresh(null);
-              }
-            }
-          };
-
-        task.execute(MainDialog.this,
-          Language.get(MainDialog.class,"conf.waiting.title"),
-          Language.get(MainDialog.class,"conf.waiting.msg"));
-      }
+      task.execute(MainDialog.this,
+        Language.get(MainDialog.class,"conf.waiting.title"),
+        Language.get(MainDialog.class,"conf.waiting.msg"));
     });
 
     Border loweredBorder = BorderFactory.createEtchedBorder(EtchedBorder.LOWERED);
-    settingsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder,
+    busSettings.panel().setBorder(BorderFactory.createTitledBorder(loweredBorder,
       Language.get(MainDialog.class,"conf.settings.label")));
+    auditSettings.panel().setBorder(BorderFactory.createTitledBorder(loweredBorder,
+      Language.get(MainDialog.class,"conf.audit.label")));
     adminsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder,
       Language.get(MainDialog.class,"conf.admins.label")));
     validatorsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder,
       Language.get(MainDialog.class,"conf.validators.label")));
 
-    customPanel.setLayout(new MigLayout("wrap 2, fill, insets 10","[]10[]","[][grow][]"));
-    customPanel.add(settingsPanel, "growx");
-    customPanel.add(adminsPanel, "spany 2, grow");
+    customPanel.setLayout(new MigLayout("wrap 2, fill, insets 10","[]10[]","[][][]"));
+    customPanel.add(busSettings.panel(), "grow");
+    customPanel.add(auditSettings.panel(), "grow, spany 2");
+    customPanel.add(adminsPanel, "grow");
     customPanel.add(validatorsPanel, "grow");
-    customPanel.add(restoreDefaultsPanel, "spanx 2, grow");
+    customPanel.add(restoreDefaultsPanel, "growx");
 
     // trigger to enable controls if user is admin executed by BusExplorer login completion task
     notifiers.add(isAdmin -> {
       if (Application.login().admin.isReconfigurationCapable()) {
         restoreDefaultsButton.setEnabled(isAdmin);
-        for (Component c : settingsPanel.getComponents()) {
-          if (c instanceof JSpinner) {
-            JSpinner spinner = (JSpinner) c;
-            spinner.setEnabled(isAdmin);
-            ((JSpinner.NumberEditor) spinner.getEditor()).getTextField().setEditable(isAdmin);
-          }
-        }
       }
+      busSettings.activate(Application.login().admin.isReconfigurationCapable() && isAdmin);
+      auditSettings.activate(Application.login().audit.isAuditCapable() && isAdmin);
     });
 
     return customPanel;

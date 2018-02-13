@@ -17,8 +17,8 @@
     <jacorb.version>3.8</jacorb.version>
     <junit.version>4.6</junit.version>
     <miglayout.version>4.2</miglayout.version>
-    <openbus-sdk.version>2.1.1.1</openbus-sdk.version>
-    <governance.version>1.0.0-SNAPSHOT</governance.version>
+    <openbus-sdk.version>2.1.1.2-SNAPSHOT</openbus-sdk.version>
+    <governance.version>1.0.1-SNAPSHOT</governance.version>
     <commons-io.version>1.3.2</commons-io.version>
   </properties>
 
@@ -112,7 +112,7 @@
       <dependency>
         <groupId>br.puc-rio.tecgraf.openbus</groupId>
         <artifactId>openbus-governance-service</artifactId>
-        <version>1.0.0</version>
+        <version>${governance.version}</version>
       </dependency>
 
       <dependency>

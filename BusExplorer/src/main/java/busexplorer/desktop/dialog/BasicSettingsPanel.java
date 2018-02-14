@@ -28,31 +28,33 @@ public class BasicSettingsPanel {
   private JPanel uiElement;
 
   public static BasicSettingsPanel create(Window parentWindow) {
-    JPanel settingsPanel = new JPanel(new MigLayout("wrap 2", "[grow][]", "[][][][]"));
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.busloglevel")), "grow");
+    String labelsConstraint = "grow";
+    String fieldsConstraint = "grow";
+    JPanel settingsPanel = new JPanel(new MigLayout("wrap 2, fill, insets 5"));
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.busloglevel")), labelsConstraint);
     final JSpinner busLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 7, 1));
     busLogLevelSpinner.setToolTipText(Language.get(MainDialog.class, "conf.busloglevel.tooltip"));
-    settingsPanel.add(busLogLevelSpinner, "grow");
+    settingsPanel.add(busLogLevelSpinner, fieldsConstraint);
 
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.oilloglevel")), "grow");
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.oilloglevel")), labelsConstraint);
     final JSpinner oilLogLevelSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 6, 1));
     oilLogLevelSpinner.setToolTipText(Language.get(MainDialog.class, "conf.oilloglevel.tooltip"));
-    settingsPanel.add(oilLogLevelSpinner, "grow");
+    settingsPanel.add(oilLogLevelSpinner, fieldsConstraint);
 
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.maxchannels")), "grow");
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.maxchannels")), labelsConstraint);
     final JSpinner maxChannelsSpinner = new JSpinner(new SpinnerNumberModel(1, 1, 1024, 1));
     maxChannelsSpinner.setToolTipText(Language.get(MainDialog.class, "conf.maxchannels.tooltip"));
-    settingsPanel.add(maxChannelsSpinner, "grow");
+    settingsPanel.add(maxChannelsSpinner, fieldsConstraint);
 
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.maxcachesize")), "grow");
-    final JSpinner maxCacheSizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.maxcachesize")), labelsConstraint);
+    final JSpinner maxCacheSizeSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 10000000, 1));
     maxCacheSizeSpinner.setToolTipText(Language.get(MainDialog.class, "conf.maxcachesize.tooltip"));
-    settingsPanel.add(maxCacheSizeSpinner, "grow");
+    settingsPanel.add(maxCacheSizeSpinner, fieldsConstraint);
 
-    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.timeout")), "grow");
-    final JSpinner timeoutSpinner = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
+    settingsPanel.add(new JLabel(Language.get(MainDialog.class, "conf.timeout")), labelsConstraint);
+    final JSpinner timeoutSpinner = new JSpinner(new SpinnerNumberModel(0, 0, 3600, 1));
     timeoutSpinner.setToolTipText(Language.get(MainDialog.class, "conf.timeout.tooltip"));
-    settingsPanel.add(timeoutSpinner, "grow");
+    settingsPanel.add(timeoutSpinner, fieldsConstraint);
 
     final JButton cancelButton = new JButton(Language.get(MainDialog.class, "conf.cancel"));
     cancelButton.setToolTipText(Language.get(MainDialog.class, "conf.cancel.tooltip"));
@@ -74,10 +76,12 @@ public class BasicSettingsPanel {
       }
     }
 
-    settingsPanel.add(cancelButton, "gapleft push");
-    settingsPanel.add(applyButton, "gapleft push");
+    settingsPanel.add(cancelButton, "align right, spanx 2, split 2");
+    settingsPanel.add(applyButton);
 
-    final BusExplorerTask<Void> getBasicConfFromBusTask = new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    BasicSettingsPanel result = new BasicSettingsPanel();
+    result.uiElement = settingsPanel;
+    result.retrieveTask = new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
       int maxChannels = 0;
       int maxCacheSize = 0;
@@ -108,8 +112,8 @@ public class BasicSettingsPanel {
         }
       }
     };
-    final BusExplorerTask<Void> sendBasicConfToBusTask = new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
+    result.updateTask = new BusExplorerTask<Void>(ExceptionContext.BusCore) {
       @Override
       protected void doPerformTask() throws Exception {
         BusAdminFacade admin = Application.login().admin;
@@ -126,12 +130,12 @@ public class BasicSettingsPanel {
         cancelButton.setEnabled(false);
       }
     };
-    applyButton.addActionListener(actionEvent -> sendBasicConfToBusTask
+    applyButton.addActionListener(actionEvent -> result.getRetrieveTask()
       .execute(parentWindow, Language.get(MainDialog.class, "conf.apply.waiting.title"),
         Language.get(MainDialog.class, "conf.apply.waiting.msg")));
-    cancelButton.addActionListener(actionEvent -> getBasicConfFromBusTask
-      .execute(parentWindow, Language.get(MainDialog.class, "conf.apply.waiting.title"),
-        Language.get(MainDialog.class, "conf.apply.waiting.msg")));
+    cancelButton.addActionListener(actionEvent -> result.getRetrieveTask().execute(parentWindow,
+      Language.get(MainDialog.class, "conf.apply.waiting.title"),
+      Language.get(MainDialog.class, "conf.apply.waiting.msg")));
     ChangeListener activateButtons = changeEvent -> {
       applyButton.setEnabled(true);
       cancelButton.setEnabled(true);
@@ -141,11 +145,6 @@ public class BasicSettingsPanel {
     timeoutSpinner.addChangeListener(activateButtons);
     busLogLevelSpinner.addChangeListener(activateButtons);
     oilLogLevelSpinner.addChangeListener(activateButtons);
-
-    BasicSettingsPanel result = new BasicSettingsPanel();
-    result.uiElement = settingsPanel;
-    result.retrieveTask = getBasicConfFromBusTask;
-    result.updateTask = sendBasicConfToBusTask;
 
     return result;
   }

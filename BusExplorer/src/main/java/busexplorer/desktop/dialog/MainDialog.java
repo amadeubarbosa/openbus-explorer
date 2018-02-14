@@ -128,7 +128,7 @@ import static busexplorer.Application.APPLICATION_LOGIN;
 
 /**
  * Diálogo principal da aplicação.
- * 
+ *
  * @author Tecgraf
  */
 public class MainDialog extends JFrame implements PropertyChangeListener {
@@ -622,7 +622,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
    */
   private RefreshablePanel initPanelConfiguration() {
     List<TablePanelActionInterface<AdminWrapper>> adminActionsVector =
-      new Vector<TablePanelActionInterface<AdminWrapper>>(3);
+      new Vector<TablePanelActionInterface<AdminWrapper>>(4);
     adminActionsVector.add(new AdminRefreshAction(this));
     adminActionsVector.add(new AdminAddAction(this));
     adminActionsVector.add(new AdminEditAction(this));
@@ -633,7 +633,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
               new AdminTableProvider()), adminActionsVector, false);
 
     List<TablePanelActionInterface<ValidatorWrapper>> validatorActionsVector =
-            new Vector<TablePanelActionInterface<ValidatorWrapper>>(3);
+            new Vector<TablePanelActionInterface<ValidatorWrapper>>(2);
     validatorActionsVector.add(new ValidatorRefreshAction(this));
     validatorActionsVector.add(new ValidatorRestartAction(this));
     validatorActionsVector.add(new ValidatorDeleteAction(this));
@@ -645,27 +645,37 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     BasicSettingsPanel busSettings = BasicSettingsPanel.create(this);
     AuditSettingsPanel auditSettings = AuditSettingsPanel.create(this);
 
-    JPanel restoreDefaultsPanel = new JPanel(new MigLayout("align center"));
-    final JButton restoreDefaultsButton = new JButton(Language.get(MainDialog.class,"conf.restoredefaults"));
-    restoreDefaultsButton.setIcon(ApplicationIcons.ICON_RESTORE_16);
-    restoreDefaultsButton.setMnemonic(Language.get(MainDialog.class, "conf.restoredefaults.mnemonic").charAt(0));
-    restoreDefaultsPanel.add(restoreDefaultsButton);
+    JPanel restoreDefaultsPanel = new JPanel(new MigLayout("align center, insets 5"));
+    final JButton defaultsButton = new JButton(Language.get(MainDialog.class,"conf.restoredefaults"));
+    defaultsButton.setIcon(ApplicationIcons.ICON_RESTORE_16);
+    defaultsButton.setMnemonic(Language.get(MainDialog.class, "conf.restoredefaults.mnemonic").charAt(0));
+    defaultsButton.setToolTipText(Language.get(MainDialog.class, "conf.restoredefaults.tooltip"));
 
-    final RefreshablePanel customPanel = new RefreshablePanel() {
-      @Override
+    final JButton refreshButton = new JButton(Language.get(MainDialog.class,"conf.refresh"));
+    refreshButton.setMnemonic(Language.get(MainDialog.class, "conf.refresh.mnemonic").charAt(0));
+    refreshButton.setToolTipText(Language.get(MainDialog.class, "conf.refresh.tooltip"));
+    refreshButton.setIcon(ApplicationIcons.ICON_REFRESH_16);
+
+    restoreDefaultsPanel.add(refreshButton);
+    restoreDefaultsPanel.add(defaultsButton);
+
+    final RefreshablePanel customPanel =
+      new RefreshablePanel(new MigLayout("flowx, fill, insets 0","[]5[]")) {
+        @Override
       public void refresh(ActionEvent event) {
-        adminsPanel.refresh(event);
-        validatorsPanel.refresh(event);
         busSettings.getRetrieveTask().execute(MainDialog.this,
           Language.get(MainDialog.class,"conf.waiting.title"),
           Language.get(MainDialog.class,"conf.waiting.msg"));
         auditSettings.getRetrieveTask().execute(MainDialog.this,
           Language.get(MainDialog.class,"conf.audit.waiting.title"),
           Language.get(MainDialog.class,"conf.audit.waiting.msg"));
+        adminsPanel.refresh(event);
+        validatorsPanel.refresh(event);
         }
     };
 
-    restoreDefaultsButton.addActionListener(actionEvent -> {
+    refreshButton.addActionListener(e -> customPanel.refresh(null));
+    defaultsButton.addActionListener(actionEvent -> {
       BusExplorerTask<Void> task =
         new BusExplorerTask<Void>(ExceptionContext.BusCore) {
 
@@ -697,17 +707,22 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
     validatorsPanel.setBorder(BorderFactory.createTitledBorder(loweredBorder,
       Language.get(MainDialog.class,"conf.validators.label")));
 
-    customPanel.setLayout(new MigLayout("wrap 2, fill, insets 10","[]10[]","[][][]"));
-    customPanel.add(busSettings.panel(), "grow");
-    customPanel.add(auditSettings.panel(), "grow, spany 2");
-    customPanel.add(adminsPanel, "grow");
-    customPanel.add(validatorsPanel, "grow");
-    customPanel.add(restoreDefaultsPanel, "growx");
+    JPanel leftPanel = new JPanel(new MigLayout("fill, insets 0, flowy"));
+    leftPanel.add(busSettings.panel(), "north");
+    leftPanel.add(auditSettings.panel(), "grow");
+
+    JPanel rightPanel = new JPanel(new MigLayout("fill, insets 0, flowy"));
+    rightPanel.add(adminsPanel, "grow");
+    rightPanel.add(validatorsPanel, "growx");
+    rightPanel.add(restoreDefaultsPanel, "growx");
+
+    customPanel.add(leftPanel, "grow");
+    customPanel.add(rightPanel, "grow");
 
     // trigger to enable controls if user is admin executed by BusExplorer login completion task
     notifiers.add(isAdmin -> {
       if (Application.login().admin.isReconfigurationCapable()) {
-        restoreDefaultsButton.setEnabled(isAdmin);
+        defaultsButton.setEnabled(isAdmin);
       }
       busSettings.activate(Application.login().admin.isReconfigurationCapable() && isAdmin);
       auditSettings.activate(Application.login().audit.isAuditCapable() && isAdmin);
@@ -718,7 +733,7 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
 
   /**
    * Ajusta o título do diálogo.
-   * 
+   *
    * @param message Mensagem extra ser adicionada no título do diálogo.
    */
   private void setDialogTitle(String message) {

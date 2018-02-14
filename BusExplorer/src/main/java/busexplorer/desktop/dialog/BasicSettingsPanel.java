@@ -130,9 +130,9 @@ public class BasicSettingsPanel {
         cancelButton.setEnabled(false);
       }
     };
-    applyButton.addActionListener(actionEvent -> result.getRetrieveTask()
-      .execute(parentWindow, Language.get(MainDialog.class, "conf.apply.waiting.title"),
-        Language.get(MainDialog.class, "conf.apply.waiting.msg")));
+    applyButton.addActionListener(actionEvent -> result.getUpdateTask().execute(parentWindow,
+      Language.get(MainDialog.class, "conf.apply.waiting.title"),
+      Language.get(MainDialog.class, "conf.apply.waiting.msg")));
     cancelButton.addActionListener(actionEvent -> result.getRetrieveTask().execute(parentWindow,
       Language.get(MainDialog.class, "conf.apply.waiting.title"),
       Language.get(MainDialog.class, "conf.apply.waiting.msg")));

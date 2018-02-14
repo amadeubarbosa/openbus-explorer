@@ -135,7 +135,6 @@ public class AuditSettingsPanel {
 
     settingsPanel.add(new JLabel(getString("application")), labelsConstraint);
     final JTextField auditApplication = new JTextField();
-    auditApplication.setHorizontalAlignment(SwingConstants.RIGHT);
     auditApplication.setToolTipText(getString("application.tooltip"));
     settingsPanel.add(auditApplication, fieldsConstraint);
 

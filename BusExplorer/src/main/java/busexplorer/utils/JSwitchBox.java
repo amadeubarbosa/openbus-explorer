@@ -17,20 +17,25 @@ import java.awt.event.MouseEvent;
 
 /**
  * Alternative implementation of a checkbox using fancy on/off switches drawed with arched-border rectangles manually.
+ * <p>Examples:
+ *   <img src="../../../../../img/off.jpg" alt="example of JSwitchBox deselected">
+ *   <img src="../../../../../img/on.jpg" alt="example of JSwitchBox selected">
  * <p>
  * {@link JSwitchBox} can be instantiate using custom on/off labels and colors (for both text and background) but
  * other attributes as gap and dimension will be calculated. Font are the same that {@link JLabel#getFont()} and gap
  * is calculated using {@link JLabel#getFontMetrics(Font)} and is dependent of the bigger label size.
  * <p>
- * Original code was authored by <a href='https://stackoverflow.com/users/307767/oliholz'>oliholz</a> at stackoverflow.com.
+ * Original code was authored by <a href='https://stackoverflow.com/users/307767/oliholz'>oliholz</a> at
+ * <a href='https://stackoverflow.com/questions/7304017/how-to-add-sexy-on-off-sliders'>stackoverflow.com question</a>.
  * Some improvements are given since:
  * <ul>
  * <li>rectangles exceed component area and left some visual garbage behind (fix: vertical height reduction to 16px)</li>
  * <li>setEnabled(false) has no effect and button continues flipping (fix: check isEnabled() on MouseListener)</li>
- * <li>fixed background and text colors (fix: optional constructors)</li>
+ * <li>custom background and text colors (fix: optional constructors)</li>
+ * <li>builtin support for text colors through UIManager (fix: reusing the CheckBox foreground and disabledText)</li>
  * </ul>
  * @author Tecgraf/PUC-Rio
- * @see <a href='https://stackoverflow.com/questions/7304017/how-to-add-sexy-on-off-sliders'></a>
+ *
  **/
 public class JSwitchBox extends AbstractButton {
   private final String trueLabel;

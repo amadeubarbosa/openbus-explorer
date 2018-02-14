@@ -85,7 +85,7 @@ public class AuditSettingsPanel {
 
     settingsPanel.add(new JLabel(getString("fifolength")), labelsConstraint);
     JPanel fifoLengthPanel = new JPanel(new MigLayout("fill, insets 0 3 0 0", "[grow]0[shrink]", "[]"));
-    final JLabel fifoLength = new JLabel();
+    final JLabel fifoLength = new JLabel("0");
     fifoLength.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
     fifoLength.setHorizontalAlignment(SwingConstants.RIGHT);
     fifoLength.setToolTipText(getString("fifolength.tooltip"));

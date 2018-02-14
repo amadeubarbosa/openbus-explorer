@@ -1,5 +1,7 @@
 package tecgraf.openbus.admin;
 
+import java.nio.ByteBuffer;
+
 import org.omg.CORBA.Object;
 
 import tecgraf.javautils.core.lng.LNG;
@@ -87,6 +89,10 @@ public class BusAuditImpl implements BusAuditFacade {
     assertAuditCapable();
     Cryptography crypto = Cryptography.getInstance();
     try {
+      if (bytes.length == 0) {
+        bytes = ByteBuffer.allocate(1).array();
+        bytes[0] = 0;
+      }
       this.audit.setAuditHttpAuth(crypto.encrypt(bytes, conn.busPublicKey()));
     }
     catch (CryptographyException e) {

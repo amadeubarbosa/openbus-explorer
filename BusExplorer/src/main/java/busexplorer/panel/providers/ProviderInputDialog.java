@@ -1,18 +1,5 @@
 package busexplorer.panel.providers;
 
-import busexplorer.Application;
-import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.exception.handling.ExceptionContext;
-import busexplorer.panel.BusQueryHelpAction;
-import busexplorer.panel.BusQueryValidateAction;
-import busexplorer.panel.TablePanelComponent;
-import busexplorer.panel.contracts.ContractWrapper;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Language;
-import net.miginfocom.swing.MigLayout;
-import org.omg.CORBA.BAD_PARAM;
-import tecgraf.openbus.services.governance.v1_0.Provider;
-
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -28,6 +15,20 @@ import java.awt.Window;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.omg.CORBA.BAD_PARAM;
+
+import tecgraf.openbus.services.governance.v1_0.Provider;
+
+import busexplorer.Application;
+import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.BusQueryHelpAction;
+import busexplorer.panel.BusQueryValidateAction;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.panel.contracts.ContractWrapper;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
 import static busexplorer.utils.StringUtilities.splitOmmitEmpty;
 
 /**
@@ -88,7 +89,7 @@ public class ProviderInputDialog extends BusExplorerAbstractInputDialog {
     }
 
     BusExplorerTask<Void> task =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+      new BusExplorerTask<Void>(ExceptionContext.Service) {
 
       @Override
       protected void doPerformTask() throws Exception {

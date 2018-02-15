@@ -1,5 +1,16 @@
 package busexplorer.panel.healing;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
+
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.openbus.services.governance.v1_0.Contract;
+import tecgraf.openbus.services.governance.v1_0.Provider;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
@@ -12,16 +23,6 @@ import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.BusQuery;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.services.governance.v1_0.Contract;
-import tecgraf.openbus.services.governance.v1_0.Provider;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
 
 public class ProviderMissingAuthorizations extends ProviderRefreshAction {
 
@@ -63,7 +64,7 @@ public class ProviderMissingAuthorizations extends ProviderRefreshAction {
       return;
     }
     BusExplorerTask<List<ProviderWrapper>> task =
-      new BusExplorerTask<List<ProviderWrapper>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ProviderWrapper>>(ExceptionContext.Service) {
 
         @Override
         protected void doPerformTask() throws Exception {

@@ -1,5 +1,14 @@
 package busexplorer.panel.contracts;
 
+import javax.swing.JOptionPane;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+
+import tecgraf.openbus.services.governance.v1_0.Contract;
+import tecgraf.openbus.services.governance.v1_0.Integration;
+import tecgraf.openbus.services.governance.v1_0.Provider;
+
 import busexplorer.Application;
 import busexplorer.desktop.dialog.ConsistencyValidationDialog;
 import busexplorer.desktop.dialog.InputDialog;
@@ -12,14 +21,6 @@ import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.ConsistencyValidationResult;
 import busexplorer.utils.Language;
-import tecgraf.openbus.services.governance.v1_0.Contract;
-import tecgraf.openbus.services.governance.v1_0.Integration;
-import tecgraf.openbus.services.governance.v1_0.Provider;
-
-import javax.swing.JOptionPane;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.util.Collection;
 
 /**
  * Classe de ação para a remoção de uma entidade.
@@ -104,7 +105,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
 
   public static BusExplorerTask<Void> ExtensionDependencyCheckTask(Collection<ContractWrapper> contracts,
                                                                    ConsistencyValidationResult consistencyValidationResult) {
-    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    return new BusExplorerTask<Void>(ExceptionContext.Service) {
       @Override
       protected void doPerformTask() throws Exception {
         setProgressDialogEnabled(true);
@@ -139,7 +140,7 @@ public class ContractDeleteAction extends OpenBusAction<ContractWrapper> {
   public static BusExplorerTask<Void> DeleteContractTask(Collection<ContractWrapper> contracts, Runnable delegateAfterTaskUI,
                                                          ConsistencyValidationDialog.DeleteOptions removeFlags,
                                                          ConsistencyValidationResult consistencyValidationResult) {
-    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    return new BusExplorerTask<Void>(ExceptionContext.Service) {
       private final String removeDependenciesTitle =
         Language.get(ContractDeleteAction.class, "waiting.removing.dependencies.title");
       private final String removeDependenciesMessage =

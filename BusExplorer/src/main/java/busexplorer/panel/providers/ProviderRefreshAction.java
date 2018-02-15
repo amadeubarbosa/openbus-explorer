@@ -1,14 +1,14 @@
 package busexplorer.panel.providers;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.List;
 
 public class ProviderRefreshAction extends OpenBusAction<ProviderWrapper> {
 
@@ -30,7 +30,7 @@ public class ProviderRefreshAction extends OpenBusAction<ProviderWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ProviderWrapper>> task =
-      new BusExplorerTask<List<ProviderWrapper>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ProviderWrapper>>(ExceptionContext.Service) {
 
       @Override
       protected void doPerformTask() throws Exception {

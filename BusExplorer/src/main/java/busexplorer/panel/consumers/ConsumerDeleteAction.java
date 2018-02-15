@@ -1,10 +1,15 @@
 package busexplorer.panel.consumers;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.util.Collection;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+
+import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import tecgraf.openbus.services.governance.v1_0.Consumer;
+import tecgraf.openbus.services.governance.v1_0.Integration;
 
 import busexplorer.Application;
 import busexplorer.desktop.dialog.ConsistencyValidationDialog;
@@ -19,10 +24,6 @@ import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.BusQuery;
 import busexplorer.utils.ConsistencyValidationResult;
 import busexplorer.utils.Language;
-import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
-import tecgraf.openbus.services.governance.v1_0.Consumer;
-import tecgraf.openbus.services.governance.v1_0.Integration;
 
 /**
  * Classe de ação para a remoção de uma entidade.
@@ -108,7 +109,7 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
 
   public static BusExplorerTask<Void> GovernanceDependencyCheckTask(Collection<ConsumerWrapper> consumers,
                                                                     ConsistencyValidationResult consistencyValidationResult){
-    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    return new BusExplorerTask<Void>(ExceptionContext.Service) {
       @Override
       protected void doPerformTask() throws Exception {
         setProgressDialogEnabled(true);
@@ -133,7 +134,7 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
 
   public static BusExplorerTask<Void> ExtensionDependencyCheckTask(Collection<ConsumerWrapper> consumers,
                                                                    ConsistencyValidationResult consistencyValidationResult) {
-    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    return new BusExplorerTask<Void>(ExceptionContext.Service) {
       @Override
       protected void doPerformTask() throws Exception {
         setProgressDialogEnabled(true);
@@ -157,7 +158,7 @@ public class ConsumerDeleteAction extends OpenBusAction<ConsumerWrapper> {
   public static BusExplorerTask<Void> DeleteConsumerTask(Collection<ConsumerWrapper> consumers, Runnable delegateAfterTaskUI,
                                                          ConsistencyValidationDialog.DeleteOptions removeFlags,
                                                          ConsistencyValidationResult consistencyValidationResult) {
-    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    return new BusExplorerTask<Void>(ExceptionContext.Service) {
 
       @Override
       protected void doPerformTask() throws Exception {

@@ -1,17 +1,5 @@
 package busexplorer.panel.integrations;
 
-import busexplorer.Application;
-import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.exception.handling.ExceptionContext;
-import busexplorer.panel.TablePanelComponent;
-import busexplorer.panel.consumers.ConsumerWrapper;
-import busexplorer.panel.contracts.ContractWrapper;
-import busexplorer.panel.providers.ProviderWrapper;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Language;
-import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.services.governance.v1_0.Integration;
-
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -26,6 +14,19 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+
+import tecgraf.openbus.services.governance.v1_0.Integration;
+
+import busexplorer.Application;
+import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.panel.consumers.ConsumerWrapper;
+import busexplorer.panel.contracts.ContractWrapper;
+import busexplorer.panel.providers.ProviderWrapper;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Diálogo de adição/edição de integrações que será responsável pela manutenção
@@ -100,7 +101,7 @@ public class IntegrationInputDialog extends BusExplorerAbstractInputDialog {
     }
 
     BusExplorerTask<Void> task =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+      new BusExplorerTask<Void>(ExceptionContext.Service) {
 
       @Override
       protected void doPerformTask() throws Exception {

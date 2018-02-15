@@ -1,14 +1,14 @@
 package busexplorer.panel.contracts;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.List;
 
 public class ContractRefreshAction extends OpenBusAction<ContractWrapper> {
 
@@ -30,7 +30,7 @@ public class ContractRefreshAction extends OpenBusAction<ContractWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ContractWrapper>> task =
-      new BusExplorerTask<List<ContractWrapper>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ContractWrapper>>(ExceptionContext.Service) {
 
       @Override
       protected void doPerformTask() throws Exception {

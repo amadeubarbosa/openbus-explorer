@@ -1,14 +1,14 @@
 package busexplorer.panel.contracts;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.List;
 
 /**
  * Classe de ação para criar uma entidade. Esta dispara um diálogo.
@@ -48,7 +48,7 @@ public class ContractEditAction extends OpenBusAction<ContractWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     BusExplorerTask<List<String>> task =
-      new BusExplorerTask<List<String>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<String>>(ExceptionContext.Service) {
 
       @Override
       protected void doPerformTask() throws Exception {

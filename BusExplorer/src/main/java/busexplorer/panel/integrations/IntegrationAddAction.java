@@ -1,5 +1,11 @@
 package busexplorer.panel.integrations;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
+import tecgraf.javautils.gui.StandardDialogs;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
@@ -8,11 +14,6 @@ import busexplorer.panel.consumers.ConsumerWrapper;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
-import tecgraf.javautils.gui.StandardDialogs;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.List;
 
 /**
  * Classe de ação para criar uma entidade. Esta dispara um diálogo.
@@ -52,7 +53,7 @@ public class IntegrationAddAction extends OpenBusAction<IntegrationWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     BusExplorerTask<Void> task =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+      new BusExplorerTask<Void>(ExceptionContext.Service) {
 
         private List<ConsumerWrapper> consumers;
         private List<ProviderWrapper> providers;

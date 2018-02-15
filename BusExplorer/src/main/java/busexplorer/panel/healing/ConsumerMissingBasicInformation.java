@@ -1,5 +1,13 @@
 package busexplorer.panel.healing;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.openbus.services.governance.v1_0.Consumer;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
@@ -11,13 +19,6 @@ import busexplorer.panel.consumers.ConsumerTableProvider;
 import busexplorer.panel.consumers.ConsumerWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.services.governance.v1_0.Consumer;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ConsumerMissingBasicInformation extends ConsumerRefreshAction {
 
@@ -59,7 +60,7 @@ public class ConsumerMissingBasicInformation extends ConsumerRefreshAction {
       return;
     }
     BusExplorerTask<List<ConsumerWrapper>> task =
-      new BusExplorerTask<List<ConsumerWrapper>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ConsumerWrapper>>(ExceptionContext.Service) {
 
         @Override
         protected void doPerformTask() throws Exception {

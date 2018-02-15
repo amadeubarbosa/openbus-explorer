@@ -1,5 +1,14 @@
 package busexplorer.panel.healing;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.openbus.services.governance.v1_0.Integration;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
@@ -11,14 +20,6 @@ import busexplorer.panel.integrations.IntegrationTableProvider;
 import busexplorer.panel.integrations.IntegrationWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.services.governance.v1_0.Integration;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Consumer;
 
 public class IntegrationMissingBasicInformation extends IntegrationRefreshAction {
 
@@ -60,7 +61,7 @@ public class IntegrationMissingBasicInformation extends IntegrationRefreshAction
       return;
     }
     BusExplorerTask<List<IntegrationWrapper>> task =
-      new BusExplorerTask<List<IntegrationWrapper>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<IntegrationWrapper>>(ExceptionContext.Service) {
 
         @Override
         protected void doPerformTask() throws Exception {

@@ -1,16 +1,16 @@
 package busexplorer.panel.integrations;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
 import busexplorer.Application;
 import busexplorer.desktop.dialog.InputDialog;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import java.awt.event.ActionEvent;
-import java.util.List;
 
 /**
  * Classe de ação para a remoção de uma entidade.
@@ -56,7 +56,7 @@ public class IntegrationDeleteAction extends OpenBusAction<IntegrationWrapper> {
     }
 
     BusExplorerTask<Void> task =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+      new BusExplorerTask<Void>(ExceptionContext.Service) {
 
         @Override
         protected void doPerformTask() throws Exception {

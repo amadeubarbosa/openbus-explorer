@@ -1,14 +1,14 @@
 package busexplorer.panel.integrations;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.List;
 
 /**
  * Ação que atualiza a tabela de entidades
@@ -41,7 +41,7 @@ public class IntegrationRefreshAction extends OpenBusAction<IntegrationWrapper> 
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<IntegrationWrapper>> task =
-      new BusExplorerTask<List<IntegrationWrapper>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<IntegrationWrapper>>(ExceptionContext.Service) {
 
         @Override
         protected void doPerformTask() throws Exception {

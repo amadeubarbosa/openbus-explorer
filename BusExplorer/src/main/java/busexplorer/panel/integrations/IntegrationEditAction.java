@@ -1,5 +1,9 @@
 package busexplorer.panel.integrations;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.List;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
@@ -8,10 +12,6 @@ import busexplorer.panel.consumers.ConsumerWrapper;
 import busexplorer.panel.contracts.ContractWrapper;
 import busexplorer.panel.providers.ProviderWrapper;
 import busexplorer.utils.BusExplorerTask;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.List;
 
 /**
  * Classe de ação para criar uma entidade. Esta dispara um diálogo.
@@ -51,7 +51,7 @@ public class IntegrationEditAction extends OpenBusAction<IntegrationWrapper> {
   @Override
   public void actionPerformed(ActionEvent arg0) {
     BusExplorerTask<Void> task =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+      new BusExplorerTask<Void>(ExceptionContext.Service) {
 
       List<ConsumerWrapper> consumers;
       List<ProviderWrapper> providers;

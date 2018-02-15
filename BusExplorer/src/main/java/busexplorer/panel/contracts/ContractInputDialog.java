@@ -1,14 +1,5 @@
 package busexplorer.panel.contracts;
 
-import busexplorer.Application;
-import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
-import busexplorer.exception.handling.ExceptionContext;
-import busexplorer.panel.TablePanelComponent;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Language;
-import net.miginfocom.swing.MigLayout;
-import tecgraf.openbus.services.governance.v1_0.Contract;
-
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -21,6 +12,16 @@ import java.awt.Dimension;
 import java.awt.Window;
 import java.util.Collections;
 import java.util.List;
+
+import tecgraf.openbus.services.governance.v1_0.Contract;
+
+import busexplorer.Application;
+import busexplorer.desktop.dialog.BusExplorerAbstractInputDialog;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
 
 /**
  * Diálogo de adição/edição de contratos que será responsável pela manutenção
@@ -70,7 +71,7 @@ public class ContractInputDialog extends BusExplorerAbstractInputDialog {
     }
 
     BusExplorerTask<Void> task =
-      new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+      new BusExplorerTask<Void>(ExceptionContext.Service) {
 
         @Override
         protected void doPerformTask() throws Exception {

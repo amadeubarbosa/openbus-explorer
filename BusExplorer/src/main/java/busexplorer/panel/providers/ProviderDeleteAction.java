@@ -1,5 +1,18 @@
 package busexplorer.panel.providers;
 
+import javax.swing.JOptionPane;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
+import tecgraf.openbus.services.governance.v1_0.Integration;
+import tecgraf.openbus.services.governance.v1_0.Provider;
+
 import busexplorer.Application;
 import busexplorer.desktop.dialog.ConsistencyValidationDialog;
 import busexplorer.desktop.dialog.InputDialog;
@@ -15,18 +28,6 @@ import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.BusQuery;
 import busexplorer.utils.ConsistencyValidationResult;
 import busexplorer.utils.Language;
-import tecgraf.openbus.core.v2_1.services.access_control.LoginInfo;
-import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
-import tecgraf.openbus.core.v2_1.services.offer_registry.admin.v1_0.RegisteredEntityDesc;
-import tecgraf.openbus.services.governance.v1_0.Integration;
-import tecgraf.openbus.services.governance.v1_0.Provider;
-
-import javax.swing.JOptionPane;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Classe de ação para a remoção de uma entidade.
@@ -114,7 +115,7 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
 
   public static BusExplorerTask<Void> GovernanceDependencyCheckTask(Collection<ProviderWrapper> providers,
                                                                     ConsistencyValidationResult consistencyValidationResult){
-    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    return new BusExplorerTask<Void>(ExceptionContext.Service) {
       @Override
       protected void doPerformTask() throws Exception {
         setProgressDialogEnabled(true);
@@ -146,7 +147,7 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
 
   public static BusExplorerTask<Void> ExtensionDependencyCheckTask(Collection<ProviderWrapper> providers,
                                                                    ConsistencyValidationResult consistencyValidationResult) {
-    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    return new BusExplorerTask<Void>(ExceptionContext.Service) {
       @Override
       protected void doPerformTask() throws Exception {
         setProgressDialogEnabled(true);
@@ -171,7 +172,7 @@ public class ProviderDeleteAction extends OpenBusAction<ProviderWrapper> {
   public static BusExplorerTask<Void> DeleteProviderTask(Collection<ProviderWrapper> providers, Runnable delegateAfterTaskUI,
                                                          ConsistencyValidationDialog.DeleteOptions removeFlags,
                                                          ConsistencyValidationResult consistencyValidationResult) {
-    return new BusExplorerTask<Void>(ExceptionContext.BusCore) {
+    return new BusExplorerTask<Void>(ExceptionContext.Service) {
 
       @Override
       protected void doPerformTask() throws Exception {

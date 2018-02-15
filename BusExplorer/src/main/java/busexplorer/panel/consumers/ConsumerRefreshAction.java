@@ -1,15 +1,15 @@
 package busexplorer.panel.consumers;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.util.Arrays;
+import java.util.List;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.ActionType;
 import busexplorer.panel.OpenBusAction;
 import busexplorer.utils.BusExplorerTask;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.util.Arrays;
-import java.util.List;
 
 public class ConsumerRefreshAction extends OpenBusAction<ConsumerWrapper> {
 
@@ -31,7 +31,7 @@ public class ConsumerRefreshAction extends OpenBusAction<ConsumerWrapper> {
   @Override
   public void actionPerformed(ActionEvent e) {
     BusExplorerTask<List<ConsumerWrapper>> task =
-      new BusExplorerTask<List<ConsumerWrapper>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<ConsumerWrapper>>(ExceptionContext.Service) {
 
       @Override
       protected void doPerformTask() throws Exception {

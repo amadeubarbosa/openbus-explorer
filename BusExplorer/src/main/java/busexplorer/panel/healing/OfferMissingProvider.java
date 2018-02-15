@@ -1,5 +1,18 @@
 package busexplorer.panel.healing;
 
+import javax.swing.JFrame;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Consumer;
+
+import tecgraf.javautils.gui.table.ObjectTableModel;
+import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
+import tecgraf.openbus.services.governance.v1_0.Provider;
+
 import busexplorer.Application;
 import busexplorer.exception.handling.ExceptionContext;
 import busexplorer.panel.OpenBusAction;
@@ -12,18 +25,6 @@ import busexplorer.panel.offers.OfferWrapper;
 import busexplorer.utils.BusExplorerTask;
 import busexplorer.utils.BusQuery;
 import busexplorer.utils.Language;
-import tecgraf.javautils.gui.table.ObjectTableModel;
-import tecgraf.openbus.core.v2_1.services.offer_registry.ServiceOfferDesc;
-import tecgraf.openbus.services.governance.v1_0.Provider;
-
-import javax.swing.JFrame;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Consumer;
 
 public class OfferMissingProvider extends OfferRefreshAction {
 
@@ -74,7 +75,7 @@ public class OfferMissingProvider extends OfferRefreshAction {
       return;
     }
     BusExplorerTask<List<OfferWrapper>> task =
-      new BusExplorerTask<List<OfferWrapper>>(ExceptionContext.BusCore) {
+      new BusExplorerTask<List<OfferWrapper>>(ExceptionContext.Service) {
 
         @Override
         protected void doPerformTask() throws Exception {

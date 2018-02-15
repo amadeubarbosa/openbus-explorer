@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.omg.CORBA.Object;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import tecgraf.javautils.core.lng.LNG;
 import tecgraf.openbus.OfferObserver;
@@ -28,8 +30,6 @@ import tecgraf.openbus.services.governance.v1_0.ProviderRegistry;
 import tecgraf.openbus.services.governance.v1_0.ProviderRegistryHelper;
 import tecgraf.openbus.services.governance.v1_0.ServiceName;
 
-import scs.core.IComponent;
-
 /**
  * Implementação da fachada para o Serviço de Extensão à Governança.
  * <p>
@@ -49,7 +49,7 @@ public class BusExtensionImpl implements BusExtensionFacade {
   public static final String SEARCH_CRITERIA_KEY = "openbus.component.name";
   public static final String SEARCH_CRITERIA_VALUE = ServiceName.value;
   private OfferRegistry offers;
-  private Cache<String, IComponent> cachedReferences;
+  private Cache<String, Object> cachedReferences;
 
   /**
    * Construtor da fachada a partir do registro de ofertas {@link OfferRegistry} fornecido pela
@@ -64,9 +64,9 @@ public class BusExtensionImpl implements BusExtensionFacade {
     this.offers = offers;
   }
 
-  private IComponent service() throws ServiceFailure {
+  private Object facet(String id) throws ServiceFailure {
     try {
-      return cachedReferences.get(SEARCH_CRITERIA_VALUE, () -> {
+      return cachedReferences.get(id, () -> {
         ArrayListMultimap<String, String> props = ArrayListMultimap.create();
         props.put(SEARCH_CRITERIA_KEY, SEARCH_CRITERIA_VALUE);
 
@@ -74,20 +74,18 @@ public class BusExtensionImpl implements BusExtensionFacade {
         available.removeIf(remoteOffer -> {
           try {
             remoteOffer.service().getComponentId();
-          } catch (Exception e) {
+          }
+          catch (Exception e) {
             return true;
           }
           return false;
         });
         if (available.size() == 0) {
           throw new ServiceFailure(LNG.get("ServiceFailure.not.found",
-            new String[]{SEARCH_CRITERIA_VALUE,
-              offers.connection().busId(),
-              SEARCH_CRITERIA_KEY
-            }));
+            new String[] { SEARCH_CRITERIA_VALUE, offers.connection().busId(), SEARCH_CRITERIA_KEY }));
         }
-        RemoteOffer firstAvailable = available.get(0);
-        firstAvailable.subscribeObserver(new OfferObserver() {
+        RemoteOffer remote = available.get(0);
+        remote.subscribeObserver(new OfferObserver() {
           @Override
           public void propertiesChanged(RemoteOffer offer) {
           }
@@ -97,9 +95,10 @@ public class BusExtensionImpl implements BusExtensionFacade {
             cachedReferences.invalidateAll();
           }
         });
-        return firstAvailable.service();
+        return remote.service().getFacet(id);
       });
-    } catch (ExecutionException e) {
+    } catch (ExecutionException | UncheckedExecutionException e) {
+      cachedReferences.invalidate(id);
       if (e.getCause() instanceof ServiceFailure) {
         throw (ServiceFailure) e.getCause();
       } else {
@@ -124,28 +123,28 @@ public class BusExtensionImpl implements BusExtensionFacade {
    * {@inheritDoc}
    */
   public ContractRegistry getContractRegistry() throws ServiceFailure {
-    return ContractRegistryHelper.narrow(service().getFacet(ContractRegistryHelper.id()));
+    return ContractRegistryHelper.narrow(facet(ContractRegistryHelper.id()));
   }
 
   /**
    * {@inheritDoc}
    */
   public ProviderRegistry getProviderRegistry() throws ServiceFailure {
-    return ProviderRegistryHelper.narrow(service().getFacet(ProviderRegistryHelper.id()));
+    return ProviderRegistryHelper.narrow(facet(ProviderRegistryHelper.id()));
   }
 
   /**
    * {@inheritDoc}
    */
   public ConsumerRegistry getConsumerRegistry() throws ServiceFailure {
-    return ConsumerRegistryHelper.narrow(service().getFacet(ConsumerRegistryHelper.id()));
+    return ConsumerRegistryHelper.narrow(facet(ConsumerRegistryHelper.id()));
   }
 
   /**
    * {@inheritDoc}
    */
   public IntegrationRegistry getIntegrationRegistry() throws ServiceFailure {
-    return IntegrationRegistryHelper.narrow(service().getFacet(IntegrationRegistryHelper.id()));
+    return IntegrationRegistryHelper.narrow(facet(IntegrationRegistryHelper.id()));
   }
 
   /**

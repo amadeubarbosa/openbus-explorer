@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -113,8 +114,11 @@ public class IntegrationExportToXLSAction extends OpenBusAction<IntegrationWrapp
           List<Provider> providers = Application.login().extension.getProviders();
           List<Consumer> consumers = Application.login().extension.getConsumers();
           List<Contract> contracts = Application.login().extension.getContracts();
-          matrix.addAll(providers.parallelStream().map(Provider::name).collect(Collectors.toList()));
-          matrix.addAll(consumers.parallelStream().map(Consumer::name).collect(Collectors.toList()));
+
+          ConcurrentSkipListSet<String> unique = new ConcurrentSkipListSet<>();
+          providers.parallelStream().forEach(p -> unique.add(p.name()));
+          consumers.parallelStream().forEach(c -> unique.add(c.name()));
+          matrix.addAll(unique);
           matrix.addAll(contracts.parallelStream().map(Contract::name).collect(Collectors.toList()));
 
           for (int i = 0; i < matrix.size(); i++) {

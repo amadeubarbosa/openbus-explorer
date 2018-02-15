@@ -6,10 +6,15 @@ import org.omg.CORBA.ORB;
 import org.omg.CORBA.ORBPackage.InvalidName;
 import org.omg.CORBA.Object;
 import org.omg.CORBA.TRANSIENT;
+import org.omg.PortableServer.POAPackage.ServantNotActive;
+import org.omg.PortableServer.POAPackage.WrongPolicy;
+import com.google.common.collect.ArrayListMultimap;
 
 import tecgraf.openbus.Connection;
+import tecgraf.openbus.OfferObserver;
 import tecgraf.openbus.OnReloginCallback;
 import tecgraf.openbus.OpenBusContext;
+import tecgraf.openbus.RemoteOffer;
 import tecgraf.openbus.admin.BusAdminFacade;
 import tecgraf.openbus.admin.BusAdminImpl;
 import tecgraf.openbus.admin.BusAuditFacade;
@@ -100,12 +105,16 @@ public class BusExplorerLogin {
    * @throws AccessDenied caso as credenciais (entidade ou senha) não sejam válidas
    * @throws AlreadyLoggedIn caso a conexão com o barramento já esteja autenticada
    * @throws IllegalArgumentException caso não seja possível determinar o {@code corbaloc} do endereço do barramento
+   * @throws ServantNotActive caso não seja possível instanciar o observador de ofertas do BusExtension
    * @throws ServiceFailure caso não seja possível acessar o serviço remoto
    * @throws TooManyAttempts caso tenham havido muitas tentativas repetidas de autenticação por senha no barramento com a mesma entidade
    * @throws UnknownDomain caso o domínio de autenticação não seja conhecido pelo barramento
    * @throws WrongEncoding caso tenha havido um erro na codificação do handshake do protocolo OpenBus (pode ser um erro interno na biblioteca do OpenBus SDK Java)
+   * @throws WrongPolicy caso tenha havido um erro no adaptador de objetos que impediu a instanciação do observador de ofertas do BusExtension
    */
-  public void doLogin(String password) throws WrongEncoding, AlreadyLoggedIn, ServiceFailure, UnknownDomain, TooManyAttempts, AccessDenied {
+  public void doLogin(String password)
+  throws WrongEncoding, AlreadyLoggedIn, ServiceFailure, UnknownDomain, TooManyAttempts, AccessDenied, ServantNotActive,
+    WrongPolicy {
     Object reference = getORB().string_to_object(address.toIOR());
     conn = context.connectByReference(reference);
     context.defaultConnection(conn);
@@ -119,8 +128,9 @@ public class BusExplorerLogin {
           BusExplorerLogin.this.info.id = connection.login().id;
           try {
             BusExplorerLogin.this.checkAdminRights();
-          } catch (ServiceFailure e) {
+          } catch (ServiceFailure ex) {
             //TODO: a OnReloginCallback não aceita exceções, exibir outro diálogo?
+            ex.printStackTrace();
           }
           if (onReloginCallback != null) {
             onReloginCallback.onRelogin(connection, oldLogin);
@@ -130,6 +140,31 @@ public class BusExplorerLogin {
         admin = new BusAdminImpl(reference);
         audit = new BusAuditImpl(reference, conn);
         extension = new BusExtensionImpl(conn.offerRegistry());
+        // observador do registro de ofertas do busextension
+        ArrayListMultimap<String, String> busExtensionServiceProps = ArrayListMultimap.create();
+        busExtensionServiceProps.put(BusExtensionImpl.SEARCH_CRITERIA_KEY, BusExtensionImpl.SEARCH_CRITERIA_VALUE);
+        conn.offerRegistry().subscribeObserver(offer -> {
+          try {
+            // observador da remoção da nova oferta registrada
+            offer.subscribeObserver(new OfferObserver() {
+              @Override
+              public void propertiesChanged(RemoteOffer offer) {
+              }
+
+              @Override
+              public void removed(RemoteOffer offer) {
+                // disparo da callback também quando a oferta for novamente removida
+                onReloginCallback.onRelogin(context.defaultConnection(), conn.login());
+              }
+            });
+          }
+          catch (ServantNotActive | WrongPolicy ex) {
+            // TODO: subscrição não aceita lançar exceção, exibir outro diálogo?
+            ex.printStackTrace();
+          }
+          // callback que dispara o update nos paineis
+          onReloginCallback.onRelogin(context.defaultConnection(), conn.login());
+        }, busExtensionServiceProps);
         checkAdminRights();
         done = true;
         break;

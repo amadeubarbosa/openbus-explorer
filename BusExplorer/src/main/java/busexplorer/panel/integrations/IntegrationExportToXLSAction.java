@@ -1,26 +1,5 @@
 package busexplorer.panel.integrations;
 
-import busexplorer.Application;
-import busexplorer.ApplicationIcons;
-import busexplorer.desktop.dialog.ExceptionDialog;
-import busexplorer.desktop.dialog.InputDialog;
-import busexplorer.exception.handling.ExceptionContext;
-import busexplorer.panel.ActionType;
-import busexplorer.panel.OpenBusAction;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Language;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import tecgraf.openbus.services.governance.v1_0.Consumer;
-import tecgraf.openbus.services.governance.v1_0.Contract;
-import tecgraf.openbus.services.governance.v1_0.Provider;
-
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -36,6 +15,29 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.stream.Collectors;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import tecgraf.openbus.services.governance.v1_0.Consumer;
+import tecgraf.openbus.services.governance.v1_0.Contract;
+import tecgraf.openbus.services.governance.v1_0.Provider;
+
+import busexplorer.Application;
+import busexplorer.ApplicationIcons;
+import busexplorer.desktop.dialog.ExceptionDialog;
+import busexplorer.desktop.dialog.InputDialog;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.ActionType;
+import busexplorer.panel.OpenBusAction;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.Language;
 
 public class IntegrationExportToXLSAction extends OpenBusAction<IntegrationWrapper> {
 
@@ -89,7 +91,8 @@ public class IntegrationExportToXLSAction extends OpenBusAction<IntegrationWrapp
       getString("sheet.integration.system.manageroffice"),
       getString("sheet.integration.contract"),
       getString("sheet.integration.provider"),
-      getString("sheet.integration.type")
+      getString("sheet.integration.type"),
+      getString("sheet.integration.status")
     };
     for (int c = 0; c < columns.length; c++) {
       Cell cell = integrationsSheetHeader.createCell(c);
@@ -145,6 +148,11 @@ public class IntegrationExportToXLSAction extends OpenBusAction<IntegrationWrapp
                 row.createCell(4).setCellValue(getString("sheet.integration.type.both"));
               } else {
                 row.createCell(4).setCellValue(getString("sheet.integration.type.onlyconsumer"));
+              }
+              if (integration.activated()) {
+                row.createCell(5).setCellValue(getString("sheet.integration.status.enabled"));
+              } else {
+                row.createCell(5).setCellValue(getString("sheet.integration.status.disabled"));
               }
             });
           });

@@ -1,15 +1,5 @@
 package busexplorer.panel.healing;
 
-import busexplorer.ApplicationIcons;
-import busexplorer.exception.handling.ExceptionContext;
-import busexplorer.panel.RefreshablePanel;
-import busexplorer.panel.TablePanelComponent;
-import busexplorer.utils.BusExplorerTask;
-import busexplorer.utils.Language;
-import net.miginfocom.swing.MigLayout;
-import org.japura.gui.CollapsiblePanel;
-import org.japura.gui.CollapsibleRootPanel;
-
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,11 +16,23 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.japura.gui.CollapsiblePanel;
+import org.japura.gui.CollapsibleRootPanel;
+
+import busexplorer.ApplicationIcons;
+import busexplorer.exception.handling.ExceptionContext;
+import busexplorer.panel.RefreshablePanel;
+import busexplorer.panel.TablePanelComponent;
+import busexplorer.utils.BusExplorerTask;
+import busexplorer.utils.Language;
+import net.miginfocom.swing.MigLayout;
+
 public class ConsistencyReportPanel extends RefreshablePanel {
 
   private static final String LOADING = "Loading";
   private static final String NO_ISSUES = "No issues";
   private static final String HAS_ISSUES = "Has issues";
+  private static final String CANCELLED = "Cancelled";
   private final JPanel cards;
   private final CollapsibleRootPanel collapsibleRootPanel;
   private final LinkedHashMap<String, TablePanelComponent> uiComponents;
@@ -86,6 +88,10 @@ public class ConsistencyReportPanel extends RefreshablePanel {
     okayPane.setIcon(ApplicationIcons.ICON_VALIDATE_16);
     okayPane.setHorizontalAlignment(JLabel.CENTER);
 
+    JLabel cancelledPane = new JLabel(getString("label.user.cancelled"));
+    cancelledPane.setIcon(ApplicationIcons.ICON_CANCEL_16);
+    cancelledPane.setHorizontalAlignment(JLabel.CENTER);
+
     this.collapsibleRootPanel = new CollapsibleRootPanel(CollapsibleRootPanel.FILL);
     this.collapsibleRootPanel.setBackground(null);
     JScrollPane scrollPane = new JScrollPane(this.collapsibleRootPanel);
@@ -97,6 +103,7 @@ public class ConsistencyReportPanel extends RefreshablePanel {
     this.cards = new JPanel(new CardLayout());
     this.cards.add(loadingPane, LOADING);
     this.cards.add(okayPane, NO_ISSUES);
+    this.cards.add(cancelledPane, CANCELLED);
     this.cards.add(scrollPane, HAS_ISSUES);
     this.add(cards, BorderLayout.CENTER);
 
@@ -110,10 +117,9 @@ public class ConsistencyReportPanel extends RefreshablePanel {
         ConsistencyReportPanel.this.refresh(actionEvent);
       }
     });
-    refreshButton.setText(Language.get(TablePanelComponent.class, "refresh"));
+    refreshButton.setText(getString( "refresh.button"));
     refreshButton.setMnemonic(refreshButton.getText().charAt(0));
-    refreshButton.setToolTipText(Language.get(TablePanelComponent.class,
-      "refresh.tooltip"));
+    refreshButton.setToolTipText(getString("refresh.tooltip"));
     refreshButton.setIcon(ApplicationIcons.ICON_REFRESH_16);
     refreshPanel.add(refreshButton);
     footer.add(refreshPanel, "grow, push, pad 0");
@@ -155,6 +161,8 @@ public class ConsistencyReportPanel extends RefreshablePanel {
           } else {
             cardLayoutManager.show(ConsistencyReportPanel.this.cards, HAS_ISSUES);
           }
+        } else {
+            cardLayoutManager.show(ConsistencyReportPanel.this.cards, CANCELLED);
         }
       }
     }.execute(this.parentWindow, getString("waiting.title"), getString("waiting.msg"), 2, 0, true, false);

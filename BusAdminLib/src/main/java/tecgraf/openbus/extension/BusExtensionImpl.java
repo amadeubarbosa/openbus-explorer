@@ -1,10 +1,15 @@
 package tecgraf.openbus.extension;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ArrayListMultimap;
-import scs.core.IComponent;
+
 import tecgraf.javautils.core.lng.LNG;
+import tecgraf.openbus.OfferObserver;
 import tecgraf.openbus.OfferRegistry;
 import tecgraf.openbus.RemoteOffer;
 import tecgraf.openbus.core.v2_1.services.ServiceFailure;
@@ -23,9 +28,7 @@ import tecgraf.openbus.services.governance.v1_0.ProviderRegistry;
 import tecgraf.openbus.services.governance.v1_0.ProviderRegistryHelper;
 import tecgraf.openbus.services.governance.v1_0.ServiceName;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
+import scs.core.IComponent;
 
 /**
  * Implementação da fachada para o Serviço de Extensão à Governança.
@@ -83,7 +86,18 @@ public class BusExtensionImpl implements BusExtensionFacade {
               SEARCH_CRITERIA_KEY
             }));
         }
-        return available.get(0).service();
+        RemoteOffer firstAvailable = available.get(0);
+        firstAvailable.subscribeObserver(new OfferObserver() {
+          @Override
+          public void propertiesChanged(RemoteOffer offer) {
+          }
+
+          @Override
+          public void removed(RemoteOffer offer) {
+            cachedReferences.invalidateAll();
+          }
+        });
+        return firstAvailable.service();
       });
     } catch (ExecutionException e) {
       if (e.getCause() instanceof ServiceFailure) {

@@ -1,5 +1,8 @@
 package busexplorer;
 
+import javax.swing.SwingWorker;
+import java.util.logging.Logger;
+
 import org.omg.CORBA.COMM_FAILURE;
 import org.omg.CORBA.NO_PERMISSION;
 import org.omg.CORBA.ORB;
@@ -62,6 +65,7 @@ public class BusExplorerLogin {
   private Connection conn;
   /** Callback de Relogin do OpenBus SDK Java que pode ser customizada pela aplicação */
   private OnReloginCallback onReloginCallback;
+  private final SwingWorker<Void, Void> worker;
 
   /**
    * Construtor para o objeto que representa o login no barramento.
@@ -86,6 +90,21 @@ public class BusExplorerLogin {
     this.domain = domain;
     this.context = (OpenBusContext) ORBInitializer.initORB()
       .resolve_initial_references("OpenBusContext");
+    this.worker = new SwingWorker<Void, Void>() {
+      @Override
+      protected Void doInBackground() {
+        context.ORB().run();
+        return null;
+      }
+
+      @Override
+      protected void done() {
+        Logger.getLogger("tecgraf.openbus").info(String
+          .format("ORB finalizou com sucesso para login do usuário %s no barramento %s", entity,
+            address.toString()));
+      }
+    };
+    this.worker.execute();
   }
 
   /** Permite a personalização da {@link OnReloginCallback} presente no OpenBus SDK Java
@@ -209,7 +228,7 @@ public class BusExplorerLogin {
   }
 
   /**
-   * Realiza o shutdown do ORB e do assistente, terminando o login.
+   * Realiza o logout na conexão e o shutdown no ORB, interrompendo o loop de eventos CORBA.
    */
   public void logout() {
     try {

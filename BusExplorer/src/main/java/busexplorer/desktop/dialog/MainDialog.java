@@ -708,11 +708,11 @@ public class MainDialog extends JFrame implements PropertyChangeListener {
       Language.get(MainDialog.class,"conf.validators.label")));
 
     JPanel leftPanel = new JPanel(new MigLayout("fill, insets 0, flowy"));
-    leftPanel.add(busSettings.panel(), "north");
-    leftPanel.add(auditSettings.panel(), "grow");
+    leftPanel.add(auditSettings.panel(), "north");
+    leftPanel.add(adminsPanel, "grow");
 
     JPanel rightPanel = new JPanel(new MigLayout("fill, insets 0, flowy"));
-    rightPanel.add(adminsPanel, "grow");
+    rightPanel.add(busSettings.panel(), "grow");
     rightPanel.add(validatorsPanel, "growx");
     rightPanel.add(restoreDefaultsPanel, "growx");
 

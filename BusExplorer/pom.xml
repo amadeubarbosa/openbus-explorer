@@ -114,5 +114,20 @@
       <artifactId>japura-gui</artifactId>
       <version>7.5.2</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.junit</groupId>
+      <artifactId>junit-bom</artifactId>
+      <type>bom</type>
+    </dependency>
+
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>5.3.1</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 </project>

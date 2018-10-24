@@ -1,9 +1,9 @@
 package tecgraf.openbus.admin;
 
 import com.google.common.collect.ArrayListMultimap;
-import junit.framework.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.omg.CORBA.ORB;
 import org.omg.CORBA.Object;
 import org.omg.PortableServer.POA;
@@ -23,6 +23,8 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class BusAdminTest {
 
   private static final int MAX_OFFERS_TO_REGISTER = 5;
@@ -33,7 +35,7 @@ public class BusAdminTest {
   private static byte[] password;
   private static String domain;
 
-  @BeforeClass
+  @BeforeAll
   public static void oneTimeSetUp() throws Exception {
     Properties properties = Utils.readPropertyFile("/test.properties");
     host = properties.getProperty("openbus.host.name");
@@ -76,11 +78,11 @@ public class BusAdminTest {
       try {
         expected.add(localOffer.remoteOffer());
       } catch (Exception e) {
-        Assert.fail(e.getMessage());
+        fail(e.getMessage());
       }
     });
     // fim da barreira de sincronização
-    Assert.assertEquals(MAX_OFFERS_TO_REGISTER, expected.size());
+    assertEquals(MAX_OFFERS_TO_REGISTER, expected.size());
     // tarefa síncrona porque usa as interfaces de administração diretamente
     List<ServiceOfferDesc> allOffers = admin.getOffers();
 
@@ -92,8 +94,8 @@ public class BusAdminTest {
       }
       return false;
     });
-    Assert.assertEquals(0, expected.size());
-    Assert.assertTrue(conn.logout());
+    assertEquals(0, expected.size());
+    assertTrue(conn.logout());
     orb.shutdown(true);
     orb.destroy();
   }

@@ -15,7 +15,8 @@
     <javautils.version>4.0.0</javautils.version>
     <javautils.gui.version>5.0.1</javautils.gui.version>
     <jacorb.version>3.8</jacorb.version>
-    <junit.version>5.3.1</junit.version>
+    <junit.version>5.4.1</junit.version>
+    <guava.version>19.0</guava.version>
     <miglayout.version>4.2</miglayout.version>
     <openbus-sdk.version>2.1.1.2-SNAPSHOT</openbus-sdk.version>
     <governance.version>1.0.1-SNAPSHOT</governance.version>
@@ -49,6 +50,12 @@
 
   <build>
     <plugins>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.22.1</version>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
@@ -58,7 +65,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+        <version>3.8.0</version>
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
@@ -140,13 +147,20 @@
       </dependency>
 
       <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
         <version>${junit.version}</version>
-        <type>bom</type>
-        <scope>test</scope>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
 
     </dependencies>
   </dependencyManagement>
+
 </project>

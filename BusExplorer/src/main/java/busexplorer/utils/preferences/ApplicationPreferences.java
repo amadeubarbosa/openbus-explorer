@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -256,5 +257,15 @@ public class ApplicationPreferences {
     return readCollection(preferences.node(path), name);
   }
 
+  /**
+   * Limpa todas as preferências de usuário.
+   */
+  public void clear() {
+    try {
+      preferences.clear();
+    } catch (BackingStoreException e) {
+      throw new RuntimeException("Não foi possível limpar as preferências de usuário", e);
+    }
+  }
 
 }

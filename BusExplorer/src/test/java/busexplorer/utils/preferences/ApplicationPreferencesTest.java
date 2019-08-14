@@ -1,5 +1,6 @@
 package busexplorer.utils.preferences;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,11 @@ public class ApplicationPreferencesTest {
   @BeforeAll
   public static void before() {
     preferences = new ApplicationPreferences(APPNAME);
+  }
+
+  @AfterAll
+  public static void cleanup() {
+    preferences.clear();
   }
 
   @Test
